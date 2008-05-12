@@ -18,7 +18,7 @@ class BayesVar(object):
     """
     Bayesian random variate.
     """
-    def __init__(self, priortype,pars, range,resolution=512):
+    def __init__(self, priortype,pars, rang,resolution=512):
         '''
         Inicializa variável aleatória.
         Adquire métodos da classe  priortype.
@@ -28,8 +28,8 @@ class BayesVar(object):
         self.priorn = priortype.name
         self._flavorize(priortype(*pars), priortype)
         self.pars = pars
-        self.range = range
-        self.res = (range[1]-range[0])*1./resolution
+        self.rang = rang
+        self.res = (rang[1]-rang[0])*1./resolution
         self.likefun = self._Likelihood(self.priorn)
         self.likelihood = None
         self.data = []
@@ -55,8 +55,8 @@ class BayesVar(object):
         if self.data:
             d = self.data[-1]
             sc = self.pars[1]
-            m = self.range[0]
-            M = self.range[1]
+            m = self.rang[0]
+            M = self.rang[1]
             step = self.res
             #self.likefun returns log-likelihood
             lik = exp(array([self.likefun((d,i,sc)) for i in arange(m,M,step)]))
@@ -79,7 +79,7 @@ class BayesVar(object):
         """
         Returns the prior PDF.
         """
-        return self.pdf(arange(self.range[0],self.range[1],self.res))
+        return self.pdf(arange(self.rang[0],self.rang[1],self.res))
     def getPosteriorSample(self, n):
         """
         Return a sample of the posterior distribution.
@@ -90,8 +90,8 @@ class BayesVar(object):
         else:
             s = self.getPriorSample(n)
         if self.data:
-            m = self.range[0]
-            M = self.range[1]
+            m = self.rang[0]
+            M = self.rang[1]
             step = self.res
             supp = arange(m,M,step)#support
             s = compress(less(s.ravel(),M) & greater(s.ravel(),m),s)#removing out-of-range samples
@@ -132,8 +132,8 @@ if __name__=="__main__":
     data = ones(20)
     bv.addData(data)
     p = bv.getPosteriorSample(200000)
-    P.plot(arange(bv.range[0],bv.range[1], bv.res),bv.likelihood, 'ro', lw=2)
-    P.plot(arange(bv.range[0],bv.range[1], bv.res),bv.getPriorDist(),'g+',lw=2)
+    P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.likelihood, 'ro', lw=2)
+    P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.getPriorDist(),'g+',lw=2)
     P.hist(p, normed=1)
     P.legend(['Likelihood','Prior'])
     P.title('Bayesian inference')
