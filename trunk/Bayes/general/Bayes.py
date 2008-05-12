@@ -5,7 +5,14 @@
 from numpy import * 
 import like, sys
 import pylab as P
-from scipy.stats import *    
+from scipy import stats
+
+## Factory functions for continuous and discrete variables 
+def Continuous(priortype,pars, range,resolution=512):
+    return __BayesC(priortype,pars, range,resolution)
+
+def Discrete(priortype,pars, range,resolution=512):
+    return __BayesD(priortype,pars, range,resolution)
 
 class BayesVar(object):
     """
@@ -34,9 +41,9 @@ class BayesVar(object):
         '''
         self.cdf = pt.cdf
         self.isf = pt.isf
-        if isinstance(ptbase,rv_continuous):
+        if isinstance(ptbase,stats.rv_continuous):
             self.pdf = pt.pdf
-        elif isinstance(ptbase,rv_discrete):
+        elif isinstance(ptbase,stats.rv_discrete):
             self.pdf = pt.pmf
         else: sys.exit('Invalid distribution object')
         self.ppf = pt.ppf
@@ -78,7 +85,7 @@ class BayesVar(object):
         Return a sample of the posterior distribution.
         """
         if self.posterior.any():# Use last posterior as prior
-            k= kde.gausian_kde(self.posterior)
+            k= stats.kde.gausian_kde(self.posterior)
             s= k.resample(n)
         else:
             s = self.getPriorSample(n)
@@ -88,7 +95,7 @@ class BayesVar(object):
             step = self.res
             supp = arange(m,M,step)#support
             s = compress(less(s.ravel(),M) & greater(s.ravel(),m),s)#removing out-of-range samples
-            d = uniform.rvs(loc=0,scale=1,size=len(s))#Uniform 0-1 samples
+            d = stats.uniform.rvs(loc=0,scale=1,size=len(s))#Uniform 0-1 samples
             w = self.pdf(supp)*self.likelihood
             w = w/sum(w) #normalizing weights
             sx = searchsorted(supp,s)
@@ -112,8 +119,16 @@ class BayesVar(object):
         elif typ == 'beta':
             return lambda(x):like.Beta(x[0],x[1],x[2])
 
+class __BayesC(BayesVar, stats.rv_continuous):
+    def __init__(self, priortype,pars, range,resolution=512):
+        BayesVar.__init__(self, priortype,pars, range,resolution)
+
+class __BayesD(BayesVar, stats.rv_discrete):
+    def __init__(self, priortype,pars, range,resolution=512):
+        BayesVar.__init__(self, priortype,pars, range,resolution)
 if __name__=="__main__":
-    bv = BayesVar(norm,(3,1),range=(0,5))
+    #bv = BayesVar(stats.norm,(3,1),range=(0,5))
+    bv = Continuous(stats.norm,(3,1),range=(0,5))
     data = ones(20)
     bv.addData(data)
     p = bv.getPosteriorSample(200000)
