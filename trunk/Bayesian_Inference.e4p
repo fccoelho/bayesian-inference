@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.2.dtd">
 <!-- eric4 project file for project Bayesian_Inference -->
-<!-- Saved: 2008-05-12, 15:39:03 -->
+<!-- Saved: 2008-05-29, 16:22:08 -->
 <!-- Copyright (C) 2008 Flavio Codeco Coelho, fccoelho@gmail.com -->
 <Project version="4.2">
   <ProgLanguage mixed="0">Python</ProgLanguage>
@@ -48,6 +48,9 @@
   <Interfaces>
   </Interfaces>
   <Others>
+    <Other>
+      <Name>Docs</Name>
+    </Other>
   </Others>
   <MainScript>
     <Name>setup.py</Name>
@@ -174,4 +177,45 @@
     <FiletypeAssociation pattern="*.py" type="SOURCES" />
     <FiletypeAssociation pattern="*.qrc" type="RESOURCES" />
   </FiletypeAssociations>
+  <Documentation>
+    <DocumentationParams>
+      <dict>
+        <key>
+          <string>ERIC4DOC</string>
+        </key>
+        <value>
+          <dict>
+            <key>
+              <string>ignoreFilePatterns</string>
+            </key>
+            <value>
+              <list>
+                <unicode></unicode>
+              </list>
+            </value>
+            <key>
+              <string>outputDirectory</string>
+            </key>
+            <value>
+              <unicode>Docs</unicode>
+            </value>
+            <key>
+              <string>sourceExtensions</string>
+            </key>
+            <value>
+              <list>
+                <unicode></unicode>
+              </list>
+            </value>
+            <key>
+              <string>useRecursion</string>
+            </key>
+            <value>
+              <bool>True</bool>
+            </value>
+          </dict>
+        </value>
+      </dict>
+    </DocumentationParams>
+  </Documentation>
 </Project>

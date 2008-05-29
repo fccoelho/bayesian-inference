@@ -1,5 +1,7 @@
-#-*-encoding:latin-1-*-
-# Disponivel no pacote de programas como: Bayes.py
+"""
+This module implents classe to represent an arbitrary Bayesian random variable.
+
+"""
 # copyright 2007 Flavio Codeco Coelho
 # Licensed under GPL v3
 from numpy import * 
@@ -14,16 +16,15 @@ def Continuous(priortype,pars, range,resolution=512):
 def Discrete(priortype,pars, range,resolution=512):
     return __BayesD(priortype,pars, range,resolution)
 
-class BayesVar(object):
+class _BayesVar(object):
     """
     Bayesian random variate.
     """
     def __init__(self, priortype,pars, rang,resolution=512):
         '''
-        Inicializa variável aleatória.
-        Adquire métodos da classe  priortype.
-        priortype deve ser um RNG de scipy.stats
-        pars são os parâmetros da priori.
+        Initializes random variable.
+        priortype must be a valid RNG from scipy.stats
+        pars are the parameters of the distribution.
         '''
         self.priorn = priortype.name
         self._flavorize(priortype(*pars), priortype)
@@ -80,6 +81,7 @@ class BayesVar(object):
         Returns the prior PDF.
         """
         return self.pdf(arange(self.rang[0],self.rang[1],self.res))
+        
     def getPosteriorSample(self, n):
         """
         Return a sample of the posterior distribution.
@@ -108,8 +110,8 @@ class BayesVar(object):
 
     def _Likelihood(self,typ):
         '''
-        Define familia paramétrica da verossimilhança.
-        Retorna função de verossimilhança.
+        Define familia paramÃ©trica da verossimilhanÃ§a.
+        Retorna funÃ§Ã£o de verossimilhanÃ§a.
         typ deve ser uma string.
         '''
         if typ == 'norm':
@@ -119,17 +121,17 @@ class BayesVar(object):
         elif typ == 'beta':
             return lambda(x):like.Beta(x[0],x[1],x[2])
 
-class __BayesC(BayesVar, stats.rv_continuous):
+class __BayesC(_BayesVar, stats.rv_continuous):
     def __init__(self, priortype,pars, range,resolution=512):
         BayesVar.__init__(self, priortype,pars, range,resolution)
 
-class __BayesD(BayesVar, stats.rv_discrete):
+class __BayesD(_BayesVar, stats.rv_discrete):
     def __init__(self, priortype,pars, range,resolution=512):
         BayesVar.__init__(self, priortype,pars, range,resolution)
 if __name__=="__main__":
     #bv = BayesVar(stats.norm,(3,1),range=(0,5))
     bv = Continuous(stats.norm,(3,1),range=(0,5))
-    data = ones(20)
+    data = ones(200)
     bv.addData(data)
     p = bv.getPosteriorSample(200000)
     P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.likelihood, 'ro', lw=2)

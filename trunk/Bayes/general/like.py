@@ -1,7 +1,6 @@
-#-*-encoding:latin-1-*1
-# # Disponivel no pacote de programas como: like.py
-# Funções de log verossimilhança
-# copyright 2007 by Flávio Codeço Coelho
+
+# log-likelihood functions
+# copyright 2007 by Flavio Codeco Coelho
 # License: GPL
 #
 import scipy
@@ -11,9 +10,9 @@ from numpy import *
 
 def Categor(x,hist):
     """
-    Log-like categorica
-    x: vetor de dados
-    hist: tupla (prob,classes) classes contem Lim.Sup. da classe
+    Categorical Log-likelihood
+    x: data vector (list)
+    hist: tuple (prob,classes) classes contain the superior limit of the histogram classes
     >>> Categor([1],([.3,.7],[0,1]))
     -0.356674943939
     """
@@ -27,9 +26,9 @@ def Categor(x,hist):
 
 def Normal(x,mu,tau):
     """
-    Log-like normal
-    mu: média
-    tau: precisao (1/sd)
+    Normal Log-like 
+    mu: mean
+    tau: precision (1/sd)
     >>> Normal([0],0,1)
     -0.918938533205
     """
@@ -41,9 +40,9 @@ def Normal(x,mu,tau):
     
 def Lognormal(x,mu,tau):
     """
-    Log-like Lognormal
-    mu: média
-    tau: precisao (1/sd)
+    Lognormal Log-likelihood
+    mu: mean
+    tau: precision (1/sd)
     >>> Lognormal([0.5,1,1.2],0,0.5)
     -3.15728720569
     """
