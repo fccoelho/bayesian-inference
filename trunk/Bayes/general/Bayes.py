@@ -110,8 +110,8 @@ class _BayesVar(object):
 
     def _Likelihood(self,typ):
         '''
-        Define familia paramétrica da verossimilhança.
-        Retorna função de verossimilhança.
+        Define familia parametrica da verossimilhanca.
+        Retorna funcao de verossimilhanca.
         typ deve ser uma string.
         '''
         if typ == 'norm':
@@ -123,21 +123,21 @@ class _BayesVar(object):
 
 class __BayesC(_BayesVar, stats.rv_continuous):
     def __init__(self, priortype,pars, range,resolution=512):
-        BayesVar.__init__(self, priortype,pars, range,resolution)
+        _BayesVar.__init__(self, priortype,pars, range,resolution)
 
 class __BayesD(_BayesVar, stats.rv_discrete):
     def __init__(self, priortype,pars, range,resolution=512):
-        BayesVar.__init__(self, priortype,pars, range,resolution)
+        _BayesVar.__init__(self, priortype,pars, range,resolution)
 if __name__=="__main__":
     #bv = BayesVar(stats.norm,(3,1),range=(0,5))
     bv = Continuous(stats.norm,(3,1),range=(0,5))
-    data = ones(200)
+    data = ones(10)
     bv.addData(data)
     p = bv.getPosteriorSample(200000)
-    P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.likelihood, 'ro', lw=2)
+    P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.likelihood/max(bv.likelihood), 'ro', lw=2)
     P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.getPriorDist(),'g+',lw=2)
     P.hist(p, normed=1)
-    P.legend(['Likelihood','Prior'])
+    P.legend(['Likelihood','Prior', 'Posterior'])
     P.title('Bayesian inference')
     P.savefig('bayesvar.png',dpi=400)
     P.show()

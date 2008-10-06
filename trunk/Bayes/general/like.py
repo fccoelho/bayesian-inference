@@ -53,7 +53,7 @@ def Lognormal(x,mu,tau):
 
 def Poisson(x,mu):
     """
-    Log-Like Poisson
+    Poisson Log-Likelihood function 
     >>> Poisson([2],2)
     -1.30685281944
     """
@@ -65,7 +65,7 @@ def Poisson(x,mu):
 
 def Negbin(x,r,p):
     """
-    Log-Like negative Binomial
+     Negative Binomial Log-Likelihood 
     >>> Negbin([2,3],6,0.3)
     -9.16117424315
     """
@@ -75,7 +75,7 @@ def Negbin(x,r,p):
 
 def Binomial(x,n,p):
     """
-    Log-Like Binomial
+    Binomial Log-Likelihood 
     >>> Binomial([2,3],6,0.3)
     -2.81280615454
     """
