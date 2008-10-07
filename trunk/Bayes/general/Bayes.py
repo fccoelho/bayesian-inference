@@ -1,5 +1,5 @@
 """
-This module implents classe to represent an arbitrary Bayesian random variable.
+This module implements classes to represent an arbitrary Bayesian random variable.
 
 """
 # copyright 2007 Flavio Codeco Coelho
@@ -23,8 +23,8 @@ class _BayesVar(object):
     def __init__(self, priortype,pars, rang,resolution=512):
         '''
         Initializes random variable.
-        priortype must be a valid RNG from scipy.stats
-        pars are the parameters of the distribution.
+         * priortype must be a valid RNG from scipy.stats
+         * pars are the parameters of the distribution.
         '''
         self.priorn = priortype.name
         self._flavorize(priortype(*pars), priortype)
@@ -85,6 +85,7 @@ class _BayesVar(object):
     def getPosteriorSample(self, n):
         """
         Return a sample of the posterior distribution.
+        Uses SIR algorithm.
         """
         if self.posterior.any():# Use last posterior as prior
             k= stats.kde.gausian_kde(self.posterior)
@@ -106,13 +107,13 @@ class _BayesVar(object):
             self.posterior = post
             return post
         else:
-            return []
+            return array([])
 
     def _Likelihood(self,typ):
         '''
-        Define familia parametrica da verossimilhanca.
-        Retorna funcao de verossimilhanca.
-        typ deve ser uma string.
+        Defines parametric family  of the likelihood function.
+        Returns likelihood function.
+        typ must be a string.
         '''
         if typ == 'norm':
             return lambda(x):like.Normal(x[0],x[1],1./x[2])
@@ -130,7 +131,7 @@ class __BayesD(_BayesVar, stats.rv_discrete):
         _BayesVar.__init__(self, priortype,pars, range,resolution)
 if __name__=="__main__":
     #bv = BayesVar(stats.norm,(3,1),range=(0,5))
-    bv = Continuous(stats.norm,(3,1),range=(0,5))
+    bv = Continuous(stats.norm,(3,1),range=(0,5), resolution=1000)
     data = ones(10)
     bv.addData(data)
     p = bv.getPosteriorSample(200000)
