@@ -11,6 +11,8 @@ from numpy import *
 def Categor(x,hist):
     """
     Categorical Log-likelihood
+    generalization of a Bernoulli process for variables with any constant
+    number of discrete values.
     x: data vector (list)
     hist: tuple (prob,classes) classes contain the superior limit of the histogram classes
     >>> Categor([1],([.3,.7],[0,1]))
