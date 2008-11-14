@@ -4,10 +4,20 @@ This module implements classes to represent an arbitrary Bayesian random variabl
 """
 # copyright 2007 Flavio Codeco Coelho
 # Licensed under GPL v3
-from numpy import * 
+from numpy import arange,compress, array, exp
 import like, sys
 import pylab as P
 from scipy import stats
+
+## Conjugate prior list: distribution types which have supported conjugate prior 
+
+conjlist = [
+    'bernoulli',
+    'binom',
+    'nbinom', #negative binomial
+    'poisson',
+    'geom', #geometric
+    ]
 
 ## Factory functions for continuous and discrete variables 
 def Continuous(priortype,pars, range,resolution=512):
@@ -20,18 +30,18 @@ class _BayesVar(object):
     """
     Bayesian random variate.
     """
-    def __init__(self, priortype,pars, rang,resolution=512):
+    def __init__(self, disttype,pars, rang,resolution=512):
         '''
         Initializes random variable.
-         * priortype must be a valid RNG from scipy.stats
+         * disttype must be a valid RNG from scipy.stats
          * pars are the parameters of the distribution.
         '''
-        self.priorn = priortype.name
-        self._flavorize(priortype(*pars), priortype)
+        self.distn = dist_type.name
+        self._flavorize(disttype(*pars), disttype)
         self.pars = pars
         self.rang = rang
         self.res = (rang[1]-rang[0])*1./resolution
-        self.likefun = self._Likelihood(self.priorn)
+        self.likefun = self._Likelihood(self.distn)
         self.likelihood = None
         self.data = []
         self.posterior=array([])
@@ -121,6 +131,16 @@ class _BayesVar(object):
             return lambda(x):(1./x[2])**x[0].size*exp(-(1./x[2])*sum(x[0]))
         elif typ == 'beta':
             return lambda(x):like.Beta(x[0],x[1],x[2])
+        
+    def _postFromConjugate(dname,*pars):
+        '''
+        Returns posterior distribution function using conjugate prior theory
+        '''
+        if not self.data:
+            return
+        if dname == 'bernoulli':
+            pdist = stats.beta(pars[0])
+            # TODO: finish this
 
 class __BayesC(_BayesVar, stats.rv_continuous):
     def __init__(self, priortype,pars, range,resolution=512):
