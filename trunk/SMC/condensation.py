@@ -16,14 +16,14 @@ class Model(object):
     Example Model Specification
     """
     def __init__(self):
-        self.gdata = GlobalData((0, .2), (-.1, .4, .075), (-.1, .4, .075, .03), .3, None, 1000, 100)
+        self.gdata = GlobalData((0, .2), (-.1, .4, .075), (-.1, .4, .075, .03), .03, 200, 100)
         self.data = IterationData()
-        self.out= zeros((100, 3))
+        self.out= zeros((100, 3), dtype = float)
     def setupPriorConditions(self):
         for n in xrange(self.gdata.nsamples):
             self.data.oldpos[n] = self.gdata.PriorModel[0] +self.gdata.PriorModel[1]*normal()
             # The probabilities are not normalised. 
-            self.data.cumul_prob_array[n] =  n
+            self.data.cumul_prob_array[n] =  float(n)
             self.data.sample_weights[n] = 1.0
         # The probabilities are not normalised, so store the largest value here 
         # (for simplicity of the binary search algorithm,
@@ -44,7 +44,7 @@ class Model(object):
          - previous:
          - process: processmodel parameter tuple
         '''
-        return ((previous-process[0])*process[1])+process[2]*normal()
+        return process[0]+((previous-process[0])*process[1])+process[2]*normal()
         
     def predictSamplePosition(self, new_sample, old_sample):
         '''
@@ -56,7 +56,7 @@ class Model(object):
        straightforward for the simple first-order auto-regressive process
        model used here, but any model could be substituted.
         '''
-        self.data.newpos[new_sample] = self.iterate(old_sample, self.gdata.ProcessModel)
+        self.data.newpos[new_sample] = self.iterate(self.data.oldpos[old_sample], self.gdata.ProcessModel)
         
     def evaluateObservationDensity(self, new_sample):
         '''
@@ -75,34 +75,35 @@ class Model(object):
     def obtainObservations(self):
         '''
         In a real implementation, this routine would go and actually make
-   measurements and store them in the data.meas structure. This
-   simulation consists of an `object' moving around obeying a
-   first-order auto-regressive process, and being observed with its
-   true positions coorrupted by Gaussian measurement noise.
-   Accordingly, this routine calculates the new simulated true and
-   measured position of the object.
+       measurements and store them in the data.meas structure. This
+       simulation consists of an `object' moving around obeying a
+       first-order auto-regressive process, and being observed with its
+       true positions coorrupted by Gaussian measurement noise.
+       Accordingly, this routine calculates the new simulated true and
+       measured position of the object.
         '''
         self.data.meas[0] = self.iterate(self.data.meas[0], self.gdata.SceneModel)
         self.data.meas[1] = self.data.meas[0]+self.gdata.SceneModel[3]*normal()
     def display(self, iteration):
-        aggregate = 0
+        aggregate = 0.
+        aggregate =  sum(self.data.newpos*self.data.sample_weights)/ self.data.largest_cumulative_prob
         
-
-        aggregate =  sum(self.data.newpos*self.data.sample_weights)
-        
-        aggregate /= self.data.largest_cumulative_prob
         self.out[iteration, :] = (self.data.meas[1], self.data.meas[0], aggregate)
         #print "%04d: Measured pos. % 3.4lf True pos. % 3.4lf Est. position % 3.4lf\n"%(iteration, self.data.meas[1], self.data.meas[0], aggregate)
         #print "==>Error: ",  self.data.meas[0]-aggregate
             
 class GlobalData:
-    def __init__(self,  prior, process, scene, observ, display, nsam, nit):
+    def __init__(self,  prior, process, scene, observ, nsam, nit):
         '''
         Class to hold global data for the simulation
         =parameters=
          -prior: parameter tuple specifying the model of the prior distribution for the 
          first step.
-         - process: the parameters specifying the process model.
+         - process: the parameters specifying the process model. (mean,scaling, sigma)
+         - scene: parameters for the simlation model used to track the process (mean,scaling, sigma, sigma)
+         - observ: sigma of the observation model
+         - nsam: number of samples
+         - nit: number  of terations of the model
         '''
         #The prior distribution of the state is taken to be Gaussian with the parameters stored in this structure.
         self.PriorModel = prior
@@ -110,18 +111,17 @@ class GlobalData:
         self.ProcessModel = process
         self.SceneModel = scene
         self.ObservationModel = observ        
-        self.DisplayModel = display
         self.nsamples = nsam
         self.niterations = nit
         
 class IterationData(object):
     def __init__(self):
-        self.newpos = 0
-        self.oldpos = 0
+        self.newpos = 0.
+        self.oldpos = 0.
         self.sample_weights = None
         self.cumul_prob_array = None
-        self.largest_cumulative_prob = 0
-        self.meas = [0, 0] #(true,observed)
+        self.largest_cumulative_prob = 1.
+        self.meas = [0., 0.] #(true,observed)
         
 class Condensation(object):
     def __init__(self,  model):
@@ -138,12 +138,12 @@ class Condensation(object):
     def pickBaseSample(self):
         '''
         This is binary search using cumulative probabilities to pick a base
-   sample. The use of this routine makes Condensation O(NlogN) where N
-   is the number of samples. It is probably better to pick base
-   samples deterministically, since then the algorithm is O(N) and
-   probably marginally more efficient, but this routine is kept here
-   for conceptual simplicity and because it maps better to the
-   published literature.
+       sample. The use of this routine makes Condensation O(NlogN) where N
+       is the number of samples. It is probably better to pick base
+       samples deterministically, since then the algorithm is O(N) and
+       probably marginally more efficient, but this routine is kept here
+       for conceptual simplicity and because it maps better to the
+       published literature.
         '''
         choice = random()*self.iterdata.largest_cumulative_prob
         low = 0
@@ -161,11 +161,11 @@ class Condensation(object):
     def predictNewBases(self):
         '''
         This method computes all of the new (unweighted) sample
-   positions. For each sample, first a base is chosen, then the new
-   sample position is computed by sampling from the prediction density
-   p(x_t|x_t-1 = base). predict_sample_position is obviously
-   model-dependent and is found in model_specific.c, but it can be
-   replaced by any process model required.
+       positions. For each sample, first a base is chosen, then the new
+       sample position is computed by sampling from the prediction density
+       p(x_t|x_t-1 = base). predict_sample_position is obviously
+       model-dependent and is found in Model, but it can be
+       replaced by any process model required.
         '''
         for n in xrange(self.globaldata.nsamples):
             base = self.pickBaseSample()
@@ -189,13 +189,13 @@ class Condensation(object):
     def calculateBaseWeights(self):
         '''
         Once all the unweighted sample positions have been computed using
-   predict_new_bases, this routine computes the weights by evaluating
-   the observation density at each of the positions. Cumulative
-   probabilities are also computed at the same time, to permit an
-   efficient implementation of pick_base_sample using binary
-   search. evaluate_observation_density is obviously model-dependent
-   and is found in the Model class, but it can be replaced by any
-   observation model required.
+       predict_new_bases, this routine computes the weights by evaluating
+       the observation density at each of the positions. Cumulative
+       probabilities are also computed at the same time, to permit an
+       efficient implementation of pick_base_sample using binary
+       search. evaluate_observation_density is obviously model-dependent
+       and is found in the Model class, but it can be replaced by any
+       observation model required.
         '''
         cumul_total = 0.0
         for n in xrange(self.globaldata.nsamples):
@@ -207,21 +207,21 @@ class Condensation(object):
     def updateAfterIterating(self, iteration):
         '''
         Go and output the estimate for this iteration (which is a
-   model-dependent routine found in Model) and then swap
-   over the arrays ready for the next iteration.
+       model-dependent routine found in Model) and then swap
+       over the arrays ready for the next iteration.
         '''
         self.model.display(iteration)
         temp = self.iterdata.newpos
         self.iterdata.newpos = self.iterdata.oldpos
         self.iterdata.oldpos = temp
         
-def evaluate_gaussian(mu, sigma):
-    return 1.0/(sqrt(2.0*pi) * sigma) * exp(-0.5 * (mu*mu / (sigma*sigma)));
+def evaluate_gaussian(val, sigma):
+    return 1.0/(sqrt(2.0*pi) * sigma) * exp(-0.5 * (val*val / (sigma*sigma)));
 
 
     
     
-
+normal
     
 if __name__=="__main__":
     M = Model()
