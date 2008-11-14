@@ -7,8 +7,9 @@ GPL
 '''
 
 from numpy.random import uniform, normal,  random
-from numpy import  array, ndarray,  zeros
+from numpy import  array, ndarray,  zeros, nan_to_num
 from math import pi, exp, sqrt
+import pylab as P
 
 class Model(object):
     """
@@ -17,6 +18,7 @@ class Model(object):
     def __init__(self):
         self.gdata = GlobalData((0, .2), (-.1, .4, .075), (-.1, .4, .075, .03), .3, None, 1000, 100)
         self.data = IterationData()
+        self.out= zeros((100, 3))
     def setupPriorConditions(self):
         for n in xrange(self.gdata.nsamples):
             self.data.oldpos[n] = self.gdata.PriorModel[0] +self.gdata.PriorModel[1]*normal()
@@ -48,11 +50,11 @@ class Model(object):
         '''
         This routine samples from the distribution
 
-   p(x_t | x_{t-1} = oldpos[old_sample])
+       p(x_t | x_{t-1} = oldpos[old_sample])
 
-   and stores the result in new_positions[new_sample]. This is
-   straightforward for the simple first-order auto-regressive process
-   model used here, but any model could be substituted.
+       and stores the result in new_positions[new_sample]. This is
+       straightforward for the simple first-order auto-regressive process
+       model used here, but any model could be substituted.
         '''
         self.data.newpos[new_sample] = self.iterate(old_sample, self.gdata.ProcessModel)
         
@@ -60,15 +62,14 @@ class Model(object):
         '''
         This routine evaluates the observation density
 
-   p(z_t|x_t = newpos[new_sample])
+        p(z_t|x_t = newpos[new_sample])
 
-   The observation model in this implementation is a simple mixture of
-   Gaussians, where each simulated object is observed as a 1d position
-   and measurement noise is represented as Gaussian. For a
-   visual-tracking application, this routine would go and evaluate the
-   likelihood that the object is present in the image at the position
-   encoded by new_positions[new_sample]. evaluate_gaussian can be
-   found in utility.c
+       The observation model in this implementation is a simple mixture of
+       Gaussians, where each simulated object is observed as a 1d position
+       and measurement noise is represented as Gaussian. For a
+       visual-tracking application, this routine would go and evaluate the
+       likelihood that the object is present in the image at the position
+       encoded by new_positions[new_sample]. 
         '''
         return evaluate_gaussian(self.data.newpos[new_sample]-self.data.meas[1], self.gdata.ObservationModel )
     def obtainObservations(self):
@@ -85,11 +86,14 @@ class Model(object):
         self.data.meas[1] = self.data.meas[0]+self.gdata.SceneModel[3]*normal()
     def display(self, iteration):
         aggregate = 0
-        for n in xrange(self.gdata.nsamples):
-            aggregate += self.data.newpos[n]*self.data.sample_weights[n]
+        
+
+        aggregate =  sum(self.data.newpos*self.data.sample_weights)
         
         aggregate /= self.data.largest_cumulative_prob
-        print "%04d: Measured pos. % 3.4lf True pos. % 3.4lf Est. position % 3.4lf\n"%(iteration, self.data.meas[1], self.data.meas[0], aggregate)
+        self.out[iteration, :] = (self.data.meas[1], self.data.meas[0], aggregate)
+        #print "%04d: Measured pos. % 3.4lf True pos. % 3.4lf Est. position % 3.4lf\n"%(iteration, self.data.meas[1], self.data.meas[0], aggregate)
+        #print "==>Error: ",  self.data.meas[0]-aggregate
             
 class GlobalData:
     def __init__(self,  prior, process, scene, observ, display, nsam, nit):
@@ -175,6 +179,12 @@ class Condensation(object):
             self.predictNewBases()#Push previous state through process model
             self.calculateBaseWeights() #Apply Bayesian measurement weighting
             self.updateAfterIterating(i)#
+        #print self.model.out.shape
+        P.plot(nan_to_num(self.model.out[:, 0]), '-^')
+        P.plot(nan_to_num(self.model.out[:, 1]), '-^')
+        P.plot(nan_to_num(self.model.out[:, 2]), '-^')
+        P.legend(['Measured', 'True', 'Estimated'])
+        P.show()
     
     def calculateBaseWeights(self):
         '''
