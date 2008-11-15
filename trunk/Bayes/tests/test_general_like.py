@@ -1,4 +1,7 @@
 from nose import SkipTest
+from scipy import stats
+from numpy import arange
+#from Bayes.general.like import *
 
 class TestCategor:
     def test_categor(self):
@@ -6,7 +9,10 @@ class TestCategor:
 
 class TestNormal:
     def test_normal(self):
-        raise SkipTest # TODO: implement your test here
+        data = norm(loc=0, scale=1, size=100)
+        mle = max([Normal(data, i, 1) for i in arange(-2, 2, .1)])
+        print mle
+
 
 class TestLognormal:
     def test_lognormal(self):
