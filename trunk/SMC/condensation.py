@@ -16,7 +16,7 @@ class Model(object):
     Example Model Specification
     """
     def __init__(self):
-        self.gdata = GlobalData((0, .2), (-.1, .4, .075), (-.1, .4, .075, .03), .03, 200, 100)
+        self.gdata = GlobalData((0, .2), (-.1, .4, .075), (-.1, .4, .075, .03), .03, 1000, 100)
         self.data = IterationData()
         self.out= zeros((100, 3), dtype = float)
     def setupPriorConditions(self):
