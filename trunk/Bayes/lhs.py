@@ -9,7 +9,7 @@ def lhs(dist, parms, n=100):
     Latin Hypercube sampling of any distrbution.
     dist is is a scipy.stats random number generator 
     such as stats.norm, stats.beta, etc
-    parms is a tuble with the parameters needed for 
+    parms is a tuple with the parameters needed for 
     the specified distribution.
     '''
     perc = numpy.arange(0,1.,1./n)
@@ -20,7 +20,7 @@ def lhs(dist, parms, n=100):
 if __name__=='__main__':
     dist = stats.norm
     #dist = stats.beta
-    pars = (0,1)
+    pars = (50,1)
     #pars = (1,5) #beta
     c=lhs(dist, pars,20)
     hist(c,normed=1, label='LHS sample')
