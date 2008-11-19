@@ -13,18 +13,18 @@
 #-----------------------------------------------------------------------------
 ##import psyco
 ##psyco.full()
-import scipy.stats.kde as kde
-#from random import *
-#from cmath import *
-import pylab as P
-from numpy import *
-from numpy.random import *
-import lhs
-#import random
-import like
 import sys
+import like
+import pylab as P
+import scipy.stats.kde as kde
+from scipy import stats
+from numpy import *
+from numpy.random import normal, randint,  random,  uniform
+import lhs
 
-
+class Meld:
+    def __init__(self,  K,  L, ):
+        pass
 
 def model(r, p0, n=1):
     """
@@ -49,11 +49,8 @@ def Run(k):
     and obtain phi = M(theta). For testing purposes only.
     """
 #---q1theta---------------------------------------------------------------------
-    #r = genprior('uniform',(2,4), k) # Uniform [2,4]
-    #r = lhs.lhs(['r'],['Uniform'],[[2,4]],k)[0]
-    #p0 = genprior('uniform',(0,5), k)# Uniform[0,5]
-    #p0 = lhs.lhs(['p0'],['Uniform'],[[0,5]],k)[0]
-    r,p0 = lhs.lhs(['r', 'p0'],['uniform','uniform'],[[2,4],[0,5]],k,noCorrRestr=False)
+    r = lhs.lhs(stats.uniform, [2, 4], k)
+    p0 = lhs.lhs(stats.uniform,[0,5],k)
     q1theta = (r, p0)
 #-------------------------------------------------------------------------------
     phi=zeros(k, float)
@@ -67,8 +64,8 @@ def Run(k):
 def KDE(x, (ll, ul)=('','')):
     """
     KDE(x)
-    performs a kernel density estimate using the R function density
-    if (ll,ul) enforce limits for the distribution.
+    performs a kernel density estimate using the scipy gaussian density
+    if (ll,ul) enforce limits for the distribution's support.
     Returns a dictionary.
     """
     #r.assign("x", x)
@@ -105,7 +102,7 @@ def Likeli(data, dist, limits,**kwargs):
     (ll,ul) = limits #limits for the parameter space
     step = (ul-ll)/512.
     
-    if dist == 'normal': # In this case, L is a function of the mean.
+    if dist == 'normal': # In this case, L is a function of the mean. SD is set to the SD(data)
         sd = std(data) #standard deviation of data
         prec = 1/sd #precision of the data
         res = [exp(like.Normal(data,mu,prec)) for mu in arange(ll,ul,step)] #empty list of results
@@ -125,15 +122,10 @@ def Likeli(data, dist, limits,**kwargs):
         if ll<0 or ul>1:
             print "Parameter p of the bernoulli is out of range[0,1]"
         res = [exp(like.Bernoulli(data,p)) for p in arange(ll,ul,step)]
-        #for p in arange(ll,ul,step):
-            #res.append(p**sum(data)*(1-p)**(n-sum(data)))
-            #res.append(exp(flib.bernoulli(data,p)))
         lik = array(res)/max(array(res))
         
     elif dist == 'poisson':
         res = [exp(like.Poisson(data,lb)) for lb in arange(ll,ul,step)]
-##        for lb in arange(ll,ul,step):
-##            res.append(exp(-n*lb)*(lb*sum(data))/product(factorial(data)))
         lik = array(res)/max(array(res))
     
     elif dist == 'lognormal':
@@ -145,23 +137,6 @@ def Likeli(data, dist, limits,**kwargs):
         print 'Invalid distribution type. Valid distributions: normal, exponential, bernoulli and poisson'
     
     return lik
-    
-def factorial(numb):
-    """
-    calculates the factorial of a number, or a sequence of numbers.
-    """
-    l = ["<type 'array'>","<type 'list'>","<type 'tuple'>"]
-    if not str(type(numb)) in l:
-        n = int(numb)
-        if n == 0:
-            return 1
-        else:
-            return n * factorial(n-1)
-    else:
-        res=[]
-        for i in numb:
-            res.append(factorial(i))
-        return array(res)
 
 
 def Filt(cond, x, (ll, ul)):
@@ -226,10 +201,10 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 ##==On Uniform Priors we have to trim the density borders========================
 ##  The Density estimation with a gaussian kernel, extends beyond the limits of
 ##  an uniform distribution, due to this fact, we clip the ends of the kde
-##  output in order the avoid artifacts.
+##  output in order to avoid artifacts.
 ##===============================================================================
     np = len(q1theta) # Number of parameters(theta) in the model
-#---for multicompartimental models-----------------------------------------------
+#---for multicompartmental models-----------------------------------------------
     multi = ["<type 'list'>","<type 'tuple'>"] #possible types of data structures of q2phi and phi
 
     if not str(type(phi)) in multi:
@@ -246,7 +221,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
             else:
                 q2pd.append(KDE(q2phi[i]))
         q2phi = q2pd
-#---for single compartiment models----------------------------------------------------------------------------   
+#---for single compartment models----------------------------------------------------------------------------   
     else:
         if q2type == 'uniform':
             q2phi = KDE(q2phi, (ll,ul)) #calculating the kernel density
@@ -272,17 +247,6 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         q1theta_filt = FiltM(phi,q1theta2,limits)
         print "shape de q1theta_filt (ln272): ",q1theta_filt.shape
         q1theta2 = q1theta_filt
-        
-        ## for i in xrange(no):
-##             (ll,ul) = limits[i] # limits of q2phi[i]
-##             print 'no = %s'%no
-##             phi_filt.append(Filt(phi[i],phi[i],(ll,ul))) #filter Phis
-##             if not phi_filt[i].any():
-##                 print "Due to bad specification of the prior distributions or of the model\nthe inference can't continue. please verify that your priors include at least\npart of the range of the output variables."
-##                 return None
-                
-##             q1theta_filt = Filt(phi[i],q1theta2,(ll,ul)) #Remove thetas that generate out-of-bound phis for every phi
-##             q1theta2 = q1theta_filt
             
         phi_filt = array(phi_filt)
 # TODO: check to see if thetas or phis go to empty due to bad priors!!!!
@@ -357,8 +321,8 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 ##  The weight vector (w) to be used in the resampling of the thetas is calculated
 ##  from operations on  densities. Consequently,its values are associated with
 ##  values on the support of Phi, not with the actual Phi[i] as output by the
-##  model. Thus, its is necessary to recover the asso-
-##  ciation between the Phi[i] (the outputs of each model run), and the weights
+##  model. Thus, its is necessary to recover the association between 
+##  the Phi[i] (the outputs of each model run), and the weights
 ##  associated with them. For that, the support for phi is divided into 512 bins
 ##  (the length of the weight vector), and the filtered Phi[i] are assigned to these bins
 ##  according to their value. This mapping is represented by the variable phi_bins
@@ -389,23 +353,12 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         phi_bins = searchsorted(bin_bound, phi_filt) # Return a vector of the bins for each phi
         g = lambda x:w[x-1]   # searchsorted returns 1 as the index for the first bin, not 0
         wi = map(g,phi_bins.ravel())
-#-------------------------------------------------------------------------------
-   
-        
-#---creating a biased die based on probabilities of w---------------------------
-    #die = cumsum(wi)#-Cumulative sum of resampling probabilities
-    #roll = uniform(die[0],die[-1],L)
-   
-    
+
 ##========Resampling q1theta=====================================================
 ##  Here, the filtered q1theta are resampled according to the weight vector.  
 ##  L values are generated as indices to the weight vector wi(resamples) and used to resample
 ##  the parameters.
 ##===============================================================================
-    #sampled_is = searchsorted(die, roll)
-    #qtiltheta = transpose(array(map(h,sampled_is)))
-    #qtiltheta=zeros((np,L), Float) # Initialize the qtiltheta matrix
-    #resamples = randint(0,len(wi),(L,))# Random order of resamples
 
     # A given value is going to be resampled if random() < wi
     # A column of q1theta_filt is extracted for each value in resamples
@@ -421,9 +374,9 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
             q[j]=q1theta_filt[:,i]# retain the sample according with resampling prob.
             j+=1
     # q is a list of arrays which is converted to an array and then transposed.
-    print "shape de q",len(q),q[0].shape
+    #print "shape de q",len(q),q[0].shape
     qtiltheta = transpose(array(q)) 
-    print qtiltheta.shape
+    #print qtiltheta.shape
     return (w, qtiltheta, qtilphi, q1est)
 
 def plotmat(x, tit='title', b=50):
@@ -465,7 +418,6 @@ def genprior(type, params, shape=[]):
         prior = multinomial(params)
     else:
         print 'Invalid distribution type.'
-    
     return prior
 
 
@@ -487,8 +439,8 @@ def main():
     data = normal(7.5,1,400)
     lik = [] #initialize list of likelihoods
     lik.append(Likeli(data,'normal',(ll,ul)))
-    #q2phi = genprior('uniform', (ll,ul), k) # uniform[6,9] - pre-model distribution of Phi
-    q2phi = lhs.lhs(['p'],['uniform'],[[ll,ul]],k)[0]
+    
+    q2phi = lhs.lhs(stats.uniform, (ll, ul), k)
     
     (phi, q1theta) = Run(k) # Runs the model
     print len(q1theta)
