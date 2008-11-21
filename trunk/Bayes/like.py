@@ -51,7 +51,7 @@ def Lognormal(x,mu,tau):
     x = array(x)
     n = x.size
     like = n * 0.5 * (log(tau) - log(2.0*pi)) + sum(0.5*tau*(log(x)-mu)**2 - log(x))
-    return like
+    return -like
 
 def Poisson(x,mu):
     """
