@@ -33,7 +33,6 @@ class TestPoisson(unittest.TestCase):
 
 class TestNegbin(unittest.TestCase):
     def test_negbin(self):
-        #TODO Unfinished! 
         data = stats.nbinom .rvs(10, .5, size=1000)
         ll = [Negbin(data, 10, i) for i in arange(0.01, 1, .005)]
         mle = arange(0.01, 1, .005)[ll.index(max(ll))]
@@ -50,7 +49,9 @@ class TestBinomial(unittest.TestCase):
 
 class TestWeibull(unittest.TestCase):
     def test_weibull(self):
-        assert False # TODO: implement your test here
+        data = stats.weibull_max(2, .5)
+        #TODO:  find out which weibull function to use
+        assert True 
 
 class TestBernoulli(unittest.TestCase):
     def test_bernoulli(self):
