@@ -1,9 +1,9 @@
-# -*- coding:latin-1 -*-
+# -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
 # Purpose:     Bayesian melding
 #
-# Author:      Fl·vio CodeÁo Coelho
+# Author:      Fl√°vio Code√ßoo Coelho
 #
 # Created:     2003/08/10
 # RCS-ID:      $Id: Melding.py $
@@ -11,8 +11,8 @@
 # Licence:     GPL
 # New field:   Whatever
 #-----------------------------------------------------------------------------
-##import psyco
-##psyco.full()
+import psyco
+psyco.full()
 import sys
 import like
 import pylab as P
