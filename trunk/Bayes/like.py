@@ -1,8 +1,16 @@
-
-# log-likelihood functions
-# copyright 2007 by Flavio Codeco Coelho
-# License: GPL
+# -*- coding:utf-8 -*-
+#-----------------------------------------------------------------------------
+# Name:        like.py
+# Project:	BayesianInference
+# Purpose:     log-likelihood functions
 #
+# Author:      Flávio Codeço Coelho
+#
+# Created:     2008-11-26
+# Copyright:   (c) 2008 by the Author
+# Licence:     GPL
+#-----------------------------------------------------------------------------
+__docformat__ = "restructuredtext en"
 import scipy
 from scipy.special import gammaln
 from numpy import *
@@ -13,8 +21,10 @@ def Categor(x,hist):
     Categorical Log-likelihood
     generalization of a Bernoulli process for variables with any constant
     number of discrete values.
-    x: data vector (list)
-    hist: tuple (prob,classes) classes contain the superior limit of the histogram classes
+    
+    :Parameters:
+    - `x`: data vector (list)
+    - `hist`: tuple (prob,classes) classes contain the superior limit of the histogram classes
     >>> Categor([1],([.3,.7],[0,1]))
     -0.356674943939
     """
@@ -29,8 +39,11 @@ def Categor(x,hist):
 def Normal(x,mu,tau):
     """
     Normal Log-like 
-    mu: mean
-    tau: precision (1/sd)
+    
+    :Parameters:
+    - `mu`: mean
+    - `tau`: precision (1/sd)
+    
     >>> Normal([0],0,1)
     -0.918938533205
     """
@@ -67,7 +80,7 @@ def Poisson(x,mu):
 
 def Negbin(x,r,p):
     """
-     Negative Binomial Log-Likelihood 
+    Negative Binomial Log-Likelihood 
     >>> Negbin([2,3],6,0.3)
     -9.16117424315
     """
