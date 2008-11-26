@@ -8,8 +8,8 @@ setup(name='BIP',
         author = 'Flávio Codeço Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
-        description = '', 
+        description = 'Bayesian Inference Tools for Python', 
         test_suite = 'nose.collector', 
-        license = 'GPLv2', 
+        license = 'GPL2', 
         
       )
