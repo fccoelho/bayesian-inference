@@ -33,8 +33,10 @@ class _BayesVar(object):
     def __init__(self, disttype,pars, rang,resolution=512):
         '''
         Initializes random variable.
-         * disttype must be a valid RNG from scipy.stats
-         * pars are the parameters of the distribution.
+        
+        :Parameters:
+        - `disttype`: must be a valid RNG from scipy.stats
+        - `pars`: are the parameters of the distribution.
         '''
         self.distn = dist_type.name
         self._flavorize(disttype(*pars), disttype)
@@ -48,7 +50,7 @@ class _BayesVar(object):
 
     def _flavorize(self,pt, ptbase):
         '''
-        add methods from distribution type
+        Add methods from distribution type
         '''
         self.cdf = pt.cdf
         self.isf = pt.isf

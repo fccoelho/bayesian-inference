@@ -1,15 +1,14 @@
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
-# Purpose:     Bayesian melding
+# Purpose:     The Bayesian melding Class provides
+#                   uncertainty analyses for deterministic models.
 #
 # Author:      Flávio Codeçoo Coelho
 #
 # Created:     2003/08/10
-# RCS-ID:      $Id: Melding.py $
-# Copyright:   (c) 2003
+# Copyright:   (c) 2003-2008 by the Author
 # Licence:     GPL
-# New field:   Whatever
 #-----------------------------------------------------------------------------
 import psyco
 psyco.full()
@@ -22,9 +21,89 @@ from numpy import *
 from numpy.random import normal, randint,  random,  uniform
 import lhs
 
+__docformat__ = "restructuredtext en"
+
+
 class Meld:
     def __init__(self,  K,  L, ):
-        pass
+        self.K = K
+        self.L = L
+        self.likelist = [] #list of likelihoods
+        self.q1theta = []
+        self.post_theta = []
+        self.q2phi = []
+        self.post_phi = []
+    
+    def setPriors(self, dists=[stats.norm], pars=[(0, 1)], limits=[(-10., 10.)]):
+        """
+        Generate the samples from prior distributions needed for the dists
+        the melding replicates.
+        
+        :Parameters:
+        - dists: is a list of RNG from scipy.stats
+        - pars: is a list of tuples of parameters for each prior distribution, respectivelydists
+        - limits: is a list of tuples of limits for the support of each prior.
+        """
+        
+        
+    def addData(self, data, model, limits,l=1024,  **kwargs):
+        """
+        Calculates the likelihood functions of the dataset presented and add to 
+        self.likelist
+        Likelihood function is a vector of lenght l
+        
+        :Parameters:
+        - `data`: vector containing observations on a given variable.
+        - `model`: string with the name of the distribution of the variable
+        - `limits`: (ll,ul) tuple with lower and upper limits for the variable
+        - `l`: Length (resolution) of the likelihood vector
+        """
+        n = len(data) # Number of data points
+        data = array(data)
+        (ll,ul) = limits #limits for the parameter space
+        step = (ul-ll)/float(l)
+        
+        if dist == 'normal': # In this case, L is a function of the mean. SD is set to the SD(data)
+            sd = std(data) #standard deviation of data
+            prec = 1/sd #precision of the data
+            res = array([exp(like.Normal(data,mu,prec)) for mu in arange(ll,ul,step)])  
+            lik = res/max(res) # Likelihood function   
+            print max(lik), min(lik)
+        elif dist == 'exponential':
+            res = [lamb**n*exp(-lamb*sum(data)) for lamb in arange(ll,ul,step)]
+            lik = array(res)/max(array(res))
+     
+        elif dist == 'bernoulli':
+            if ll<0 or ul>1:
+                print "Parameter p of the bernoulli is out of range[0,1]"
+            res = [exp(like.Bernoulli(data,p)) for p in arange(ll,ul,step)]
+            lik = array(res)/max(array(res))
+            
+        elif dist == 'poisson':
+            res = [exp(like.Poisson(data,lb)) for lb in arange(ll,ul,step)]
+            lik = array(res)/max(array(res))
+        
+        elif dist == 'lognormal':
+            sd = std(data) #standard deviation of data
+            prec = 1/sd #precision of the data
+            res = [exp(like.Lognormal(data,mu,prec)) for mu in arange(ll,ul,step)]
+            lik = array(res)/max(array(res))    
+        else:
+            print 'Invalid distribution type. Valid distributions: normal, exponential, bernoulli and poisson'
+        return lik
+        
+    def run(self,  model):
+        """
+        Runs the models through the Melding inference.model
+        model is a callable which return the output of the deterministic model,
+        i.e. the model itself.
+        """
+        phi, q1theta = modelL()
+        return phi, q1theta 
+        
+    def SIR(self, alpha, q2phi, limits, q2type, q1theta, phi, L, lik=[]):
+        SIR()
+        return w, post_theta, qtilphi, q1est 
 
 def model(r, p0, n=1):
     """
@@ -49,6 +128,7 @@ def Run(k):
     and obtain phi = M(theta). For testing purposes only.
     """
 #---q1theta---------------------------------------------------------------------
+#---Priors for the theta (model parameters)--------------------
     r = lhs.lhs(stats.uniform, [2, 4], k)
     p0 = lhs.lhs(stats.uniform,[0,5],k)
     q1theta = (r, p0)
@@ -65,12 +145,12 @@ def KDE(x, (ll, ul)=('','')):
     """
     KDE(x)
     performs a kernel density estimate using the scipy gaussian density
-    if (ll,ul) enforce limits for the distribution's support.
+    if (ll,ul), enforce limits for the distribution's support.
     Returns a dictionary.
     """
     #r.assign("x", x)
     
-    if not ll == '':
+    if ll :
         rn=arange(ll,ul,(ul-ll)/512.)
         #print x.shape,rn.shape
         est = kde.gaussian_kde(x.ravel()).evaluate(rn)
@@ -84,9 +164,6 @@ def KDE(x, (ll, ul)=('','')):
         est = kde.gaussian_kde(x).evaluate(rn)
         #est = r('density(x)')
         print 'No - KDE'
-        
-    
-    
     return {'y':est,'x':rn}
 
 
@@ -105,17 +182,11 @@ def Likeli(data, dist, limits,**kwargs):
     if dist == 'normal': # In this case, L is a function of the mean. SD is set to the SD(data)
         sd = std(data) #standard deviation of data
         prec = 1/sd #precision of the data
-        res = [exp(like.Normal(data,mu,prec)) for mu in arange(ll,ul,step)] #empty list of results
-        #for mu in arange(ll,ul,step):
-            #print res#mu, sd
-            #res.append(exp(-0.5*sum(((data-mu)/sd)**2))) # Makes a list of the likelihood of every datum. Removed this constant term from formula because of dependence on n :1./((sd*sqrt(2*pi))**n)
-        res = array(res)    
+        res = array([exp(like.Normal(data,mu,prec)) for mu in arange(ll,ul,step)])  
         lik = res/max(res) # Likelihood function   
         print max(lik), min(lik)
     elif dist == 'exponential':
         res = [lamb**n*exp(-lamb*sum(data)) for lamb in arange(ll,ul,step)]
-##        for lamb in arange(ll,ul,step):
-##            res.append(lamb**n*exp(-lamb*sum(data)))
         lik = array(res)/max(array(res))
  
     elif dist == 'bernoulli':
@@ -135,7 +206,6 @@ def Likeli(data, dist, limits,**kwargs):
         lik = array(res)/max(array(res))    
     else:
         print 'Invalid distribution type. Valid distributions: normal, exponential, bernoulli and poisson'
-    
     return lik
 
 
@@ -383,7 +453,6 @@ def plotmat(x, tit='title', b=50):
     """
     This funtion implements a simple 50 bin, normalized histogram using the matplotlib module.
     """
-
     P.hist(x,bins=b,normed=1)
     P.ylabel(tit, fontsize=18)
 
