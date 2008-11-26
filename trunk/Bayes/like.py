@@ -142,11 +142,13 @@ def Beta(x,a,b):
 def Simple(x,w,a,start=0):
     """
     find out what it is.
-    not implemented.
     """
     m=len(a)
     n=len(x)
-    pass
+    like = 0.0
+    s = sum(a*(x/w)**(2*range(n)))
+    like += log(1+s)
+    return like
     
 if __name__=="__main__":
     import doctest

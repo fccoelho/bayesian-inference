@@ -1,5 +1,5 @@
 import unittest
-from numpy import arange
+from numpy import arange,  sqrt
 from numpy.random import lognormal
 from scipy import stats
 from Bayes.like import Normal, Lognormal, Poisson, Negbin, Binomial, Gamma, Weibull, Bernoulli, Beta, Categor
@@ -11,25 +11,25 @@ class TestCategor(unittest.TestCase):
 class TestNormal(unittest.TestCase):
     def test_normal(self):
         data = stats.norm.rvs(loc=0, scale=1, size=1000)
-        ll = [Normal(data, i, 1) for i in arange(-15, 15, .005)]
-        mle = arange(-15, 15, .005)[ll.index(max(ll))]
+        ll = [Normal(data, i, 1) for i in arange(-15, 15, .001)]
+        mle = arange(-15, 15, .001)[ll.index(max(ll))]
         print "Normal MLE error: ", abs(0-mle)
         assert abs(0-mle) <0.05
 class TestLognormal(unittest.TestCase):
     def test_lognormal(self):
-        data = lognormal(5, 1, size=1000)
-        ll = [Lognormal(data, i, 1) for i in arange(0.1, 15, .005)]
-        mle = arange(0.1, 15, .005)[ll.index(max(ll))]
+        data = lognormal(5, 1, size=2000)
+        ll = [Lognormal(data, i, 1) for i in arange(0.1, 15, .001)]
+        mle = arange(0.1, 15, .001)[ll.index(max(ll))]
         print "LogNormal MLE error: ", abs(5-mle)
         assert abs(5-mle) <0.01
 
 class TestPoisson(unittest.TestCase):
     def test_poisson(self):
-        data = stats.poisson.rvs(5, size=1000)
-        ll = [Poisson(data, i) for i in arange(0.1, 15, .005)]
-        mle = arange(0.1, 15, .005)[ll.index(max(ll))]
+        data = stats.poisson.rvs(5, size=2000)
+        ll = [Poisson(data, i) for i in arange(0.1, 15, .001)]
+        mle = arange(0.1, 15, .001)[ll.index(max(ll))]
         print "Poisson MLE error: ", abs(5-mle)
-        assert abs(5-mle) <0.05
+        assert abs(5-mle) <0.1
 
 class TestNegbin(unittest.TestCase):
     def test_negbin(self):
@@ -55,15 +55,26 @@ class TestWeibull(unittest.TestCase):
 
 class TestBernoulli(unittest.TestCase):
     def test_bernoulli(self):
-        assert False # TODO: implement your test here
+        data = stats.bernoulli.rvs(.5, size=1000)
+        ll = [Bernoulli(data, i) for i in arange(.01, 1, .001)]
+        mle = arange(0.01, 1, .001)[ll.index(max(ll))]
+        print "Bernoulli MLE error: ", abs(.5-mle)
+        assert abs(.5-mle) <0.01
 
 class TestGamma(unittest.TestCase):
     def test_gamma(self):
-        assert False # TODO: implement your test here
-
+        data = stats.gamma.rvs(2,scale=2,  size=1000)
+        ll = [Gamma(data, 2, i) for i in arange(.01, 5, .001)]
+        mle = arange(0.01, 5, .001)[ll.index(max(ll))]
+        print "Gamma MLE error: ", abs(2-mle)
+        assert abs(2-mle) <0.01
 class TestBeta(unittest.TestCase):
     def test_beta(self):
-        assert False # TODO: implement your test here
+        data = stats.beta.rvs(2,2,  size=1000)
+        ll = [Beta(data, 2, i) for i in arange(.01, 1, .001)]
+        mle = arange(0.01, 1, .001)[ll.index(max(ll))]
+        print "Beta MLE error: ", abs(2-mle)
+        assert abs(2-mle) <0.01
 
 class TestSimple(unittest.TestCase):
     def test_simple(self):
