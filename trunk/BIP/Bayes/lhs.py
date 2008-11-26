@@ -1,5 +1,17 @@
 #!/usr/bin/python
-
+# -*- coding:utf-8 -*-
+#-----------------------------------------------------------------------------
+# Name:        lhs.py
+# Project:	Bayesian-Inference
+# Purpose:     
+#
+# Author:      Flávio Codeço Coelho<fccoelho@gmail.com>
+#
+# Created:     2008-11-26
+# Copyright:   (c) 2008 by the Author
+# Licence:     GPL
+#-----------------------------------------------------------------------------
+__docformat__ = "restructuredtext en"
 from pylab import plot, figure,hist,show, savefig, legend
 import scipy.stats as stats
 import numpy

@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        like.py
-# Project:	BayesianInference
+# Project:  BayesianInference
 # Purpose:     log-likelihood functions
 #
-# Author:      Flávio Codeço Coelho
+# Author:      Flávio Codeço Coelho <fccoelho@gmail.com>
 #
 # Created:     2008-11-26
 # Copyright:   (c) 2008 by the Author

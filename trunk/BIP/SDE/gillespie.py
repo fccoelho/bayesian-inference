@@ -1,3 +1,16 @@
+# -*- coding:utf-8 -*-
+#-----------------------------------------------------------------------------
+# Name:        gillespie.py
+# Project:	Bayesian-Inference
+# Purpose:     
+#
+# Author:      Flávio Codeço Coelho<fccoelho@gmail.com>
+#
+# Created:     2008-11-26
+# Copyright:   (c) 2008 by the Author
+# Licence:     GPL
+#-----------------------------------------------------------------------------
+__docformat__ = "restructuredtext en"
 from numpy.random import uniform, multinomial, exponential,random
 from numpy import arange, array, empty,zeros,log
 #from math import log
