@@ -1,3 +1,16 @@
+# -*- coding:utf-8 -*-
+#-----------------------------------------------------------------------------
+# Name:        example.py
+# Project:	Bayesian-Inference
+# Purpose:     
+#
+# Author:      Flávio Codeço Coelho<fccoelho@gmail.com>
+#
+# Created:     2008-11-26
+# Copyright:   (c) 2008 by the Author
+# Licence:     GPL
+#-----------------------------------------------------------------------------
+__docformat__ = "restructuredtext en"
 """
 Example of an SEIR model with two Infectious classes: subclinical(Is) and clinical(Ic)
         Is
