@@ -23,8 +23,9 @@ def Categor(x,hist):
     number of discrete values.
     
     :Parameters:
-    - `x`: data vector (list)
-    - `hist`: tuple (prob,classes) classes contain the superior limit of the histogram classes
+        - `x`: data vector (list)
+        - `hist`: tuple (prob,classes) classes contain the superior limit of the histogram classes
+    
     >>> Categor([1],([.3,.7],[0,1]))
     -0.356674943939
     """
@@ -41,8 +42,8 @@ def Normal(x,mu,tau):
     Normal Log-like 
     
     :Parameters:
-    - `mu`: mean
-    - `tau`: precision (1/sd)
+        -  `mu`: mean
+        -  `tau`: precision (1/sd)
     
     >>> Normal([0],0,1)
     -0.918938533205
@@ -56,8 +57,11 @@ def Normal(x,mu,tau):
 def Lognormal(x,mu,tau):
     """
     Lognormal Log-likelihood
-    mu: mean
-    tau: precision (1/sd)
+    
+    :Parameters:
+        -  `mu`: mean
+        -  `tau`: precision (1/sd)
+    
     >>> Lognormal([0.5,1,1.2],0,0.5)
     -3.15728720569
     """
