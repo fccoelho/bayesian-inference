@@ -1,8 +1,9 @@
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        condensation.py
-# Project:	Bayesian-Inference
-# Purpose:     
+# Project:  Bayesian-Inference
+# Purpose:     implementation of the Condensation algorithm, originally conceived by Michael Isard
+#                   http://www.cs.ubc.ca/~nando/smc/index.htm
 #
 # Author:      Flávio Codeço Coelho<fccoelho@gmail.com>
 #
@@ -14,9 +15,6 @@ __docformat__ = "restructuredtext en"
 '''
 implementation of the Condensation algorithm, originally conceived by Michael Isard
 http://www.cs.ubc.ca/~nando/smc/index.htm
-
-Flavio C. Coelho <fccoelho@gmail.com>
-GPL
 '''
 
 from numpy.random import uniform, normal,  random

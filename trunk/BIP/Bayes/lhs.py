@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        lhs.py
-# Project:	Bayesian-Inference
+# Project:  Bayesian-Inference
 # Purpose:     
 #
 # Author:      Flávio Codeço Coelho<fccoelho@gmail.com>

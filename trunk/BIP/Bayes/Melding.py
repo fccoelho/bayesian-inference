@@ -4,7 +4,7 @@
 # Purpose:     The Bayesian melding Class provides
 #                   uncertainty analyses for deterministic models.
 #
-# Author:      Flávio Codeçoo Coelho
+# Author:      Flávio Codeço Coelho
 #
 # Created:     2003/08/10
 # Copyright:   (c) 2003-2008 by the Author
@@ -25,85 +25,164 @@ __docformat__ = "restructuredtext en"
 
 
 class Meld:
-    def __init__(self,  K,  L, ):
-        self.K = K
-        self.L = L
-        self.likelist = [] #list of likelihoods
-        self.q1theta = []
-        self.post_theta = []
-        self.q2phi = []
-        self.post_phi = []
-    
-    def setPriors(self, dists=[stats.norm], pars=[(0, 1)], limits=[(-10., 10.)]):
+    def __init__(self,  K,  L, model, ntheta, nphi ):
         """
-        Generate the samples from prior distributions needed for the dists
-        the melding replicates.
+        Initializes the Melding class.
         
         :Parameters:
-        - dists: is a list of RNG from scipy.stats
-        - pars: is a list of tuples of parameters for each prior distribution, respectivelydists
-        - limits: is a list of tuples of limits for the support of each prior.
+            - `K`: Number of replicates of the model run. Also determines the prior sample size.
+            - `L`: Number of samples from the Posterior distributions. Usually 10% of K.
+            - `model`: Callable taking theta as argument and returning phi = M(theta).
+            - `ntheta`: Number of inputs to the model (parameters).
+            - `nphi`: Number of outputs of the model (State-variables)
         """
+        self.K = K
+        self.L = L
+        self.model = model
+        self.likelist = [] #list of likelihoods
+        self.q1theta = recarray(K,formats=['f8']*ntheta) #Theta Priors (record array)
+        self.post_theta = recarray(L,formats=['f8']*ntheta) #Theta Posteriors (record array)
+        self.q2phi = recarray(K,formats=['f8']*nphi) #Phi Priors (record array)
+        self.phi = recarray(K,formats=['f8']*nphi) #Phi model-induced Priors (record array)
+        self.q2type = [] #list of distribution types
+        self.post_phi = recarray(L,formats=['f8']*nphi) #Phi Posteriors (record array)
+        self.ntheta = ntheta
+        self.nphi = nphi
+        self.done_running = False
+    
+    def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
+        """
+        Setup the models Outputs, or Phi, and generate the samples from prior distributions 
+        needed for the melding replicates.
         
+        :Parameters:
+            - `names`: list of string with the names of the variables.
+            - `dists`: is a list of RNG from scipy.stats
+            - `pars`: is a list of tuples of variables for each prior distribution, respectively.
+            - `limits`: lower and upper limits on the support of variables.
+        """
+        self.q2phi.dtype.names = names
+        self.phi.dtype.names = names
+        self.post_phi.dtype.names = names
+        self.limits = limits
+        for n,d,p in zip(names,dists,pars):
+            self.q2phi[n] = lhs.lhs(d,p,self.K)
+            self.q2type.append(d.name)
+
+
         
-    def addData(self, data, model, limits,l=1024,  **kwargs):
+    def setTheta(self, names, dists=[stats.norm], pars=[(0, 1)]):
+        """
+        Setup the models inputs and generate the samples from prior distributions 
+        needed for the dists the melding replicates.
+        
+        :Parameters:
+            - `names`: list of string with the names of the parameters.
+            - `dists`: is a list of RNG from scipy.stats
+            - `pars`: is a list of tuples of parameters for each prior distribution, respectivelydists
+        """
+        self.q1theta.dtype.names = names
+        self.post_theta.dtype.names = names
+        for n,d,p in zip(names,dists,pars):
+            self.q1theta[n] = lhs.lhs(d,p,self.K)
+            
+        
+    def addData(self, data, model, limits,l=1024, **kwargs):
         """
         Calculates the likelihood functions of the dataset presented and add to 
         self.likelist
         Likelihood function is a vector of lenght l
         
         :Parameters:
-        - `data`: vector containing observations on a given variable.
-        - `model`: string with the name of the distribution of the variable
-        - `limits`: (ll,ul) tuple with lower and upper limits for the variable
-        - `l`: Length (resolution) of the likelihood vector
+            -  `data`: vector containing observations on a given variable.
+            -  `model`: string with the name of the distribution of the variable
+            -  `limits`: (ll,ul) tuple with lower and upper limits for the variable
+            -  `l`: Length (resolution) of the likelihood vector
         """
         n = len(data) # Number of data points
         data = array(data)
         (ll,ul) = limits #limits for the parameter space
         step = (ul-ll)/float(l)
         
-        if dist == 'normal': # In this case, L is a function of the mean. SD is set to the SD(data)
+        if model == 'normal': # In this case, L is a function of the mean. SD is set to the SD(data)
             sd = std(data) #standard deviation of data
             prec = 1/sd #precision of the data
             res = array([exp(like.Normal(data,mu,prec)) for mu in arange(ll,ul,step)])  
             lik = res/max(res) # Likelihood function   
             print max(lik), min(lik)
-        elif dist == 'exponential':
+        elif model == 'exponential':
             res = [lamb**n*exp(-lamb*sum(data)) for lamb in arange(ll,ul,step)]
             lik = array(res)/max(array(res))
-     
-        elif dist == 'bernoulli':
+        elif model == 'beta':
+            # TODO: Make sure pars is passed as an extra parameter
+            res = [exp(like.Beta(data,*kwargs['pars'])) for i in arange(ll,ul,step)]
+            lik = array(res)/max(array(res))
+        elif model == 'bernoulli':
             if ll<0 or ul>1:
                 print "Parameter p of the bernoulli is out of range[0,1]"
             res = [exp(like.Bernoulli(data,p)) for p in arange(ll,ul,step)]
             lik = array(res)/max(array(res))
             
-        elif dist == 'poisson':
+        elif model == 'poisson':
             res = [exp(like.Poisson(data,lb)) for lb in arange(ll,ul,step)]
             lik = array(res)/max(array(res))
         
-        elif dist == 'lognormal':
+        elif model == 'lognormal':
             sd = std(data) #standard deviation of data
             prec = 1/sd #precision of the data
             res = [exp(like.Lognormal(data,mu,prec)) for mu in arange(ll,ul,step)]
             lik = array(res)/max(array(res))    
         else:
-            print 'Invalid distribution type. Valid distributions: normal, exponential, bernoulli and poisson'
+            print 'Invalid distribution type. Valid distributions: normal,lognormal, exponential, bernoulli and poisson'
         return lik
         
-    def run(self,  model):
+    def run(self,):
         """
-        Runs the models through the Melding inference.model
+        Runs the model through the Melding inference.model
         model is a callable which return the output of the deterministic model,
         i.e. the model itself.
+        The model is run self.K times to obtain phi = M(theta). 
         """
-        phi, q1theta = modelL()
-        return phi, q1theta 
+        phi = empty((self.K,self.nphi))
+        for i in xrange(self.K):
+            theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
+            phi[i,:]= self.model(*theta)[-1] #phi is the last point in the simulation
+
+        for i,n in enumerate(self.phi.dtype.names):
+            self.phi[n] = phi[:,i]
+        self.done_running = True
         
-    def SIR(self, alpha, q2phi, limits, q2type, q1theta, phi, L, lik=[]):
-        SIR()
-        return w, post_theta, qtilphi, q1est 
+    def getPosteriors(self):
+        """
+        Updates the the posteriors of the model
+        """
+        #random indices for the marginal posteriors of theta
+        pti = [randint(0,len(self.post_theta[i]),self.L) for i in xrange(len(self.post_theta.dtype.names))]
+        post_phi = zeros((self.L,self.nphi),self.nphi,float) #initializing post_phi
+        for i in xrange(self.L): #Monte Carlo with values of the posterior of Theta
+            post_phi[i,:] = model(*[self.post_theta[n][pti[j][i]] for j,n in enumerate(self.post_theta.names)])[-1]
+
+        #handling the results
+        for i,n in enumerate(self.post_phi.dtype.names):
+            self.post_phi[n] = post_phi[:,i]
+
+    def sir(self):
+        """
+        Run the model output through the Sampling-Importance-Resampling algorithm
+        """
+        if not self.done_running:
+            return
+        alpha = 0.5
+#        Joining priors into lists
+        q2phi = [self.q2phi[n] for n in self.q2phi.dtype.names]
+        q1theta = [self.q1theta[n] for n in self.q1theta.dtype.names]
+        phi = [self.phi[n] for n in self.phi.dtype.names]
+#        Calling SIR
+        w, post_theta, qtilphi, q1est = SIR(alpha, q2phi, self.limits, self.q2type, q1theta, phi, self.L, self.likelist)
+#        Handling the results
+        for i,n in enumerate(self.post_theta.dtype.names):
+            self.post_theta[n] = post_theta[i]
+         
 
 def model(r, p0, n=1):
     """
@@ -151,7 +230,7 @@ def KDE(x, (ll, ul)=('','')):
     #r.assign("x", x)
     
     if ll :
-        rn=arange(ll,ul,(ul-ll)/512.)
+        rn=arange(ll,ul,(ul-ll)/1024.)
         #print x.shape,rn.shape
         est = kde.gaussian_kde(x.ravel()).evaluate(rn)
         #r.assign("ll", ll)
@@ -160,7 +239,7 @@ def KDE(x, (ll, ul)=('','')):
     else:
         ll = min(x)
         ul = max(x)
-        rn=arange(ll,ul,(ul-ll)/512.)
+        rn=arange(ll,ul,(ul-ll)/1024.)
         est = kde.gaussian_kde(x).evaluate(rn)
         #est = r('density(x)')
         print 'No - KDE'
@@ -172,12 +251,12 @@ def Likeli(data, dist, limits,**kwargs):
     Generates the likelihood function of data given dist.
     limits is a tuple setting the interval of the parameter space that will
     be used as the support for the Likelihood function.
-    returns a vector (512 elements).
+    returns a vector (1024 elements).
     """
     n = len(data) # Number of data points
     data = array(data)
     (ll,ul) = limits #limits for the parameter space
-    step = (ul-ll)/512.
+    step = (ul-ll)/1024.
     
     if dist == 'normal': # In this case, L is a function of the mean. SD is set to the SD(data)
         sd = std(data) #standard deviation of data
@@ -256,15 +335,17 @@ def FiltM(cond,x,limits):
 
 def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
     """
-    Sampling Importance Resampling. 
-    alpha = pooling weight; 
-    q2phi = premodel of phi(vector or a tuple of vectors); 
-    limits = limits for q2phi (tuple or list/tuple of tuples); 
-    q2type = dist. type of q2phi (string or list of strings); 
-    q1theta = premodel dists of thetas (tuple); 
-    phi = model output (vector or tuple of vectors); 
-    L = size of the resample.
-    Lik = list of likelihoods available
+    Sampling Importance Resampling.
+
+    :Parameters:
+        - `alpha`: pooling weight;
+        - `q2phi`: premodel of phi(tuple of vectors);
+        - `limits`: limits for q2phi (list/tuple of tuples);
+        - `q2type`: dist. type of q2phi (list of strings);
+        - `q1theta`: premodel dists of thetas (tuple);
+        - `phi`: model output (tuple of vectors);
+        - `L`: size of the resample.
+        - `Lik`: list of likelihoods available
     """
     
     
@@ -275,34 +356,31 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 ##===============================================================================
     np = len(q1theta) # Number of parameters(theta) in the model
 #---for multicompartmental models-----------------------------------------------
-    multi = ["<type 'list'>","<type 'tuple'>"] #possible types of data structures of q2phi and phi
-
-    if not str(type(phi)) in multi:
-        (ll,ul) = limits # limits of q2phi for single compartment models
     no = None
-    if str(type(q2phi)) in multi:
-        no = len(phi) #Number of output variables
-        q2phi = array(q2phi)
-        q2pd =[]
-        for i in xrange(no):
-            (ll,ul) = limits[i] # limits of q2phi[i]
-            if q2type[i] == 'uniform':
-                q2pd.append(KDE(q2phi[i],(ll,ul)))
-            else:
-                q2pd.append(KDE(q2phi[i]))
-        q2phi = q2pd
-#---for single compartment models----------------------------------------------------------------------------   
-    else:
-        if q2type == 'uniform':
-            q2phi = KDE(q2phi, (ll,ul)) #calculating the kernel density
-            print 'Ok'
+#    if len(phi)>1::
+    no = len(phi) #Number of output variables
+    q2phi = array(q2phi)
+    q2pd =[]
+    for i in xrange(no):
+        (ll,ul) = limits[i] # limits of q2phi[i]
+        if q2type[i] == 'uniform':
+            q2pd.append(KDE(q2phi[i],(ll,ul)))
         else:
-            q2phi = KDE(q2phi)
-            print 'No - SIR1'
+            q2pd.append(KDE(q2phi[i]))
+    q2phi = q2pd
+#---for single compartment models----------------------------------------------------------------------------   
+#    else:
+#        (ll,ul) = limits[0] # limits of q2phi for single compartment models
+#        if q2type == 'uniform':
+#            q2phi = KDE(q2phi, (ll,ul)) #calculating the kernel density
+#            print 'Ok'
+#        else:
+#            q2phi = KDE(q2phi)
+#            print 'No - SIR1'
 #-------------------------------------------------------------------------------
         
 #---filtering out Out-of-boundary thetas and phis-------------------------------
-    if str(type(phi)) in multi: #Multicompartimental models
+    if len(phi)>1: #Multicompartimental models
         #phi = array(phi)# Convert list/tuple of vectors in array, where each vector becomes a line of the array.
         phi_filt=[]
         print "shape de q1theta[0]: ",q1theta[0].shape
@@ -319,10 +397,10 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         q1theta2 = q1theta_filt
             
         phi_filt = array(phi_filt)
-# TODO: check to see if thetas or phis go to empty due to bad priors!!!!
+# TODO: check to see if thetas or phis get empty due to bad priors!!!!
     else: #Single compartment
-        phi_filt = Filt(phi,phi,(ll,ul)) #remove out-of-bound phis
-        q1theta_filt = Filt(phi,q1theta,(ll,ul)) #remove thetas that generate out-of-bound phis
+        phi_filt = Filt(phi[0],phi[0],(ll,ul)) #remove out-of-bound phis
+        q1theta_filt = Filt(phi[0],q1theta,(ll,ul)) #remove thetas that generate out-of-bound phis
 #-------------------------------------------------------------------------------
 
 #---Calculate Kernel Density of the filtered phis----------------------------------------------------------------------------
@@ -331,6 +409,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         for i in xrange(no):
             (ll,ul) = limits[i] # limits of q2phi[i]
             if q2type[i] == 'uniform':
+                print sum(isinf(phi_filt))
                 q1ed.append(KDE(phi_filt[i],(ll,ul)))
             else: 
                 q1ed.append(KDE(phi_filt[i]))
@@ -393,7 +472,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 ##  values on the support of Phi, not with the actual Phi[i] as output by the
 ##  model. Thus, its is necessary to recover the association between 
 ##  the Phi[i] (the outputs of each model run), and the weights
-##  associated with them. For that, the support for phi is divided into 512 bins
+##  associated with them. For that, the support for phi is divided into 1024 bins
 ##  (the length of the weight vector), and the filtered Phi[i] are assigned to these bins
 ##  according to their value. This mapping is represented by the variable phi_bins
 ##  in which each element is the bin number of the correponding element in Phi.
@@ -408,7 +487,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         wi = []
         for i in xrange(no):
             (ll,ul) = limits[i] #limits of phi
-            step = (ul-ll)/512.     
+            step = (ul-ll)/1024.
             bin_bound.append(arange(ll,ul,step)) # Bin boundaries of the weight vector
             phi_bins.append(searchsorted(bin_bound[i], phi_filt[i])) # Return a vector of the bins for each phi
         g = lambda x:w[x-1]   # searchsorted returns 1 as the index for the first bin, not 0
@@ -418,7 +497,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         wi = mean(array(wi),axis=0) #ATTENTION: Should this be averaged?
     else: #single compartment
         (ll,ul) = limits
-        step = (ul-ll)/512.  
+        step = (ul-ll)/1024.
         bin_bound = arange(ll,ul,step) # Bin boundaries of the weight vector
         phi_bins = searchsorted(bin_bound, phi_filt) # Return a vector of the bins for each phi
         g = lambda x:w[x-1]   # searchsorted returns 1 as the index for the first bin, not 0
@@ -500,6 +579,7 @@ def main():
     """
     testing function
     """
+    start = clock()
     k = 20000 # Number of model runs
     L = 2000
     ll = 6
@@ -515,16 +595,18 @@ def main():
     print len(q1theta)
 #---Restricting the range of phi------------------------------------------------
     
-    (w, post_theta, qtilphi, q1est) = SIR(0.5,q2phi,(ll,ul), 'uniform',q1theta, phi,L, lik)
+    (w, post_theta, qtilphi, q1est) = SIR(0.5,[q2phi],[(ll,ul)], ['uniform'],q1theta, [phi],L, lik)
     print "out of SIR"
     print post_theta.shape
 #--generating the posterior of phi-------------------------------------------------------
-    r = uniform(0,len(post_theta[0]),L) #random index for the marginal posterior of r
-    p = uniform(0,len(post_theta[1]),L) #random index for the marginal posterior of p0
+    r = randint(0,len(post_theta[0]),L) #random index for the marginal posterior of r
+    p = randint(0,len(post_theta[1]),L) #random index for the marginal posterior of p0
     post_phi = zeros(L,float) #initializing post_phi
     for i in xrange(L): #Monte Carlo with values of the posterior of Theta
-        post_phi[i] = model(post_theta[0][int(r[i])],post_theta[1][int(p[i])])[-1]
+        post_phi[i] = model(post_theta[0][r[i]],post_theta[1][p[i]])[-1]
 
+    end = clock()
+    print end-start, ' seconds'
 #---Plotting with matplotlib----------------------------------------------------------------------------
     P.figure(1)
     P.subplot(411)
@@ -552,10 +634,24 @@ def main():
     P.subplot(414)
     plotmat(q2phi, tit=r'$q_2 \phi$')
     P.show()
+
+def main2():
+    start = clock()
+    Me = Meld(K=20000,L=2000,model=model, ntheta=2,nphi=1)
+    Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
+    Me.setPhi(['p'],[stats.uniform],[(6,9)],(6,9))
+    Me.addData(normal(7.5,1,400),'normal',(6,9))
+    Me.run()
+    Me.sir()
+    Me.getPosteriors()
+
+    end = clock()
+    print end-start, ' seconds'
     
 if __name__ == '__main__':
     from time import clock
-    start = clock()
-    main()  
-    end = clock()
-    print end-start, ' seconds'  
+    
+    main()
+    main2()
+     
+
