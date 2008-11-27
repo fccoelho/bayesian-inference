@@ -81,9 +81,13 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">K</span>,
-        <span class="summary-sig-arg">L</span>)</span></td>
+        <span class="summary-sig-arg">L</span>,
+        <span class="summary-sig-arg">model</span>,
+        <span class="summary-sig-arg">ntheta</span>,
+        <span class="summary-sig-arg">nphi</span>)</span><br />
+      Initializes the Melding class.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.__init__">source&nbsp;code</a></span>
             
@@ -99,14 +103,36 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#setPriors" class="summary-sig-name">setPriors</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#setPhi" class="summary-sig-name">setPhi</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">names</span>,
         <span class="summary-sig-arg">dists</span>=<span class="summary-sig-default">[stats.norm]</span>,
         <span class="summary-sig-arg">pars</span>=<span class="summary-sig-default">[(0,1)]</span>,
-        <span class="summary-sig-arg">limits</span>=<span class="summary-sig-default">[(-10.,10.)]</span>)</span><br />
-      Generate the samples from prior distributions needed for the dists
-the melding replicates.</td>
+        <span class="summary-sig-arg">limits</span>=<span class="summary-sig-default">[(-5,5)]</span>)</span><br />
+      Setup the models Outputs, or Phi, and generate the samples from prior distributions
+needed for the melding replicates.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setPriors">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setPhi">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#setTheta" class="summary-sig-name">setTheta</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">names</span>,
+        <span class="summary-sig-arg">dists</span>=<span class="summary-sig-default">[stats.norm]</span>,
+        <span class="summary-sig-arg">pars</span>=<span class="summary-sig-default">[(0,1)]</span>)</span><br />
+      Setup the models inputs and generate the samples from prior distributions
+needed for the dists the melding replicates.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setTheta">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -144,9 +170,8 @@ Likelihood function is a vector of lenght l</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#run" class="summary-sig-name">run</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">model</span>)</span><br />
-      Runs the models through the Melding inference.model
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#run" class="summary-sig-name">run</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Runs the model through the Melding inference.model
 model is a callable which return the output of the deterministic model,
 i.e.</td>
           <td align="right" valign="top">
@@ -164,17 +189,27 @@ i.e.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="SIR"></a><span class="summary-sig-name">SIR</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">alpha</span>,
-        <span class="summary-sig-arg">q2phi</span>,
-        <span class="summary-sig-arg">limits</span>,
-        <span class="summary-sig-arg">q2type</span>,
-        <span class="summary-sig-arg">q1theta</span>,
-        <span class="summary-sig-arg">phi</span>,
-        <span class="summary-sig-arg">L</span>,
-        <span class="summary-sig-arg">lik</span>=<span class="summary-sig-default">[]</span>)</span></td>
+          <td><span class="summary-sig"><a name="getPosteriors"></a><span class="summary-sig-name">getPosteriors</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Updates the the posteriors of the model</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.SIR">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.getPosteriors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="sir"></a><span class="summary-sig-name">sir</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Run the model output through the Sampling-Importance-Resampling algorithm</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.sir">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -201,36 +236,98 @@ i.e.</td>
   </td>
 </tr>
 </table>
-<a name="setPriors"></a>
+<a name="__init__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">setPriors</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">dists</span>=<span class="sig-default">[stats.norm]</span>,
-        <span class="sig-arg">pars</span>=<span class="sig-default">[(0,1)]</span>,
-        <span class="sig-arg">limits</span>=<span class="sig-default">[(-10.,10.)]</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">K</span>,
+        <span class="sig-arg">L</span>,
+        <span class="sig-arg">model</span>,
+        <span class="sig-arg">ntheta</span>,
+        <span class="sig-arg">nphi</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setPriors">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.__init__">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Generate the samples from prior distributions needed for the dists
-the melding replicates.</p>
-<ul class="rst-simple">
-<li>dists: is a list of RNG from scipy.stats</li>
-<li>pars: is a list of tuples of parameters for each prior distribution, respectivelydists</li>
-<li>limits: is a list of tuples of limits for the support of each prior.</li>
-</ul>
+  Initializes the Melding class.
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>K</code></strong> - Number of replicates of the model run. Also determines the prior sample size.</li>
+        <li><strong class="pname"><code>L</code></strong> - Number of samples from the Posterior distributions. Usually 10% of K.</li>
+        <li><strong class="pname"><code>model</code></strong> - Callable taking theta as argument and returning phi = M(theta).</li>
+        <li><strong class="pname"><code>ntheta</code></strong> - Number of inputs to the model (parameters).</li>
+        <li><strong class="pname"><code>nphi</code></strong> - Number of outputs of the model (State-variables)</li>
+    </ul></dd>
   </dl>
-<div class="fields">      <p><strong>Parameters:</strong>
-        &nbsp;
-      </p>
-</div></td></tr></table>
+</td></tr></table>
+</div>
+<a name="setPhi"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setPhi</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">names</span>,
+        <span class="sig-arg">dists</span>=<span class="sig-default">[stats.norm]</span>,
+        <span class="sig-arg">pars</span>=<span class="sig-default">[(0,1)]</span>,
+        <span class="sig-arg">limits</span>=<span class="sig-default">[(-5,5)]</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setPhi">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Setup the models Outputs, or Phi, and generate the samples from prior distributions
+needed for the melding replicates.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the variables.</li>
+        <li><strong class="pname"><code>dists</code></strong> - is a list of RNG from scipy.stats</li>
+        <li><strong class="pname"><code>pars</code></strong> - is a list of tuples of variables for each prior distribution, respectively.</li>
+        <li><strong class="pname"><code>limits</code></strong> - lower and upper limits on the support of variables.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setTheta"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setTheta</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">names</span>,
+        <span class="sig-arg">dists</span>=<span class="sig-default">[stats.norm]</span>,
+        <span class="sig-arg">pars</span>=<span class="sig-default">[(0,1)]</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setTheta">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Setup the models inputs and generate the samples from prior distributions
+needed for the dists the melding replicates.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the parameters.</li>
+        <li><strong class="pname"><code>dists</code></strong> - is a list of RNG from scipy.stats</li>
+        <li><strong class="pname"><code>pars</code></strong> - is a list of tuples of parameters for each prior distribution, respectivelydists</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
 </div>
 <a name="addData"></a>
 <div>
@@ -251,21 +348,19 @@ the melding replicates.</p>
     </td>
   </tr></table>
   
-  <p>Calculates the likelihood functions of the dataset presented and add to
+  Calculates the likelihood functions of the dataset presented and add to
 self.likelist
-Likelihood function is a vector of lenght l</p>
-<ul class="rst-simple">
-<li><code class="link">data</code>: vector containing observations on a given variable.</li>
-<li><a href="BIP.Bayes.Melding-module.html#model" class="link">model</a>: string with the name of the distribution of the variable</li>
-<li><code class="link">limits</code>: (ll,ul) tuple with lower and upper limits for the variable</li>
-<li><code class="link">l</code>: Length (resolution) of the likelihood vector</li>
-</ul>
+Likelihood function is a vector of lenght l
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - vector containing observations on a given variable.</li>
+        <li><strong class="pname"><code>model</code></strong> - string with the name of the distribution of the variable</li>
+        <li><strong class="pname"><code>limits</code></strong> - (ll,ul) tuple with lower and upper limits for the variable</li>
+        <li><strong class="pname"><code>l</code></strong> - Length (resolution) of the likelihood vector</li>
+    </ul></dd>
   </dl>
-<div class="fields">      <p><strong>Parameters:</strong>
-        &nbsp;
-      </p>
-</div></td></tr></table>
+</td></tr></table>
 </div>
 <a name="run"></a>
 <div>
@@ -274,17 +369,17 @@ Likelihood function is a vector of lenght l</p>
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">run</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">model</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">run</span>(<span class="sig-arg">self</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.run">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  Runs the models through the Melding inference.model
+  Runs the model through the Melding inference.model
 model is a callable which return the output of the deterministic model,
 i.e. the model itself.
+The model is run self.K times to obtain phi = M(theta).
   <dl class="fields">
   </dl>
 </td></tr></table>
@@ -316,7 +411,7 @@ i.e. the model itself.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Nov 26 17:13:25 2008
+    Generated by Epydoc 3.0.1 on Thu Nov 27 17:37:15 2008
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
