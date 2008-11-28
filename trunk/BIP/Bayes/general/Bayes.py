@@ -20,21 +20,25 @@ conjlist = [
     ]
 
 ## Factory functions for continuous and discrete variables 
-def Continuous(priortype,pars, range,resolution=512):
+def Continuous(priortype,pars, range,resolution=1024):
     return __BayesC(priortype,pars, range,resolution)
 
-def Discrete(priortype,pars, range,resolution=512):
+def Discrete(priortype,pars, range,resolution=1024):
     return __BayesD(priortype,pars, range,resolution)
 
 class _BayesVar(object):
     """
     Bayesian random variate.
     """
-    def __init__(self, disttype,pars, rang,resolution=512):
+    def __init__(self, disttype,pars, rang,resolution=1024):
         '''
         Initializes random variable.
-         * disttype must be a valid RNG from scipy.stats
-         * pars are the parameters of the distribution.
+
+        :parameters:
+            - `disttype`: must be a valid RNG from scipy.stats
+            - `pars`: are the parameters of the distribution.
+            - `rang`: range of the variable support.
+            - `resolution`: resolution of the support.
         '''
         self.distn = dist_type.name
         self._flavorize(disttype(*pars), disttype)
@@ -48,7 +52,7 @@ class _BayesVar(object):
 
     def _flavorize(self,pt, ptbase):
         '''
-        add methods from distribution type
+        Add methods from distribution type
         '''
         self.cdf = pt.cdf
         self.isf = pt.isf
@@ -83,6 +87,9 @@ class _BayesVar(object):
     def getPriorSample(self,n):
         '''
         Returns a sample from the prior distribution
+
+        :Parameters:
+            - `n`: Sample size.
         '''
         return self.rvs(size=n)
     
@@ -96,6 +103,9 @@ class _BayesVar(object):
         """
         Return a sample of the posterior distribution.
         Uses SIR algorithm.
+
+        :Parameters:
+            - `n`: Sample size.
         """
         if self.posterior.any():# Use last posterior as prior
             k= stats.kde.gausian_kde(self.posterior)
@@ -123,8 +133,11 @@ class _BayesVar(object):
         '''
         Defines parametric family  of the likelihood function.
         Returns likelihood function.
-        typ must be a string.
+
+        :Parameters:
+            - `typ`: must be a string.
         '''
+        #TODO: expand for more distribution types
         if typ == 'norm':
             return lambda(x):like.Normal(x[0],x[1],1./x[2])
         elif typ == 'expon':
