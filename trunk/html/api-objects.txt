@@ -6,9 +6,7 @@ BIP.Bayes.Melding.FiltM	BIP.Bayes.Melding-module.html#FiltM
 BIP.Bayes.Melding.Run	BIP.Bayes.Melding-module.html#Run
 BIP.Bayes.Melding.KDE	BIP.Bayes.Melding-module.html#KDE
 BIP.Bayes.Melding.main	BIP.Bayes.Melding-module.html#main
-BIP.Bayes.Melding.plotmat	BIP.Bayes.Melding-module.html#plotmat
 BIP.Bayes.Melding.main2	BIP.Bayes.Melding-module.html#main2
-BIP.Bayes.Melding.genprior	BIP.Bayes.Melding-module.html#genprior
 BIP.Bayes.Melding.Likeli	BIP.Bayes.Melding-module.html#Likeli
 BIP.Bayes.Melding.Filt	BIP.Bayes.Melding-module.html#Filt
 BIP.Bayes.Melding.model	BIP.Bayes.Melding-module.html#model

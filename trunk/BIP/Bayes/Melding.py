@@ -25,6 +25,9 @@ __docformat__ = "restructuredtext en"
 
 
 class Meld:
+    """
+    Bayesian Melding class
+    """
     def __init__(self,  K,  L, model, ntheta, nphi ):
         """
         Initializes the Melding class.
@@ -156,8 +159,8 @@ class Meld:
         """
         Updates the the posteriors of the model
         Returns two record arrays:
-            - The posteriors of the Theta
-            - the posterior of Phi
+        - The posteriors of the Theta
+        - the posterior of Phi
         """
         #random indices for the marginal posteriors of theta
         pti = [randint(0,len(self.post_theta[i]),self.L) for i in xrange(len(self.post_theta.dtype.names))]
@@ -224,7 +227,7 @@ def Run(k):
     
     return phi, q1theta
 
-def KDE(x, (ll, ul)=('','')):
+def KDE(x, (ll, ul)=('',''),res=1024.):
     """
     KDE(x)
     performs a kernel density estimate using the scipy gaussian density
@@ -234,7 +237,7 @@ def KDE(x, (ll, ul)=('','')):
     #r.assign("x", x)
     
     if ll :
-        rn=arange(ll,ul,(ul-ll)/1024.)
+        rn=arange(ll,ul,(ul-ll)/res)
         #print x.shape,rn.shape
         est = kde.gaussian_kde(x.ravel()).evaluate(rn)
         #r.assign("ll", ll)
@@ -243,7 +246,7 @@ def KDE(x, (ll, ul)=('','')):
     else:
         ll = min(x)
         ul = max(x)
-        rn=arange(ll,ul,(ul-ll)/1024.)
+        rn=arange(ll,ul,(ul-ll)/res)
         est = kde.gaussian_kde(x).evaluate(rn)
         #est = r('density(x)')
         print 'No - KDE'
@@ -349,7 +352,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         - `q1theta`: premodel dists of thetas (tuple);
         - `phi`: model output (tuple of vectors);
         - `L`: size of the resample.
-        - `Lik`: list of likelihoods available
+        - `lik`: list of likelihoods available
     """
 ##==On Uniform Priors we have to trim the density borders========================
 ##  The Density estimation with a gaussian kernel, extends beyond the limits of
@@ -385,9 +388,6 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 
     phi_filt = array(phi_filt)
 # TODO: check to see if thetas or phis get empty due to bad priors!!!!
-#    else: #Single compartment
-#        phi_filt = Filt(phi[0],phi[0],(ll,ul)) #remove out-of-bound phis
-#        q1theta_filt = Filt(phi[0],q1theta,(ll,ul)) #remove thetas that generate out-of-bound phis
 #-------------------------------------------------------------------------------
 
 #---Calculate Kernel Density of the filtered phis-----------------------------------------------------------------------
@@ -489,45 +489,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
     #print qtiltheta.shape
     return (w, qtiltheta, qtilphi, q1est)
 
-def plotmat(x, tit='title', b=50):
-    """
-    This funtion implements a simple 50 bin, normalized histogram using the matplotlib module.
-    """
-    P.hist(x,bins=b,normed=1)
-    P.ylabel(tit, fontsize=18)
 
-def genprior(type, params, shape=[]):
-    """
-    genprior(type, params, shape)
-    The function returns a vector or a matrix containinin a sample of the specified distribution with size given by shape.
-    """
-    seed()
-    distlist=['uniform', 'normal', 'exponential', 'beta', 'gamma', 'chi-square', 'F', 'binomial', 'neg-binomial', 'poisson', 'multinomial']
-    if type == 'uniform':
-        prior = uniform(params[0], params[1], shape)
-    elif type == 'normal':
-        prior = normal(params[0], params[1], shape)
-    elif type == 'exponential':
-        prior = exponential(params, shape)
-    elif type == 'beta':
-        prior = beta(params[0], params[1], shape)
-    elif type == 'gamma':
-        prior = gamma(params[0], params[1], shape)
-    elif type == 'chi-square':
-        prior = chi_square(params, shape)
-    elif type == 'F':
-        prior = F(params[0], params[1], shape)
-    elif type == 'binomial':
-        prior = binomial(params[0], params[1], shape)
-    elif type == 'neg-binomial':
-        prior = negative_binomial(params[0], params[1], shape)
-    elif type == 'poisson':
-        prior = poisson(params, shape)
-    elif type == 'multinomial':
-        prior = multinomial(params)
-    else:
-        print 'Invalid distribution type.'
-    return prior
 
 
 # TODO: Implement calculation of Bayes factors!
@@ -571,12 +533,15 @@ def main():
 #---Plotting with matplotlib----------------------------------------------------------------------------
     P.figure(1)
     P.subplot(411)
-    plotmat(post_theta[0], tit=r'$\pi^{[r]}(\theta)$')
+    P.hist(post_theta[0],bins=50)
+    P.ylabel(r'$\pi^{[r]}(\theta)$',fontsize=18)
     P.title('Posteriors and weight vector')
     P.subplot(412)
-    plotmat(post_theta[1], tit=r'$\pi^{[P_0]}(\theta)$')
+    P.hist(post_theta[1],bins=50)
+    P.ylabel(r'$\pi^{[P_0]}(\theta)$',fontsize=18)
     P.subplot(413)
-    plotmat(post_phi, tit=r'$\pi^{[P]}(\phi)$')
+    P.hist(post_phi,bins=50)
+    P.ylabel(r'$\pi^{[P]}(\phi)$',fontsize=18)
     ##plot(q1est['x'],qtilphi)
     ##ylabel(r'$P$', fontsize=12)
     P.subplot(414)
@@ -586,14 +551,18 @@ def main():
     
     P.figure(2)
     P.subplot(411)
-    plotmat(q1theta[0], tit=r'$\theta r$')
+    P.hist(q1theta[0],bins=50)
+    P.ylabel(r'$\theta r$',fontsize=18)
     P.title('Priors')
     P.subplot(412)
-    plotmat(phi, tit=r'$\phi$')
+    P.hist(phi,bins=50)
+    P.ylabel(r'$\phi$',fontsize=18)
     P.subplot(413)
-    plotmat(q1theta[1], tit=r'$\theta p_0$')
+    P.hist(q1theta[1],bins=50)
+    P.ylabel(r'$\theta p_0$',fontsize=18)
     P.subplot(414)
-    plotmat(q2phi, tit=r'$q_2 \phi$')
+    P.hist(q2phi,bins=50)
+    P.ylabel(r'$q_2 \phi$',fontsize=18)
     P.show()
 
 def main2():
@@ -605,13 +574,11 @@ def main2():
     Me.run()
     Me.sir()
     Me.getPosteriors()
-
     end = clock()
     print end-start, ' seconds'
     
 if __name__ == '__main__':
     from time import clock
-    
     main()
     main2()
      
