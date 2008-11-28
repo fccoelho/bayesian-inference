@@ -1,3 +1,4 @@
+import kde
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
@@ -87,9 +88,50 @@ class Meld:
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
         for n,d,p in zip(names,dists,pars):
-            self.q1theta[n] = lhs.lhs(d,p,self.K)
-            
+            self.q1theta[n] = lhs.lhs(d,p,self.K)            
         
+    def setThetaFromData(self,names,data):
+        """
+        Setup the model inputs and set the prior distributions from the vectors
+        in data.
+        This method is to be used when the prior distributions are available in 
+        the form of a sample from an empirical distribution such as a bayesian
+        posterior.
+        In order to expand the samples provided, K samples are generated from a
+        kernel density estimate of the original sample.
+        
+        :Parameters:
+            - `names`: list of string with the names of the parameters.
+            - `data`: list of vectors. Samples of a proposed distribution
+        """
+        self.q1theta.dtype.names = names
+        self.post_theta.dtype.names = names
+        for n,d in zip(names,data):
+            self.q1theta[n] = kde.gaussian_kde(d).resample(self.K)
+
+    def setPhiFromData(self,names,data,limits):
+        """
+        Setup the model outputs and set their prior distributions from the
+        vectors in data.
+        This method is to be used when the prior distributions are available in
+        the form of a sample from an empirical distribution such as a bayesian
+        posterior.
+        In order to expand the samples provided, K samples are generated from a
+        kernel density estimate of the original sample.
+
+        :Parameters:
+            - `names`: list of string with the names of the variables.
+            - `data`: list of vectors. Samples of the proposed distribution.
+            - `limits`: list of tuples (ll,ul),lower and upper limits on the support of variables.
+        """
+        self.q2phi.dtype.names = names
+        self.phi.dtype.names = names
+        self.post_phi.dtype.names = names
+        self.limits = limits
+        for n,d in zip(names,data):
+            self.q2phi[n] = kde.gaussian_kde(d).resample(self.K)
+            self.q2type.append('empirical')
+
     def addData(self, data, model, limits,l=1024, **kwargs):
         """
         Calculates the likelihood functions of the dataset presented and add to 
@@ -137,9 +179,10 @@ class Meld:
             lik = array(res)/max(array(res))    
         else:
             print 'Invalid distribution type. Valid distributions: normal,lognormal, exponential, bernoulli and poisson'
+        self.likelist.append(lik)
         return lik
         
-    def run(self,):
+    def run(self,*args):
         """
         Runs the model through the Melding inference.model
         model is a callable which return the output of the deterministic model,

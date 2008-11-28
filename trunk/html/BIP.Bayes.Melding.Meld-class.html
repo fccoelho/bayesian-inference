@@ -148,6 +148,47 @@ needed for the dists the melding replicates.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#setThetaFromData" class="summary-sig-name">setThetaFromData</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">names</span>,
+        <span class="summary-sig-arg">data</span>)</span><br />
+      Setup the model inputs and set the prior distributions from the vectors
+in data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setThetaFromData">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#setPhiFromData" class="summary-sig-name">setPhiFromData</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">names</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">limits</span>)</span><br />
+      Setup the model outputs and set their prior distributions from the
+vectors in data.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setPhiFromData">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#addData" class="summary-sig-name">addData</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>,
         <span class="summary-sig-arg">model</span>,
@@ -172,7 +213,8 @@ Likelihood function is a vector of lenght l</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#run" class="summary-sig-name">run</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#run" class="summary-sig-name">run</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
       Runs the model through the Melding inference.model
 model is a callable which return the output of the deterministic model,
 i.e.</td>
@@ -334,6 +376,72 @@ needed for the dists the melding replicates.
   </dl>
 </td></tr></table>
 </div>
+<a name="setThetaFromData"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setThetaFromData</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">names</span>,
+        <span class="sig-arg">data</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setThetaFromData">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Setup the model inputs and set the prior distributions from the vectors
+in data.
+This method is to be used when the prior distributions are available in
+the form of a sample from an empirical distribution such as a bayesian
+posterior.
+In order to expand the samples provided, K samples are generated from a
+kernel density estimate of the original sample.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the parameters.</li>
+        <li><strong class="pname"><code>data</code></strong> - list of vectors. Samples of a proposed distribution</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setPhiFromData"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setPhiFromData</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">names</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">limits</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setPhiFromData">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Setup the model outputs and set their prior distributions from the
+vectors in data.
+This method is to be used when the prior distributions are available in
+the form of a sample from an empirical distribution such as a bayesian
+posterior.
+In order to expand the samples provided, K samples are generated from a
+kernel density estimate of the original sample.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the variables.</li>
+        <li><strong class="pname"><code>data</code></strong> - list of vectors. Samples of the proposed distribution.</li>
+        <li><strong class="pname"><code>limits</code></strong> - list of tuples (ll,ul),lower and upper limits on the support of variables.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="addData"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -374,7 +482,8 @@ Likelihood function is a vector of lenght l
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">run</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">run</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.run">source&nbsp;code</a></span>&nbsp;
@@ -416,7 +525,7 @@ The model is run self.K times to obtain phi = M(theta).
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Nov 28 11:30:17 2008
+    Generated by Epydoc 3.0.1 on Fri Nov 28 17:26:30 2008
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

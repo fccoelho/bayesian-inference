@@ -2,7 +2,7 @@ import unittest
 from numpy import arange,  sqrt
 from numpy.random import lognormal
 from scipy import stats
-from Bayes.like import Normal, Lognormal, Poisson, Negbin, Binomial, Gamma, Weibull, Bernoulli, Beta, Categor
+from BIP.Bayes.like import Normal, Lognormal, Poisson, Negbin, Binomial, Gamma, Weibull, Bernoulli, Beta, Categor
 
 class TestCategor(unittest.TestCase):
     def test_categor(self):
