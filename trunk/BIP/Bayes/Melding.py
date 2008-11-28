@@ -155,16 +155,20 @@ class Meld:
     def getPosteriors(self):
         """
         Updates the the posteriors of the model
+        Returns two record arrays:
+            - The posteriors of the Theta
+            - the posterior of Phi
         """
         #random indices for the marginal posteriors of theta
         pti = [randint(0,len(self.post_theta[i]),self.L) for i in xrange(len(self.post_theta.dtype.names))]
-        post_phi = zeros((self.L,self.nphi),self.nphi,float) #initializing post_phi
+        post_phi = zeros((self.L,self.nphi),float) #initializing post_phi
         for i in xrange(self.L): #Monte Carlo with values of the posterior of Theta
-            post_phi[i,:] = model(*[self.post_theta[n][pti[j][i]] for j,n in enumerate(self.post_theta.names)])[-1]
+            post_phi[i,:] = model(*[self.post_theta[n][pti[j][i]] for j,n in enumerate(self.post_theta.dtype.names)])[-1]
 
         #handling the results
         for i,n in enumerate(self.post_phi.dtype.names):
             self.post_phi[n] = post_phi[:,i]
+        return self.post_theta, self.post_phi
 
     def sir(self):
         """
@@ -347,19 +351,14 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         - `L`: size of the resample.
         - `Lik`: list of likelihoods available
     """
-    
-    
 ##==On Uniform Priors we have to trim the density borders========================
 ##  The Density estimation with a gaussian kernel, extends beyond the limits of
 ##  an uniform distribution, due to this fact, we clip the ends of the kde
 ##  output in order to avoid artifacts.
 ##===============================================================================
     np = len(q1theta) # Number of parameters(theta) in the model
-#---for multicompartmental models-----------------------------------------------
-    no = None
-#    if len(phi)>1::
     no = len(phi) #Number of output variables
-    q2phi = array(q2phi)
+
     q2pd =[]
     for i in xrange(no):
         (ll,ul) = limits[i] # limits of q2phi[i]
@@ -368,59 +367,39 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         else:
             q2pd.append(KDE(q2phi[i]))
     q2phi = q2pd
-#---for single compartment models----------------------------------------------------------------------------   
-#    else:
-#        (ll,ul) = limits[0] # limits of q2phi for single compartment models
-#        if q2type == 'uniform':
-#            q2phi = KDE(q2phi, (ll,ul)) #calculating the kernel density
-#            print 'Ok'
-#        else:
-#            q2phi = KDE(q2phi)
-#            print 'No - SIR1'
-#-------------------------------------------------------------------------------
-        
 #---filtering out Out-of-boundary thetas and phis-------------------------------
-    if len(phi)>1: #Multicompartimental models
-        #phi = array(phi)# Convert list/tuple of vectors in array, where each vector becomes a line of the array.
-        phi_filt=[]
-        print "shape de q1theta[0]: ",q1theta[0].shape
-        q1theta2 = array(q1theta) #Temporary copy to allow multiple filtering
 
-        phi_filt = FiltM(phi,phi,limits) #filter Phis
-        #print type(phi_filt)
-        if not phi_filt.any():
-            print "Due to bad specification of the prior distributions or of the model\nthe inference can't continue. please verify that your priors include at least\npart of the range of the output variables."
-            return None
-        #Remove thetas that generate out-of-bound phis for every phi
-        q1theta_filt = FiltM(phi,q1theta2,limits)
-        print "shape de q1theta_filt (ln272): ",q1theta_filt.shape
-        q1theta2 = q1theta_filt
-            
-        phi_filt = array(phi_filt)
+    phi_filt=[]
+    print "shape de q1theta[0]: ",q1theta[0].shape
+    q1theta2 = array(q1theta) #Temporary copy to allow multiple filtering
+
+    phi_filt = FiltM(phi,phi,limits) #filter Phis
+    #print type(phi_filt)
+    if not phi_filt.any():
+        print "Due to bad specification of the prior distributions or of the model\nthe inference can't continue. please verify that your priors include at least\npart of the range of the output variables."
+        return None
+    #Remove thetas that generate out-of-bound phis for every phi
+    q1theta_filt = FiltM(phi,q1theta2,limits)
+    print "shape de q1theta_filt (ln272): ",q1theta_filt.shape
+    q1theta2 = q1theta_filt
+
+    phi_filt = array(phi_filt)
 # TODO: check to see if thetas or phis get empty due to bad priors!!!!
-    else: #Single compartment
-        phi_filt = Filt(phi[0],phi[0],(ll,ul)) #remove out-of-bound phis
-        q1theta_filt = Filt(phi[0],q1theta,(ll,ul)) #remove thetas that generate out-of-bound phis
+#    else: #Single compartment
+#        phi_filt = Filt(phi[0],phi[0],(ll,ul)) #remove out-of-bound phis
+#        q1theta_filt = Filt(phi[0],q1theta,(ll,ul)) #remove thetas that generate out-of-bound phis
 #-------------------------------------------------------------------------------
 
-#---Calculate Kernel Density of the filtered phis----------------------------------------------------------------------------
-    if no: #multicompartimental
-        q1ed = []
-        for i in xrange(no):
-            (ll,ul) = limits[i] # limits of q2phi[i]
-            if q2type[i] == 'uniform':
-                print sum(isinf(phi_filt))
-                q1ed.append(KDE(phi_filt[i],(ll,ul)))
-            else: 
-                q1ed.append(KDE(phi_filt[i]))
-        q1est = q1ed
-    else: #Single compartment
-        if q2type == 'uniform':
-            q1est = KDE(phi_filt,(ll,ul)) # Density of of model outputs restricted to the range determined by the Priors, so that we can pool q1est and q2phi.
-            print 'Ok'
+#---Calculate Kernel Density of the filtered phis-----------------------------------------------------------------------
+    q1ed = []
+    for i in xrange(no):
+        (ll,ul) = limits[i] # limits of q2phi[i]
+        if q2type[i] == 'uniform':
+            print sum(isinf(phi_filt))
+            q1ed.append(KDE(phi_filt[i],(ll,ul)))
         else:
-            q1est = KDE(phi_filt)
-            print 'No - SIR2'
+            q1ed.append(KDE(phi_filt[i]))
+    q1est = q1ed
 #-------------------------------------------------------------------------------
 
 ##==============================================================================
@@ -429,30 +408,20 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 ##The pooling is done by logarithmic pooling using alpha as a weighting factor.
 ##The higher the value of alpha the more wight is given to q1est.
 ##==============================================================================
-#---Calculating the pooled prior of Phi------------------------------------------
-    if no: #multicompartimental
-        qtilphi = []
-        for i in xrange(no):
-            qtilphi.append((array(q2phi[i]['y'])**(1-alpha))*(array(q1est[i]['y'])**alpha))
-        qtilphi = array(qtilphi)
-    else:  #Single compartment
-        qtilphi = (array(q2phi['y'])**(1-alpha))*(array(q1est['y'])**alpha) # Pooled prior of Phi
+#---Calculating the pooled prior of Phi-----------------------------------------
+    qtilphi = []
+    for i in xrange(no):
+        qtilphi.append((array(q2phi[i]['y'])**(1-alpha))*(array(q1est[i]['y'])**alpha))
+    qtilphi = array(qtilphi)
 #-------------------------------------------------------------------------------
-    
-    
 #---Calculating first term of the weigth expression-----------------------------
 # TODO: Consider having a different alpha for each phi
-    if no:#multicompartimental
-        denslist=[]
-        for i in xrange(no):
-            #pairwise pooling of the phis and q2phis
-            denslist.append((array(q2phi[i]['y'])/array(q1est[i]['y']))**(1-alpha)) 
-            
-        firstterm = product(denslist, axis=0)
-    else:#Single compartment
-        firstterm = (array(q2phi['y'])/array(q1est['y']))**(1-alpha)
-        
-        
+    denslist=[]
+    for i in xrange(no):
+        #pairwise pooling of the phis and q2phis
+        denslist.append((array(q2phi[i]['y'])/array(q1est[i]['y']))**(1-alpha))
+
+    firstterm = product(denslist, axis=0)
 #---Weights---------------------------------------------------------------------
         
     if not lik:
@@ -481,27 +450,19 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 ##  is: w[i] = w[phi_bin[i]] repeated for each element i.
 ##==============================================================================
     
-    if no:#multicompartimental
-        bin_bound = []
-        phi_bins = []
-        wi = []
-        for i in xrange(no):
-            (ll,ul) = limits[i] #limits of phi
-            step = (ul-ll)/1024.
-            bin_bound.append(arange(ll,ul,step)) # Bin boundaries of the weight vector
-            phi_bins.append(searchsorted(bin_bound[i], phi_filt[i])) # Return a vector of the bins for each phi
-        g = lambda x:w[x-1]   # searchsorted returns 1 as the index for the first bin, not 0
-        phi_bins = array(phi_bins)
-        for i in xrange(no):
-            wi.append(map(g,phi_bins[i]))
-        wi = mean(array(wi),axis=0) #ATTENTION: Should this be averaged?
-    else: #single compartment
-        (ll,ul) = limits
+    bin_bound = []
+    phi_bins = []
+    wi = []
+    for i in xrange(no):
+        (ll,ul) = limits[i] #limits of phi
         step = (ul-ll)/1024.
-        bin_bound = arange(ll,ul,step) # Bin boundaries of the weight vector
-        phi_bins = searchsorted(bin_bound, phi_filt) # Return a vector of the bins for each phi
-        g = lambda x:w[x-1]   # searchsorted returns 1 as the index for the first bin, not 0
-        wi = map(g,phi_bins.ravel())
+        bin_bound.append(arange(ll,ul,step)) # Bin boundaries of the weight vector
+        phi_bins.append(searchsorted(bin_bound[i], phi_filt[i])) # Return a vector of the bins for each phi
+    g = lambda x:w[x-1]   # searchsorted returns 1 as the index for the first bin, not 0
+    phi_bins = array(phi_bins)
+    for i in xrange(no):
+        wi.append(map(g,phi_bins[i]))
+    wi = mean(array(wi),axis=0) #ATTENTION: Should this be averaged?
 
 ##========Resampling q1theta=====================================================
 ##  Here, the filtered q1theta are resampled according to the weight vector.  
@@ -639,7 +600,7 @@ def main2():
     start = clock()
     Me = Meld(K=20000,L=2000,model=model, ntheta=2,nphi=1)
     Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
-    Me.setPhi(['p'],[stats.uniform],[(6,9)],(6,9))
+    Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
     Me.addData(normal(7.5,1,400),'normal',(6,9))
     Me.run()
     Me.sir()
