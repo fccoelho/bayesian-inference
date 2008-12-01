@@ -20,6 +20,10 @@ from scipy import stats
 from numpy import *
 from numpy.random import normal, randint,  random,  uniform
 import lhs
+if sys.version.startswith('2.5'):
+    from processing import Pool
+else:
+    from multiprocessing import Pool
 
 __docformat__ = "restructuredtext en"
 
@@ -188,10 +192,12 @@ class Meld:
         i.e. the model itself.
         The model is run self.K times to obtain phi = M(theta). 
         """
+        po = Pool()
         phi = empty((self.K,self.nphi))
         for i in xrange(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
-            phi[i,:]= self.model(*theta)[-1] #phi is the last point in the simulation
+            r = po.applyAsync(self.model, theta)
+            phi[i,:]= r.get()[-1]#self.model(*theta)[-1] #phi is the last point in the simulation
 
         for i,n in enumerate(self.phi.dtype.names):
             self.phi[n] = phi[:,i]
@@ -255,6 +261,7 @@ def Run(k):
     Draw k samples of Theta from its prior distribution, run the model with it 
     and obtain phi = M(theta). For testing purposes only.
     """
+    po = Pool()
 #---q1theta---------------------------------------------------------------------
 #---Priors for the theta (model parameters)--------------------
     r = lhs.lhs(stats.uniform, [2, 4], k)
@@ -262,9 +269,10 @@ def Run(k):
     q1theta = (r, p0)
 #-------------------------------------------------------------------------------
     phi=zeros(k, float)
-    print r.shape, p0.shape
+    #print r.shape, p0.shape
     for i in xrange(k):
-        phi[i] = model(r[i], p0[i])[-1] # Sets phi[i] to the last point of the simulation
+        re = po.applyAsync(model,(r[i], p0[i]))
+        phi[i] = re.get()[-1]#model(r[i], p0[i])[-1] # Sets phi[i] to the last point of the simulation
         
     
     return phi, q1theta
@@ -515,8 +523,9 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
     # A given value is going to be resampled if random() < wi
     # A column of q1theta_filt is extracted for each value in resamples
     q = [0]*L
-    wi = array(wi)
-    if max(wi) ==0:
+    wi = nan_to_num(array(wi))
+    print sum(wi)
+    if sum(wi) == 0:
         sys.exit('Resampling weights are all zero, please check your model or data.')
     j = 0
     while j < L: # Extract L samples from q1theta_filt
