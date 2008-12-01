@@ -1,4 +1,3 @@
-import kde
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
@@ -209,7 +208,7 @@ class Meld:
         pti = [randint(0,len(self.post_theta[i]),self.L) for i in xrange(len(self.post_theta.dtype.names))]
         post_phi = zeros((self.L,self.nphi),float) #initializing post_phi
         for i in xrange(self.L): #Monte Carlo with values of the posterior of Theta
-            post_phi[i,:] = model(*[self.post_theta[n][pti[j][i]] for j,n in enumerate(self.post_theta.dtype.names)])[-1]
+            post_phi[i,:] = self.model(*[self.post_theta[n][pti[j][i]] for j,n in enumerate(self.post_theta.dtype.names)])[-1]
 
         #handling the results
         for i,n in enumerate(self.post_phi.dtype.names):
