@@ -190,17 +190,14 @@ class Meld:
         Runs the model through the Melding inference.model
         model is a callable which return the output of the deterministic model,
         i.e. the model itself.
-        The model is run self.K times to obtain phi = M(theta). 
+        The model is run self.K times to obtain phi = M(theta).
         """
         po = Pool()
-        phi = empty((self.K,self.nphi))
         for i in xrange(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = po.applyAsync(self.model, theta)
-            phi[i,:]= r.get()[-1]#self.model(*theta)[-1] #phi is the last point in the simulation
+            self.phi[i,:]= r.get()[-1]#self.model(*theta)[-1] #phi is the last point in the simulation
 
-        for i,n in enumerate(self.phi.dtype.names):
-            self.phi[n] = phi[:,i]
         self.done_running = True
         
     def getPosteriors(self):
@@ -210,16 +207,70 @@ class Meld:
         - The posteriors of the Theta
         - the posterior of Phi
         """
+        if not self.done_running:
+            return
         #random indices for the marginal posteriors of theta
         pti = [randint(0,len(self.post_theta[i]),self.L) for i in xrange(len(self.post_theta.dtype.names))]
-        post_phi = zeros((self.L,self.nphi),float) #initializing post_phi
         for i in xrange(self.L): #Monte Carlo with values of the posterior of Theta
-            post_phi[i,:] = self.model(*[self.post_theta[n][pti[j][i]] for j,n in enumerate(self.post_theta.dtype.names)])[-1]
+            self.post_phi[i,:] = self.model(*[self.post_theta[n][pti[j][i]] for j,n in enumerate(self.post_theta.dtype.names)])[-1]
 
-        #handling the results
-        for i,n in enumerate(self.post_phi.dtype.names):
-            self.post_phi[n] = post_phi[:,i]
         return self.post_theta, self.post_phi
+
+    def basicfit(self,s1,s2):
+        '''
+        Calculates a basic fitness calculation between a model-
+        generated time series and a observed time series.
+
+        :Parameters:
+            - `s1`: model-generated time series. record array.
+            - `s2`: observed time series. dictionary with keys matching names of s1
+        '''
+        fit = 0
+        for k in s2.keys():
+            if not s2[k]:
+                continue #no observations for this variable
+            if len(s2[k]) < 3:
+                continue
+            fit  = stats.spearmanr(s1[k],s2[k])
+            if fit < 0:
+                fit = 0
+        return fit*fit #r-squared
+        
+    def abcRun(self,fitfun=None, data={}, t=1):
+        """
+        Runs the model for inference through Approximate Bayes Computation
+        techniques. The method should be used as an alternative to the sir.
+        
+        :Parameters:
+             - `fitfun`: Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit
+             - `t`: number of time steps to retain at the end of the of the model run for each state variable.
+             - `data`: dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.
+        """
+        if not fitfun:
+            fitfun = self.basicfit(s1, s2)
+        po = Pool()
+        phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+        for i in xrange(self.K):
+            theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
+            r = po.applyAsync(self.model, theta)
+            phi[i,:]= r.get()[-t:]# #phi is the last t points in the simulation
+#      
+#        calculate weights
+        w = [fitfun(phi[i],data) for i in xrange(phi.shape[0])]
+
+        # Resampling Thetas
+        w = nan_to_num(array(w))
+        if sum(wi) == 0:
+            sys.exit('Resampling weights are all zero, please check your model or data.')
+        j = 0
+        while j < L: # Extract L samples from q1theta_filt
+            i=randint(0,w.size)# Random position of wi and q1theta_filt
+            if random()<= w[i]:
+                self.post_theta=self.q1theta[i]# retain the sample according with resampling prob.
+                j+=1
+        
+
+        self.done_running = True
 
     def sir(self):
         """
@@ -433,7 +484,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         return None
     #Remove thetas that generate out-of-bound phis for every phi
     q1theta_filt = FiltM(phi,q1theta2,limits)
-    print "shape de q1theta_filt (ln272): ",q1theta_filt.shape
+#    print "shape de q1theta_filt (ln272): ",q1theta_filt.shape
     q1theta2 = q1theta_filt
 
     phi_filt = array(phi_filt)
@@ -445,7 +496,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
     for i in xrange(no):
         (ll,ul) = limits[i] # limits of q2phi[i]
         if q2type[i] == 'uniform':
-            print sum(isinf(phi_filt))
+#            print sum(isinf(phi_filt))
             q1ed.append(KDE(phi_filt[i],(ll,ul)))
         else:
             q1ed.append(KDE(phi_filt[i]))
@@ -471,7 +522,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         #pairwise pooling of the phis and q2phis
         denslist.append((array(q2phi[i]['y'])/array(q1est[i]['y']))**(1-alpha))
 
-    firstterm = product(denslist, axis=0)
+    firstterm = denslist#product(denslist, axis=0)
 #---Weights---------------------------------------------------------------------
         
     if not lik:
@@ -482,8 +533,8 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         else:
             #only one likelihood function
             prodlik = lik[0]
-        w = firstterm*prodlik
-         
+#        w = firstterm*prodlik
+        w = [i*prodlik for i in firstterm]
 #-------------------------------------------------------------------------------
 ##========Link weights with each phi[i]=========================================
 ##  The weight vector (w) to be used in the resampling of the thetas is calculated
@@ -508,7 +559,7 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
         step = (ul-ll)/1024.
         bin_bound.append(arange(ll,ul,step)) # Bin boundaries of the weight vector
         phi_bins.append(searchsorted(bin_bound[i], phi_filt[i])) # Return a vector of the bins for each phi
-    g = lambda x:w[x-1]   # searchsorted returns 1 as the index for the first bin, not 0
+    g = lambda x:w[i][x-1]   # searchsorted returns 1 as the index for the first bin, not 0
     phi_bins = array(phi_bins)
     for i in xrange(no):
         wi.append(map(g,phi_bins[i]))
@@ -539,7 +590,6 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
     qtiltheta = transpose(array(q)) 
     #print qtiltheta.shape
     return (w, qtiltheta, qtilphi, q1est)
-
 
 
 
