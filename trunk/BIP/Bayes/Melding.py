@@ -225,16 +225,19 @@ class Meld:
             - `s1`: model-generated time series. record array.
             - `s2`: observed time series. dictionary with keys matching names of s1
         '''
-        fit = 0
+        fit = []
         for k in s2.keys():
-            if not s2[k]:
+            if s2[k] == [] or (not s2[k].any()):
                 continue #no observations for this variable
             if len(s2[k]) < 3:
                 continue
-            fit  = stats.spearmanr(s1[k],s2[k])
-            if fit < 0:
-                fit = 0
-        return fit*fit #r-squared
+            f  = stats.spearmanr(s1[k],s2[k])
+            if f < 0:
+                fit.append(0.)
+            else:
+                fit.append(f)
+
+        return mean(fit)**2 #mean r-squared
         
     def abcRun(self,fitfun=None, data={}, t=1):
         """
@@ -247,26 +250,26 @@ class Meld:
              - `data`: dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.
         """
         if not fitfun:
-            fitfun = self.basicfit(s1, s2)
+            fitfun = self.basicfit
         po = Pool()
         phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         for i in xrange(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = po.applyAsync(self.model, theta)
-            phi[i,:]= r.get()[-t:]# #phi is the last t points in the simulation
+            phi[i,:]= [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
 #      
 #        calculate weights
         w = [fitfun(phi[i],data) for i in xrange(phi.shape[0])]
 
         # Resampling Thetas
         w = nan_to_num(array(w))
-        if sum(wi) == 0:
+        if sum(w) == 0:
             sys.exit('Resampling weights are all zero, please check your model or data.')
         j = 0
-        while j < L: # Extract L samples from q1theta_filt
+        while j < self.L: # Extract L samples from q1theta_filt
             i=randint(0,w.size)# Random position of wi and q1theta_filt
             if random()<= w[i]:
-                self.post_theta=self.q1theta[i]# retain the sample according with resampling prob.
+                self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
                 j+=1
         
 
