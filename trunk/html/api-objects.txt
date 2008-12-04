@@ -45,12 +45,13 @@ BIP.SMC	BIP.SMC-module.html
 BIP.SMC.condensation	BIP.SMC.condensation-module.html
 BIP.SMC.condensation.evaluate_gaussian	BIP.SMC.condensation-module.html#evaluate_gaussian
 BIP.Bayes.Melding.Meld	BIP.Bayes.Melding.Meld-class.html
-BIP.Bayes.Melding.Meld.abcRun	BIP.Bayes.Melding.Meld-class.html#abcRun
+BIP.Bayes.Melding.Meld.filtM	BIP.Bayes.Melding.Meld-class.html#filtM
 BIP.Bayes.Melding.Meld.run	BIP.Bayes.Melding.Meld-class.html#run
 BIP.Bayes.Melding.Meld.setPhi	BIP.Bayes.Melding.Meld-class.html#setPhi
 BIP.Bayes.Melding.Meld.setThetaFromData	BIP.Bayes.Melding.Meld-class.html#setThetaFromData
 BIP.Bayes.Melding.Meld.addData	BIP.Bayes.Melding.Meld-class.html#addData
 BIP.Bayes.Melding.Meld.sir	BIP.Bayes.Melding.Meld-class.html#sir
+BIP.Bayes.Melding.Meld.abcRun	BIP.Bayes.Melding.Meld-class.html#abcRun
 BIP.Bayes.Melding.Meld.setPhiFromData	BIP.Bayes.Melding.Meld-class.html#setPhiFromData
 BIP.Bayes.Melding.Meld.setTheta	BIP.Bayes.Melding.Meld-class.html#setTheta
 BIP.Bayes.Melding.Meld.basicfit	BIP.Bayes.Melding.Meld-class.html#basicfit

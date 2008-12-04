@@ -43,3 +43,5 @@ if __name__=='__main__':
     #savefig('lhs.png',dpi=400)
     show()
     
+#TODO: Add lhs from density, and lhs from sample
+#TODO: Add correlated multiple lhs sampling
