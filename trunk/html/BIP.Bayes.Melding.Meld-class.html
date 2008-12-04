@@ -233,13 +233,31 @@ i.e.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="getPosteriors"></a><span class="summary-sig-name">getPosteriors</span>(<span class="summary-sig-arg">self</span>)</span><br />
-      Updates the the posteriors of the model
-Returns two record arrays:
-- The posteriors of the Theta
-- the posterior of Phi</td>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#getPosteriors" class="summary-sig-name">getPosteriors</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Updates the the posteriors of the model for the last time step.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.getPosteriors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#filtM" class="summary-sig-name">filtM</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cond</span>,
+        <span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">limits</span>)</span><br />
+      Multiple condition filtering.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.filtM">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -539,6 +557,64 @@ The model is run self.K times to obtain phi = M(theta).
   </dl>
 </td></tr></table>
 </div>
+<a name="getPosteriors"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getPosteriors</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">t</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.getPosteriors">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Updates the the posteriors of the model for the last time step.
+Returns two record arrays:
+- The posteriors of the Theta
+- the posterior of Phi last t values of time-series. <code class="link">t</code> by <code class="link">nphi</code> array.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>t</code></strong> - length of the time-series to return as posterior.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="filtM"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">filtM</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cond</span>,
+        <span class="sig-arg">x</span>,
+        <span class="sig-arg">limits</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.filtM">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Multiple condition filtering.
+Remove values in x[i], if corresponding values in
+cond[i] are less than limits[i][0] or greater than
+limits[i][1].
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>cond</code></strong> - is an array of conditions.</li>
+        <li><strong class="pname"><code>limits</code></strong> - is a list of tuples (ll,ul) with length equal to number of lines in <code class="link">cond</code> and <code class="link">x</code>.</li>
+        <li><strong class="pname"><code>x</code></strong> - array to be filtered.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="basicfit"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -557,6 +633,7 @@ The model is run self.K times to obtain phi = M(theta).
   
   Calculates a basic fitness calculation between a model-
 generated time series and a observed time series.
+it uses a normalized RMS variation.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -622,7 +699,7 @@ techniques. The method should be used as an alternative to the sir.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Dec  3 16:38:10 2008
+    Generated by Epydoc 3.0.1 on Thu Dec  4 17:30:47 2008
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
