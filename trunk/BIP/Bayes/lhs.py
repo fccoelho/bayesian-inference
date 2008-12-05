@@ -25,6 +25,7 @@ def lhs(dist, parms, n=100):
     the specified distribution.
     '''
     perc = numpy.arange(0,1.,1./n)
+    numpy.random.shuffle(perc)
     smp = [stats.uniform(i,1./n).rvs()[0] for i in perc]
     v = dist(*parms).ppf(smp)
     return v
