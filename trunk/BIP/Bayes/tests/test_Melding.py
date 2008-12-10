@@ -20,7 +20,8 @@ class TestMeld(unittest.TestCase):
         assert False # TODO: implement your test here
 
     def test_object_initialization(self):
-        assert False # TODO: implement your test here
+        Me = Meld(K=1000,L=1000,model=lambda x:x, ntheta=4,nphi=5)
+        assert isinstance(Me, Meld)
 
     def test_run(self):
         assert False # TODO: implement your test here
