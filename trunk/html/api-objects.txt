@@ -46,6 +46,7 @@ BIP.SMC.condensation	BIP.SMC.condensation-module.html
 BIP.SMC.condensation.evaluate_gaussian	BIP.SMC.condensation-module.html#evaluate_gaussian
 BIP.Bayes.Melding.Meld	BIP.Bayes.Melding.Meld-class.html
 BIP.Bayes.Melding.Meld.filtM	BIP.Bayes.Melding.Meld-class.html#filtM
+BIP.Bayes.Melding.Meld.logPooling	BIP.Bayes.Melding.Meld-class.html#logPooling
 BIP.Bayes.Melding.Meld.run	BIP.Bayes.Melding.Meld-class.html#run
 BIP.Bayes.Melding.Meld.setPhi	BIP.Bayes.Melding.Meld-class.html#setPhi
 BIP.Bayes.Melding.Meld.setThetaFromData	BIP.Bayes.Melding.Meld-class.html#setThetaFromData
