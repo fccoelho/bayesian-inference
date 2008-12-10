@@ -282,14 +282,14 @@ class Meld:
         """
         
 #       Calculating the multivariate joint probability densities
-        print phi[phi.dtype.names[0]].shape
+        #print phi[phi.dtype.names[0]].shape
         phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
         q2dens = stats.gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
 #       Determining the pooled probabilities for each phi[i]
         qtilphi = zeros(self.K)
         for i in xrange(self.K):
-            print phi[i,-1]
-            qtilphi[i] = (phidens.evaluate(array(phi[i,-1]))**(1-self.alpha))*q2dens.evaluate(array(phi[i,-1]))**self.alpha
+#            print phi[i,-1]
+            qtilphi[i] = (phidens.evaluate(tuple(phi[i,-1]))**(1-self.alpha))*q2dens.evaluate(tuple(phi[i,-1]))**self.alpha
         return qtilphi/sum(qtilphi)
 
     def abcRun(self,fitfun=None, data={}, t=1):
