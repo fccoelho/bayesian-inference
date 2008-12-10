@@ -10,6 +10,7 @@
 # Copyright:   (c) 2003-2008 by the Author
 # Licence:     GPL
 #-----------------------------------------------------------------------------
+from numpy.core.records import recarray
 import psyco
 psyco.full()
 import sys
@@ -32,7 +33,7 @@ class Meld:
     """
     Bayesian Melding class
     """
-    def __init__(self,  K,  L, model, ntheta, nphi ):
+    def __init__(self,  K,  L, model, ntheta, nphi, alpha = 0.5 ):
         """
         Initializes the Melding class.
         
@@ -55,6 +56,7 @@ class Meld:
         self.post_phi = recarray(L,formats=['f8']*nphi) #Phi Posteriors (record array)
         self.ntheta = ntheta
         self.nphi = nphi
+        self.alpha = alpha #pooling weight of user-provided phi priors
         self.done_running = False
         self.po = Pool() #pool of processes for parallel processing
     
@@ -206,7 +208,7 @@ class Meld:
         Updates the the posteriors of the model for the last time step.
         Returns two record arrays:
         - The posteriors of the Theta
-        - the posterior of Phi last t values of time-series. `t` by `nphi` array.
+        - the posterior of Phi last t values of time-series. `t` by self.nphi array.
 
         :Parameters:
             - `t`: length of the time-series to return as posterior.
@@ -269,6 +271,27 @@ class Meld:
 
         return mean(fit) #mean r-squared
         
+
+    def logPooling(self,phi):
+        """
+        Returns the probability associated with each phi[i]
+        on the pooled pdf of phi and q2phi.
+
+        :Parameters:
+            - `phi`: prior of Phi induced by the model and q1theta.
+        """
+        
+#       Calculating the multivariate joint probability densities
+        print phi[phi.dtype.names[0]].shape
+        phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
+        q2dens = stats.gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
+#       Determining the pooled probabilities for each phi[i]
+        qtilphi = zeros(self.K)
+        for i in xrange(self.K):
+            print phi[i,-1]
+            qtilphi[i] = (phidens.evaluate(array(phi[i,-1]))**(1-self.alpha))*q2dens.evaluate(array(phi[i,-1]))**self.alpha
+        return qtilphi/sum(qtilphi)
+
     def abcRun(self,fitfun=None, data={}, t=1):
         """
         Runs the model for inference through Approximate Bayes Computation
@@ -281,18 +304,16 @@ class Meld:
         """
         if not fitfun:
             fitfun = self.basicfit
-
-#        Log-pooling===============
-        if len(self.post_phi.shape) > 1:
-            pass
-        else:
-            pass
-#        ==========================
+            
+#       Running the model ==========================
         phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         for i in xrange(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = self.po.applyAsync(self.model, theta)
             phi[i]= [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
+
+
+        qtilphi = self.logPooling(phi)
 #      
 #        calculate weights
         w = [fitfun(phi[i],data) for i in xrange(phi.shape[0])]
@@ -304,7 +325,7 @@ class Meld:
         j = 0
         while j < self.L: # Extract L samples from q1theta
             i=randint(0,w.size)# Random position of w and q1theta
-            if random()<= w[i]:
+            if random()<= w[i]*qtilphi[i]:
                 self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
                 j+=1
         
