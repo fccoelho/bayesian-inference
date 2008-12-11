@@ -17,7 +17,9 @@ BIP.Bayes.general.bvariables.Discrete	BIP.Bayes.general.bvariables-module.html#D
 BIP.Bayes.general.bvariables.conjlist	BIP.Bayes.general.bvariables-module.html#conjlist
 BIP.Bayes.general.bvariables.Continuous	BIP.Bayes.general.bvariables-module.html#Continuous
 BIP.Bayes.lhs	BIP.Bayes.lhs-module.html
+BIP.Bayes.lhs.lhsFromSample	BIP.Bayes.lhs-module.html#lhsFromSample
 BIP.Bayes.lhs.lhs	BIP.Bayes.lhs-module.html#lhs
+BIP.Bayes.lhs.lhsFromDensity	BIP.Bayes.lhs-module.html#lhsFromDensity
 BIP.Bayes.like	BIP.Bayes.like-module.html
 BIP.Bayes.like.Binomial	BIP.Bayes.like-module.html#Binomial
 BIP.Bayes.like.Lognormal	BIP.Bayes.like-module.html#Lognormal

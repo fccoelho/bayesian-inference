@@ -36,7 +36,7 @@ def lhs(dist, parms, siz=100):
     :Parameters:
         - `dist`: random number generator from scipy.stats module.
         - `parms`: tuple of parameters as required for dist.
-        - `size` :number or shape tuple for the output sample
+        - `siz` :number or shape tuple for the output sample
     '''
     if isinstance(siz,tuple):
         n=numpy.product(siz)
