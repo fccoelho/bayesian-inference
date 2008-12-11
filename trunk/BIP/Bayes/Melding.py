@@ -315,13 +315,15 @@ class Meld:
 
         print "==> Done Running the K replicates\n"
         qtilphi = self.logPooling(phi)
+        print max(qtilphi)
 #      
 #        calculate weights
         w = [fitfun(phi[i],data) for i in xrange(phi.shape[0])]
+        print max(w)
         P.plot(w*qtilphi)
         # Resampling Thetas
         w = nan_to_num(array(w))
-        if sum(nan_to_num(w[i]*qtilphi[i])) == 0.0:
+        if sum(nan_to_num(w*qtilphi)) == 0.0:
             sys.exit('Resampling weights are all zero, please check your model or data.')
         j = 0
         print sum(nan_to_num(w[i]*qtilphi[i]))
