@@ -1,4 +1,5 @@
 import unittest
+from BIP.Bayes import Melding
 
 class TestMeld(unittest.TestCase):
     def test_abcRun(self):
@@ -20,8 +21,8 @@ class TestMeld(unittest.TestCase):
         assert False # TODO: implement your test here
 
     def test_object_initialization(self):
-        Me = Meld(K=1000,L=1000,model=lambda x:x, ntheta=4,nphi=5)
-        assert isinstance(Me, Meld)
+        Me = Melding.Meld(K=1000,L=1000,model=lambda x:x, ntheta=4,nphi=5)
+        assert isinstance(Me, Melding.Meld)
 
     def test_run(self):
         assert False # TODO: implement your test here

@@ -16,18 +16,38 @@ from pylab import plot, figure,hist,show, savefig, legend
 import scipy.stats as stats
 import numpy
 
-def lhs(dist, parms, n=100):
+def lhsFromSample(sample):
+    pass
+    #TODO: implement
+
+def lhsFromDensity(kde):
+    pass
+    #TODO: implement
+
+
+def lhs(dist, parms, siz=100):
     '''
     Latin Hypercube sampling of any distrbution.
     dist is is a scipy.stats random number generator 
     such as stats.norm, stats.beta, etc
     parms is a tuple with the parameters needed for 
     the specified distribution.
+
+    :Parameters:
+        - `dist`: random number generator from scipy.stats module.
+        - `parms`: tuple of parameters as required for dist.
+        - `size` :number or shape tuple for the output sample
     '''
+    if isinstance(siz,tuple):
+        n=numpy.product(siz)
+    else:
+        n=siz
     perc = numpy.arange(0,1.,1./n)
     numpy.random.shuffle(perc)
     smp = [stats.uniform(i,1./n).rvs()[0] for i in perc]
     v = dist(*parms).ppf(smp)
+    if isinstance(siz,tuple):
+        v.shape = siz
     return v
             
 if __name__=='__main__':
@@ -44,5 +64,6 @@ if __name__=='__main__':
     #savefig('lhs.png',dpi=400)
     show()
     
-#TODO: Add lhs from density, and lhs from sample
+
 #TODO: Add correlated multiple lhs sampling
+#TODO: Allow lhs to return not only vectors, but any shape of array
