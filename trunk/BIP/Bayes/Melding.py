@@ -321,7 +321,7 @@ class Meld:
         P.plot(w*qtilphi)
         # Resampling Thetas
         w = nan_to_num(array(w))
-        if sum(w*qtilphi) == 0.0:
+        if sum(nan_to_num(w[i]*qtilphi[i])) == 0.0:
             sys.exit('Resampling weights are all zero, please check your model or data.')
         j = 0
         print sum(nan_to_num(w[i]*qtilphi[i]))
