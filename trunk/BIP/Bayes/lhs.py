@@ -22,6 +22,7 @@ def lhsFromSample(sample,siz=100):
 
     :Parameters:
         - `sample`: list, tuple of array
+        - `siz`: Number or shape tuple for the output sample
     """
     if not isinstance(dist, (list,tuple,numpy.ndarray)):
         raise TypeError('sample is not a list, tuple or numpy vector')
@@ -36,9 +37,23 @@ def lhsFromSample(sample,siz=100):
         v.shape = siz
     return v
 
-def lhsFromDensity(kde):
-    pass
-    #TODO: implement
+def lhsFromDensity(kde,siz=100):
+    '''
+    LHS sampling from a variables Kernel density estimate.
+
+    :Parameters:
+        - `kde`: scipy.stats.kde.gaussian_kde object
+        - `siz`: Number or shape tuple for the output sample
+    '''
+    if not isinstance(kde,scipy.stats.kde.gaussian_kde):
+        raise TypeError("kde is not a density object")
+    if isinstance(siz,(tuple,list)):
+        n=numpy.product(siz)
+    s = kde.resample(n)
+    v = lhsFromSample(s,n)
+    if isinstance(siz,(tuple,list)):
+        v.shape = siz
+    return v
 
 
 def lhs(dist, parms, siz=100):
