@@ -16,9 +16,25 @@ from pylab import plot, figure,hist,show, savefig, legend
 import scipy.stats as stats
 import numpy
 
-def lhsFromSample(sample):
-    pass
-    #TODO: implement
+def lhsFromSample(sample,siz=100):
+    """
+    Latin Hypercube Sample from a set of values
+
+    :Parameters:
+        - `sample`: list, tuple of array
+    """
+    if not isinstance(dist, (list,tuple,numpy.ndarray)):
+        raise TypeError('sample is not a list, tuple or numpy vector')
+    n = siz
+    if isinstance(siz,(tuple,list)):
+        n=numpy.product(siz)
+    perc = numpy.arange(0,100.,100./n)
+    numpy.random.shuffle(perc)
+    smp = [stats.uniform(i,100./n).rvs() for i in perc]
+    v = array([stats.scoreatpercentile(sample,p) for p in smp])
+    if isinstance(siz,(tuple,list)):
+        v.shape = siz
+    return v
 
 def lhsFromDensity(kde):
     pass
@@ -38,15 +54,18 @@ def lhs(dist, parms, siz=100):
         - `parms`: tuple of parameters as required for dist.
         - `siz` :number or shape tuple for the output sample
     '''
-    if isinstance(siz,tuple):
+    if not isinstance(dist, (stats.rv_discrete,stats.rv_continuous)):
+        raise TypeError('dist is not a scipy.stats distribution object')
+    n=siz
+    if isinstance(siz,(tuple,list)):
         n=numpy.product(siz)
-    else:
-        n=siz
+    
     perc = numpy.arange(0,1.,1./n)
     numpy.random.shuffle(perc)
-    smp = [stats.uniform(i,1./n).rvs()[0] for i in perc]
+    smp = [stats.uniform(i,1./n).rvs() for i in perc]
     v = dist(*parms).ppf(smp)
-    if isinstance(siz,tuple):
+    
+    if isinstance(siz,(tuple,list)):
         v.shape = siz
     return v
             
