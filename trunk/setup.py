@@ -15,12 +15,12 @@ from distutils.extension import Extension
 
 
 setup(name='BIP', 
-        version  = '0.3.1',
+        version  = '0.3.3',
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
         description = 'Bayesian Inference Tools for Python',
-        packages = ['BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests'],
+        packages = ['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests'],
         test_suite = 'nose.collector', 
         license = 'GPL',
 #        cmdclass = {'build_ext': build_ext},
