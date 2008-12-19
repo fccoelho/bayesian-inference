@@ -15,7 +15,7 @@ from distutils.extension import Extension
 
 
 setup(name='BIP', 
-        version  = '0.3.3',
+        version  = '0.3.4',
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
