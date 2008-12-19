@@ -13,7 +13,8 @@
 from numpy.core.records import recarray
 import psyco
 psyco.full()
-import sys
+import sys, os
+import cPickle as CP
 import like
 import pylab as P
 import scipy.stats.kde as kde
@@ -95,8 +96,11 @@ class Meld:
         """
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
-        for n,d,p in zip(names,dists,pars):
-            self.q1theta[n] = lhs.lhs(d,p,self.K)            
+        if os.path.exists('q1theta'):
+            self.q1theta = CP.load(open('q1theta','r'))
+        else:
+            for n,d,p in zip(names,dists,pars):
+                self.q1theta[n] = lhs.lhs(d,p,self.K)
         
     def setThetaFromData(self,names,data):
         """
@@ -114,8 +118,11 @@ class Meld:
         """
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
-        for n,d in zip(names,data):
-            self.q1theta[n] = kde.gaussian_kde(d).resample(self.K)
+        if os.path.exists('q1theta'):
+            self.q1theta = CP.load(open('q1theta','r'))
+        else:
+            for n,d in zip(names,data):
+                self.q1theta[n] = kde.gaussian_kde(d).resample(self.K)
 
     def setPhiFromData(self,names,data,limits):
         """
@@ -219,6 +226,7 @@ class Meld:
             return
         if t > 1:
             self.post_phi = recarray((self.L,t),formats=['f8']*self.nphi)
+            self.post_phi.dtype.names = self.phi.dtype.names
         #random indices for the marginal posteriors of theta
         
         #pti = randint(0,self.L,size=(self.ntheta,self.L))
@@ -229,6 +237,8 @@ class Meld:
                 self.post_phi[i] = r.get()[-1]
             else:
                 self.post_phi[i]= [tuple(l) for l in r.get()[-t:]]
+            if not i%100:
+                print "==> L = %s"%i
 
 
         return self.post_theta, self.post_phi
@@ -269,8 +279,8 @@ class Meld:
         for k in s2.keys():
             if s2[k] == [] or (not s2[k].any()):
                 continue #no observations for this variable
-            e = sqrt(mean((s1[k]-s2[k])**2.))/(max(s2[k])-min(s2[k]))
-            fit.append(1-min(e,1)) #min to guarantee error is bounded to (0,1)
+            e = sqrt(mean((s1[k]-s2[k])**2.))
+            fit.append(e) #min to guarantee error is bounded to (0,1)
 
         return mean(fit) #mean r-squared
         
@@ -295,7 +305,7 @@ class Meld:
             qtilphi[i] = (phidens.evaluate(tuple(phi[i,-1]))**(1-self.alpha))*q2dens.evaluate(tuple(phi[i,-1]))**self.alpha
         return qtilphi/sum(qtilphi)
 
-    def abcRun(self,fitfun=None, data={}, t=1):
+    def abcRun(self,fitfun=None, data={}, t=1,savetemp=False):
         """
         Runs the model for inference through Approximate Bayes Computation
         techniques. The method should be used as an alternative to the sir.
@@ -304,30 +314,55 @@ class Meld:
              - `fitfun`: Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit
              - `t`: number of time steps to retain at the end of the of the model run for each state variable.
              - `data`: dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.
+             - `savetemp`: Should temp results be saved. Useful for long runs. Alows for resuming the simulation from last sa
         """
         if not fitfun:
             fitfun = self.basicfit
-            
+        if savetemp:
+            CP.dump(self.q1theta,open('q1theta','w'))
 #       Running the model ==========================
-        phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
-        for i in xrange(self.K):
+        if os.path.exists('phi.temp'):
+            phi,j = CP.load(open('phi.temp','r'))
+        else:
+            j=0
+            phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+        for i in xrange(j,self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = self.po.applyAsync(self.model, theta)
             phi[i]= [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
+            if i%100 == 0:
+                print "==> K = %s"%i
+                if savetemp:
+                    CP.dump((phi,i),open('phi.temp','w'))
+        if savetemp:
+            os.unlink('phi.temp')
+            os.unlink('q1theta')
 
         print "==> Done Running the K replicates\n"
         qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
-        print max(qtilphi)
+        qtilphi = nan_to_num(qtilphi)
+        print 'max(qtilphi): ', max(qtilphi)
 #      
 #        calculate weights
         w = [fitfun(phi[i],data) for i in xrange(phi.shape[0])]
-        
+        w /=sum(w)
+        w = 1-w
+        print "w=",w, mean(w), var(w)
+        print
+        print 'qtilphi=',qtilphi
         # Resampling Thetas
-        w = nan_to_num(array(w)*qtilphi)
+        w = nan_to_num(w)
+        w = array(w)*qtilphi
         w /=sum(w)
         w = nan_to_num(w)
-        print max(w)
-        P.plot(w)
+        print 'max(w): ',max(w)
+        for n in phi.dtype.names:
+            P.plot(mean(phi[n],axis=0),label=n)
+        P.figure()
+        P.plot(w,label='w')
+        P.plot(qtilphi,label='qtilphi')
+        P.title('Resampling vector(w) and pooled prior on Phi')
+        P.legend()
         if sum(w) == 0.0:
             sys.exit('Resampling weights are all zero, please check your model or data.')
         j = 0
@@ -666,6 +701,18 @@ def SIR(alpha,q2phi,limits,q2type,q1theta, phi,L, lik=[]):
 ##==MAIN========================================================================
 #-------------------------------------------------------------------------------
 
+def plotRaHist(arr):
+    '''
+    Plots a record array
+    as a panel of histograms
+    '''
+    nv = len(arr.dtype.names)
+    fs = (ceil(sqrt(nv)),floor(sqrt(nv))+1) #figure size
+    P.figure()
+    for i,n in enumerate(arr.dtype.names):
+        P.subplot(nv/2+1,2,i+1)
+        P.hist(arr[n],bins=50, normed=1, label=n)
+        P.legend()
 
 def main():
     """
@@ -742,8 +789,11 @@ def main2():
     Me.addData(normal(7.5,1,400),'normal',(6,9))
     Me.run()
     Me.sir()
-    Me.getPosteriors()
+    pt,pp = Me.getPosteriors()
     end = time()
+    plotRaHist(pt)
+    plotRaHist(pp)
+    P.show()
     print end-start, ' seconds'
     
 if __name__ == '__main__':
