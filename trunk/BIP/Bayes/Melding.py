@@ -356,13 +356,13 @@ class Meld:
         w /=sum(w)
         w = nan_to_num(w)
         print 'max(w): ',max(w)
-        for n in phi.dtype.names:
-            P.plot(mean(phi[n],axis=0),label=n)
-        P.figure()
-        P.plot(w,label='w')
-        P.plot(qtilphi,label='qtilphi')
-        P.title('Resampling vector(w) and pooled prior on Phi')
-        P.legend()
+#        for n in phi.dtype.names:
+#            P.plot(mean(phi[n],axis=0),label=n)
+#        P.figure()
+#        P.plot(w,label='w')
+#        P.plot(qtilphi,label='qtilphi')
+#        P.title('Resampling vector(w) and pooled prior on Phi')
+#        P.legend()
         if sum(w) == 0.0:
             sys.exit('Resampling weights are all zero, please check your model or data.')
         j = 0
