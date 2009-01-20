@@ -394,6 +394,11 @@ class Meld:
         tau = 0.1
         lik = zeros(self.K)
         t0=time()
+        liklist = []
+        def likcb(lh):
+            liklist.append(lh)
+
+        po = Pool()
         for i in xrange(self.K):
             l=1
             for n in data.keys():
@@ -402,13 +407,14 @@ class Meld:
                 elif isinstance(data[n],numpy.ndarray) and (not data[n].any()):
                     continue #no observations for this variable
                 p = phi[n]
-#                po = Pool()
-#                ps = [po.applyAsync(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
-#                l = product([p.get() for p in ps])
-#                po.close()
-#                po.join()
-                l *= product([like.Normal(data[n][m], j, tau) for m,j in enumerate(p[i])])
+                
+                liklist=[po.applyAsync(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
+                l=product([p.get() for p in liklist])
+            
+#                l *= product([like.Normal(data[n][m], j, tau) for m,j in enumerate(p[i])])
             lik[i]=l
+        po.close()
+        po.join()
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
 #        Calculating the weights
         w = nan_to_num(qtilphi*lik)
