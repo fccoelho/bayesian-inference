@@ -21,6 +21,7 @@ import scipy.stats.kde as kde
 from scipy import stats
 import numpy
 from numpy import *
+from time import time
 from numpy.random import normal, randint,  random,  uniform 
 import lhs
 if sys.version.startswith('2.5'):
@@ -61,7 +62,7 @@ class Meld:
         self.nphi = nphi
         self.alpha = alpha #pooling weight of user-provided phi priors
         self.done_running = False
-        self.po = Pool() #pool of processes for parallel processing
+#        self.po = Pool() #pool of processes for parallel processing
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
         """
@@ -230,11 +231,11 @@ class Meld:
             self.post_phi = recarray((self.L,t),formats=['f8']*self.nphi)
             self.post_phi.dtype.names = self.phi.dtype.names
         #random indices for the marginal posteriors of theta
-        
+        po = Pool()
         #pti = randint(0,self.L,size=(self.ntheta,self.L))
         pti = lhs.lhs(stats.randint,(0,self.L),siz=(self.ntheta,self.L))
         for i in xrange(self.L):#Monte Carlo with values of the posterior of Theta
-            r = self.po.applyAsync(self.model,[self.post_theta[n][pti[j,i]] for j,n in enumerate(self.post_theta.dtype.names)] )
+            r = po.applyAsync(self.model,[self.post_theta[n][pti[j,i]] for j,n in enumerate(self.post_theta.dtype.names)] )
             if t == 1:
                 self.post_phi[i] = r.get()[-1]
             else:
@@ -242,7 +243,8 @@ class Meld:
             if not i%100:
                 print "==> L = %s"%i
 
-
+        po.close()
+        po.join()
         return self.post_theta, self.post_phi
 
     def filtM(self,cond,x,limits):
@@ -307,13 +309,10 @@ class Meld:
         qtilphi = (phidens.evaluate(lastp.T)**(1-self.alpha))*q2dens.evaluate(lastp.T)**self.alpha
         return qtilphi/sum(qtilphi)
 
-#    def pool(self,phi,i):
-#        return (phidens.evaluate(tuple(phi[i,-1]))**(1-self.alpha))*q2dens.evaluate(tuple(phi[i,-1]))**self.alpha
-
     def abcRun(self,fitfun=None, data={}, t=1,savetemp=False):
         """
         Runs the model for inference through Approximate Bayes Computation
-        techniques. The method should be used as an alternative to the sir.
+        techniques. This method should be used as an alternative to the sir.
         
         :Parameters:
              - `fitfun`: Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit
@@ -394,6 +393,7 @@ class Meld:
 #        Calculating the likelihood of each phi[i] considering the observed data
         tau = 0.1
         lik = zeros(self.K)
+        t0=time()
         for i in xrange(self.K):
             l=1
             for n in data.keys():
@@ -402,9 +402,14 @@ class Meld:
                 elif isinstance(data[n],numpy.ndarray) and (not data[n].any()):
                     continue #no observations for this variable
                 p = phi[n]
-                #print p[i]
+#                po = Pool()
+#                ps = [po.applyAsync(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
+#                l = product([p.get() for p in ps])
+#                po.close()
+#                po.join()
                 l *= product([like.Normal(data[n][m], j, tau) for m,j in enumerate(p[i])])
             lik[i]=l
+        print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
 #        Calculating the weights
         w = nan_to_num(qtilphi*lik)
         w = nan_to_num(w/sum(w))
@@ -418,7 +423,8 @@ class Meld:
                 self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
                 j+=1
         self.done_running = True
-         
+
+
     def runModel(self,savetemp,t=1):
         '''
         Handles running the model self.K times keeping a temporary savefile for 
@@ -430,18 +436,32 @@ class Meld:
         if savetemp:
             CP.dump(self.q1theta,open('q1theta','w'))
 #       Running the model ==========================
+        
+                
         if os.path.exists('phi.temp'):
             phi,j = CP.load(open('phi.temp','r'))
         else:
             j=0
             phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+        def cb(r):
+            '''
+            callback function for the asynchronous model runs
+            '''
+            if t == 1:
+                phi[r[1]] = (r[0][-1],)
+            else:
+                phi[r[1]] = [tuple(l) for l in r[0][-t:]]# #phi is the last t points in the simulation
+
+        po = Pool()
+        t0=time()
         for i in xrange(j,self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
-            r = self.po.applyAsync(self.model, theta)
-            if t == 1:
-                phi[i] = (r.get()[-1],)
-            else:
-                phi[i] = [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
+            r = po.applyAsync(enumRun,(self.model,theta,i),callback=cb)
+#            r = po.applyAsync(self.model,theta)
+#            if t == 1:
+#                phi[i] = (r.get()[-1],)
+#            else:
+#                phi[i] = [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
             if i%100 == 0 and self.verbose:
                 print "==> K = %s"%i
                 if savetemp:
@@ -449,14 +469,18 @@ class Meld:
         if savetemp: #If all replicates are done, clear temporary save files.
             os.unlink('phi.temp')
             os.unlink('q1theta')
-
-        print "==> Done Running the K replicates\n"
+        po.close()
+        po.join()
+        print "==> Done Running the K replicates (took %s seconds)\n"%(time()-t0)
+        t0 = time()
         qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
+        print "==> Done Running the Log Pooling (took %s seconds)\n"%(time()-t0)
         print qtilphi,'max(qtilphi): ', max(qtilphi)
         qtilphi = nan_to_num(qtilphi)
-        
-
         return qtilphi,phi
+def enumRun(model,theta,k):
+    res =model(*theta)
+    return (res,k)
 
 def model(r, p0, n=1):
     """
@@ -466,6 +490,7 @@ def model(r, p0, n=1):
     P0 is the initial population size. 
     Example model for testing purposes.
     """
+#    print "oi"
     Pt = zeros(n, float) # initialize the output vector
     P = p0
     for i in xrange(n):
@@ -848,7 +873,7 @@ def main():
 
 def main2():
     start = time()
-    Me = Meld(K=20000,L=2000,model=model, ntheta=2,nphi=1)
+    Me = Meld(K=10000,L=2000,model=model, ntheta=2,nphi=1,verbose=True)
     Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
     Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
     #Me.addData(normal(7.5,1,400),'normal',(6,9))
@@ -862,8 +887,7 @@ def main2():
     print end-start, ' seconds'
     
 if __name__ == '__main__':
-    from time import time
-    main()
+#    main()
     main2()
      
 
