@@ -230,16 +230,25 @@ class Meld:
         if t > 1:
             self.post_phi = recarray((self.L,t),formats=['f8']*self.nphi)
             self.post_phi.dtype.names = self.phi.dtype.names
-        #random indices for the marginal posteriors of theta
+        def cb(r):
+            '''
+            callback function for the asynchronous model runs
+            '''
+            if t == 1:
+                self.post_phi[r[1]] = r[0][-1]
+            else:
+                self.post_phi[r[1]]= [tuple(l) for l in r[0][-t:]]
         po = Pool()
-        #pti = randint(0,self.L,size=(self.ntheta,self.L))
+        #random indices for the marginal posteriors of theta
         pti = lhs.lhs(stats.randint,(0,self.L),siz=(self.ntheta,self.L))
         for i in xrange(self.L):#Monte Carlo with values of the posterior of Theta
-            r = po.applyAsync(self.model,[self.post_theta[n][pti[j,i]] for j,n in enumerate(self.post_theta.dtype.names)] )
-            if t == 1:
-                self.post_phi[i] = r.get()[-1]
-            else:
-                self.post_phi[i]= [tuple(l) for l in r.get()[-t:]]
+            theta = [self.post_theta[n][pti[j,i]] for j,n in enumerate(self.post_theta.dtype.names)]
+            po.applyAsync(enumRun, (self.model,theta,i), callback=cb)
+#            r = po.applyAsync(self.model,theta)
+#            if t == 1:
+#                self.post_phi[i] = r.get()[-1]
+#            else:
+#                self.post_phi[i]= [tuple(l) for l in r.get()[-t:]]
             if not i%100:
                 print "==> L = %s"%i
 
@@ -394,11 +403,7 @@ class Meld:
         tau = 0.1
         lik = zeros(self.K)
         t0=time()
-        liklist = []
-        def likcb(lh):
-            liklist.append(lh)
-
-        po = Pool()
+#        po = Pool()
         for i in xrange(self.K):
             l=1
             for n in data.keys():
@@ -408,13 +413,13 @@ class Meld:
                     continue #no observations for this variable
                 p = phi[n]
                 
-                liklist=[po.applyAsync(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
-                l=product([p.get() for p in liklist])
+#                liklist=[po.applyAsync(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
+#                l=product([p.get() for p in liklist])
             
-#                l *= product([like.Normal(data[n][m], j, tau) for m,j in enumerate(p[i])])
+                l *= product([like.Normal(data[n][m], j, tau) for m,j in enumerate(p[i])])
             lik[i]=l
-        po.close()
-        po.join()
+#        po.close()
+#        po.join()
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
 #        Calculating the weights
         w = nan_to_num(qtilphi*lik)
@@ -423,13 +428,14 @@ class Meld:
         if sum(w) == 0.0:
             sys.exit('Resampling weights are all zero, please check your model or data.')
         j = 0
+        t0 = time()
         while j < self.L: # Extract L samples from q1theta
             i=randint(0,w.size)# Random position of w and q1theta
             if random()<= w[i]:
                 self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
                 j+=1
         self.done_running = True
-
+        print "==> Done Resampling priors (took %s seconds)"%(time()-t0)
 
     def runModel(self,savetemp,t=1):
         '''
