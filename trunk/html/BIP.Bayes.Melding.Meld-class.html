@@ -89,7 +89,8 @@ Bayesian Melding class
         <span class="summary-sig-arg">model</span>,
         <span class="summary-sig-arg">ntheta</span>,
         <span class="summary-sig-arg">nphi</span>,
-        <span class="summary-sig-arg">alpha</span>=<span class="summary-sig-default">0.5</span>)</span><br />
+        <span class="summary-sig-arg">alpha</span>=<span class="summary-sig-default">0.5</span>,
+        <span class="summary-sig-arg">verbose</span>=<span class="summary-sig-default">False</span>)</span><br />
       Initializes the Melding class.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.__init__">source&nbsp;code</a></span>
@@ -314,7 +315,8 @@ on the pooled pdf of phi and q2phi.</td>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#abcRun" class="summary-sig-name">abcRun</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">fitfun</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">{}</span>,
-        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>)</span><br />
+        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">savetemp</span>=<span class="summary-sig-default">False</span>)</span><br />
       Runs the model for inference through Approximate Bayes Computation
 techniques.</td>
           <td align="right" valign="top">
@@ -332,10 +334,33 @@ techniques.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="sir"></a><span class="summary-sig-name">sir</span>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#sir" class="summary-sig-name">sir</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">{}</span>,
+        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">savetemp</span>=<span class="summary-sig-default">False</span>)</span><br />
       Run the model output through the Sampling-Importance-Resampling algorithm</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.sir">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#runModel" class="summary-sig-name">runModel</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">savetemp</span>,
+        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Handles running the model self.K times keeping a temporary savefile for
+resuming calculation in case of interruption.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.runModel">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -375,7 +400,8 @@ techniques.</td>
         <span class="sig-arg">model</span>,
         <span class="sig-arg">ntheta</span>,
         <span class="sig-arg">nphi</span>,
-        <span class="sig-arg">alpha</span>=<span class="sig-default">0.5</span>)</span>
+        <span class="sig-arg">alpha</span>=<span class="sig-default">0.5</span>,
+        <span class="sig-arg">verbose</span>=<span class="sig-default">False</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -699,7 +725,8 @@ on the pooled pdf of phi and q2phi.
   <h3 class="epydoc"><span class="sig"><span class="sig-name">abcRun</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">fitfun</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">data</span>=<span class="sig-default">{}</span>,
-        <span class="sig-arg">t</span>=<span class="sig-default">1</span>)</span>
+        <span class="sig-arg">t</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">savetemp</span>=<span class="sig-default">False</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.abcRun">source&nbsp;code</a></span>&nbsp;
@@ -707,13 +734,68 @@ on the pooled pdf of phi and q2phi.
   </tr></table>
   
   Runs the model for inference through Approximate Bayes Computation
-techniques. The method should be used as an alternative to the sir.
+techniques. This method should be used as an alternative to the sir.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>fitfun</code></strong> - Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit</li>
-        <li><strong class="pname"><code>t</code></strong> - number of time steps to retain at the end of the of the model run for each state variable.</li>
+        <li><strong class="pname"><code>t</code></strong> - number of time steps to retain at the end of the of the model run for fitting purposes.</li>
         <li><strong class="pname"><code>data</code></strong> - dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.</li>
+        <li><strong class="pname"><code>savetemp</code></strong> - Should temp results be saved. Useful for long runs. Alows for resuming the simulation from last sa</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="sir"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">sir</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>=<span class="sig-default">{}</span>,
+        <span class="sig-arg">t</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">savetemp</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.sir">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Run the model output through the Sampling-Importance-Resampling algorithm
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - observed time series on the model's output</li>
+        <li><strong class="pname"><code>t</code></strong> - length of the observed time series</li>
+        <li><strong class="pname"><code>savetemp</code></strong> - Boolean. create a temp file?</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="runModel"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">runModel</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">savetemp</span>,
+        <span class="sig-arg">t</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.runModel">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Handles running the model self.K times keeping a temporary savefile for
+resuming calculation in case of interruption.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>savetemp</code></strong> - Boolean. create a temp file?</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -745,7 +827,7 @@ techniques. The method should be used as an alternative to the sir.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Dec 16 17:01:30 2008
+    Generated by Epydoc 3.0.1 on Wed Jan 21 10:39:45 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

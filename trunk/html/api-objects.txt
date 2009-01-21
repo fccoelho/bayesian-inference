@@ -3,12 +3,14 @@ BIP.Bayes	BIP.Bayes-module.html
 BIP.Bayes.Melding	BIP.Bayes.Melding-module.html
 BIP.Bayes.Melding.SIR	BIP.Bayes.Melding-module.html#SIR
 BIP.Bayes.Melding.FiltM	BIP.Bayes.Melding-module.html#FiltM
-BIP.Bayes.Melding.Run	BIP.Bayes.Melding-module.html#Run
 BIP.Bayes.Melding.KDE	BIP.Bayes.Melding-module.html#KDE
+BIP.Bayes.Melding.enumRun	BIP.Bayes.Melding-module.html#enumRun
 BIP.Bayes.Melding.main	BIP.Bayes.Melding-module.html#main
 BIP.Bayes.Melding.main2	BIP.Bayes.Melding-module.html#main2
+BIP.Bayes.Melding.Run	BIP.Bayes.Melding-module.html#Run
 BIP.Bayes.Melding.Likeli	BIP.Bayes.Melding-module.html#Likeli
 BIP.Bayes.Melding.Filt	BIP.Bayes.Melding-module.html#Filt
+BIP.Bayes.Melding.plotRaHist	BIP.Bayes.Melding-module.html#plotRaHist
 BIP.Bayes.Melding.model	BIP.Bayes.Melding-module.html#model
 BIP.Bayes.conjugate	BIP.Bayes.conjugate-module.html
 BIP.Bayes.general	BIP.Bayes.general-module.html
@@ -50,6 +52,7 @@ BIP.Bayes.Melding.Meld	BIP.Bayes.Melding.Meld-class.html
 BIP.Bayes.Melding.Meld.filtM	BIP.Bayes.Melding.Meld-class.html#filtM
 BIP.Bayes.Melding.Meld.logPooling	BIP.Bayes.Melding.Meld-class.html#logPooling
 BIP.Bayes.Melding.Meld.run	BIP.Bayes.Melding.Meld-class.html#run
+BIP.Bayes.Melding.Meld.runModel	BIP.Bayes.Melding.Meld-class.html#runModel
 BIP.Bayes.Melding.Meld.setPhi	BIP.Bayes.Melding.Meld-class.html#setPhi
 BIP.Bayes.Melding.Meld.setThetaFromData	BIP.Bayes.Melding.Meld-class.html#setThetaFromData
 BIP.Bayes.Melding.Meld.addData	BIP.Bayes.Melding.Meld-class.html#addData
