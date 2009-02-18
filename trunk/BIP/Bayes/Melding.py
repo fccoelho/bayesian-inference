@@ -249,7 +249,7 @@ class Meld:
 #                self.post_phi[i] = r.get()[-1]
 #            else:
 #                self.post_phi[i]= [tuple(l) for l in r.get()[-t:]]
-            if not i%100:
+            if i%100 == 0 and self.verbose:
                 print "==> L = %s"%i
 
         po.close()
@@ -308,7 +308,6 @@ class Meld:
         """
         
 #       Estimating the multivariate joint probability densities
-        #print phi[phi.dtype.names[0]].shape
         phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
         q2dens = stats.gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
 #       Determining the pooled probabilities for each phi[i]
@@ -390,7 +389,8 @@ class Meld:
 
     def sir(self, data={}, t=1,savetemp=False):
         """
-        Run the model output through the Sampling-Importance-Resampling algorithm
+        Run the model output through the Sampling-Importance-Resampling algorithm.
+        Returns 1 if successful or 0 if not.
 
         :Parameters:
             - `data`: observed time series on the model's output
@@ -398,7 +398,9 @@ class Meld:
             - `savetemp`: Boolean. create a temp file?
         """
         qtilphi,phi = self.runModel(savetemp,t)
-
+        if sum(nan_to_num(qtilphi))==0:
+            print 'Pooled prior on ouputs is null, please check your priors, and try again.'
+            return 0
 #        Calculating the likelihood of each phi[i] considering the observed data
         tau = 0.1
         lik = zeros(self.K)
@@ -425,17 +427,20 @@ class Meld:
         w = nan_to_num(qtilphi*lik)
         w = nan_to_num(w/sum(w))
 
-        if sum(w) == 0.0:
-            sys.exit('Resampling weights are all zero, please check your model or data.')
-        j = 0
-        t0 = time()
-        while j < self.L: # Extract L samples from q1theta
-            i=randint(0,w.size)# Random position of w and q1theta
-            if random()<= w[i]:
-                self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
-                j+=1
-        self.done_running = True
-        print "==> Done Resampling priors (took %s seconds)"%(time()-t0)
+        if not sum(w) == 0.0:
+            j = 0
+            t0 = time()
+            while j < self.L: # Extract L samples from q1theta
+                i=randint(0,w.size)# Random position of w and q1theta
+                if random()<= w[i]:
+                    self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
+                    j+=1
+            self.done_running = True
+            print "==> Done Resampling priors (took %s seconds)"%(time()-t0)
+        else:
+            print 'Resampling weights are all zero, please check your model or data, and try again.'
+            return 0
+        return 1
 
     def runModel(self,savetemp,t=1):
         '''
