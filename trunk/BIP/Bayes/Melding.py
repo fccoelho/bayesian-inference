@@ -492,8 +492,8 @@ class Meld:
         t0 = time()
         qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
         print "==> Done Running the Log Pooling (took %s seconds)\n"%(time()-t0)
-        print qtilphi,'max(qtilphi): ', max(qtilphi)
         qtilphi = nan_to_num(qtilphi)
+        print 'max(qtilphi): ', max(qtilphi)
         return qtilphi,phi
 def enumRun(model,theta,k):
     res =model(*theta)
