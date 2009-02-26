@@ -1,8 +1,9 @@
 __author__="fccoelho"
 __date__ ="$26/02/2009 10:44:29$"
-
+__docformat__ = "restructuredtext en"
 import Gnuplot
-from numpy import histogram
+import numpy
+
 
 class RTplot:
     '''
@@ -10,20 +11,25 @@ class RTplot:
     '''
     def __init__(self):
         self.gp = Gnuplot.Gnuplot(persist = 1)
-    def plotlines(self,data,names=[]):
+    def plotlines(self,data,names=[],points=False):
         '''
         Create a sinlge/multiple line plot from a numpy array or record array.
         :Parameters:
             - `data`: must be a numpy array or record array, with series as rows
             - `names`: is a list of strings to serve as legend labels
         '''
-        self.gp('set data style lines')
+        if points:
+            self.gp('set data style points')
+        else:
+            self.gp('set data style lines')
         if isinstance(data,numpy.core.records.recarray):
             return self._linesFromRA(data)
         if len(data.shape) > 1 and len(data.shape) <= 2:
             plots = []
-            for n,row in enumerate(data):
-                plots.append(Gnuplot.PlotItems.Data(enumerate(row),title=names[n]))
+            i = 0
+            for row in data:
+                plots.append(Gnuplot.PlotItems.Data(row,title=names[i]))
+                i += 1
             self.gp.plot(*tuple(plots))
         elif len(data.shape) >2:
                 pass
@@ -39,7 +45,7 @@ class RTplot:
             if len(data.shape) > 1 and len(data.shape) <= 2:
                 i = 0
                 for row in data[n]:
-                    plots.append(Gnuplot.PlotItems.Data(data[n],title=n+':%s'%i))
+                    plots.append(Gnuplot.PlotItems.Data(row,title=n+':%s'%i))
                     i += 1
             elif len(data.shape) >2:
                 pass
@@ -61,14 +67,14 @@ class RTplot:
         if len(data.shape) > 1 and len(data.shape) <= 2:
             plots = []
             for n,row in enumerate(data):
-                m,bins = histogram(row,normed=True,bins=50,new=True)
+                m,bins = numpy.histogram(row,normed=True,bins=50,new=True)
                 d = zip(bins[:-1],m)
                 plots.append(Gnuplot.PlotItems.Data(d,title=names[n]))
             self.gp.plot(*tuple(plots))
         elif len(data.shape) >2:
             pass
         else:
-            m,bins = histogram(data,normed=True,bins=50,new=True)
+            m,bins = numpy.histogram(data,normed=True,bins=50,new=True)
             d = zip(bins[:-1],m)
             self.gp.plot(Gnuplot.PlotItems.Data(d,title=names[0]))
 
@@ -81,14 +87,14 @@ class RTplot:
             if len(data.shape) > 1 and len(data.shape) <= 2:
                 i = 0
                 for row in data[n]:
-                    m,bins = histogram(row,normed=True,bins=50,new=True)
+                    m,bins = numpy.histogram(row,normed=True,bins=50,new=True)
                     d = zip(bins[:-1],m)
                     plots.append(Gnuplot.PlotItems.Data(d,title=n+':%s'%i))
                     i += 1
             elif len(data.shape) > 2:
                 pass
             else:
-                m,bins = histogram(data[n],normed=True,bins=50,new=True)
+                m,bins = numpy.histogram(data[n],normed=True,bins=50,new=True)
                 d = zip(bins[:-1],m)
                 plots.append(Gnuplot.PlotItems.Data(d,title=n))
         self.gp.plot(*tuple(plots))

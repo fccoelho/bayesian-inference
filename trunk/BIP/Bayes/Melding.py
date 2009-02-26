@@ -11,8 +11,8 @@
 # Licence:     GPL
 #-----------------------------------------------------------------------------
 from numpy.core.records import recarray
-import psyco
-psyco.full()
+#import psyco
+#psyco.full()
 import sys, os
 import cPickle as CP
 import like
@@ -312,9 +312,10 @@ class Meld:
         try:
             phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
         except:
-            print n
-            h = RTplot()
-            h.plothist(phi)
+            for n in phi.dtype.names:
+                print '%s==>'%n,phi[n].min(),phi[n].mean(),phi[n].max()
+            #P.rec2csv(phi,'phiproblematic.csv')
+        
 
         q2dens = stats.gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
 #       Determining the pooled probabilities for each phi[i]
