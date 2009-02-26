@@ -1,2 +1,1 @@
-BIP/SDE/gillespie
 BIP
