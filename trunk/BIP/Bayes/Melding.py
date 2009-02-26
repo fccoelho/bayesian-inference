@@ -22,7 +22,8 @@ from scipy import stats
 import numpy
 from numpy import *
 from time import time
-from numpy.random import normal, randint,  random,  uniform 
+from numpy.random import normal, randint,  random
+from BIP.Viz.realtime import RTplot
 import lhs
 if sys.version.startswith('2.5'):
     from processing import Pool
@@ -308,7 +309,13 @@ class Meld:
         """
         
 #       Estimating the multivariate joint probability densities
-        phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
+        try:
+            phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
+        except:
+            print n
+            h = RTplot()
+            h.plothist(phi)
+
         q2dens = stats.gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
 #       Determining the pooled probabilities for each phi[i]
 #        qtilphi = zeros(self.K)
@@ -397,8 +404,14 @@ class Meld:
             - `t`: length of the observed time series
             - `savetemp`: Boolean. create a temp file?
         """
-        qtilphi,phi = self.runModel(savetemp,t)
-        if sum(nan_to_num(qtilphi))==0:
+        phi = self.runModel(savetemp,t)
+        # Do Log Pooling
+        t0 = time()
+        qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
+        print "==> Done Running the Log Pooling (took %s seconds)\n"%(time()-t0)
+        qtilphi = nan_to_num(qtilphi)
+        print 'max(qtilphi): ', max(qtilphi)
+        if sum(qtilphi)==0:
             print 'Pooled prior on ouputs is null, please check your priors, and try again.'
             return 0
 #        Calculating the likelihood of each phi[i] considering the observed data
@@ -489,12 +502,8 @@ class Meld:
         po.close()
         po.join()
         print "==> Done Running the K replicates (took %s seconds)\n"%(time()-t0)
-        t0 = time()
-        qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
-        print "==> Done Running the Log Pooling (took %s seconds)\n"%(time()-t0)
-        qtilphi = nan_to_num(qtilphi)
-        print 'max(qtilphi): ', max(qtilphi)
-        return qtilphi,phi
+        
+        return phi
 def enumRun(model,theta,k):
     res =model(*theta)
     return (res,k)
