@@ -23,7 +23,7 @@ import numpy
 from numpy import *
 from time import time
 from numpy.random import normal, randint,  random
-from BIP.Viz.realtime import RTplot
+#from BIP.Viz.realtime import RTplot
 import lhs
 if sys.version.startswith('2.5'):
     from processing import Pool
@@ -218,13 +218,13 @@ class Meld:
         
     def getPosteriors(self,t=1):
         """
-        Updates the the posteriors of the model for the last time step.
+        Updates the posteriors of the model's output for the last t time steps.
         Returns two record arrays:
         - The posteriors of the Theta
         - the posterior of Phi last t values of time-series. self.L by `t` arrays.
 
         :Parameters:
-            - `t`: length of the time-series to return as posterior.
+            - `t`: length of the posterior time-series to return.
         """
         if not self.done_running:
             return
@@ -309,13 +309,7 @@ class Meld:
         """
         
 #       Estimating the multivariate joint probability densities
-        try:
-            phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
-        except:
-            for n in phi.dtype.names:
-                print '%s==>'%n,phi[n].min(),phi[n].mean(),phi[n].max()
-            #P.rec2csv(phi,'phiproblematic.csv')
-        
+        phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
 
         q2dens = stats.gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
 #       Determining the pooled probabilities for each phi[i]
@@ -395,7 +389,7 @@ class Meld:
 
         self.done_running = True
 
-    def sir(self, data={}, t=1,savetemp=False):
+    def sir(self, data={}, t=1,tau=0.1,savetemp=False):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
         Returns 1 if successful or 0 if not.
@@ -403,6 +397,7 @@ class Meld:
         :Parameters:
             - `data`: observed time series on the model's output
             - `t`: length of the observed time series
+            - `tau`: Precision of the Normal likelihood function
             - `savetemp`: Boolean. create a temp file?
         """
         phi = self.runModel(savetemp,t)
@@ -416,7 +411,7 @@ class Meld:
             print 'Pooled prior on ouputs is null, please check your priors, and try again.'
             return 0
 #        Calculating the likelihood of each phi[i] considering the observed data
-        tau = 0.1
+        
         lik = zeros(self.K)
         t0=time()
 #        po = Pool()
@@ -432,7 +427,7 @@ class Meld:
 #                liklist=[po.applyAsync(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
 #                l=product([p.get() for p in liklist])
             
-                l *= product([like.Normal(data[n][m], j, tau) for m,j in enumerate(p[i])])
+                l *= product([exp(like.Normal(data[n][m], j,tau)) for m,j in enumerate(p[i])])
             lik[i]=l
 #        po.close()
 #        po.join()
@@ -452,7 +447,8 @@ class Meld:
             self.done_running = True
             print "==> Done Resampling priors (took %s seconds)"%(time()-t0)
         else:
-            print 'Resampling weights are all zero, please check your model or data, and try again.'
+            print 'Resampling weights are all zero, please check your model or data, and try again.\n'
+            print '==> Likelihood (min,mean,max): ',min(lik),mean(lik),max(lik)
             return 0
         return 1
 
