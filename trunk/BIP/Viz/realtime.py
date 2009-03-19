@@ -22,6 +22,7 @@ class RTplot:
     def plotlines(self,data,names=[],title='',style='lines'):
         '''
         Create a sinlge/multiple line plot from a numpy array or record array.
+        
         :Parameters:
             - `data`: must be a numpy array or record array, with series as rows
             - `names`: is a list of strings to serve as legend labels
@@ -62,6 +63,7 @@ class RTplot:
     def plothist(self,data, title='', names=[]):
         '''
         Create a sinlge/multiple Histogram plot from a numpy array or record array.
+        
         :Parameters:
             - `data`: must be a numpy array or record array, with series as rows
             - `names`: is a list of strings to serve as legend labels
@@ -105,4 +107,4 @@ class RTplot:
         self.gp.plot(*tuple(plots))
 
 if __name__ == "__main__":
-    print "Hello";
+    pass

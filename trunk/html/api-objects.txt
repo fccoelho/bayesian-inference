@@ -3,11 +3,11 @@ BIP.Bayes	BIP.Bayes-module.html
 BIP.Bayes.Melding	BIP.Bayes.Melding-module.html
 BIP.Bayes.Melding.SIR	BIP.Bayes.Melding-module.html#SIR
 BIP.Bayes.Melding.FiltM	BIP.Bayes.Melding-module.html#FiltM
+BIP.Bayes.Melding.Run	BIP.Bayes.Melding-module.html#Run
 BIP.Bayes.Melding.KDE	BIP.Bayes.Melding-module.html#KDE
 BIP.Bayes.Melding.enumRun	BIP.Bayes.Melding-module.html#enumRun
 BIP.Bayes.Melding.main	BIP.Bayes.Melding-module.html#main
 BIP.Bayes.Melding.main2	BIP.Bayes.Melding-module.html#main2
-BIP.Bayes.Melding.Run	BIP.Bayes.Melding-module.html#Run
 BIP.Bayes.Melding.Likeli	BIP.Bayes.Melding-module.html#Likeli
 BIP.Bayes.Melding.Filt	BIP.Bayes.Melding-module.html#Filt
 BIP.Bayes.Melding.plotRaHist	BIP.Bayes.Melding-module.html#plotRaHist
@@ -48,6 +48,8 @@ BIP.SDE.gillespie.main	BIP.SDE.gillespie-module.html#main
 BIP.SMC	BIP.SMC-module.html
 BIP.SMC.condensation	BIP.SMC.condensation-module.html
 BIP.SMC.condensation.evaluate_gaussian	BIP.SMC.condensation-module.html#evaluate_gaussian
+BIP.Viz	BIP.Viz-module.html
+BIP.Viz.realtime	BIP.Viz.realtime-module.html
 BIP.Bayes.Melding.Meld	BIP.Bayes.Melding.Meld-class.html
 BIP.Bayes.Melding.Meld.filtM	BIP.Bayes.Melding.Meld-class.html#filtM
 BIP.Bayes.Melding.Meld.logPooling	BIP.Bayes.Melding.Meld-class.html#logPooling
@@ -118,3 +120,10 @@ BIP.SMC.condensation.Model.iterate	BIP.SMC.condensation.Model-class.html#iterate
 BIP.SMC.condensation.Model.display	BIP.SMC.condensation.Model-class.html#display
 BIP.SMC.condensation.Model.__init__	BIP.SMC.condensation.Model-class.html#__init__
 BIP.SMC.condensation.Model.setupPriorConditions	BIP.SMC.condensation.Model-class.html#setupPriorConditions
+BIP.Viz.realtime.RTplot	BIP.Viz.realtime.RTplot-class.html
+BIP.Viz.realtime.RTplot.plothist	BIP.Viz.realtime.RTplot-class.html#plothist
+BIP.Viz.realtime.RTplot.plotlines	BIP.Viz.realtime.RTplot-class.html#plotlines
+BIP.Viz.realtime.RTplot._linesFromRA	BIP.Viz.realtime.RTplot-class.html#_linesFromRA
+BIP.Viz.realtime.RTplot.clearFig	BIP.Viz.realtime.RTplot-class.html#clearFig
+BIP.Viz.realtime.RTplot.__init__	BIP.Viz.realtime.RTplot-class.html#__init__
+BIP.Viz.realtime.RTplot._histFromRA	BIP.Viz.realtime.RTplot-class.html#_histFromRA
