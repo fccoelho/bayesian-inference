@@ -152,7 +152,8 @@ needed for the dists the melding replicates.</td>
         <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#setThetaFromData" class="summary-sig-name">setThetaFromData</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">names</span>,
-        <span class="summary-sig-arg">data</span>)</span><br />
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">limits</span>)</span><br />
       Setup the model inputs and set the prior distributions from the vectors
 in data.</td>
           <td align="right" valign="top">
@@ -237,7 +238,7 @@ i.e.</td>
         <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#getPosteriors" class="summary-sig-name">getPosteriors</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>)</span><br />
-      Updates the the posteriors of the model for the last time step.</td>
+      Updates the posteriors of the model's output for the last t time steps.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.getPosteriors">source&nbsp;code</a></span>
             
@@ -337,8 +338,10 @@ techniques.</td>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#sir" class="summary-sig-name">sir</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">{}</span>,
         <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">tau</span>=<span class="summary-sig-default">0.1</span>,
+        <span class="summary-sig-arg">nopool</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">savetemp</span>=<span class="summary-sig-default">False</span>)</span><br />
-      Run the model output through the Sampling-Importance-Resampling algorithm</td>
+      Run the model output through the Sampling-Importance-Resampling algorithm.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.sir">source&nbsp;code</a></span>
             
@@ -491,7 +494,8 @@ needed for the dists the melding replicates.
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">setThetaFromData</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">names</span>,
-        <span class="sig-arg">data</span>)</span>
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">limits</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.setThetaFromData">source&nbsp;code</a></span>&nbsp;
@@ -510,6 +514,7 @@ kernel density estimate of the original sample.
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>names</code></strong> - list of string with the names of the parameters.</li>
         <li><strong class="pname"><code>data</code></strong> - list of vectors. Samples of a proposed distribution</li>
+        <li><strong class="pname"><code>limits</code></strong> - List of (min,max) tuples for each theta to make sure samples are not generated outside these limits.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -619,14 +624,14 @@ The model is run self.K times to obtain phi = M(theta).
     </td>
   </tr></table>
   
-  Updates the the posteriors of the model for the last time step.
+  Updates the posteriors of the model's output for the last t time steps.
 Returns two record arrays:
 - The posteriors of the Theta
 - the posterior of Phi last t values of time-series. self.L by <code class="link">t</code> arrays.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>t</code></strong> - length of the time-series to return as posterior.</li>
+        <li><strong class="pname"><code>t</code></strong> - length of the posterior time-series to return.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -756,6 +761,8 @@ techniques. This method should be used as an alternative to the sir.
   <h3 class="epydoc"><span class="sig"><span class="sig-name">sir</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">data</span>=<span class="sig-default">{}</span>,
         <span class="sig-arg">t</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">tau</span>=<span class="sig-default">0.1</span>,
+        <span class="sig-arg">nopool</span>=<span class="sig-default">False</span>,
         <span class="sig-arg">savetemp</span>=<span class="sig-default">False</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -763,12 +770,15 @@ techniques. This method should be used as an alternative to the sir.
     </td>
   </tr></table>
   
-  Run the model output through the Sampling-Importance-Resampling algorithm
+  Run the model output through the Sampling-Importance-Resampling algorithm.
+Returns 1 if successful or 0 if not.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>data</code></strong> - observed time series on the model's output</li>
         <li><strong class="pname"><code>t</code></strong> - length of the observed time series</li>
+        <li><strong class="pname"><code>tau</code></strong> - Precision of the Normal likelihood function</li>
+        <li><strong class="pname"><code>nopool</code></strong> - True if no priors on the outputs are available. Leads to faster calculations</li>
         <li><strong class="pname"><code>savetemp</code></strong> - Boolean. create a temp file?</li>
     </ul></dd>
   </dl>
@@ -827,7 +837,7 @@ resuming calculation in case of interruption.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Wed Jan 21 10:39:45 2009
+    Generated by Epydoc 3.0.1 on Thu Mar 19 13:08:37 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
