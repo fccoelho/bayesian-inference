@@ -24,7 +24,7 @@ def lhsFromSample(sample,siz=100):
         - `sample`: list, tuple of array
         - `siz`: Number or shape tuple for the output sample
     """
-    if not isinstance(dist, (list,tuple,numpy.ndarray)):
+    if not isinstance(sample, (list,tuple,numpy.ndarray)):
         raise TypeError('sample is not a list, tuple or numpy vector')
     n = siz
     if isinstance(siz,(tuple,list)):
@@ -32,7 +32,7 @@ def lhsFromSample(sample,siz=100):
     perc = numpy.arange(0,100.,100./n)
     numpy.random.shuffle(perc)
     smp = [stats.uniform(i,100./n).rvs() for i in perc]
-    v = array([stats.scoreatpercentile(sample,p) for p in smp])
+    v = numpy.array([stats.scoreatpercentile(sample,p) for p in smp])
     if isinstance(siz,(tuple,list)):
         v.shape = siz
     return v

@@ -81,7 +81,7 @@ class Meld:
         self.q2phi.dtype.names = names
         self.phi.dtype.names = names
         self.post_phi.dtype.names = names
-        self.limits = limits
+        self.plimits = limits
         for n,d,p in zip(names,dists,pars):
             self.q2phi[n] = lhs.lhs(d,p,self.K)
             self.q2type.append(d.name)
@@ -106,7 +106,7 @@ class Meld:
             for n,d,p in zip(names,dists,pars):
                 self.q1theta[n] = lhs.lhs(d,p,self.K)
         
-    def setThetaFromData(self,names,data):
+    def setThetaFromData(self,names,data, limits):
         """
         Setup the model inputs and set the prior distributions from the vectors
         in data.
@@ -119,14 +119,22 @@ class Meld:
         :Parameters:
             - `names`: list of string with the names of the parameters.
             - `data`: list of vectors. Samples of a proposed distribution
+            - `limits`: List of (min,max) tuples for each theta to make sure samples are not generated outside these limits.
         """
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
         if os.path.exists('q1theta'):
             self.q1theta = CP.load(open('q1theta','r'))
         else:
+            i=0
             for n,d in zip(names,data):
-                self.q1theta[n] = kde.gaussian_kde(d).resample(self.K)
+                smp = []
+                while len(smp)<self.K:
+                    smp += [x for x in kde.gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
+                #print self.q1theta[n].shape, array(smp[:self.K]).shape
+                self.q1theta[n] = array(smp[:self.K])
+                i+=1
+#       
 
     def setPhiFromData(self,names,data,limits):
         """
@@ -148,8 +156,12 @@ class Meld:
         self.post_phi.dtype.names = names
         self.limits = limits
         for n,d in zip(names,data):
-            self.q2phi[n] = kde.gaussian_kde(d).resample(self.K)
+            smp = []
+            while len(smp)<self.K:
+                smp += [x for x in kde.gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
+            self.q2phi[n] = array(smp[:self.K])
             self.q2type.append('empirical')
+        #self.q2phi = self.filtM(self.q2phi, self.q2phi, limits)
 
     def addData(self, data, model, limits,l=1024, **kwargs):
         """
@@ -269,6 +281,13 @@ class Meld:
             - `limits`: is a list of tuples (ll,ul) with length equal to number of lines in `cond` and `x`.
             - `x`: array to be filtered.
         '''
+        # Deconstruct the record array, if necessary.
+        names = []
+        if isinstance(cond, recarray):
+            names = list(cond.dtype.names)
+            cond = [cond[v] for v in cond.dtype.names]
+            x = [x[v] for v in x.dtype.names]
+
         cond = array(cond)
         cnd = ones(cond.shape[1],int)
         for i,j in zip(cond,limits):
@@ -277,6 +296,13 @@ class Meld:
             #print cond.shape,cnd.shape,i.shape,ll,ul
             cnd = cnd & less(i,ul) & greater(i,ll)
         f = compress(cnd,x, axis=1)
+
+        if names:#Reconstruct the record array
+            r = recarray((1,f.shape[1]),formats=['f8']*len(names),names=names)
+            for i,n in enumerate(names):
+                r[n]=f[i]
+            f=r
+
         return f
 
     def basicfit(self,s1,s2):
@@ -389,7 +415,7 @@ class Meld:
 
         self.done_running = True
 
-    def sir(self, data={}, t=1,tau=0.1,savetemp=False):
+    def sir(self, data={}, t=1,tau=0.1, nopool=False,savetemp=False):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
         Returns 1 if successful or 0 if not.
@@ -398,20 +424,24 @@ class Meld:
             - `data`: observed time series on the model's output
             - `t`: length of the observed time series
             - `tau`: Precision of the Normal likelihood function
+            - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
             - `savetemp`: Boolean. create a temp file?
         """
         phi = self.runModel(savetemp,t)
         # Do Log Pooling
-        t0 = time()
-        qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
-        print "==> Done Running the Log Pooling (took %s seconds)\n"%(time()-t0)
-        qtilphi = nan_to_num(qtilphi)
-        print 'max(qtilphi): ', max(qtilphi)
-        if sum(qtilphi)==0:
-            print 'Pooled prior on ouputs is null, please check your priors, and try again.'
-            return 0
+        if nopool:
+            qtilphi = ones(self.K)
+        else:
+            t0 = time()
+            qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
+            print "==> Done Running the Log Pooling (took %s seconds)\n"%(time()-t0)
+            qtilphi = nan_to_num(qtilphi)
+            print 'max(qtilphi): ', max(qtilphi)
+            if sum(qtilphi)==0:
+                print 'Pooled prior on ouputs is null, please check your priors, and try again.'
+                return 0
+
 #        Calculating the likelihood of each phi[i] considering the observed data
-        
         lik = zeros(self.K)
         t0=time()
 #        po = Pool()
@@ -432,6 +462,7 @@ class Meld:
 #        po.close()
 #        po.join()
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
+        print "==> Likelihood ratio of best run/worst run: %s"%(max(lik)/min(lik),)
 #        Calculating the weights
         w = nan_to_num(qtilphi*lik)
         w = nan_to_num(w/sum(w))
@@ -441,7 +472,7 @@ class Meld:
             t0 = time()
             while j < self.L: # Extract L samples from q1theta
                 i=randint(0,w.size)# Random position of w and q1theta
-                if random()<= w[i]:
+                if random()*max(w)<= w[i]:
                     self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
                     j+=1
             self.done_running = True
