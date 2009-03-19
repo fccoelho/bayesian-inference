@@ -126,14 +126,14 @@ class Meld:
         if os.path.exists('q1theta'):
             self.q1theta = CP.load(open('q1theta','r'))
         else:
-            i=0
+            i = 0
             for n,d in zip(names,data):
                 smp = []
                 while len(smp)<self.K:
                     smp += [x for x in kde.gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
                 #print self.q1theta[n].shape, array(smp[:self.K]).shape
                 self.q1theta[n] = array(smp[:self.K])
-                i+=1
+                i += 1
 #       
 
     def setPhiFromData(self,names,data,limits):
@@ -156,11 +156,13 @@ class Meld:
         self.post_phi.dtype.names = names
         self.limits = limits
         for n,d in zip(names,data):
+            i = 0
             smp = []
             while len(smp)<self.K:
                 smp += [x for x in kde.gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
             self.q2phi[n] = array(smp[:self.K])
             self.q2type.append('empirical')
+            i += 1
         #self.q2phi = self.filtM(self.q2phi, self.q2phi, limits)
 
     def addData(self, data, model, limits,l=1024, **kwargs):
@@ -462,7 +464,8 @@ class Meld:
 #        po.close()
 #        po.join()
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
-        print "==> Likelihood ratio of best run/worst run: %s"%(max(lik)/min(lik),)
+        lr = max(lik)/min(lik)
+        print "==> Likelihood ratio of best run/worst run: %s"%(lr,)
 #        Calculating the weights
         w = nan_to_num(qtilphi*lik)
         w = nan_to_num(w/sum(w))
@@ -470,13 +473,19 @@ class Meld:
         if not sum(w) == 0.0:
             j = 0
             t0 = time()
+            maxw = 0;minw = max(w) #keep track of goodness of fit of phi
             while j < self.L: # Extract L samples from q1theta
                 i=randint(0,w.size)# Random position of w and q1theta
                 if random()*max(w)<= w[i]:
                     self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
+                    maxw = max(maxw,w[i])
+                    minw = min(minw,w[i])
                     j+=1
             self.done_running = True
             print "==> Done Resampling priors (took %s seconds)"%(time()-t0)
+            print "==> Likelihood ratio of best/worst retained runs: %s"%(maxw/minw,)
+            wr = maxw/minw
+            print "==> Improvement: %s percent"%(100-100*wr/lr,)
         else:
             print 'Resampling weights are all zero, please check your model or data, and try again.\n'
             print '==> Likelihood (min,mean,max): ',min(lik),mean(lik),max(lik)
