@@ -465,7 +465,7 @@ class Meld:
 #        po.close()
 #        po.join()
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
-        lr = max(lik)/min(lik)
+        lr = nan_to_num(max(lik)/min(lik))
         print "==> Likelihood ratio of best run/worst run: %s"%(lr,)
 #        Calculating the weights
         w = nan_to_num(qtilphi*lik)
