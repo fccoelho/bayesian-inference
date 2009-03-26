@@ -247,10 +247,11 @@ class Meld:
             self.post_phi.dtype.names = self.phi.dtype.names
         def cb(r):
             '''
-            callback function for the asynchronous model runs
+            callback function for the asynchronous model runs.
+            r: tuple with results of simulatio (results, run#)
             '''
             if t == 1:
-                self.post_phi[r[1]] = r[0][-1]
+                self.post_phi[r[1]] = (r[0][-1],)
             else:
                 self.post_phi[r[1]]= [tuple(l) for l in r[0][-t:]]
         po = Pool()
@@ -481,10 +482,15 @@ class Meld:
                     maxw = max(maxw,w[i])
                     minw = min(minw,w[i])
                     j+=1
+                    if not j%100 and self.verbose:
+                        print j, "of %s"%self.L
             self.done_running = True
-            print "==> Done Resampling priors (took %s seconds)"%(time()-t0)
-            print "==> Likelihood ratio of best/worst retained runs: %s"%(maxw/minw,)
+            print "==> Done Resampling (L=%s) priors (took %s seconds)"%(self.L,(time()-t0))
             wr = maxw/minw
+            print "==> Likelihood ratio of best/worst retained runs: %s"%(wr,)
+            if wr == 1:
+                print "==> Flat likelihood, trying again..."
+                #return 0
             print "==> Improvement: %s percent"%(100-100*wr/lr,)
         else:
             print 'Resampling weights are all zero, please check your model or data, and try again.\n'
@@ -538,7 +544,7 @@ class Meld:
             os.unlink('q1theta')
         po.close()
         po.join()
-        print "==> Done Running the K replicates (took %s seconds)\n"%(time()-t0)
+        print "==> Done Running the K (%s) replicates (took %s seconds)\n"%(self.K,(time()-t0))
         
         return phi
 def enumRun(model,theta,k):

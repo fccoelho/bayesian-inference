@@ -31,6 +31,8 @@ class RTplot:
         self.gp('set title "%s"'%title)
         if isinstance(data,numpy.core.records.recarray):
             return self._linesFromRA(data,style)
+        if not names:
+            names = ['s%s'%i for i in range(data.shape[0])]
         if len(data.shape) > 1 and len(data.shape) <= 2:
             i = 0
             for row in data:
@@ -40,7 +42,8 @@ class RTplot:
         elif len(data.shape) >2:
                 pass
         else:
-            self.plots.append(Gnuplot.PlotItems.Data(data,names[0],with_=style))
+            #print data
+            self.plots.append(Gnuplot.PlotItems.Data(data,title=names[0],with_=style))
             self.gp.plot(*tuple(self.plots))
 
     def _linesFromRA(self,data, style):
