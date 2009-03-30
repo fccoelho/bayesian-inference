@@ -26,7 +26,7 @@ from numpy.random import normal, randint,  random
 #from BIP.Viz.realtime import RTplot
 import lhs
 if sys.version.startswith('2.5'):
-    from processing import Pool
+    from multiprocessing import Pool
 else:
     from multiprocessing import Pool
 
@@ -225,7 +225,7 @@ class Meld:
         
         for i in xrange(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
-            r = self.po.applyAsync(self.model, theta)
+            r = self.po.apply_async(self.model, theta)
             self.phi[i]= r.get()[-1]#self.model(*theta)[-1] #phi is the last point in the simulation
 
         self.done_running = True
@@ -259,8 +259,8 @@ class Meld:
         pti = lhs.lhs(stats.randint,(0,self.L),siz=(self.ntheta,self.L))
         for i in xrange(self.L):#Monte Carlo with values of the posterior of Theta
             theta = [self.post_theta[n][pti[j,i]] for j,n in enumerate(self.post_theta.dtype.names)]
-            po.applyAsync(enumRun, (self.model,theta,i), callback=cb)
-#            r = po.applyAsync(self.model,theta)
+            po.apply_async(enumRun, (self.model,theta,i), callback=cb)
+#            r = po.apply_async(self.model,theta)
 #            if t == 1:
 #                self.post_phi[i] = r.get()[-1]
 #            else:
@@ -371,7 +371,7 @@ class Meld:
             phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         for i in xrange(j,self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
-            r = self.po.applyAsync(self.model, theta)
+            r = self.po.apply_async(self.model, theta)
             phi[i]= [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
             if i%100 == 0:
                 print "==> K = %s"%i
@@ -457,7 +457,7 @@ class Meld:
                     continue #no observations for this variable
                 p = phi[n]
                 
-#                liklist=[po.applyAsync(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
+#                liklist=[po.apply_async(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
 #                l=product([p.get() for p in liklist])
             
                 l *= product([exp(like.Normal(data[n][m], j,tau)) for m,j in enumerate(p[i])])
@@ -529,8 +529,8 @@ class Meld:
         t0=time()
         for i in xrange(j,self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
-            r = po.applyAsync(enumRun,(self.model,theta,i),callback=cb)
-#            r = po.applyAsync(self.model,theta)
+            r = po.apply_async(enumRun,(self.model,theta,i),callback=cb)
+#            r = po.apply_async(self.model,theta)
 #            if t == 1:
 #                phi[i] = (r.get()[-1],)
 #            else:
@@ -584,7 +584,7 @@ def Run(k):
     phi=zeros(k, float)
     #print r.shape, p0.shape
     for i in xrange(k):
-        re = po.applyAsync(model,(r[i], p0[i]))
+        re = po.apply_async(model,(r[i], p0[i]))
         phi[i] = re.get()[-1]#model(r[i], p0[i])[-1] # Sets phi[i] to the last point of the simulation
         
     
