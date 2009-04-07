@@ -104,7 +104,7 @@ class Meld:
             self.q1theta = CP.load(open('q1theta','r'))
         else:
             for n,d,p in zip(names,dists,pars):
-                self.q1theta[n] = lhs.lhs(d,p,self.K)
+                self.q1theta[n] = lhs.lhs(d,p,self.K).ravel()
         
     def setThetaFromData(self,names,data, limits):
         """
