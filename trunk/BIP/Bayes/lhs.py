@@ -12,7 +12,7 @@
 # Licence:     GPL
 #-----------------------------------------------------------------------------
 __docformat__ = "restructuredtext en"
-from pylab import plot, figure,hist,show, savefig, legend
+#from pylab import plot, figure,hist,show, savefig, legend
 import scipy.stats as stats
 import numpy
 
@@ -90,14 +90,13 @@ if __name__=='__main__':
     pars = (50,1)
     #pars = (1,5) #beta
     c=lhs(dist, pars,20)
-    hist(c,normed=1, label='LHS sample')
+    #hist(c,normed=1, label='LHS sample')
     n = dist(*pars).rvs(size=20)
-    hist(n.ravel(),facecolor='r',alpha =0.3,normed=1, label='Regular sample')
-    plot(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1),dist(*pars).pdf(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1)),label='PDF')
-    legend()#['LHS sample','regular sample', 'PDF'])
+    #hist(n.ravel(),facecolor='r',alpha =0.3,normed=1, label='Regular sample')
+    #plot(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1),dist(*pars).pdf(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1)),label='PDF')
+    #legend()
     #savefig('lhs.png',dpi=400)
-    show()
+    #show()
     
 
 #TODO: Add correlated multiple lhs sampling
-#TODO: Allow lhs to return not only vectors, but any shape of array

@@ -44,12 +44,14 @@ vars = ['S','E','Is','Ic','R']
 
 r = (0.001, 0.1, 0.1, 0.01, .01)
 ini = (490,0,10,0,0)
-prop = (lambda r,ini:r[0]*ini[0]*(ini[2]+ini[3]),
-        lambda r,ini:r[1]*ini[1],
-        lambda r,ini:r[2]*ini[1],
-        lambda r,ini:r[3]*ini[2],
-        lambda r,ini:r[4]*ini[3]
-        )
+# propensity functions
+def f1(r,ini):return r[0]*ini[0]*(ini[2]+ini[3])
+def f2(r,ini):return r[1]*ini[1]
+def f3(r,ini):return r[2]*ini[1]
+def f4(r,ini):return r[3]*ini[2]
+def f5(r,ini):return r[4]*ini[3]
+
+propf = (f1,f2,f3,f4,f5)
 
 tmat = array([[-1,0,0,0,0],
             [1,-1,-1,0,0],
@@ -59,13 +61,14 @@ tmat = array([[-1,0,0,0,0],
             ])
 #for e in prop:
 #    print e()
-M=Model(vnames=vars,rates = r,inits=ini,tmat=tmat,propensity=prop)
+M=Model(vnames=vars,rates = r,inits=ini,tmat=tmat,propensity=propf)
 t0 = time.time()
-M.run(tmax=80,reps=100)
+M.run(tmax=80,reps=1000)
 print 'total time: ',time.time()-t0
 t,series,steps = M.getStats()
 print steps,'steps'
 from pylab import plot , show, legend, errorbar
-plot(t,series.mean(axis=2),'-o')
+#print series.shape
+plot(t,series.mean(axis=0),'-o')
 legend(vars,loc=0)
 show()

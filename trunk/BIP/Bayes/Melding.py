@@ -83,7 +83,7 @@ class Meld:
         self.post_phi.dtype.names = names
         self.plimits = limits
         for n,d,p in zip(names,dists,pars):
-            self.q2phi[n] = lhs.lhs(d,p,self.K)
+            self.q2phi[n] = lhs.lhs(d,p,self.K).ravel()
             self.q2type.append(d.name)
 
 

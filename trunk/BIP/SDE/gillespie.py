@@ -24,6 +24,9 @@ psyco.full()
 
 #global ini
 #ini=[500,1,0]
+def dispatch(model):
+    '''this function is necessary for paralelization'''
+    return model.GSSA()
 
 class Model:
     def __init__(self,vnames,rates,inits, tmat,propensity):
@@ -40,8 +43,10 @@ class Model:
         self.tm = tmat
         self.pv = propensity#[compile(eq,'errmsg','eval') for eq in propensity]
         self.pvl = len(self.pv) #length of propensity vector
+        self.pv0 = zeros(self.pvl,dtype=float)
         self.nvars = len(self.inits) #number of variables
         self.time=None
+        self.tmax = None
         self.series=None
         self.steps=0
     
@@ -49,42 +54,46 @@ class Model:
         return self.time,self.series,self.steps
     
     def run(self,method='SSA', tmax=10, reps=1):
-        self.res = zeros((tmax,self.nvars,reps),dtype=float)
+        self.tmax = tmax
+        #self.res = zeros((tmax,self.nvars,reps),dtype=float)
+        self.res = zeros((tmax,self.nvars),dtype=float)
         tvec = arange(tmax, dtype=int)
         pool = Pool()    
         if method =='SSA':
-            #r = pool.imap(self.GSSA, ((tmax,i) for i in xrange(reps)))
-            #steps = r.get()
-            for i in xrange(reps):
-                steps = self.GSSA(tmax,i)
-            print steps,' steps'
+            # Parallel version
+            self.res = array(pool.map(dispatch,[(self) for i in xrange(reps)],chunksize=10))
+            # Serial
+            #self.res = array([self.GSSA() for i in xrange(reps)])
+            
         elif method == 'SSAct':
             pass
+        pool.close()
+        pool.join()
         self.time=tvec
         self.series=self.res
-        self.steps=steps
-    def GSSA(self, tmax=50,round=0):
+        #self.steps=steps
+    
+    def GSSA(self):
         '''
         Gillespie Direct algorithm
         '''
+        tmax = self.tmax
         ini = self.inits
         r = self.rates
-        pvi = self.pv
-        l=self.pvl
-        pv = zeros(l,dtype=float)
+        pvi = self.pv #propensity functions
         tm = self.tm
-        
+        pv = self.pv0 #actual propensity values for each time step
         tc = 0
         steps = 0
-        self.res[0,:,round]= ini
-        a0=1
+        self.res[0,:]= ini
         for tim in xrange(1,tmax):
             while tc < tim:
-                for i in xrange(l):
-                    pv[i] = pvi[i](r,ini)
-                #pv = abs(array([eq() for eq in pvi]))# #propensity vector
-                a0 = pv.sum() #sum of all transition probabilities
-#                print tim, pv, a0
+                i=0
+                a0=0
+                for p in pvi:
+                    pv[i] = p(r,ini)
+                    a0+=pv[i]
+                    i+=1
                 tau = (-1/a0)*log(random())
                 event = multinomial(1,pv/a0) # event which will happen on this iteration
                 ini += tm[:,event.nonzero()[0][0]]
@@ -92,27 +101,21 @@ class Model:
                 tc += tau
                 steps +=1
                 if a0 == 0: break
-            self.res[tim,:,round] = ini
+            self.res[tim,:] = ini
             if a0 == 0: break
-#        tvec = tvec[:tim]
-#        self.res = res[:tim,:,round]
-        return steps
+        return self.res
 
-    def CR(self,pv):
-        """
-        Composition reaction algorithm
-        """
-        pass
-        
+
+def p1(r,ini): return r[0]*ini[0]*ini[1]
+def p2(r,ini): return r[0]*ini[1]
 
 def main():
     vars = ['s','i','r']
     ini= [500,1,0]
     rates = [.001,.1]
     tm = array([[-1,0],[1,-1],[0,1]])
-    
-    prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
-    M = Model(vnames = vars,rates = rates,inits=ini, tmat=tm,propensity=prop)
+    #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
+    M = Model(vnames = vars,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
     M.run(tmax=80,reps=1000)
     print 'total time: ',time.time()-t0
@@ -125,6 +128,6 @@ def main():
     
 
 if __name__=="__main__":
-    import cProfile
-    cProfile.run('main()',sort=1)
+    #import cProfile
+    #cProfile.run('main()',sort=1,filename='gillespie.profile')
     main()
