@@ -110,12 +110,12 @@ def p1(r,ini): return r[0]*ini[0]*ini[1]
 def p2(r,ini): return r[0]*ini[1]
 
 def main():
-    vars = ['s','i','r']
+    vnames = ['S','I','S']
     ini= [500,1,0]
     rates = [.001,.1]
     tm = array([[-1,0],[1,-1],[0,1]])
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
-    M = Model(vnames = vars,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
+    M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
     M.run(tmax=80,reps=1000)
     print 'total time: ',time.time()-t0

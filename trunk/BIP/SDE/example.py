@@ -39,7 +39,7 @@ Ic -> R : rc*Ic
 from gillespie import Model
 import time
 from numpy import array
-vars = ['S','E','Is','Ic','R']
+vnames = ['S','E','Is','Ic','R']
 #rates: b,ks,kc,rs,rc
 
 r = (0.001, 0.1, 0.1, 0.01, .01)
@@ -61,7 +61,7 @@ tmat = array([[-1,0,0,0,0],
             ])
 #for e in prop:
 #    print e()
-M=Model(vnames=vars,rates = r,inits=ini,tmat=tmat,propensity=propf)
+M=Model(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
 t0 = time.time()
 M.run(tmax=80,reps=1000)
 print 'total time: ',time.time()-t0
@@ -70,5 +70,5 @@ print steps,'steps'
 from pylab import plot , show, legend, errorbar
 #print series.shape
 plot(t,series.mean(axis=0),'-o')
-legend(vars,loc=0)
+legend(vnames,loc=0)
 show()
