@@ -74,8 +74,9 @@ def lhs(dist, parms, siz=100):
     n=siz
     if isinstance(siz,(tuple,list)):
         n=numpy.product(siz)
-    
-    perc = numpy.arange(0,1.,1./n)
+    #force type to float for sage compatibility
+    parms = tuple([float(k) for k in parms])
+    perc = numpy.arange(0.,1.,1./n)
     numpy.random.shuffle(perc)
     smp = [stats.uniform(i,1./n).rvs() for i in perc]
     v = dist(*parms).ppf(smp)
