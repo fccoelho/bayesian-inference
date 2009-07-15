@@ -11,8 +11,11 @@
 # Licence:     GPL
 #-----------------------------------------------------------------------------
 from numpy.core.records import recarray
-#import psyco
-#psyco.full()
+try:
+    import psyco
+    psyco.full()
+except:
+    pass
 import sys, os
 import cPickle as CP
 import like
