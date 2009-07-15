@@ -25,10 +25,8 @@ from time import time
 from numpy.random import normal, randint,  random
 #from BIP.Viz.realtime import RTplot
 import lhs
-if sys.version.startswith('2.5'):
-    from multiprocessing import Pool
-else:
-    from multiprocessing import Pool
+
+from multiprocessing import Pool
 
 __docformat__ = "restructuredtext en"
 
