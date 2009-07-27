@@ -23,7 +23,7 @@ import pylab as P
 import scipy.stats.kde as kde
 from scipy import stats
 import numpy
-from numpy import array, nan_to_num, zeros, product, exp
+from numpy import array, nan_to_num, zeros, product, exp, ones,mean
 from time import time
 from numpy.random import normal, randint,  random
 #from BIP.Viz.realtime import RTplot

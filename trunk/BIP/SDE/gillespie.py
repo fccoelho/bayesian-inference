@@ -12,20 +12,19 @@
 #-----------------------------------------------------------------------------
 __docformat__ = "restructuredtext en"
 from numpy.random import uniform, multinomial, exponential,random
-from numpy import arange, array, empty,zeros,log
-#from math import log
+from numpy import arange, array, empty,zeros,log, isnan, nanmax
 import time
+import copy
 from multiprocessing import Pool
-
-
-
+from BIP.Viz.realtime import RTplot
 import psyco
 psyco.full()
-
+ser = RTplot()
 #global ini
 #ini=[500,1,0]
 def dispatch(model):
     '''this function is necessary for paralelization'''
+    model.ser = ser
     return model.GSSA()
 
 class Model:
@@ -49,28 +48,45 @@ class Model:
         self.tmax = None
         self.series=None
         self.steps=0
+        self.viz = False #if intermediate vizualization should be on
+#        self.ser = RTplot()
     
     def getStats(self):
         return self.time,self.series,self.steps
     
-    def run(self,method='SSA', tmax=10, reps=1):
+    def run(self, method='SSA', tmax=10, reps=1, viz=False, serial=False):
+        '''
+        Runs the model.
+        :Parameters:
+            - `method`: String specifying the solving algorithm. Currently only 'SSA'
+            - `tmax`: duration of the simulation.
+            - `resps`: Number of replicates.
+            - `viz`: Boolean. Whether to show graph of each replicate during simulation
+            - `serial`: Boolean. False to run replicate in parallel when more than one core is a vailable. True to run them serially (easier to debug).
+
+        :Return:
+        a numpy array of shape (reps,tmax,nvars)
+        '''
+        self.viz = viz
         self.tmax = tmax
         #self.res = zeros((tmax,self.nvars,reps),dtype=float)
         self.res = zeros((tmax,self.nvars),dtype=float)
         tvec = arange(tmax, dtype=int)
-        pool = Pool()    
+            
         if method =='SSA':
-            # Parallel version
-            self.res = array(pool.map(dispatch,[(self) for i in xrange(reps)],chunksize=10))
-            # Serial
-            #self.res = array([self.GSSA() for i in xrange(reps)])
+            if not serial:# Parallel version
+                pool = Pool()
+                self.res = array(pool.map(dispatch,[(self) for i in xrange(reps)],chunksize=10))
+                pool.close()
+                pool.join()
+            else:# Serial
+                self.res = array([dispatch(self) for i in xrange(reps)])
             
         elif method == 'SSAct':
             pass
-        pool.close()
-        pool.join()
-        self.time=tvec
-        self.series=self.res
+        
+        self.time = tvec
+        self.series = self.res
         #self.steps=steps
     
     def GSSA(self):
@@ -78,13 +94,13 @@ class Model:
         Gillespie Direct algorithm
         '''
         tmax = self.tmax
-        ini = self.inits
+        ini = copy.deepcopy(self.inits)
         r = self.rates
         pvi = self.pv #propensity functions
         tm = self.tm
         pv = self.pv0 #actual propensity values for each time step
         tc = 0
-        steps = 0
+        self.steps = 0
         self.res[0,:]= ini
         for tim in xrange(1,tmax):
             while tc < tim:
@@ -95,14 +111,26 @@ class Model:
                     a0+=pv[i]
                     i+=1
                 tau = (-1/a0)*log(random())
-                event = multinomial(1,pv/a0) # event which will happen on this iteration
-                ini += tm[:,event.nonzero()[0][0]]
+                if pv.any():#no change in state is pv is all zeros
+                    try:
+                        event = multinomial(1,pv/a0) # event which will happen on this iteration
+                    except ValueError as inst:
+                        print inst
+                        print "pv: ",pv
+                        print "Rates: ", r
+                        print "State: ", ini
+                        print "Time Step: ",tim
+                        raise ValueError()
+                    ini += tm[:,event.nonzero()[0][0]]
                 #print tc, ini
                 tc += tau
-                steps +=1
+                self.steps +=1
                 if a0 == 0: break
             self.res[tim,:] = ini
             if a0 == 0: break
+        if self.viz:
+            self.ser.clearFig()
+            self.ser.plotlines(self.res.T,names=self.vn)
         return self.res
 
 
@@ -110,14 +138,14 @@ def p1(r,ini): return r[0]*ini[0]*ini[1]
 def p2(r,ini): return r[0]*ini[1]
 
 def main():
-    vnames = ['S','I','S']
+    vnames = ['S','I','R']
     ini= [500,1,0]
     rates = [.001,.1]
     tm = array([[-1,0],[1,-1],[0,1]])
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
-    M.run(tmax=80,reps=1000)
+    M.run(tmax=80,reps=1000,viz=False,serial=False)
     print 'total time: ',time.time()-t0
     #print res
 
