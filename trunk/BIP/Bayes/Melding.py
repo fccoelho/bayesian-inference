@@ -26,7 +26,7 @@ import numpy
 from numpy import array, nan_to_num, zeros, product, exp, ones,mean
 from time import time
 from numpy.random import normal, randint,  random
-#from BIP.Viz.realtime import RTplot
+from BIP.Viz.realtime import RTplot
 import lhs
 
 from multiprocessing import Pool
@@ -38,7 +38,7 @@ class Meld:
     """
     Bayesian Melding class
     """
-    def __init__(self,  K,  L, model, ntheta, nphi, alpha = 0.5, verbose = False ):
+    def __init__(self,  K,  L, model, ntheta, nphi, alpha = 0.5, verbose = False, viz=False ):
         """
         Initializes the Melding class.
         
@@ -48,6 +48,8 @@ class Meld:
             - `model`: Callable taking theta as argument and returning phi = M(theta).
             - `ntheta`: Number of inputs to the model (parameters).
             - `nphi`: Number of outputs of the model (State-variables)
+            - `verbose`: Boolean: whether to show more information about the computations
+            - `viz`: Boolean. Wether to show graphical outputs of the fitting process
         """
         self.K = K
         self.L = L
@@ -64,6 +66,7 @@ class Meld:
         self.nphi = nphi
         self.alpha = alpha #pooling weight of user-provided phi priors
         self.done_running = False
+        self.viz = viz
 #        self.po = Pool() #pool of processes for parallel processing
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
@@ -465,6 +468,10 @@ class Meld:
             lik[i]=l
 #        po.close()
 #        po.join()
+        if self.viz:
+            fitplot = RTplot()
+            fitplot.plotlines(data,style='points')
+            fitplot.plotlines(phi,style='points')
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
         lr = nan_to_num(max(lik)/min(lik))
         print "==> Likelihood ratio of best run/worst run: %s"%(lr,)
@@ -598,7 +605,7 @@ def plotRaHist(arr):
 
 def main2():
     start = time()
-    Me = Meld(K=10000,L=2000,model=model, ntheta=2,nphi=1,verbose=True)
+    Me = Meld(K=10000,L=2000,model=model, ntheta=2,nphi=1,verbose=True,viz=True)
     Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
     Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
     #Me.addData(normal(7.5,1,400),'normal',(6,9))
