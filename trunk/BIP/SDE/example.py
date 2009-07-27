@@ -38,12 +38,13 @@ Ic -> R : rc*Ic
 """
 from gillespie import Model
 import time
+
 from numpy import array
 vnames = ['S','E','Is','Ic','R']
 #rates: b,ks,kc,rs,rc
 
 r = (0.001, 0.1, 0.1, 0.01, .01)
-ini = (490,0,10,0,0)
+ini = (490,0,0,10,0)
 # propensity functions
 def f1(r,ini):return r[0]*ini[0]*(ini[2]+ini[3])
 def f2(r,ini):return r[1]*ini[1]
@@ -59,14 +60,13 @@ tmat = array([[-1,0,0,0,0],
             [0,0,1,0,-1],
             [0,0,0,1,1]
             ])
-#for e in prop:
-#    print e()
 M=Model(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
 t0 = time.time()
-M.run(tmax=80,reps=1000)
-print 'total time: ',time.time()-t0
+M.run(tmax=80,reps=1000,viz=True,serial=False)
+print 'total time: ',time.time()-t0, ' seconds.'
 t,series,steps = M.getStats()
 print steps,'steps'
+#print series.shape
 from pylab import plot , show, legend, errorbar
 #print series.shape
 plot(t,series.mean(axis=0),'-o')
