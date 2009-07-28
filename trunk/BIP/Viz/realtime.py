@@ -61,7 +61,7 @@ class RTplot:
             # TODO: figure out what to do with higher dimensional data
             else:
                 self.plots.append(Gnuplot.PlotItems.Data(data[n],title=n,with_=style))
-        self.gp.plot(*tuple(plots))
+        self.gp.plot(*tuple(self.plots))
 
     def plothist(self,data, title='', names=[]):
         '''
