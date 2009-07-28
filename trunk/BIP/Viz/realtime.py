@@ -54,13 +54,13 @@ class RTplot:
             if len(data.shape) > 1 and len(data.shape) <= 2:
                 i = 0
                 for row in data[n]:
-                    plots.append(Gnuplot.PlotItems.Data(row,title=n+':%s'%i,with_=style))
+                    self.plots.append(Gnuplot.PlotItems.Data(row,title=n+':%s'%i,with_=style))
                     i += 1
             elif len(data.shape) >2:
                 pass
             # TODO: figure out what to do with higher dimensional data
             else:
-                plots.append(Gnuplot.PlotItems.Data(data[n],title=n,with_=style))
+                self.plots.append(Gnuplot.PlotItems.Data(data[n],title=n,with_=style))
         self.gp.plot(*tuple(plots))
 
     def plothist(self,data, title='', names=[]):

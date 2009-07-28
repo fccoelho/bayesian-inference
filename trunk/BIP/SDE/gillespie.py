@@ -57,15 +57,16 @@ class Model:
     def run(self, method='SSA', tmax=10, reps=1, viz=False, serial=False):
         '''
         Runs the model.
+        
         :Parameters:
             - `method`: String specifying the solving algorithm. Currently only 'SSA'
             - `tmax`: duration of the simulation.
-            - `resps`: Number of replicates.
+            - `reps`: Number of replicates.
             - `viz`: Boolean. Whether to show graph of each replicate during simulation
             - `serial`: Boolean. False to run replicate in parallel when more than one core is a vailable. True to run them serially (easier to debug).
 
         :Return:
-        a numpy array of shape (reps,tmax,nvars)
+            a numpy array of shape (reps,tmax,nvars)
         '''
         self.viz = viz
         self.tmax = tmax
