@@ -42,10 +42,11 @@ BIP.SDE.example.r	BIP.SDE.example-module.html#r
 BIP.SDE.example.ini	BIP.SDE.example-module.html#ini
 BIP.SDE.example.vnames	BIP.SDE.example-module.html#vnames
 BIP.SDE.gillespie	BIP.SDE.gillespie-module.html
-BIP.SDE.gillespie.p2	BIP.SDE.gillespie-module.html#p2
-BIP.SDE.gillespie.p1	BIP.SDE.gillespie-module.html#p1
+BIP.SDE.gillespie.ser	BIP.SDE.gillespie-module.html#ser
 BIP.SDE.gillespie.dispatch	BIP.SDE.gillespie-module.html#dispatch
 BIP.SDE.gillespie.main	BIP.SDE.gillespie-module.html#main
+BIP.SDE.gillespie.p2	BIP.SDE.gillespie-module.html#p2
+BIP.SDE.gillespie.p1	BIP.SDE.gillespie-module.html#p1
 BIP.SMC	BIP.SMC-module.html
 BIP.SMC.condensation	BIP.SMC.condensation-module.html
 BIP.SMC.condensation.evaluate_gaussian	BIP.SMC.condensation-module.html#evaluate_gaussian

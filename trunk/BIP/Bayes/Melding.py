@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
 # Purpose:     The Bayesian melding Class provides
-#                   uncertainty analyses for deterministic models.
+#              uncertainty analyses for simulation models.
 #
 # Author:      Flávio Codeço Coelho
 #
@@ -470,7 +470,7 @@ class Meld:
 #        po.join()
         if self.viz:
             fitplot = RTplot()
-            fitplot.plotlines(data,style='points')
+            fitplot.plotlines(array(data.values()),names=data.keys(),style='points')
             fitplot.plotlines(phi,style='points')
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
         lr = nan_to_num(max(lik)/min(lik))
