@@ -8,7 +8,7 @@
                 <root id="trunk.dir"/>
             </sources>
             <tests>
-                <root id="tests.dir"/>
+                <root id="src.tests.dir"/>
             </tests>
         </data>
     </configuration>
