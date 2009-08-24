@@ -15,12 +15,12 @@ from setuptools import setup, find_packages
 
 
 setup(name='BIP', 
-        version  = '0.3.10',
+        version  = '0.3.11',
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
         description = 'Bayesian Inference Tools for Python',
-		zip_safe = False,
+        zip_safe = False,
         packages = find_packages(),#['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
         test_suite = 'nose.collector', 
         license = 'GPL',
