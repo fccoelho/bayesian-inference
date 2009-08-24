@@ -26,14 +26,7 @@ import numpy
 from numpy import array, nan_to_num, zeros, product, exp, ones,mean
 from time import time
 from numpy.random import normal, randint,  random
-try:
-    from BIP.Viz.realtime import RTplot
-    Viz=True
-except:
-    Viz=False
-    print r"""Please install Gnuplot-py to enable realtime visualization.
-    http://gnuplot-py.sourceforge.net/
-    """
+from BIP.Viz.realtime import RTplot
 import lhs
 
 from multiprocessing import Pool
@@ -73,10 +66,7 @@ class Meld:
         self.nphi = nphi
         self.alpha = alpha #pooling weight of user-provided phi priors
         self.done_running = False
-        if Viz: #Gnuplot installed
-            self.viz = viz
-        else:
-            self.viz = False
+        self.viz = viz
 #        self.po = Pool() #pool of processes for parallel processing
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
@@ -447,7 +437,6 @@ class Meld:
             - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
             - `savetemp`: Boolean. create a temp file?
         """
-        seed()
         phi = self.runModel(savetemp,t)
         # Do Log Pooling
         if nopool:
@@ -639,8 +628,8 @@ def main2():
     plotRaHist(pp)
     P.show()
     print end-start, ' seconds'
-if Viz:
-    dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
+
+dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
 if __name__ == '__main__':
     
     main2()
