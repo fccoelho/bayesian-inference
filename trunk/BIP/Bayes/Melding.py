@@ -16,7 +16,8 @@ try:
     psyco.full()
 except:
     pass
-import sys, os
+import sys
+import os
 import cPickle as CP
 import like
 import pylab as P
@@ -25,7 +26,7 @@ from scipy import stats
 import numpy
 from numpy import array, nan_to_num, zeros, product, exp, ones,mean
 from time import time
-from numpy.random import normal, randint,  random
+from numpy.random import normal, randint,  random, seed
 try:
     from BIP.Viz.realtime import RTplot
     Viz=True
