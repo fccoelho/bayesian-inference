@@ -479,6 +479,8 @@ class Meld:
 #                liklist=[po.apply_async(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
 #                l=product([p.get() for p in liklist])
                 l *= product([exp(like.Normal(data[n][m], j,1./(tau*j+.0001))) for m,j in enumerate(p[i])])
+                #l += sum([like.Normal(data[n][m], j,1./(tau*j+.0001)) for m,j in enumerate(p[i])])
+            
             lik[i]=l
 #        po.close()
 #        po.join()
