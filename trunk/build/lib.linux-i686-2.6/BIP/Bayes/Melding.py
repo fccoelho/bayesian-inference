@@ -16,7 +16,8 @@ try:
     psyco.full()
 except:
     pass
-import sys, os
+import sys
+import os
 import cPickle as CP
 import like
 import pylab as P
@@ -25,8 +26,15 @@ from scipy import stats
 import numpy
 from numpy import array, nan_to_num, zeros, product, exp, ones,mean
 from time import time
-from numpy.random import normal, randint,  random
-from BIP.Viz.realtime import RTplot
+from numpy.random import normal, randint,  random, seed
+try:
+    from BIP.Viz.realtime import RTplot
+    Viz=True
+except:
+    Viz=False
+    print r"""Please install Gnuplot-py to enable realtime visualization.
+    http://gnuplot-py.sourceforge.net/
+    """
 import lhs
 
 from multiprocessing import Pool
@@ -66,7 +74,10 @@ class Meld:
         self.nphi = nphi
         self.alpha = alpha #pooling weight of user-provided phi priors
         self.done_running = False
-        self.viz = viz
+        if Viz: #Gnuplot installed
+            self.viz = viz
+        else:
+            self.viz = False
 #        self.po = Pool() #pool of processes for parallel processing
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
@@ -437,6 +448,7 @@ class Meld:
             - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
             - `savetemp`: Boolean. create a temp file?
         """
+        seed()
         phi = self.runModel(savetemp,t)
         # Do Log Pooling
         if nopool:
@@ -467,6 +479,8 @@ class Meld:
 #                liklist=[po.apply_async(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
 #                l=product([p.get() for p in liklist])
                 l *= product([exp(like.Normal(data[n][m], j,1./(tau*j+.0001))) for m,j in enumerate(p[i])])
+                #l += sum([like.Normal(data[n][m], j,1./(tau*j+.0001)) for m,j in enumerate(p[i])])
+            
             lik[i]=l
 #        po.close()
 #        po.join()
@@ -628,8 +642,8 @@ def main2():
     plotRaHist(pp)
     P.show()
     print end-start, ' seconds'
-
-dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
+if Viz:
+    dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
 if __name__ == '__main__':
     
     main2()
