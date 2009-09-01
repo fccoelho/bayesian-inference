@@ -24,7 +24,7 @@ import pylab as P
 import scipy.stats.kde as kde
 from scipy import stats
 import numpy
-from numpy import array, nan_to_num, zeros, product, exp, ones,mean
+from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var
 from time import time
 from numpy.random import normal, randint,  random, seed
 try:
@@ -366,7 +366,7 @@ class Meld:
         qtilphi = (phidens.evaluate(lastp.T)**(1-self.alpha))*q2dens.evaluate(lastp.T)**self.alpha
         return qtilphi/sum(qtilphi)
 
-    def abcRun(self,fitfun=None, data={}, t=1,savetemp=False):
+    def abcRun(self,fitfun=None, data={}, t=1,nopool=False,savetemp=False):
         """
         Runs the model for inference through Approximate Bayes Computation
         techniques. This method should be used as an alternative to the sir.
@@ -377,46 +377,41 @@ class Meld:
              - `data`: dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.
              - `savetemp`: Should temp results be saved. Useful for long runs. Alows for resuming the simulation from last sa
         """
+        seed()
         if not fitfun:
             fitfun = self.basicfit
         if savetemp:
             CP.dump(self.q1theta,open('q1theta','w'))
 #       Running the model ==========================
-        if os.path.exists('phi.temp'):
-            phi,j = CP.load(open('phi.temp','r'))
-        else:
-            j=0
-            phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
-        for i in xrange(j,self.K):
-            theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
-            r = self.po.apply_async(self.model, theta)
-            phi[i]= [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
-            if i%100 == 0:
-                print "==> K = %s"%i
-                if savetemp:
-                    CP.dump((phi,i),open('phi.temp','w'))
-        if savetemp: #If all replicates are done, clear temporary save files.
-            os.unlink('phi.temp')
-            os.unlink('q1theta')
+        phi = self.runModel(savetemp,t)
 
         print "==> Done Running the K replicates\n"
-        qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
-        qtilphi = nan_to_num(qtilphi)
-        print 'max(qtilphi): ', max(qtilphi)
+        # Do Log Pooling
+        if nopool:
+            qtilphi = ones(self.K)
+        else:
+            t0 = time()
+            qtilphi = self.logPooling(phi) #vector with probability of each phi[i] belonging to qtilphi
+            print "==> Done Running the Log Pooling (took %s seconds)\n"%(time()-t0)
+            qtilphi = nan_to_num(qtilphi)
+            #print 'max(qtilphi): ', max(qtilphi)
+            if sum(qtilphi)==0:
+                print 'Pooled prior on ouputs is null, please check your priors, and try again.'
+                return 0
 #      
 #        calculate weights
         w = [fitfun(phi[i],data) for i in xrange(phi.shape[0])]
         w /=sum(w)
         w = 1-w
-        print "w=",w, mean(w), var(w)
-        print
-        print 'qtilphi=',qtilphi
+        #print "w=",w, mean(w), var(w)
+#        print
+#        print 'qtilphi=',qtilphi
         # Resampling Thetas
         w = nan_to_num(w)
         w = array(w)*qtilphi
         w /=sum(w)
         w = nan_to_num(w)
-        print 'max(w): ',max(w)
+        print 'max(w): %s\nmean(w): %s\nvar(w): %s'%(max(w), mean(w), var(w))
 #        for n in phi.dtype.names:
 #            P.plot(mean(phi[n],axis=0),label=n)
 #        P.figure()
@@ -425,16 +420,19 @@ class Meld:
 #        P.title('Resampling vector(w) and pooled prior on Phi')
 #        P.legend()
         if sum(w) == 0.0:
-            sys.exit('Resampling weights are all zero, please check your model or data.')
+            print 'Resampling weights are all zero, please check your model or data.'
+            return 0
+        t0 = time()
         j = 0
         while j < self.L: # Extract L samples from q1theta
             i=randint(0,w.size)# Random position of w and q1theta
             if random()<= w[i]:
                 self.post_theta[j] = self.q1theta[i]# retain the sample according with resampling prob.
                 j+=1
-        
+        print "==> Done Resampling (L=%s) priors (took %s seconds)"%(self.L,(time()-t0))
 
         self.done_running = True
+        return 1
 
     def sir(self, data={}, t=1,tau=0.1, nopool=False,savetemp=False):
         """
@@ -478,7 +476,7 @@ class Meld:
                 
 #                liklist=[po.apply_async(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
 #                l=product([p.get() for p in liklist])
-                l *= product([exp(like.Normal(data[n][m], j,1./(tau*j+.0001))) for m,j in enumerate(p[i])])
+                l *= product([exp(like.Normal(data[n][m], j,1./(tau))) for m,j in enumerate(p[i])])
                 #l += sum([like.Normal(data[n][m], j,1./(tau*j+.0001)) for m,j in enumerate(p[i])])
             
             lik[i]=l
@@ -497,7 +495,7 @@ class Meld:
 #            thplot.plothist(self.q1theta, title='Input parameters',names=self.q1theta.dtype.names)
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
         lr = nan_to_num(max(lik)/min(lik))
-        print '==> Likelihood (min,mean,max): ',min(lik),mean(lik),max(lik)
+        print '==> Likelihood (min,mean,max,sum): ',min(lik),mean(lik),max(lik), sum(lik)
         print "==> Likelihood ratio of best run/worst run: %s"%(lr,)
 #        Calculating the weights
         w = nan_to_num(qtilphi*lik)
