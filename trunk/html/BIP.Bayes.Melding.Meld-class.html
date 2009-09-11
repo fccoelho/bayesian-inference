@@ -198,30 +198,6 @@ vectors in data.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#addData" class="summary-sig-name">addData</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">data</span>,
-        <span class="summary-sig-arg">model</span>,
-        <span class="summary-sig-arg">limits</span>,
-        <span class="summary-sig-arg">l</span>=<span class="summary-sig-default">1024</span>,
-        <span class="summary-sig-arg">**kwargs</span>)</span><br />
-      Calculates the likelihood functions of the dataset presented and add to
-self.likelist
-Likelihood function is a vector of lenght l</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.addData">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#run" class="summary-sig-name">run</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">*args</span>)</span><br />
       Runs the model through the Melding inference.model
@@ -323,6 +299,7 @@ on the pooled pdf of phi and q2phi.</td>
         <span class="summary-sig-arg">fitfun</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">{}</span>,
         <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">nopool</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">savetemp</span>=<span class="summary-sig-default">False</span>)</span><br />
       Runs the model for inference through Approximate Bayes Computation
 techniques.</td>
@@ -562,39 +539,6 @@ kernel density estimate of the original sample.
   </dl>
 </td></tr></table>
 </div>
-<a name="addData"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">addData</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">data</span>,
-        <span class="sig-arg">model</span>,
-        <span class="sig-arg">limits</span>,
-        <span class="sig-arg">l</span>=<span class="sig-default">1024</span>,
-        <span class="sig-arg">**kwargs</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.addData">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Calculates the likelihood functions of the dataset presented and add to
-self.likelist
-Likelihood function is a vector of lenght l
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>data</code></strong> - vector containing observations on a given variable.</li>
-        <li><strong class="pname"><code>model</code></strong> - string with the name of the distribution of the variable</li>
-        <li><strong class="pname"><code>limits</code></strong> - (ll,ul) tuple with lower and upper limits for the variable</li>
-        <li><strong class="pname"><code>l</code></strong> - Length (resolution) of the likelihood vector</li>
-    </ul></dd>
-  </dl>
-</td></tr></table>
-</div>
 <a name="run"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -701,6 +645,8 @@ it uses a normalized RMS variation.
         <li><strong class="pname"><code>s1</code></strong> - model-generated time series. record array.</li>
         <li><strong class="pname"><code>s2</code></strong> - observed time series. dictionary with keys matching names of s1</li>
     </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Root mean square deviation between &#180;s1&#180; and &#180;s2&#180;.</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -740,6 +686,7 @@ on the pooled pdf of phi and q2phi.
         <span class="sig-arg">fitfun</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">data</span>=<span class="sig-default">{}</span>,
         <span class="sig-arg">t</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">nopool</span>=<span class="sig-default">False</span>,
         <span class="sig-arg">savetemp</span>=<span class="sig-default">False</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -851,7 +798,7 @@ resuming calculation in case of interruption.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Jul 28 13:42:38 2009
+    Generated by Epydoc 3.0.1 on Thu Sep 10 15:47:27 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

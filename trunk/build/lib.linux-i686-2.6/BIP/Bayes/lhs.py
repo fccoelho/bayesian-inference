@@ -39,7 +39,7 @@ def lhsFromSample(sample,siz=100):
 
 def lhsFromDensity(kde,siz=100):
     '''
-    LHS sampling from a variables Kernel density estimate.
+    LHS sampling from a variable's Kernel density estimate.
 
     :Parameters:
         - `kde`: scipy.stats.kde.gaussian_kde object
@@ -58,7 +58,7 @@ def lhsFromDensity(kde,siz=100):
 
 def lhs(dist, parms, siz=100):
     '''
-    Latin Hypercube sampling of any distrbution.
+    Latin Hypercube sampling of any distribution.
     dist is is a scipy.stats random number generator 
     such as stats.norm, stats.beta, etc
     parms is a tuple with the parameters needed for 
