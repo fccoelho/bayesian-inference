@@ -21,7 +21,8 @@ import os
 import cPickle as CP
 import like
 import pylab as P
-import scipy.stats.kde as kde
+from scipy.stats.kde import gaussian_kde
+from scipy.linalg import LinAlgError
 from scipy import stats
 import numpy
 from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var
@@ -145,7 +146,7 @@ class Meld:
             for n,d in zip(names,data):
                 smp = []
                 while len(smp)<self.K:
-                    smp += [x for x in kde.gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
+                    smp += [x for x in gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
                 #print self.q1theta[n].shape, array(smp[:self.K]).shape
                 self.q1theta[n] = array(smp[:self.K])
                 i += 1
@@ -174,61 +175,18 @@ class Meld:
             i = 0
             smp = []
             while len(smp)<self.K:
-                smp += [x for x in kde.gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
+                try:
+                    smp += [x for x in gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
+                except:
+                    #d is has no variation, i.e., all elements are the same
+                    #print d
+                    #raise LinAlgError, "Singular matrix"
+                    smp = ones(self.K)*d[0] #in this case return a constant sample
             self.q2phi[n] = array(smp[:self.K])
             self.q2type.append('empirical')
             i += 1
         #self.q2phi = self.filtM(self.q2phi, self.q2phi, limits)
 
-    def addData(self, data, model, limits,l=1024, **kwargs):
-        """
-        Calculates the likelihood functions of the dataset presented and add to 
-        self.likelist
-        Likelihood function is a vector of lenght l
-        
-        :Parameters:
-            -  `data`: vector containing observations on a given variable.
-            -  `model`: string with the name of the distribution of the variable
-            -  `limits`: (ll,ul) tuple with lower and upper limits for the variable
-            -  `l`: Length (resolution) of the likelihood vector
-        """
-        n = len(data) # Number of data points
-        data = array(data)
-        (ll,ul) = limits #limits for the parameter space
-        step = (ul-ll)/float(l)
-        
-        if model == 'normal': # In this case, L is a function of the mean. SD is set to the SD(data)
-            sd = std(data) #standard deviation of data
-            prec = 1/sd #precision of the data
-            res = array([exp(like.Normal(data,mu,prec)) for mu in arange(ll,ul,step)])  
-            lik = res/max(res) # Likelihood function   
-            print max(lik), min(lik)
-        elif model == 'exponential':
-            res = [lamb**n*exp(-lamb*sum(data)) for lamb in arange(ll,ul,step)]
-            lik = array(res)/max(array(res))
-        elif model == 'beta':
-            # TODO: Make sure pars is passed as an extra parameter
-            res = [exp(like.Beta(data,*kwargs['pars'])) for i in arange(ll,ul,step)]
-            lik = array(res)/max(array(res))
-        elif model == 'bernoulli':
-            if ll<0 or ul>1:
-                print "Parameter p of the bernoulli is out of range[0,1]"
-            res = [exp(like.Bernoulli(data,p)) for p in arange(ll,ul,step)]
-            lik = array(res)/max(array(res))
-            
-        elif model == 'poisson':
-            res = [exp(like.Poisson(data,lb)) for lb in arange(ll,ul,step)]
-            lik = array(res)/max(array(res))
-        
-        elif model == 'lognormal':
-            sd = std(data) #standard deviation of data
-            prec = 1/sd #precision of the data
-            res = [exp(like.Lognormal(data,mu,prec)) for mu in arange(ll,ul,step)]
-            lik = array(res)/max(array(res))    
-        else:
-            print 'Invalid distribution type. Valid distributions: normal,lognormal, exponential, bernoulli and poisson'
-        self.likelist.append(lik)
-        return lik
         
     def run(self,*args):
         """
@@ -356,9 +314,9 @@ class Meld:
         """
         
 #       Estimating the multivariate joint probability densities
-        phidens = stats.gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
+        phidens = gaussian_kde(array([phi[n][:,-1] for n in phi.dtype.names]))
 
-        q2dens = stats.gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
+        q2dens = gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
 #       Determining the pooled probabilities for each phi[i]
 #        qtilphi = zeros(self.K)
         lastp = array([list(phi[i,-1]) for i in xrange(self.K)])
