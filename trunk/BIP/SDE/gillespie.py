@@ -21,9 +21,11 @@ try:
     ser = RTplot()
 except:
     ser = None
-import psyco
-psyco.full()
-
+try:
+    import psyco
+    psyco.full()
+except:
+    pass
 def dispatch(model):
     '''this function is necessary for paralelization'''
     model.ser = ser
