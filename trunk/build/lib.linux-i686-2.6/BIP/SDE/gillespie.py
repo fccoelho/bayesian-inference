@@ -16,12 +16,16 @@ from numpy import arange, array, empty,zeros,log, isnan, nanmax
 import time
 import copy
 from multiprocessing import Pool
-from BIP.Viz.realtime import RTplot
-import psyco
-psyco.full()
-ser = RTplot()
-#global ini
-#ini=[500,1,0]
+try:
+    from BIP.Viz.realtime import RTplot
+    ser = RTplot()
+except:
+    ser = None
+try:
+    import psyco
+    psyco.full()
+except:
+    pass
 def dispatch(model):
     '''this function is necessary for paralelization'''
     model.ser = ser
@@ -49,7 +53,7 @@ class Model:
         self.series=None
         self.steps=0
         self.viz = False #if intermediate vizualization should be on
-#        self.ser = RTplot()
+        
     
     def getStats(self):
         return self.time,self.series,self.steps
@@ -68,7 +72,8 @@ class Model:
         :Return:
             a numpy array of shape (reps,tmax,nvars)
         '''
-        self.viz = viz
+        if ser: #only if Gnuplot.py is installed
+            self.viz = viz
         self.tmax = tmax
         #self.res = zeros((tmax,self.nvars,reps),dtype=float)
         self.res = zeros((tmax,self.nvars),dtype=float)
