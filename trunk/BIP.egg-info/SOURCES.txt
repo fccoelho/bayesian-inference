@@ -1,3 +1,4 @@
+ez_setup.py
 setup.py
 .ropeproject/config.py
 .ropeproject/history
@@ -6,6 +7,7 @@ BIP/__init__.py
 BIP/__init__.pyc
 BIP.egg-info/PKG-INFO
 BIP.egg-info/SOURCES.txt
+BIP.egg-info/SOURCES.txt~
 BIP.egg-info/dependency_links.txt
 BIP.egg-info/not-zip-safe
 BIP.egg-info/top_level.txt

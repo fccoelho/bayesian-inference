@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
-from distutils.core import setup
+from ez_setup import use_setuptools
+use_setuptools()
+#from distutils.core import setup
 #from distutils.extension import Extension
-import ez_setup
-ez_setup.use_setuptools()
 from setuptools import setup, find_packages
 #try:
 #    from Cython.Distutils import build_ext
@@ -15,7 +15,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='BIP', 
-        version  = '0.3.16',
+        version  = '0.3.17',
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
