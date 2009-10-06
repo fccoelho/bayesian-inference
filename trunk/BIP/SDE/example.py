@@ -54,15 +54,14 @@ def f5(r,ini):return r[4]*ini[3]
 
 propf = (f1,f2,f3,f4,f5)
 
-tmat = array([[-1,0,0,0,0],
-            [1,-1,-1,0,0],
-            [0,1,0,-1,0],
-            [0,0,1,0,-1],
-            [0,0,0,1,1]
-            ])
+tmat = array([[-1, 0, 0, 0, 0],#S
+              [ 1,-1,-1, 0, 0],#E
+              [ 0, 1, 0,-1, 0],#Is
+              [ 0, 0, 1, 0,-1],#Ic
+              [ 0, 0, 0, 1, 1]])#R
 M=Model(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
 t0 = time.time()
-M.run(tmax=80,reps=1000,viz=True,serial=False)
+M.run(tmax=80,reps=1000,viz=False,serial=False)
 print 'total time: ',time.time()-t0, ' seconds.'
 t,series,steps = M.getStats()
 print steps,'steps'
