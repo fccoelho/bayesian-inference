@@ -6,6 +6,8 @@ from __future__ import division
 from numpy import histogram, ceil
 __author__="fccoelho"
 __date__ ="$12/10/2009 14:25:05$"
+__docformat__ = "restructuredtext en"
+
 
 
 class Histogram(object):
@@ -14,8 +16,10 @@ class Histogram(object):
     """
     def __init__(self, data, bins=10):
         """
-        :parameters:
-            -`data`:array like object
+        Class constructor
+        
+        :Parameters:
+            - `data`: array like object
         """
         self.data = data
         self.bins = bins
@@ -24,11 +28,10 @@ class Histogram(object):
         """Returns a multiline string containing a
         a horizontal histogram representation of self.data
 
-        :parameters:
-            -`height`: Height of the histogram in characters;
-            -`character`: Character to use.
+        :Parameters:
+            - `height`: Height of the histogram in characters
+            - `character`: Character to use
 
-        Example:
         >>> d = normal(size=1000)
         >>> h = Histogram(d,bins=25)
         >>> print h.horizontal(5,'|')
@@ -56,16 +59,15 @@ class Histogram(object):
             his += line
         his += '%.2f'%self.h[1][0] + ' '*(self.bins) +'%.2f'%self.h[1][-1] + '\n'
         return his
-    def vertical(self,height=20, character ='*'):
+    def vertical(self,height=20, character ='|'):
         """
         Returns a Multi-line string containing a
         a vertical histogram representation of self.data
 
-        :parameters:
-            -`height`: Height of the histogram in characters;
-            -`character`: Character to use.
+        :Parameters:
+            - `height`: Height of the histogram in characters
+            - `character`: Character to use
 
-        Example:
         >>> d = normal(size=1000)
         >>> Histogram(d,bins=10)
         >>> print h.vertical(15,'*')
@@ -97,5 +99,5 @@ if __name__ == "__main__":
     from numpy.random import normal
     d = normal(size=1000)
     h = Histogram(d,bins=10)
-    print h.vertical(15,'*')
+    print h.vertical(15)
     print h.horizontal(5)

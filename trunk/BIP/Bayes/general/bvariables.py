@@ -8,6 +8,7 @@ from numpy import arange,compress, array, exp
 import like, sys
 import pylab as P
 from scipy import stats
+from BIP.Viz.ascii import Histogram
 
 ## Conjugate prior list: distribution types which have supported conjugate prior 
 
@@ -49,6 +50,15 @@ class _BayesVar(object):
         self.likelihood = None
         self.data = []
         self.posterior=array([])
+
+    def __str__(self):
+        '''
+        :Return:
+        ascii histogram of the variable
+        '''
+        d = self.getPosteriorSample(1000)
+        h = Histogram(d,bins=10)
+        return h.vertical()
 
     def _flavorize(self,pt, ptbase):
         '''
