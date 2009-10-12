@@ -56,6 +56,7 @@ BIP.SMC	BIP.SMC-module.html
 BIP.SMC.condensation	BIP.SMC.condensation-module.html
 BIP.SMC.condensation.evaluate_gaussian	BIP.SMC.condensation-module.html#evaluate_gaussian
 BIP.Viz	BIP.Viz-module.html
+BIP.Viz.ascii	BIP.Viz.ascii-module.html
 BIP.Viz.realtime	BIP.Viz.realtime-module.html
 BIP.Bayes.Melding.Meld	BIP.Bayes.Melding.Meld-class.html
 BIP.Bayes.Melding.Meld.filtM	BIP.Bayes.Melding.Meld-class.html#filtM
@@ -125,6 +126,10 @@ BIP.SMC.condensation.Model.iterate	BIP.SMC.condensation.Model-class.html#iterate
 BIP.SMC.condensation.Model.display	BIP.SMC.condensation.Model-class.html#display
 BIP.SMC.condensation.Model.__init__	BIP.SMC.condensation.Model-class.html#__init__
 BIP.SMC.condensation.Model.setupPriorConditions	BIP.SMC.condensation.Model-class.html#setupPriorConditions
+BIP.Viz.ascii.Histogram	BIP.Viz.ascii.Histogram-class.html
+BIP.Viz.ascii.Histogram.vertical	BIP.Viz.ascii.Histogram-class.html#vertical
+BIP.Viz.ascii.Histogram.horizontal	BIP.Viz.ascii.Histogram-class.html#horizontal
+BIP.Viz.ascii.Histogram.__init__	BIP.Viz.ascii.Histogram-class.html#__init__
 BIP.Viz.realtime.RTplot	BIP.Viz.realtime.RTplot-class.html
 BIP.Viz.realtime.RTplot.plothist	BIP.Viz.realtime.RTplot-class.html#plothist
 BIP.Viz.realtime.RTplot.clearFig	BIP.Viz.realtime.RTplot-class.html#clearFig
