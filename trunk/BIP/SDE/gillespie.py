@@ -120,8 +120,8 @@ class Model:
                 if pv.any():#no change in state is pv is all zeros
                     try:
                         event = multinomial(1,pv/a0) # event which will happen on this iteration
-                    except ValueError as inst:
-                        print inst
+                    except ValueError:# as inst:#2.6 syntax
+                        #print inst
                         print "pv: ",pv
                         print "Rates: ", r
                         print "State: ", ini
