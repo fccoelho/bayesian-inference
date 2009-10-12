@@ -4,8 +4,9 @@ This module implements classes to represent an arbitrary Bayesian random variabl
 """
 # copyright 2007 Flavio Codeco Coelho
 # Licensed under GPL v3
-from numpy import arange,compress, array, exp
-import like, sys
+from numpy import arange,compress, array, exp, ones, less, greater, searchsorted
+from BIP.Bayes import like
+import sys
 import pylab as P
 from scipy import stats
 from BIP.Viz.ascii import Histogram
@@ -41,7 +42,7 @@ class _BayesVar(object):
             - `rang`: range of the variable support.
             - `resolution`: resolution of the support.
         '''
-        self.distn = dist_type.name
+        self.distn = disttype.name
         self._flavorize(disttype(*pars), disttype)
         self.pars = pars
         self.rang = rang
@@ -56,7 +57,11 @@ class _BayesVar(object):
         :Return:
         ascii histogram of the variable
         '''
-        d = self.getPosteriorSample(1000)
+        if self.posterior.any():
+            d = self.posterior
+        else:
+            d = self.get_posterior_sample(200000)
+        print d.shape
         h = Histogram(d,bins=10)
         return h.vertical()
 
@@ -87,14 +92,14 @@ class _BayesVar(object):
             lik = exp(array([self.likefun((d,i,sc)) for i in arange(m,M,step)]))
             self.likelihood = lik/sum(lik)
 
-    def addData(self, data = []):
+    def add_data(self, data = []):
         """
         Adds dataset to variable's data store
         """
         self.data.append(array(data))
         self._update()
 
-    def getPriorSample(self,n):
+    def get_prior_sample(self,n):
         '''
         Returns a sample from the prior distribution
 
@@ -103,13 +108,13 @@ class _BayesVar(object):
         '''
         return self.rvs(size=n)
     
-    def getPriorDist(self):
+    def get_prior_dist(self):
         """
         Returns the prior PDF.
         """
         return self.pdf(arange(self.rang[0],self.rang[1],self.res))
         
-    def getPosteriorSample(self, n):
+    def get_posterior_sample(self, n):
         """
         Return a sample of the posterior distribution.
         Uses SIR algorithm.
@@ -118,10 +123,10 @@ class _BayesVar(object):
             - `n`: Sample size.
         """
         if self.posterior.any():# Use last posterior as prior
-            k= stats.kde.gausian_kde(self.posterior)
+            k= stats.kde.gaussian_kde(self.posterior)
             s= k.resample(n)
         else:
-            s = self.getPriorSample(n)
+            s = self.get_prior_sample(n)
         if self.data:
             m = self.rang[0]
             M = self.rang[1]
@@ -155,7 +160,7 @@ class _BayesVar(object):
         elif typ == 'beta':
             return lambda(x):like.Beta(x[0],x[1],x[2])
         
-    def _postFromConjugate(dname,*pars):
+    def _post_from_conjugate(dname,*pars):
         '''
         Returns posterior distribution function using conjugate prior theory
         '''
@@ -176,10 +181,12 @@ if __name__=="__main__":
     #bv = BayesVar(stats.norm,(3,1),range=(0,5))
     bv = Continuous(stats.norm,(3,1),range=(0,5), resolution=1000)
     data = ones(10)
-    bv.addData(data)
-    p = bv.getPosteriorSample(200000)
+    bv.add_data(data)
+    print bv
+    p = bv.get_posterior_sample(200000)
+    print bv
     P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.likelihood/max(bv.likelihood), 'ro', lw=2)
-    P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.getPriorDist(),'g+',lw=2)
+    P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.get_prior_dist(),'g+',lw=2)
     P.hist(p, normed=1)
     P.legend(['Likelihood','Prior', 'Posterior'])
     P.title('Bayesian inference')

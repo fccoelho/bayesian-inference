@@ -33,6 +33,7 @@ BIP/SDE/gillespie.pyx
 BIP/SMC/__init__.py
 BIP/SMC/condensation.py
 BIP/Viz/__init__.py
+BIP/Viz/ascii.py
 BIP/Viz/realtime.py
 html/BIP-module.html
 html/BIP-pysrc.html
