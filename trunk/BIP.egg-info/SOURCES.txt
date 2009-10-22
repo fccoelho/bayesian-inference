@@ -7,7 +7,6 @@ BIP/__init__.py
 BIP/__init__.pyc
 BIP.egg-info/PKG-INFO
 BIP.egg-info/SOURCES.txt
-BIP.egg-info/SOURCES.txt~
 BIP.egg-info/dependency_links.txt
 BIP.egg-info/not-zip-safe
 BIP.egg-info/top_level.txt
@@ -34,6 +33,7 @@ BIP/SMC/__init__.py
 BIP/SMC/condensation.py
 BIP/Viz/__init__.py
 BIP/Viz/ascii.py
+BIP/Viz/asciihist.py
 BIP/Viz/realtime.py
 html/BIP-module.html
 html/BIP-pysrc.html
