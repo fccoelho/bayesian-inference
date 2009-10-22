@@ -9,7 +9,7 @@ from BIP.Bayes import like
 import sys
 import pylab as P
 from scipy import stats
-from BIP.Viz.ascii import Histogram
+from BIP.Viz.asciihist import Histogram
 
 ## Conjugate prior list: distribution types which have supported conjugate prior 
 
