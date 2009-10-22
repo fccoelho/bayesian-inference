@@ -61,7 +61,7 @@ tmat = array([[-1, 0, 0, 0, 0],#S
               [ 0, 0, 0, 1, 1]])#R
 M=Model(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
 t0 = time.time()
-M.run(tmax=80,reps=100,viz=False,serial=False)
+M.run(tmax=80,reps=100,viz=True,serial=False)
 print 'total time: ',time.time()-t0, ' seconds.'
 t,series,steps = M.getStats()
 print steps,'steps'
