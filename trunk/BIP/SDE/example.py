@@ -61,13 +61,13 @@ tmat = array([[-1, 0, 0, 0, 0],#S
               [ 0, 0, 0, 1, 1]])#R
 M=Model(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
 t0 = time.time()
-M.run(tmax=80,reps=100,viz=False,serial=False)
+M.run(tmax=80,reps=100,viz=0,serial=True)
 print 'total time: ',time.time()-t0, ' seconds.'
 t,series,steps = M.getStats()
 print steps,'steps'
 #print series.shape
 from pylab import plot , show, legend, errorbar
-#print series.shape
+#print series.var(axis=0)
 plot(t,series.mean(axis=0),'-o')
 legend(vnames,loc=0)
 show()

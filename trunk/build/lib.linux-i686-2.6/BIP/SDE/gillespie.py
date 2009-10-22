@@ -48,10 +48,10 @@ class Model:
         self.pvl = len(self.pv) #length of propensity vector
         self.pv0 = zeros(self.pvl,dtype=float)
         self.nvars = len(self.inits) #number of variables
-        self.time=None
+        self.time = None
         self.tmax = None
-        self.series=None
-        self.steps=0
+        self.series = None
+        self.steps = 0
         self.viz = False #if intermediate vizualization should be on
         
     
@@ -82,11 +82,11 @@ class Model:
         if method =='SSA':
             if not serial:# Parallel version
                 pool = Pool()
-                self.res = array(pool.map(dispatch,[(self) for i in xrange(reps)],chunksize=10))
+                self.res = array(pool.map(dispatch,[self]*reps, chunksize=10))
                 pool.close()
                 pool.join()
             else:# Serial
-                self.res = array([dispatch(self) for i in xrange(reps)])
+                self.res = array(map(dispatch,[self]*reps))
             
         elif method == 'SSAct':
             pass
