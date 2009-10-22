@@ -12,7 +12,7 @@ class TestMeld(unittest.TestCase):
 
     def test_addData(self):
         # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
-        # self.assertEqual(expected, meld.addData(data, model, limits, l, **kwargs))
+        # self.assertEqual(expected, meld.add_data(data, model, limits, l, **kwargs))
         assert False # TODO: implement your test here
 
     def test_basicfit(self):

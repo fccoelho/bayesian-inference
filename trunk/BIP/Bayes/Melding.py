@@ -589,7 +589,7 @@ def main2():
     Me = Meld(K=10000,L=2000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
     Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
     Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
-    #Me.addData(normal(7.5,1,400),'normal',(6,9))
+    #Me.add_data(normal(7.5,1,400),'normal',(6,9))
     #Me.run()
     Me.sir(data ={'p':[7.5]} )
     pt,pp = Me.getPosteriors()
