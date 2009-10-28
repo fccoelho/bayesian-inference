@@ -392,7 +392,7 @@ class Meld:
         self.done_running = True
         return 1
 
-    def sir(self, data={}, t=1,tau=0.1, nopool=False,savetemp=False):
+    def sir(self, data={}, t=1,variance=0.1, nopool=False,savetemp=False):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
         Returns 1 if successful or 0 if not.
@@ -400,7 +400,7 @@ class Meld:
         :Parameters:
             - `data`: observed time series on the model's output
             - `t`: length of the observed time series
-            - `tau`: Precision of the Normal likelihood function
+            - `variance`: variance of the Normal likelihood function
             - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
             - `savetemp`: Boolean. create a temp file?
         """
