@@ -111,6 +111,23 @@ object --+
       
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#__str__" class="summary-sig-name">__str__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      :Return: ascii histogram of the variable</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.__str__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -153,11 +170,11 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="addData"></a><span class="summary-sig-name">addData</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a name="add_data"></a><span class="summary-sig-name">add_data</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">[]</span>)</span><br />
       Adds dataset to variable's data store</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.addData">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.add_data">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -171,11 +188,11 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#getPriorSample" class="summary-sig-name">getPriorSample</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#get_prior_sample" class="summary-sig-name">get_prior_sample</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">n</span>)</span><br />
       Returns a sample from the prior distribution</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.getPriorSample">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.get_prior_sample">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -189,10 +206,10 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="getPriorDist"></a><span class="summary-sig-name">getPriorDist</span>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a name="get_prior_dist"></a><span class="summary-sig-name">get_prior_dist</span>(<span class="summary-sig-arg">self</span>)</span><br />
       Returns the prior PDF.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.getPriorDist">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.get_prior_dist">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -206,11 +223,11 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#getPosteriorSample" class="summary-sig-name">getPosteriorSample</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#get_posterior_sample" class="summary-sig-name">get_posterior_sample</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">n</span>)</span><br />
       Return a sample of the posterior distribution.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.getPosteriorSample">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.get_posterior_sample">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -242,11 +259,11 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_postFromConjugate"></a><span class="summary-sig-name">_postFromConjugate</span>(<span class="summary-sig-arg">dname</span>,
+          <td><span class="summary-sig"><a name="_post_from_conjugate"></a><span class="summary-sig-name">_post_from_conjugate</span>(<span class="summary-sig-arg">dname</span>,
         <span class="summary-sig-arg">*pars</span>)</span><br />
       Returns posterior distribution function using conjugate prior theory</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar._postFromConjugate">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar._post_from_conjugate">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -267,7 +284,6 @@ object --+
       <code>__repr__</code>,
       <code>__setattr__</code>,
       <code>__sizeof__</code>,
-      <code>__str__</code>,
       <code>__subclasshook__</code>
       </p>
     </td>
@@ -358,18 +374,41 @@ object --+
   </dl>
 </td></tr></table>
 </div>
-<a name="getPriorSample"></a>
+<a name="__str__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getPriorSample</span>(<span class="sig-arg">self</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__str__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Informal representation operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.__str__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>:Return: ascii histogram of the variable</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__str__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_prior_sample"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_prior_sample</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">n</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.getPriorSample">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.get_prior_sample">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -384,18 +423,18 @@ object --+
   </dl>
 </td></tr></table>
 </div>
-<a name="getPosteriorSample"></a>
+<a name="get_posterior_sample"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">getPosteriorSample</span>(<span class="sig-arg">self</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_posterior_sample</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">n</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.getPosteriorSample">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.get_posterior_sample">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -469,7 +508,7 @@ object --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Oct 12 17:00:04 2009
+    Generated by Epydoc 3.0.1 on Fri Oct 30 10:06:36 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
