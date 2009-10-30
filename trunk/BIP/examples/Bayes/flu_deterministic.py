@@ -1,8 +1,12 @@
 
 """
-Inference based on simulated data with moving windows.
+Parameter estimation and series forcasting based on simulated data with moving window.
+Deterministic model
 """
-
+#
+# Copyright 2009- by Flávio Codeço Coelho
+# License gpl v3
+#
 from __future__ import division
 from BIP.Bayes.Melding import Meld
 from scipy.integrate import odeint

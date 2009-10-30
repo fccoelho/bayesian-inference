@@ -1,7 +1,12 @@
 """
-Plot the results of the recursive melding
+Plot the results of the recursive parameter estimation simulations
+and resulting time-series
 """
 
+#
+# Copyright 2009- by Flávio Codeço Coelho
+# License gpl v3
+#
 import cPickle
 from itertools import cycle
 from scipy import stats
