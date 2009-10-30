@@ -39,6 +39,8 @@ except:
 import lhs
 
 from multiprocessing import Pool
+if Viz:
+    dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
 
 __docformat__ = "restructuredtext en"
 
@@ -203,7 +205,7 @@ class Meld:
 
         self.done_running = True
         
-    def getPosteriors(self,t=1):
+    def getPosteriors(self,t):
         """
         Updates the posteriors of the model's output for the last t time steps.
         Returns two record arrays:
@@ -221,10 +223,11 @@ class Meld:
         def cb(r):
             '''
             callback function for the asynchronous model runs.
-            r: tuple with results of simulatio (results, run#)
+            r: tuple with results of simulation (results, run#)
             '''
             if t == 1:
                 self.post_phi[r[1]] = (r[0][-1],)
+                #self.post_phi[r[1]]= [tuple(l) for l in r[0][-t:]]
             else:
                 self.post_phi[r[1]]= [tuple(l) for l in r[0][-t:]]
         po = Pool()
@@ -434,7 +437,7 @@ class Meld:
                 
 #                liklist=[po.apply_async(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
 #                l=product([p.get() for p in liklist])
-                l *= product([exp(like.Normal(data[n][m], j,1./(tau))) for m,j in enumerate(p[i])])
+                l *= product([exp(like.Normal(data[n][m], j,1./(variance))) for m,j in enumerate(p[i])])
                 #l += sum([like.Normal(data[n][m], j,1./(tau*j+.0001)) for m,j in enumerate(p[i])])
             
             lik[i]=l
@@ -450,7 +453,7 @@ class Meld:
                 sim.append(phi[n].mean(axis=0).tolist())
             dtplot.scatter(array(obs),array(sim),names=data.keys(),title='fit')
             phiplot.plotlines(array(sim),names=data.keys(),title='Model Output')
-#            thplot.plothist(self.q1theta, title='Input parameters',names=self.q1theta.dtype.names)
+            thplot.plothist(self.q1theta, title='Input parameters',names=self.q1theta.dtype.names)
         print "==> Done Calculating Likelihoods (took %s seconds)"%(time()-t0)
         lr = nan_to_num(max(lik)/min(lik))
         print '==> Likelihood (min,mean,max,sum): ',min(lik),mean(lik),max(lik), sum(lik)
@@ -501,18 +504,18 @@ class Meld:
         
                 
         if os.path.exists('phi.temp'):
-            phi,j = CP.load(open('phi.temp','r'))
+            self.phi,j = CP.load(open('phi.temp','r'))
         else:
             j=0
-            phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+            self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         def cb(r):
             '''
             callback function for the asynchronous model runs
             '''
             if t == 1:
-                phi[r[1]] = (r[0][-1],)
+                self.phi[r[1]] = (r[0][-1],)
             else:
-                phi[r[1]] = [tuple(l) for l in r[0][-t:]]# #phi is the last t points in the simulation
+                self.phi[r[1]] = [tuple(l) for l in r[0][-t:]]# #phi is the last t points in the simulation
 
         po = Pool()
         t0=time()
@@ -527,7 +530,7 @@ class Meld:
             if i%100 == 0 and self.verbose:
                 print "==> K = %s"%i
                 if savetemp:
-                    CP.dump((phi,i),open('phi.temp','w'))
+                    CP.dump((self.phi,i),open('phi.temp','w'))
         if savetemp: #If all replicates are done, clear temporary save files.
             os.unlink('phi.temp')
             os.unlink('q1theta')
@@ -535,7 +538,7 @@ class Meld:
         po.join()
         print "==> Done Running the K (%s) replicates (took %s seconds)\n"%(self.K,(time()-t0))
         
-        return phi
+        return self.phi
 def enumRun(model,theta,k):
     """
     Returns model results plus run number.
@@ -586,20 +589,19 @@ def plotRaHist(arr):
 
 def main2():
     start = time()
-    Me = Meld(K=10000,L=2000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
+    Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
     Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
     Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
     #Me.add_data(normal(7.5,1,400),'normal',(6,9))
     #Me.run()
     Me.sir(data ={'p':[7.5]} )
-    pt,pp = Me.getPosteriors()
+    pt,pp = Me.getPosteriors(1)
     end = time()
     plotRaHist(pt)
     plotRaHist(pp)
     P.show()
     print end-start, ' seconds'
-if Viz:
-    dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
+
 if __name__ == '__main__':
     
     main2()
