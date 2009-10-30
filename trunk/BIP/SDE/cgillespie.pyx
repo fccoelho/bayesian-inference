@@ -11,7 +11,7 @@ ctypedef np.int_t INT_t
 cdef class Model:
     cdef object vn,rates,inits,pv
     cdef np.ndarray tm,res,time,series
-    cdef int pvl,nvars,steps
+    cdef np.int pvl,nvars,steps
     cdef object ts
     def __init__(self,vnames,rates,inits, tmat,propensity):
         '''
@@ -50,19 +50,19 @@ cdef class Model:
     def getStats(self):
         return self.time,self.series,self.steps
     
-    cpdef int GSSA(self, int tmax=50,int round=0):
+    cpdef int GSSA(self, int tmax=50,int round=0) except *:
         '''
         Gillespie Direct algorithm
         '''
         ini = self.inits
         r = self.rates
         pvi = self.pv
-        cdef int l,steps,i,tim
-        cdef double a0,tc, tau
+        cdef np.int l,steps,i,tim
+        cdef double tc, tau, a0
         #cdef np.ndarray[INT_t] tvec
-        cdef np.ndarray[DTYPE_t] pv
+        cdef np.ndarray[np.double_t] pv
         l=self.pvl
-        pv = np.zeros(l, dtype=float)
+        pv = np.zeros(l)
         tm = self.tm
         #tvec = np.arange(tmax,dtype=int)
         tc = 0
@@ -77,8 +77,9 @@ cdef class Model:
                 a0 = a_sum(pv,l) #sum of all transition probabilities
                 #print ini#,tim, pv, a0
                 tau = (-1/a0)*np.log(np.random.random())
-                event = multinomial(1,(pv/a0)) # event which will happen on this iteration
-                ini += tm[:,event.nonzero()[0][0]]
+                if pv.any():
+                    event = np.random.multinomial(1,(pv/a0)) # event which will happen on this iteration
+                    ini += tm[:,event.nonzero()[0][0]]
                 #print tc, ini
                 tc += tau
                 steps +=1
@@ -95,18 +96,22 @@ cdef class Model:
         """
         pass
         
+def l1(np.ndarray r,np.ndarray ini):
+    return r[0]*ini[0]*ini[1]
+def l2(np.ndarray r,np.ndarray ini):
+    return r[1]*ini[1]
 
 def main():
     vars = ['s','i','r']
-    cdef np.ndarray ini= np.array([500,1,0],dtype = int)
-    cdef np.ndarray rates = np.array([.001,.1],dtype=float)
-    cdef np.ndarray tm = np.array([[-1,0],[1,-1],[0,1]])
-    
+    cdef np.ndarray[np.int_t] ini= np.array([500,1,0],dtype = np.int)
+    cdef np.ndarray[np.float64_t] rates = np.array([.001,.1],dtype=np.float64)
+    cdef np.ndarray[np.int_t,ndim=2] tm = np.array([[-1,0],[1,-1],[0,1]],dtype=np.int)
     prop = [l1,l2]
     M = Model(vnames = vars,rates = rates,inits=ini, tmat=tm,propensity=prop)
     t0=time.time()
     M.run(tmax=80,reps=1000)
     print 'total time: ',time.time()-t0
+    return M.getStats()
 
     
 cdef double a_sum(np.ndarray a, int len):
@@ -117,8 +122,5 @@ cdef double a_sum(np.ndarray a, int len):
         s+=a[i]
     return s
         
-def l1(np.ndarray r,np.ndarray ini):
-    return r[0]*ini[0]*ini[1]
-def l2(np.ndarray r,np.ndarray ini):
-    return r[1]*ini[1]
+
 
