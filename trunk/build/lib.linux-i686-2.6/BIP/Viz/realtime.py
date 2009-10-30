@@ -66,12 +66,13 @@ class RTplot:
         self.gp('set title "%s"'%title)
         if isinstance(data,numpy.core.records.recarray):
             return self._linesFromRA(data,style)
-        if not names:
-            names = ['s%s'%i for i in range(data.shape[0])]
         if len(data.shape) > 1 and len(data.shape) <= 2:
             i = 0
             for row in data:
-                self.plots.append(Gnuplot.PlotItems.Data(row,title=names[i],with_=style))
+                if names:
+                    self.plots.append(Gnuplot.PlotItems.Data(row,title=names[i],with_=style))
+                else:
+                    self.plots.append(Gnuplot.PlotItems.Data(row,with_=style))
                 i += 1
             self.gp.plot(*tuple(self.plots))
         elif len(data.shape) >2:
@@ -114,14 +115,14 @@ class RTplot:
             names = ['s%s'%i for i in range(data.shape[0])]
         if len(data.shape) > 1 and len(data.shape) <= 2:
             for n,row in enumerate(data):
-                m,bins = numpy.histogram(row,normed=True,bins=50,new=True)
+                m,bins = numpy.histogram(row,normed=True,bins=50)
                 d = zip(bins[:-1],m)
                 self.plots.append(Gnuplot.PlotItems.Data(d,title=names[n]))
             self.gp.plot(*tuple(self.plots))
         elif len(data.shape) >2:
             pass
         else:
-            m,bins = numpy.histogram(data,normed=True,bins=50,new=True)
+            m,bins = numpy.histogram(data,normed=True,bins=50)
             d = zip(bins[:-1],m)
             self.plots.append(Gnuplot.PlotItems.Data(d,title=names[0]))
             self.gp.plot(*tuple(self.plots))
@@ -134,14 +135,14 @@ class RTplot:
             if len(data.shape) > 1 and len(data.shape) <= 2:
                 i = 0
                 for row in data[n]:
-                    m,bins = numpy.histogram(row,normed=True,bins=50,new=True)
+                    m,bins = numpy.histogram(row,normed=True,bins=50)
                     d = zip(bins[:-1],m)
                     self.plots.append(Gnuplot.PlotItems.Data(d,title=n+':%s'%i))
                     i += 1
             elif len(data.shape) > 2:
                 pass
             else:
-                m,bins = numpy.histogram(data[n],normed=True,bins=50,new=True)
+                m,bins = numpy.histogram(data[n],normed=True,bins=50)
                 d = zip(bins[:-1],m)
                 self.plots.append(Gnuplot.PlotItems.Data(d,title=n))
         self.gp.plot(*tuple(self.plots))
