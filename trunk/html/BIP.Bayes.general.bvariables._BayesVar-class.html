@@ -71,7 +71,7 @@ object --+
 </pre>
 
 <hr />
-<p>Bayesian random variate.</p>
+Bayesian random variate.
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
@@ -118,7 +118,8 @@ object --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#__str__" class="summary-sig-name">__str__</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      :Return: ascii histogram of the variable</td>
+      Returns:
+ascii histogram of the variable</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar.__str__">source&nbsp;code</a></span>
             
@@ -241,11 +242,11 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#_Likelihood" class="summary-sig-name" onclick="show_private();">_Likelihood</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="BIP.Bayes.general.bvariables._BayesVar-class.html#_likelihood" class="summary-sig-name" onclick="show_private();">_likelihood</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">typ</span>)</span><br />
       Defines parametric family  of the likelihood function.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar._Likelihood">source&nbsp;code</a></span>
+            <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar._likelihood">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -259,7 +260,8 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_post_from_conjugate"></a><span class="summary-sig-name">_post_from_conjugate</span>(<span class="summary-sig-arg">dname</span>,
+          <td><span class="summary-sig"><a name="_post_from_conjugate"></a><span class="summary-sig-name">_post_from_conjugate</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dname</span>,
         <span class="summary-sig-arg">*pars</span>)</span><br />
       Returns posterior distribution function using conjugate prior theory</td>
           <td align="right" valign="top">
@@ -351,23 +353,15 @@ object --+
     </td>
   </tr></table>
   
-  <p>Initializes random variable.</p>
-  <p>:parameters:</p>
-  <ul>
-    <li>
-      `disttype`: must be a valid RNG from scipy.stats
-    </li>
-    <li>
-      `pars`: are the parameters of the distribution.
-    </li>
-    <li>
-      `rang`: range of the variable support.
-    </li>
-    <li>
-      `resolution`: resolution of the support.
-    </li>
-  </ul>
+  Initializes random variable.
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>disttype</code></strong> - must be a valid RNG class from scipy.stats</li>
+        <li><strong class="pname"><code>pars</code></strong> - are the parameters of the distribution.</li>
+        <li><strong class="pname"><code>rang</code></strong> - range of the variable support.</li>
+        <li><strong class="pname"><code>resolution</code></strong> - resolution of the support.</li>
+    </ul></dd>
     <dt>Overrides:
         object.__init__
     </dt>
@@ -389,8 +383,10 @@ object --+
     </td>
   </tr></table>
   
-  <p>:Return: ascii histogram of the variable</p>
+  <p>str(x)</p>
   <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>ascii histogram of the variable</dd>
     <dt>Overrides:
         object.__str__
     </dt>
@@ -412,14 +408,12 @@ object --+
     </td>
   </tr></table>
   
-  <p>Returns a sample from the prior distribution</p>
-  <p>:Parameters:</p>
-  <ul>
-    <li>
-      `n`: Sample size.
-    </li>
-  </ul>
+  Returns a sample from the prior distribution
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>n</code></strong> - Sample size.</li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -438,41 +432,40 @@ object --+
     </td>
   </tr></table>
   
-  <p>Return a sample of the posterior distribution. Uses SIR algorithm.</p>
-  <p>:Parameters:</p>
-  <ul>
-    <li>
-      `n`: Sample size.
-    </li>
-  </ul>
+  Return a sample of the posterior distribution.
+Uses SIR algorithm.
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>n</code></strong> - Sample size.</li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
-<a name="_Likelihood"></a>
+<a name="_likelihood"></a>
 <div class="private">
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">_Likelihood</span>(<span class="sig-arg">self</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_likelihood</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">typ</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar._Likelihood">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#_BayesVar._likelihood">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Defines parametric family  of the likelihood function. Returns 
-  likelihood function.</p>
-  <p>:Parameters:</p>
-  <ul>
-    <li>
-      `typ`: must be a string.
-    </li>
-  </ul>
+  Defines parametric family  of the likelihood function.
+Returns likelihood function.
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>typ</code></strong> - must be a string.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>lambda function to calculate  the likelihood.</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -508,7 +501,7 @@ object --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Oct 30 10:06:36 2009
+    Generated by Epydoc 3.0.1 on Tue Nov 24 11:46:40 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

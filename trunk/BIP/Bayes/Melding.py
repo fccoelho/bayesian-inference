@@ -7,8 +7,8 @@
 # Author:      Flávio Codeço Coelho
 #
 # Created:     2003/08/10
-# Copyright:   (c) 2003-2008 by the Author
-# Licence:     GPL
+# Copyright:   (c) 2003-2009 by the Author
+# Licence:     GPL v3
 #-----------------------------------------------------------------------------
 from numpy.core.records import recarray
 try:

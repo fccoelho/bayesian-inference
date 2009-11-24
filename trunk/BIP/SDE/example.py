@@ -65,7 +65,7 @@ CM = CModel(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
 
 # timing python gillespie
 t0 = time.time()
-M.run(tmax=80,reps=100,viz=0,serial=1)
+M.run(tmax=80,reps=100,viz=0,serial=0)
 pt = time.time()-t0
 print 'Python total time: ',pt, ' seconds.'
 t,series,steps = M.getStats()
