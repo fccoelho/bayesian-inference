@@ -11,6 +11,7 @@ import pylab as P
 from scipy import stats
 from BIP.Viz.asciihist import Histogram
 
+__docformat__ = "restructuredtext en"
 ## Conjugate prior list: distribution types which have supported conjugate prior 
 
 conjlist = [
@@ -21,12 +22,14 @@ conjlist = [
     'geom', #geometric
     ]
 
-## Factory functions for continuous and discrete variables 
-def Continuous(priortype,pars, range,resolution=1024):
-    return __BayesC(priortype,pars, range,resolution)
+## Factory function for continuous and discrete variables 
 
-def Discrete(priortype,pars, range,resolution=1024):
-    return __BayesD(priortype,pars, range,resolution)
+def BayesVar(priortype,pars, range,resolution=1024):
+    if isinstance(priortype, stats.rv_continuous):
+        return __BayesC(priortype,pars, range,resolution)
+    if isinstance(disttype, stats.rv_discrete):
+        return __BayesD(priortype,pars, range,resolution)
+
 
 class _BayesVar(object):
     """
@@ -37,17 +40,18 @@ class _BayesVar(object):
         Initializes random variable.
 
         :parameters:
-            - `disttype`: must be a valid RNG from scipy.stats
+            - `disttype`: must be a valid RNG class from scipy.stats
             - `pars`: are the parameters of the distribution.
             - `rang`: range of the variable support.
             - `resolution`: resolution of the support.
         '''
+
         self.distn = disttype.name
         self._flavorize(disttype(*pars), disttype)
         self.pars = pars
         self.rang = rang
         self.res = (rang[1]-rang[0])*1./resolution
-        self.likefun = self._Likelihood(self.distn)
+        self.likefun = self._likelihood(self.distn)
         self.likelihood = None
         self.data = []
         self.posterior=array([])
@@ -55,15 +59,15 @@ class _BayesVar(object):
     def __str__(self):
         '''
         :Return:
-        ascii histogram of the variable
+            ascii histogram of the variable
         '''
         if self.posterior.any():
             d = self.posterior
         else:
             d = self.get_posterior_sample(200000)
-        print d.shape
+        name = self.distn + self.pars.__str__()
         h = Histogram(d,bins=10)
-        return h.vertical()
+        return name+'\n'+h.vertical()
 
     def _flavorize(self,pt, ptbase):
         '''
@@ -89,7 +93,7 @@ class _BayesVar(object):
             M = self.rang[1]
             step = self.res
             #self.likefun returns log-likelihood
-            lik = exp(array([self.likefun((d,i,sc)) for i in arange(m,M,step)]))
+            lik = exp(array([self.likefun((d,i,d.var())) for i in arange(m,M,step)]))
             self.likelihood = lik/sum(lik)
 
     def add_data(self, data = []):
@@ -144,23 +148,26 @@ class _BayesVar(object):
         else:
             return array([])
 
-    def _Likelihood(self,typ):
+    def _likelihood(self,typ):
         '''
         Defines parametric family  of the likelihood function.
         Returns likelihood function.
 
         :Parameters:
             - `typ`: must be a string.
+        :Return:
+            lambda function to calculate  the likelihood.
         '''
+        like_funs = {
+           'norm': lambda(x):like.Normal(x[0],x[1],1./x[2]),
+           'expon': lambda(x):(1./x[2])**x[0].size*exp(-(1./x[2])*sum(x[0])),
+           'beta': lambda(x):like.Beta(x[0],x[1],x[2])
+        }
+        return like_funs[typ]
         #TODO: expand for more distribution types
-        if typ == 'norm':
-            return lambda(x):like.Normal(x[0],x[1],1./x[2])
-        elif typ == 'expon':
-            return lambda(x):(1./x[2])**x[0].size*exp(-(1./x[2])*sum(x[0]))
-        elif typ == 'beta':
-            return lambda(x):like.Beta(x[0],x[1],x[2])
+
         
-    def _post_from_conjugate(dname,*pars):
+    def _post_from_conjugate(self, dname,*pars):
         '''
         Returns posterior distribution function using conjugate prior theory
         '''
@@ -177,10 +184,11 @@ class __BayesC(_BayesVar, stats.rv_continuous):
 class __BayesD(_BayesVar, stats.rv_discrete):
     def __init__(self, priortype,pars, range,resolution=512):
         _BayesVar.__init__(self, priortype,pars, range,resolution)
+
 if __name__=="__main__":
     #bv = BayesVar(stats.norm,(3,1),range=(0,5))
-    bv = Continuous(stats.norm,(3,1),range=(0,5), resolution=1000)
-    data = ones(10)
+    bv = BayesVar(stats.norm,(3,1),range=(0,5), resolution=1000)
+    data = stats.uniform(1,3).rvs(500)
     bv.add_data(data)
     print bv
     p = bv.get_posterior_sample(200000)

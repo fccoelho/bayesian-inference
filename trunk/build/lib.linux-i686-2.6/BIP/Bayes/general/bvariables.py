@@ -47,7 +47,7 @@ class _BayesVar(object):
         self.pars = pars
         self.rang = rang
         self.res = (rang[1]-rang[0])*1./resolution
-        self.likefun = self._Likelihood(self.distn)
+        self.likefun = self._likelihood(self.distn)
         self.likelihood = None
         self.data = []
         self.posterior=array([])
@@ -141,7 +141,7 @@ class _BayesVar(object):
         else:
             return array([])
 
-    def _Likelihood(self,typ):
+    def _likelihood(self,typ):
         '''
         Defines parametric family  of the likelihood function.
         Returns likelihood function.

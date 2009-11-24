@@ -14,6 +14,14 @@ cdef extern from "math.h":
 cdef double clog(double x):
     return log(x*x)
 
+cdef extern from "stdlib.h":
+    double RAND_MAX
+    double c_libc_random "random"()
+    void c_libc_srandom "srandom"(unsigned int seed)
+cdef crandom():
+    cdef double rm = RAND_MAX
+    return c_libc_random()/rm
+
 cdef class Model(object):
     cdef object vn,pv, inits
     cdef np.ndarray tm,res,time,series, rates
@@ -82,7 +90,7 @@ cdef class Model(object):
                 #pv = abs(array([eq() for eq in pvi]))# #propensity vector
                 a0 = a_sum(pv,l) #sum of all transition probabilities
                 #print ini#,tim, pv, a0
-                tau = (-1/a0)*clog(random())
+                tau = (-1/a0)*clog(crandom())
                 if pv.any():
                     event = np.random.multinomial(1,(pv/a0)) # event which will happen on this iteration
                     ini += tm[:,event.nonzero()[0][0]]

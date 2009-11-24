@@ -1,4 +1,3 @@
-import random
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        like.py
@@ -9,9 +8,10 @@ import random
 #
 # Created:     2008-11-26
 # Copyright:   (c) 2008 by the Author
-# Licence:     GPL
+# Licence:     GPL v3
 #-----------------------------------------------------------------------------
 __docformat__ = "restructuredtext en"
+import random
 import scipy
 from scipy.special import gammaln
 from numpy import array, searchsorted,log, random,pi,sum
