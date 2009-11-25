@@ -4,7 +4,7 @@ This module implements classes to represent an arbitrary Bayesian random variabl
 """
 # copyright 2007 Flavio Codeco Coelho
 # Licensed under GPL v3
-from numpy import arange,compress, array, exp, ones, less, greater, searchsorted
+from numpy import arange,compress, array, exp, sqrt, ones, less, greater, searchsorted
 from BIP.Bayes import like
 import sys
 import pylab as P
@@ -22,9 +22,11 @@ conjlist = [
     'geom', #geometric
     ]
 
-## Factory function for continuous and discrete variables 
 
 def BayesVar(priortype,pars, range,resolution=1024):
+    """
+    Factory function for continuous and discrete variables
+    """
     if isinstance(priortype, stats.rv_continuous):
         return __BayesC(priortype,pars, range,resolution)
     if isinstance(disttype, stats.rv_discrete):
@@ -51,9 +53,8 @@ class _BayesVar(object):
         self.pars = pars
         self.rang = rang
         self.res = (rang[1]-rang[0])*1./resolution
-        self.likefun = self._likelihood(self.distn)
         self.likelihood = None
-        self.data = []
+        self.data = None
         self.posterior=array([])
 
     def __str__(self):
@@ -82,26 +83,30 @@ class _BayesVar(object):
         else: sys.exit('Invalid distribution object')
         self.ppf = pt.ppf
         self.rvs = pt.rvs
-    def _update(self):
+    def _update(self, model):
         """
         Calculate likelihood function
         """
-        if self.data:
-            d = self.data[-1]
+        if self.data != None:
+            d = self.data
             sc = self.pars[1]
             m = self.rang[0]
             M = self.rang[1]
             step = self.res
-            #self.likefun returns log-likelihood
-            lik = exp(array([self.likefun((d,i,d.var())) for i in arange(m,M,step)]))
+            likefun = self._likelihood(model)#returns log-likelihood function
+            lik = exp(array([likefun((d,i,d.var())) for i in arange(m,M,step)]))
             self.likelihood = lik/sum(lik)
 
-    def add_data(self, data = []):
+    def add_data(self, data, model):
         """
-        Adds dataset to variable's data store
+        Updates variable with information from dataset
+
+        :Parameters:
+            -`data`: sequence of numbers
+            -`model`: probabilistic model underlying data
         """
-        self.data.append(array(data))
-        self._update()
+        self.data = array(data) 
+        self._update(model.dist.name)
 
     def get_prior_sample(self,n):
         '''
@@ -131,7 +136,7 @@ class _BayesVar(object):
             s= k.resample(n)
         else:
             s = self.get_prior_sample(n)
-        if self.data:
+        if self.data != None:
             m = self.rang[0]
             M = self.rang[1]
             step = self.res
@@ -148,22 +153,23 @@ class _BayesVar(object):
         else:
             return array([])
 
-    def _likelihood(self,typ):
+    def _likelihood(self,dname):
         '''
         Defines parametric family  of the likelihood function.
         Returns likelihood function.
 
         :Parameters:
-            - `typ`: must be a string.
+            - `dname`: must be a string.
         :Return:
             lambda function to calculate  the likelihood.
         '''
         like_funs = {
            'norm': lambda(x):like.Normal(x[0],x[1],1./x[2]),
            'expon': lambda(x):(1./x[2])**x[0].size*exp(-(1./x[2])*sum(x[0])),
-           'beta': lambda(x):like.Beta(x[0],x[1],x[2])
+           'beta': lambda(x):like.Beta(x[0],x[1],x[2]),
+           'uniform': lambda(x): like.Uniform(x[0],x[1]-2*sqrt(x[2]),x[1]+2*sqrt(x[2]))
         }
-        return like_funs[typ]
+        return like_funs[dname]
         #TODO: expand for more distribution types
 
         
@@ -189,12 +195,13 @@ if __name__=="__main__":
     #bv = BayesVar(stats.norm,(3,1),range=(0,5))
     bv = BayesVar(stats.norm,(3,1),range=(0,5), resolution=1000)
     data = stats.uniform(1,3).rvs(500)
-    bv.add_data(data)
+    bv.add_data(data,stats.uniform(1,3))
     print bv
     p = bv.get_posterior_sample(200000)
     print bv
     P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.likelihood/max(bv.likelihood), 'ro', lw=2)
     P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.get_prior_dist(),'g+',lw=2)
+    print p
     P.hist(p, normed=1)
     P.legend(['Likelihood','Prior', 'Posterior'])
     P.title('Bayesian inference')

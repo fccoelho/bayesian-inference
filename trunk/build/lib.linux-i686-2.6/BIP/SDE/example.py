@@ -36,6 +36,7 @@ Is -> R : rs*Is
 Ic -> R : rc*Ic
 
 """
+from cgillespie import Model as CModel
 from gillespie import Model
 import time
 
@@ -44,7 +45,7 @@ vnames = ['S','E','Is','Ic','R']
 #rates: b,ks,kc,rs,rc
 
 r = (0.001, 0.1, 0.1, 0.01, .01)
-ini = (490,0,0,10,0)
+ini = array((490,0,0,10,0))
 # propensity functions
 def f1(r,ini):return r[0]*ini[0]*(ini[2]+ini[3])
 def f2(r,ini):return r[1]*ini[1]
@@ -60,14 +61,30 @@ tmat = array([[-1, 0, 0, 0, 0],#S
               [ 0, 0, 1, 0,-1],#Ic
               [ 0, 0, 0, 1, 1]])#R
 M=Model(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
+CM = CModel(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
+
+# timing python gillespie
 t0 = time.time()
-M.run(tmax=80,reps=100,viz=0,serial=True)
-print 'total time: ',time.time()-t0, ' seconds.'
+M.run(tmax=80,reps=100,viz=0,serial=0)
+pt = time.time()-t0
+print 'Python total time: ',pt, ' seconds.'
 t,series,steps = M.getStats()
 print steps,'steps'
-#print series.shape
-from pylab import plot , show, legend, errorbar
+# timing cython gillespie
+t0 = time.time()
+CM.run(tmax=80,reps=100)
+ct = time.time()-t0
+print 'Cython total time: ',ct, ' seconds.'
+t2,series2,steps2 = CM.getStats()
+print steps2,' steps'
+print "Cython speedup: %sx"%(pt/ct)
+from pylab import plot , show, legend, errorbar, title, figure
 #print series.var(axis=0)
 plot(t,series.mean(axis=0),'-o')
+title('python curve')
+legend(vnames,loc=0)
+figure()
+plot(t2,series2.mean(axis=2),'-o')
+title('cython curve')
 legend(vnames,loc=0)
 show()
