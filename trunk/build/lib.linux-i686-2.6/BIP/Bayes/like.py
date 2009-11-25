@@ -1,4 +1,3 @@
-import random
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        like.py
@@ -9,9 +8,10 @@ import random
 #
 # Created:     2008-11-26
 # Copyright:   (c) 2008 by the Author
-# Licence:     GPL
+# Licence:     GPL v3
 #-----------------------------------------------------------------------------
 __docformat__ = "restructuredtext en"
+import random
 import scipy
 from scipy.special import gammaln
 from numpy import array, searchsorted,log, random,pi,sum
@@ -36,6 +36,24 @@ def Categor(x,hist):
     sup = array(hist[1])
     ind = searchsorted(sup,x)
     like += sum(log(prob[ind]))
+    return like
+
+def Uniform(x,min,max):
+    """
+    Uniform Log-likelihood
+
+    :Parameters:
+        -`x`: data vector(list)
+        -`min`: lower limit of the distribution
+        -`max`: upper limit of the distribution
+
+    >>> Uniform([1.1,2.3,3.4,4],0,5)
+    -6.4377516497364011
+    """
+    assert max>min
+    like = 0.0
+    p = 1./max-min
+    like += sum([log(p) for i in x if i>min and i<=max])
     return like
 
 def Normal(x,mu,tau):

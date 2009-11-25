@@ -15,3 +15,6 @@ in Task-oriented statistical software. From these tools, as this package matures
 you will be able to easily build a solution for your own inferential inquiries, 
 a solution which may not be available on standard statistical packages.
 """
+
+__docformat__ = "restructuredtext en"
+

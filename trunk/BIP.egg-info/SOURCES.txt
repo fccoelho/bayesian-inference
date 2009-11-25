@@ -26,9 +26,7 @@ BIP/Bayes/general/like.pyc
 BIP/SDE/SConstruct
 BIP/SDE/__init__.py
 BIP/SDE/example.py
-BIP/SDE/gillespie.c
 BIP/SDE/gillespie.py
-BIP/SDE/gillespie.pyx
 BIP/SMC/__init__.py
 BIP/SMC/condensation.py
 BIP/Viz/__init__.py
