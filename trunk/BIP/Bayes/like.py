@@ -14,7 +14,7 @@ __docformat__ = "restructuredtext en"
 import random
 import scipy
 from scipy.special import gammaln
-from numpy import array, searchsorted,log, random,pi,sum
+from numpy import array, searchsorted,log, random,pi,sum, inf
 
 
 def Categor(x,hist):
@@ -53,7 +53,12 @@ def Uniform(x,min,max):
     assert max>min
     like = 0.0
     p = 1./max-min
-    like += sum([log(p) for i in x if i>min and i<=max])
+    for i in x:
+        if i>min and i<=max:
+            like += log(p)
+        else:
+            like = -inf
+            return like
     return like
 
 def Normal(x,mu,tau):
