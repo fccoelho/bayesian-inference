@@ -133,8 +133,8 @@ class Model:
                 tc += tau
                 self.steps +=1
                 if a0 == 0: break
-            self.res[tim,:] = i
-            
+            self.res[tim,:] = ini
+#            if a0 == 0: break
         if self.viz:
             self.ser.clearFig()
             self.ser.plotlines(self.res.T,names=self.vn)
