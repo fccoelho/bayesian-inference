@@ -112,7 +112,7 @@ class Model:
         for tim in xrange(1,tmax):
             while tc < tim:
                 i=0
-                a0=0
+                a0=0.0
                 for p in pvi:
                     pv[i] = p(r,ini)
                     a0+=pv[i]
@@ -133,8 +133,8 @@ class Model:
                 tc += tau
                 self.steps +=1
                 if a0 == 0: break
-            self.res[tim,:] = ini
-            if a0 == 0: break
+            self.res[tim,:] = i
+            
         if self.viz:
             self.ser.clearFig()
             self.ser.plotlines(self.res.T,names=self.vn)
@@ -142,7 +142,7 @@ class Model:
 
 
 def p1(r,ini): return r[0]*ini[0]*ini[1]
-def p2(r,ini): return r[0]*ini[1]
+def p2(r,ini): return r[1]*ini[1]
 
 def main():
     vnames = ['S','I','R']
@@ -152,14 +152,15 @@ def main():
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
-    M.run(tmax=80,reps=1000,viz=False,serial=False)
+    M.run(tmax=80,reps=100,viz=False,serial=False)
     print 'total time: ',time.time()-t0
     #print res
-
-#    from pylab import plot , show, legend
-#    plot(t,res,'-.')
-#    legend(M.vn,loc=0)
-#    show()
+    t,series,steps = M.getStats()
+    ser = series.mean(axis=0)
+    from pylab import plot , show, legend
+    plot(t,ser,'-.')
+    legend(M.vn,loc=0)
+    show()
     
 
 if __name__=="__main__":

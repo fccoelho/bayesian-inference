@@ -4,7 +4,7 @@ This module implements classes to represent an arbitrary Bayesian random variabl
 """
 # copyright 2007 Flavio Codeco Coelho
 # Licensed under GPL v3
-from numpy import arange,compress, array, exp, ones, less, greater, searchsorted
+from numpy import arange,compress, array, exp, sqrt, ones, less, greater, searchsorted
 from BIP.Bayes import like
 import sys
 import pylab as P
@@ -22,9 +22,11 @@ conjlist = [
     'geom', #geometric
     ]
 
-## Factory function for continuous and discrete variables 
 
 def BayesVar(priortype,pars, range,resolution=1024):
+    """
+    Factory function for continuous and discrete variables
+    """
     if isinstance(priortype, stats.rv_continuous):
         return __BayesC(priortype,pars, range,resolution)
     if isinstance(disttype, stats.rv_discrete):
@@ -134,7 +136,7 @@ class _BayesVar(object):
             s= k.resample(n)
         else:
             s = self.get_prior_sample(n)
-        if self.data:
+        if self.data != None:
             m = self.rang[0]
             M = self.rang[1]
             step = self.res
@@ -199,6 +201,7 @@ if __name__=="__main__":
     print bv
     P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.likelihood/max(bv.likelihood), 'ro', lw=2)
     P.plot(arange(bv.rang[0],bv.rang[1], bv.res),bv.get_prior_dist(),'g+',lw=2)
+    print p
     P.hist(p, normed=1)
     P.legend(['Likelihood','Prior', 'Posterior'])
     P.title('Bayesian inference')
