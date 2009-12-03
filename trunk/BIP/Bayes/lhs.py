@@ -71,8 +71,9 @@ def lhs(dist, parms, siz=100, noCorrRestr=False, corrmat=None):
         - `parms`: tuple of parameters as required for dist, or a list of them.
         - `siz` :number or shape tuple for the output sample
     '''
-    if not isinstance(dist,list):
+    if not isinstance(dist,(list,tuple)):
         dists = [dist]
+        parms = [parms]
     else:
         assert len(dist) == len(parms)
         dists = dist
@@ -93,6 +94,8 @@ def lhs(dist, parms, siz=100, noCorrRestr=False, corrmat=None):
         if isinstance(siz,(tuple,list)):
             v.shape = siz
         smplist.append(v)
+    if len(dists) == 1:
+        return smplist[0]
     return smplist
 
 def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
@@ -106,12 +109,14 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
         -`noCorrRestr`: No correlation restriction if True
         -`Corrmat`: Correlation matrix. If None, assure uncorrelated samples.
     """
-    if noCorrRestr:
+    if noCorrRestr or nvars ==1:
         x = [stats.randint.rvs(1,smp+1,size=smp) for i in xrange(nvars)]
     else:
-        if Corrmat==None:
+        if Corrmat == None:
             C=numpy.core.numeric.identity(nvars)
         else:
+            if Corrmat.shape[0] != nvars:
+                raise Error('Correlation matrix must be of rank %s'%nvars)
             C=numpy.matrix(Corrmat)
         s0=numpy.arange(1.,smp+1)/(smp+1.)
         s=stats.norm().ppf(s0)
@@ -132,6 +137,7 @@ if __name__=='__main__':
     #dist = stats.beta
     pars = (50,1)
     #pars = (1,5) #beta
+    b = lhs(dist,pars,1000)
     cm = numpy.array([[1,.8],[.8,1]])
     c=lhs([dist,dist], [pars,pars],2000,False, cm)
     print stats.pearsonr(c[0],c[1]), stats.spearmanr(c[0],c[1])

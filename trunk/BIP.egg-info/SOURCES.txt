@@ -14,11 +14,11 @@ BIP/Bayes/Melding.py
 BIP/Bayes/Melding.pyc
 BIP/Bayes/__init__.py
 BIP/Bayes/__init__.pyc
+BIP/Bayes/conjugate_priors.py.py
 BIP/Bayes/lhs.py
 BIP/Bayes/lhs.pyc
 BIP/Bayes/like.py
 BIP/Bayes/like.pyc
-BIP/Bayes/conjugate/__init__.py
 BIP/Bayes/general/__init__.py
 BIP/Bayes/general/bayesvar.png
 BIP/Bayes/general/bvariables.py
