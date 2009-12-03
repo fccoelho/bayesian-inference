@@ -109,6 +109,8 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
         -`noCorrRestr`: No correlation restriction if True
         -`Corrmat`: Correlation matrix. If None, assure uncorrelated samples.
     """
+    if isinstance(smp,(tuple,list)):
+            smp=numpy.product(smp)
     if noCorrRestr or nvars ==1:
         x = [stats.randint.rvs(1,smp+1,size=smp) for i in xrange(nvars)]
     else:
