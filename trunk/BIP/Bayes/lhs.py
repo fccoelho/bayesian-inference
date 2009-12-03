@@ -15,10 +15,12 @@ __docformat__ = "restructuredtext en"
 #from pylab import plot, figure,hist,show, savefig, legend
 import scipy.stats as stats
 import numpy
+from numpy.linalg import cholesky,inv
 
 def lhsFromSample(sample,siz=100):
     """
-    Latin Hypercube Sample from a set of values
+    Latin Hypercube Sample from a set of values.
+    For univariate distributions only
 
     :Parameters:
         - `sample`: list, tuple of array
@@ -56,7 +58,7 @@ def lhsFromDensity(kde,siz=100):
     return v
 
 
-def lhs(dist, parms, siz=100):
+def lhs(dist, parms, siz=100, noCorrRestr=False, corrmat=None):
     '''
     Latin Hypercube sampling of any distribution.
     dist is is a scipy.stats random number generator 
@@ -65,39 +67,84 @@ def lhs(dist, parms, siz=100):
     the specified distribution.
 
     :Parameters:
-        - `dist`: random number generator from scipy.stats module.
-        - `parms`: tuple of parameters as required for dist.
+        - `dist`: random number generator from scipy.stats module or a list of them.
+        - `parms`: tuple of parameters as required for dist, or a list of them.
         - `siz` :number or shape tuple for the output sample
     '''
-    if not isinstance(dist, (stats.rv_discrete,stats.rv_continuous)):
-        raise TypeError('dist is not a scipy.stats distribution object')
-    n=siz
-    if isinstance(siz,(tuple,list)):
-        n=numpy.product(siz)
-    #force type to float for sage compatibility
-    parms = tuple([float(k) for k in parms])
-    perc = numpy.arange(0.,1.,1./n)
-    numpy.random.shuffle(perc)
-    smp = [stats.uniform(i,1./n).rvs() for i in perc]
-    v = dist(*parms).ppf(smp)
+    if not isinstance(dist,list):
+        dists = [dist]
+    else:
+        assert len(dist) == len(parms)
+        dists = dist
+    indices=rank_restr(nvars=len(dists), smp=siz, noCorrRestr=noCorrRestr, Corrmat=corrmat)
+    smplist = []
+    for j,d in enumerate(dists):
+        if not isinstance(d, (stats.rv_discrete,stats.rv_continuous)):
+            raise TypeError('dist is not a scipy.stats distribution object')
+        n=siz
+        if isinstance(siz,(tuple,list)):
+            n=numpy.product(siz)
+        #force type to float for sage compatibility
+        pars = tuple([float(k) for k in parms[j]])
+        perc = numpy.arange(0.,1.,1./n)
+        v = d(*pars).ppf(perc)
+        index=map(int,indices[j]-1)
+        v = v[index]
+        if isinstance(siz,(tuple,list)):
+            v.shape = siz
+        smplist.append(v)
+    return smplist
+
+def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
+    """
+    Returns the indices for sampling variables with  
+    the desired correlation structure.
     
-    if isinstance(siz,(tuple,list)):
-        v.shape = siz
-    return v
-            
+    :Parameters:
+        -`nvars`: number of variables
+        -`smp`: number of samples
+        -`noCorrRestr`: No correlation restriction if True
+        -`Corrmat`: Correlation matrix. If None, assure uncorrelated samples.
+    """
+    if noCorrRestr:
+        x = [stats.randint.rvs(1,smp+1,size=smp) for i in xrange(nvars)]
+    else:
+        if Corrmat==None:
+            C=numpy.core.numeric.identity(nvars)
+        else:
+            C=numpy.matrix(Corrmat)
+        s0=numpy.arange(1.,smp+1)/(smp+1.)
+        s=stats.norm().ppf(s0)
+        s1=[]
+        for i in xrange(nvars):
+            numpy.random.shuffle(s)
+            s1.append(s.copy())
+        S=numpy.matrix(s1)
+        P=cholesky(C)
+        Q=cholesky(numpy.corrcoef(S))
+        Final=S.transpose()*inv(Q).transpose()*P.transpose()
+        x = [stats.stats.rankdata(Final.transpose()[i,]) for i in xrange(nvars)]
+    return x
+
 if __name__=='__main__':
+    import pylab as P
     dist = stats.norm
     #dist = stats.beta
     pars = (50,1)
     #pars = (1,5) #beta
-    c=lhs(dist, pars,20)
-    #hist(c,normed=1, label='LHS sample')
+    cm = numpy.array([[1,.8],[.8,1]])
+    c=lhs([dist,dist], [pars,pars],2000,False, cm)
+    print stats.pearsonr(c[0],c[1]), stats.spearmanr(c[0],c[1])
+    #P.hist(c[0],normed=1)#, label='c0 sample')
+    P.scatter(c[0],c[1])
+    #P.hist(c[1],normed=1)#, label='c1 sample')
+    print c[0].shape,c[1].shape
     n = dist(*pars).rvs(size=20)
     #hist(n.ravel(),facecolor='r',alpha =0.3,normed=1, label='Regular sample')
     #plot(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1),dist(*pars).pdf(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1)),label='PDF')
     #legend()
     #savefig('lhs.png',dpi=400)
-    #show()
+    P.show()
     
 
-#TODO: Add correlated multiple lhs sampling
+#TODO: Extend lhsFromSample to allow multivariate correlated sampling

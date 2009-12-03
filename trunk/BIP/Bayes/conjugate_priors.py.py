@@ -3,9 +3,8 @@
 """
 Conjugate prior classes
 """
-
-__author__="fccoelho"
-__date__ ="$01/12/2009 12:12:39$"
+__author__ = "fccoelho"
+__date__ = "$01/12/2009 12:12:39$"
 __docformat__ = "restructuredtext en"
 
 class Beta:

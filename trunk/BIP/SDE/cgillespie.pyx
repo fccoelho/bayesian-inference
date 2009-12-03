@@ -99,7 +99,7 @@ cdef class Model(object):
                 steps +=1
                 if a0 == 0: break
             self.res[tim,:,round] = ini
-            if a0 == 0: break
+            #if a0 == 0: break
 #        tvec = tvec[:tim]
 #        self.res = res[:tim,:,round]
         return steps
