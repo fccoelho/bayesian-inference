@@ -87,8 +87,9 @@ def lhs(dist, parms, siz=100, noCorrRestr=False, corrmat=None):
             n=numpy.product(siz)
         #force type to float for sage compatibility
         pars = tuple([float(k) for k in parms[j]])
-        perc = numpy.arange(0.,1.,1./n)
+        perc = numpy.arange(1.,n+1)/(n+1)
         v = d(*pars).ppf(perc)
+        #print numpy.isinf(indices[j].sum())
         index=map(int,indices[j]-1)
         v = v[index]
         if isinstance(siz,(tuple,list)):
@@ -111,6 +112,12 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
     """
     if isinstance(smp,(tuple,list)):
             smp=numpy.product(smp)
+    def shuf(s):
+        s1=[]
+        for i in xrange(nvars):
+            numpy.random.shuffle(s)
+            s1.append(s.copy())
+        return s1
     if noCorrRestr or nvars ==1:
         x = [stats.randint.rvs(1,smp+1,size=smp) for i in xrange(nvars)]
     else:
@@ -118,17 +125,15 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
             C=numpy.core.numeric.identity(nvars)
         else:
             if Corrmat.shape[0] != nvars:
-                raise Error('Correlation matrix must be of rank %s'%nvars)
+                raise TypeError('Correlation matrix must be of rank %s'%nvars)
             C=numpy.matrix(Corrmat)
         s0=numpy.arange(1.,smp+1)/(smp+1.)
         s=stats.norm().ppf(s0)
-        s1=[]
-        for i in xrange(nvars):
-            numpy.random.shuffle(s)
-            s1.append(s.copy())
+        s1 = shuf(s)
         S=numpy.matrix(s1)
         P=cholesky(C)
         Q=cholesky(numpy.corrcoef(S))
+
         Final=S.transpose()*inv(Q).transpose()*P.transpose()
         x = [stats.stats.rankdata(Final.transpose()[i,]) for i in xrange(nvars)]
     return x
@@ -152,6 +157,7 @@ if __name__=='__main__':
     #plot(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1),dist(*pars).pdf(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1)),label='PDF')
     #legend()
     #savefig('lhs.png',dpi=400)
+    lhs([stats.norm]*19,[(0,1)]*19,17,False,numpy.identity(19))
     P.show()
     
 
