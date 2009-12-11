@@ -18,6 +18,7 @@ except:
     pass
 import sys
 import os
+import copy
 import cPickle as CP
 import like
 import pylab as P
@@ -25,7 +26,7 @@ from scipy.stats.kde import gaussian_kde
 from scipy.linalg import LinAlgError
 from scipy import stats
 import numpy
-from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var
+from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var,sqrt,floor
 from time import time
 from numpy.random import normal, randint,  random, seed
 try:
@@ -75,8 +76,15 @@ class Meld:
         self.post_phi = recarray(L,formats=['f8']*nphi) #Phi Posteriors (record array)
         self.ntheta = ntheta
         self.nphi = nphi
+        self.thetapars = []
+        self.phipars = []
         self.alpha = alpha #pooling weight of user-provided phi priors
         self.done_running = False
+        self.theta_dists = {}#parameterized rngs for each parameter
+        self.phi_dists = {}#parameterized rngs for each variable
+        self.proposal_variance = 0.0000001
+        self.adaptscalefactor = 1 #adaptive variance. Used my metropolis hastings
+        self.salt_band = 0.1
         if Viz: #Gnuplot installed
             self.viz = viz
         else:
@@ -100,9 +108,11 @@ class Meld:
         self.phi.dtype.names = names
         self.post_phi.dtype.names = names
         self.plimits = limits
+        self.phipars = pars
         for n,d,p in zip(names,dists,pars):
             self.q2phi[n] = lhs.lhs(d,p,self.K).ravel()
             self.q2type.append(d.name)
+            self.phi_dists[n]=d(*p)
 
 
         
@@ -118,12 +128,34 @@ class Meld:
         """
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
+        self.thetapars = pars
         if os.path.exists('q1theta'):
             self.q1theta = CP.load(open('q1theta','r'))
         else:
             for n,d,p in zip(names,dists,pars):
                 self.q1theta[n] = lhs.lhs(d,p,self.K).ravel()
+                self.theta_dists[n]=d(*p).rvs
         
+    def add_salt(self,dataset,band):
+        """
+        Adds a few extra uniformly distributed data 
+        points beyond the dataset range.
+        This is done by adding from a uniform dist.
+        
+        :Parameters:
+            -`dataset`: vector of data
+            -`band`: Fraction of range to extend: [0,1[
+            
+        :Returns:
+            Salted dataset.
+        """
+        dmax = max(dataset)
+        dmin = min(dataset)
+        drange = dmax-dmin
+        hb = drange*band/2.
+        d = numpy.concatenate((dataset,stats.uniform(dmin-hb,dmax-dmin+hb).rvs(self.K*.05)))
+        return d
+    
     def setThetaFromData(self,names,data, limits):
         """
         Setup the model inputs and set the prior distributions from the vectors
@@ -144,15 +176,23 @@ class Meld:
         if os.path.exists('q1theta'):
             self.q1theta = CP.load(open('q1theta','r'))
         else:
-            i = 0
-            for n,d in zip(names,data):
+            for n,d,lim in zip(names,data,limits):
                 smp = []
+                #add some points uniformly across the support 
+                #to help MCMC to escape from prior bounds
+                d = self.add_salt(d,self.salt_band)
+
+                dist = gaussian_kde(d)
                 while len(smp)<self.K:
-                    smp += [x for x in gaussian_kde(d).resample(self.K)[0] if x >= limits[i][0] and x <= limits[i][1]]
+                    smp += [x for x in dist.resample(self.K)[0] if x >= lim[0] and x <= lim[1]]
                 #print self.q1theta[n].shape, array(smp[:self.K]).shape
                 self.q1theta[n] = array(smp[:self.K])
-                i += 1
-#       
+                def proposal(): #resample from kde within bounds
+                    smp = -numpy.inf
+                    while not (smp>=lim[0] and smp<=lim[1]):
+                        smp = dist.resample(1)[0][0]
+                    return smp
+                self.theta_dists[n] = proposal
 
     def setPhiFromData(self,names,data,limits):
         """
@@ -242,7 +282,7 @@ class Meld:
 #            else:
 #                self.post_phi[i]= [tuple(l) for l in r.get()[-t:]]
             if i%100 == 0 and self.verbose:
-                print "==> L = %s"%i
+                print "==> L = %s\r"%i
 
         po.close()
         po.join()
@@ -373,13 +413,6 @@ class Meld:
         w /=sum(w)
         w = nan_to_num(w)
         print 'max(w): %s\nmean(w): %s\nvar(w): %s'%(max(w), mean(w), var(w))
-#        for n in phi.dtype.names:
-#            P.plot(mean(phi[n],axis=0),label=n)
-#        P.figure()
-#        P.plot(w,label='w')
-#        P.plot(qtilphi,label='qtilphi')
-#        P.title('Resampling vector(w) and pooled prior on Phi')
-#        P.legend()
         if sum(w) == 0.0:
             print 'Resampling weights are all zero, please check your model or data.'
             return 0
@@ -394,6 +427,126 @@ class Meld:
 
         self.done_running = True
         return 1
+
+    def imp_sample(self,n,data, w):
+        """
+        Importance sampling
+        
+        :Returns:
+            returns a sample of size n
+        """
+        #sanitizing weights
+        w /=sum(w)
+        w = nan_to_num(w)
+        j=0
+        smp = copy.deepcopy(data[:n])
+        while j < n:
+            i = randint(0,w.size)# Random position of w
+            if random() <= w[i]:
+                smp[j] = data[j]
+                j += 1
+        return smp
+    
+    def mcmc_run(self, data, t=1, likvariance=10,burnin=100, nopool=False, method="MH" ):
+        """
+        MCMC based fitting
+
+        :Parameters:
+            - `data`: observed time series on the model's output
+            - `t`: length of the observed time series
+            - `variance`: variance of the Normal likelihood function
+            - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
+            - `savetemp`: Boolean. create a temp file?
+            - `method`: Step method. defaults to Metropolis hastings
+        """
+        self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+        if method == "MH":
+            self.mh(self.K,t,data,like.Normal,likvariance,burnin)
+        else:
+            sys.exit("Invalid MCMC method!\nTry 'MH'.")
+        self.done_running = 1
+        return 1
+
+
+    def mh(self, n,t, data, likfun,variance, burnin):
+        """
+        Simple Metropolis hastings. 
+        Assumes symmetric proposal distributions.
+        
+        :Parameters:
+            -`n`: number of samples to obtain
+            -`t`: Length of time-series
+            -`data`: Observation dictionary {'variable':[time-series]}
+            -`likfun`: likelihood function to use
+            -`variance`: variance of the likelihood function
+            -`burnin`: number of samples to discard at the beginning of the chain.
+        """
+        def tune(ar):
+            if ar<0.05:
+                self.adaptscalefactor *= 0.5
+            elif ar <0.2:
+                self.adaptscalefactor *= 0.9
+            elif ar >0.9:
+                self.adaptscalefactor *= 10
+            elif ar >0.75:
+                self.adaptscalefactor *= 2
+            elif ar >0.5:
+                self.adaptscalefactor *= 1.1
+        ptheta = recarray((self.K),formats=['f8']*self.ntheta, names = self.post_theta.dtype.names)
+        i=0;j=0;rej=0 #total samples,accepted samples, rejected proposals
+        last_lik = None
+        liklist = []
+        while j < n:
+            #generating proposals
+            pvar = self.proposal_variance*self.adaptscalefactor
+            theta = [self.theta_dists[dist]() for dist in self.q1theta.dtype.names]
+            prop = self.model(*theta)
+            if t == 1:
+                prop=[(v,) for v in prop]
+            #calculate likelihoods
+            lik=0 
+            for k in xrange(self.nphi): #loop on series
+                if self.q2phi.dtype.names[k] not in data:
+                    continue#Only calculate liks of series for which we have data
+                obs = data[self.q2phi.dtype.names[k]]
+                for p in xrange(t): #Loop on time
+                    lik += likfun(obs[p],prop[p][k],1./variance)
+            #store samples
+            if last_lik == None: #on first sample
+                last_lik = lik
+                continue
+            
+            if not (lik-last_lik) > numpy.log(1):
+                if not numpy.log(random())< lik-last_lik:
+                    rej +=1 #adjust rejection counter
+                    i +=1
+                    #print theta
+                    continue
+            if i >= burnin:#store only after burnin samples
+                self.phi[j] = prop[0] if t==1 else [tuple(point) for point in prop]
+                ptheta[j] = tuple(theta)
+                liklist.append(lik)
+                j += 1 #update good sample counter 
+            last_lik = lik
+            i+=1
+            
+        self.post_theta = self.imp_sample(self.L,ptheta,liklist)
+        ar = (i-rej)/float(i) 
+        if ar > 0.9:
+            if self.salt_band < 0:
+                self.salt_band = 0.05
+            elif self.salt_band < 30:
+                self.salt_band *= 10
+        if ar < 0.4:
+            self.salt_band = 0.001 #no more expansion
+        print "Total steps(i): ",i,"rej:",rej, "j:",j
+        print ">>> Salt-Band: %s"%self.salt_band
+        print ">>> Acceptance rate: %s"%ar
+        
+        return 1
+                
+
+
 
     def sir(self, data={}, t=1,variance=0.1, nopool=False,savetemp=False):
         """
@@ -422,10 +575,10 @@ class Meld:
                 print 'Pooled prior on ouputs is null, please check your priors, and try again.'
                 return 0
 
-#        Calculating the likelihood of each phi[i] considering the observed data
+#       Calculating the likelihood of each phi[i] considering the observed data
         lik = zeros(self.K)
         t0=time()
-#        po = Pool()
+#       po = Pool()
         for i in xrange(self.K):
             l=1
             for n in data.keys():
@@ -434,7 +587,6 @@ class Meld:
                 elif isinstance(data[n],numpy.ndarray) and (not data[n].any()):
                     continue #no observations for this variable
                 p = phi[n]
-                
 #                liklist=[po.apply_async(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
 #                l=product([p.get() for p in liklist])
                 l *= product([exp(like.Normal(data[n][m], j,1./(variance))) for m,j in enumerate(p[i])])
@@ -490,9 +642,9 @@ class Meld:
             return 0
         return 1
 
-    def runModel(self,savetemp,t=1):
+    def runModel(self,savetemp,t=1, k=None):
         '''
-        Handles running the model self.K times keeping a temporary savefile for 
+        Handles running the model k times keeping a temporary savefile for
         resuming calculation in case of interruption.
 
         :Parameters:
@@ -500,6 +652,8 @@ class Meld:
         '''
         if savetemp:
             CP.dump(self.q1theta,open('q1theta','w'))
+        if not k:
+            k = self.K
 #       Running the model ==========================
         
                 
@@ -507,7 +661,7 @@ class Meld:
             self.phi,j = CP.load(open('phi.temp','r'))
         else:
             j=0
-            self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+            self.phi = recarray((k,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         def cb(r):
             '''
             callback function for the asynchronous model runs
@@ -519,7 +673,7 @@ class Meld:
 
         po = Pool()
         t0=time()
-        for i in xrange(j,self.K):
+        for i in xrange(j,k):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = po.apply_async(enumRun,(self.model,theta,i),callback=cb)
 #            r = po.apply_async(self.model,theta)
@@ -536,7 +690,7 @@ class Meld:
             os.unlink('q1theta')
         po.close()
         po.join()
-        print "==> Done Running the K (%s) replicates (took %s seconds)\n"%(self.K,(time()-t0))
+        print "==> Done Running the K (%s) replicates (took %s seconds)\n"%(k,(time()-t0))
         
         return self.phi
 def enumRun(model,theta,k):
@@ -554,6 +708,8 @@ def enumRun(model,theta,k):
     """
     res =model(*theta)
     return (res,k)
+
+
 
 def model(r, p0, n=1):
     """
@@ -582,7 +738,7 @@ def plotRaHist(arr):
     fs = (numpy.ceil(numpy.sqrt(nv)),numpy.floor(numpy.sqrt(nv))+1) #figure size
     P.figure()
     for i,n in enumerate(arr.dtype.names):
-        P.subplot(nv/2+1,2,i+1)
+        P.subplot(floor(sqrt(nv)),floor(sqrt(nv))+1,i+1)
         P.hist(arr[n],bins=50, normed=1, label=n)
         P.legend()
 
@@ -601,9 +757,24 @@ def main2():
     plotRaHist(pp)
     P.show()
     print end-start, ' seconds'
+    
+def mh_test():
+    start = time()
+    Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
+    Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
+    Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
+    #Me.add_data(normal(7.5,1,400),'normal',(6,9))
+    #Me.run()
+    Me.mcmc_run(data ={'p':[7.5]},burnin=1000)
+    pt,pp = Me.getPosteriors(1)
+    end = time()
+    plotRaHist(pt)
+    plotRaHist(pp)
+    P.show()
+    print end-start, ' seconds'
 
 if __name__ == '__main__':
-    
-    main2()
+    mh_test()
+    #main2()
      
 

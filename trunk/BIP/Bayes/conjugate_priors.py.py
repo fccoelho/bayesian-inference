@@ -22,7 +22,7 @@ class Beta:
     def get_posterior(self):
         """
         :Return:
-            posterior in the forma of a frozen scipy rng
+            posterior in the form of a frozen scipy rng
             
         """
         pass

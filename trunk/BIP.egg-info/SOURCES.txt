@@ -19,6 +19,8 @@ BIP/Bayes/lhs.py
 BIP/Bayes/lhs.pyc
 BIP/Bayes/like.py
 BIP/Bayes/like.pyc
+BIP/Bayes/Samplers/MCMC.py
+BIP/Bayes/Samplers/__init__.py
 BIP/Bayes/general/__init__.py
 BIP/Bayes/general/bayesvar.png
 BIP/Bayes/general/bvariables.py

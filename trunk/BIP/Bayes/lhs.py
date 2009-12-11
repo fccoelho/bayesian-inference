@@ -26,6 +26,7 @@ def lhsFromSample(sample,siz=100):
         - `sample`: list, tuple of array
         - `siz`: Number or shape tuple for the output sample
     """
+    #TODO: add support to correlation restricted multivariate samples
     if not isinstance(sample, (list,tuple,numpy.ndarray)):
         raise TypeError('sample is not a list, tuple or numpy vector')
     n = siz
