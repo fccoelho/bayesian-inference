@@ -63,7 +63,8 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module bvariables</h1><p class="nomargin-top"><span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html">source&nbsp;code</a></span></p>
-This module implements classes to represent an arbitrary Bayesian random variable.
+<p>This module implements classes to represent an arbitrary Bayesian random variable.</p>
+<p>This is experimental code! do not use for serious applications!</p>
 
 <!-- ==================== CLASSES ==================== -->
 <a name="section-Classes"></a>
@@ -131,7 +132,8 @@ This module implements classes to represent an arbitrary Bayesian random variabl
           <td><span class="summary-sig"><a name="BayesVar"></a><span class="summary-sig-name">BayesVar</span>(<span class="summary-sig-arg">priortype</span>,
         <span class="summary-sig-arg">pars</span>,
         <span class="summary-sig-arg">range</span>,
-        <span class="summary-sig-arg">resolution</span>=<span class="summary-sig-default">1024</span>)</span></td>
+        <span class="summary-sig-arg">resolution</span>=<span class="summary-sig-default">1024</span>)</span><br />
+      Factory function for continuous and discrete variables</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.general.bvariables-pysrc.html#BayesVar">source&nbsp;code</a></span>
             
@@ -163,10 +165,76 @@ This module implements classes to represent an arbitrary Bayesian random variabl
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="conjlist"></a><span class="summary-name">conjlist</span> = <code title="['bernoulli', 'binom', 'nbinom', 'poisson', 'geom',]">['bernoulli', 'binom', 'nbinom', 'poisson', 'geom',]</code>
+        <a href="BIP.Bayes.general.bvariables-module.html#discrete_conjugate_priors" class="summary-name">discrete_conjugate_priors</a> = <code title="{'Bernoulli': 'Beta', 'Binomial': 'Beta', 'Negative Binomial': 'Beta',\
+ 'Poisson': 'Gamma', 'Multinomial': 'Dirichlet', 'Geometric': 'Beta'}">{'Bernoulli': 'Beta', 'Binomial': <code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="BIP.Bayes.general.bvariables-module.html#continuous_conjugate_priors" class="summary-name">continuous_conjugate_priors</a> = <code title="{'Uniform': 'Pareto', 'Exponential': 'Gamma', 'Normal': 'Normal', 'Par\
+eto': 'Gamma', 'Gamma': 'Gamma', 'Inverse Gamma': 'Gamma'}">{'Uniform': 'Pareto', 'Exponenti<code class="variable-ellipsis">...</code></code>
     </td>
   </tr>
 </table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="discrete_conjugate_priors"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">discrete_conjugate_priors</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{'Bernoulli': 'Beta', 'Binomial': 'Beta', 'Negative Binomial': 'Beta',<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ 'Poisson': 'Gamma', 'Multinomial': 'Dirichlet', 'Geometric': 'Beta'}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="continuous_conjugate_priors"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">continuous_conjugate_priors</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{'Uniform': 'Pareto', 'Exponential': 'Gamma', 'Normal': 'Normal', 'Par<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+eto': 'Gamma', 'Gamma': 'Gamma', 'Inverse Gamma': 'Gamma'}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -198,7 +266,7 @@ This module implements classes to represent an arbitrary Bayesian random variabl
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 24 11:46:40 2009
+    Generated by Epydoc 3.0.1 on Fri Dec 11 16:20:57 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

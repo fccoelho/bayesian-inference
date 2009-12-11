@@ -11,11 +11,14 @@ __docformat__ = "restructuredtext en"
 
 #TODO: Finish implementation and test
 class Metropolis(object):
+    """
+    Metropolis Hastings sampler class
+    """
     def __init__(self, proposal_dist,likfun):
         self.salt_band = 0.05
         pass
     def propose(self):
-        #generating proposals
+        """generates proposals"""
         pvar = self.proposal_variance*self.adaptscalefactor
         theta = [self.theta_dists[dist]() for dist in self.q1theta.dtype.names]
         prop = self.model(*theta)
@@ -23,6 +26,10 @@ class Metropolis(object):
             prop=[(v,) for v in prop]
         return theta,prop
     def step(self,n=1):
+        """
+        Does the actual sampling loop for 
+        n steps
+        """
         ptheta = recarray((self.K),formats=['f8']*self.ntheta, names = self.post_theta.dtype.names)
         i=0;j=0;rej=0 #total samples,accepted samples, rejected proposals
         last_lik = None
@@ -71,18 +78,22 @@ class Metropolis(object):
         
         return 1
     def tune(self, ar):
+        """
+        Tune the proposal distribtion variance
+        in the case of using a Normal proposal distribution 
+        """
         if self.proposal_dist == "prior":
             return
         if ar<0.05:
-                self.adaptscalefactor *= 0.5
-            elif ar <0.2:
-                self.adaptscalefactor *= 0.9
-            elif ar >0.9:
-                self.adaptscalefactor *= 10
-            elif ar >0.75:
-                self.adaptscalefactor *= 2
-            elif ar >0.5:
-                self.adaptscalefactor *= 1.1
+            self.adaptscalefactor *= 0.5
+        elif ar <0.2:
+            self.adaptscalefactor *= 0.9
+        elif ar >0.9:
+            self.adaptscalefactor *= 10
+        elif ar >0.75:
+            self.adaptscalefactor *= 2
+        elif ar >0.5:
+            self.adaptscalefactor *= 1.1
     def add_salt(self,dataset,band):
         """
         Adds a few extra uniformly distributed data 

@@ -156,6 +156,26 @@ needed for the dists the melding replicates.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#add_salt" class="summary-sig-name">add_salt</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dataset</span>,
+        <span class="summary-sig-arg">band</span>)</span><br />
+      Adds a few extra uniformly distributed data
+points beyond the dataset range.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.add_salt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#setThetaFromData" class="summary-sig-name">setThetaFromData</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">names</span>,
         <span class="summary-sig-arg">data</span>,
@@ -318,6 +338,72 @@ techniques.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#imp_sample" class="summary-sig-name">imp_sample</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">w</span>)</span><br />
+      Importance sampling</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.imp_sample">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#mcmc_run" class="summary-sig-name">mcmc_run</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">likvariance</span>=<span class="summary-sig-default">10</span>,
+        <span class="summary-sig-arg">burnin</span>=<span class="summary-sig-default">100</span>,
+        <span class="summary-sig-arg">nopool</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">method</span>=<span class="summary-sig-default">&quot;MH&quot;</span>)</span><br />
+      MCMC based fitting</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.mcmc_run">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#mh" class="summary-sig-name">mh</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">likfun</span>,
+        <span class="summary-sig-arg">variance</span>,
+        <span class="summary-sig-arg">burnin</span>)</span><br />
+      Simple Metropolis hastings.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.mh">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#sir" class="summary-sig-name">sir</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>=<span class="summary-sig-default">{}</span>,
         <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>,
@@ -342,8 +428,9 @@ techniques.</td>
         <tr>
           <td><span class="summary-sig"><a href="BIP.Bayes.Melding.Meld-class.html#runModel" class="summary-sig-name">runModel</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">savetemp</span>,
-        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>)</span><br />
-      Handles running the model self.K times keeping a temporary savefile for
+        <span class="summary-sig-arg">t</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">k</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Handles running the model k times keeping a temporary savefile for
 resuming calculation in case of interruption.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.runModel">source&nbsp;code</a></span>
@@ -470,6 +557,35 @@ needed for the dists the melding replicates.
     </ul></dd>
   </dl>
 </td></tr></table>
+</div>
+<a name="add_salt"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_salt</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dataset</span>,
+        <span class="sig-arg">band</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.add_salt">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Adds a few extra uniformly distributed data
+points beyond the dataset range.
+This is done by adding from a uniform dist.
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>Salted dataset.</dd>
+  </dl>
+<div class="fields">      <p><strong>Parameters:</strong>
+        -<code class="link">dataset</code>: vector of data
+-<code class="link">band</code>: Fraction of range to extend [0,1[
+      </p>
+</div></td></tr></table>
 </div>
 <a name="setThetaFromData"></a>
 <div>
@@ -707,6 +823,97 @@ techniques. This method should be used as an alternative to the sir.
   </dl>
 </td></tr></table>
 </div>
+<a name="imp_sample"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">imp_sample</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">w</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.imp_sample">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Importance sampling
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>returns a sample of size n</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="mcmc_run"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">mcmc_run</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">t</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">likvariance</span>=<span class="sig-default">10</span>,
+        <span class="sig-arg">burnin</span>=<span class="sig-default">100</span>,
+        <span class="sig-arg">nopool</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">method</span>=<span class="sig-default">&quot;MH&quot;</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.mcmc_run">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  MCMC based fitting
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - observed time series on the model's output</li>
+        <li><strong class="pname"><code>t</code></strong> - length of the observed time series</li>
+        <li><strong class="pname"><code>likvariance</code></strong> - variance of the Normal likelihood function</li>
+        <li><strong class="pname"><code>nopool</code></strong> - True if no priors on the outputs are available. Leads to faster calculations</li>
+        <li><strong class="pname"><code>method</code></strong> - Step method. defaults to Metropolis hastings</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="mh"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">mh</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">likfun</span>,
+        <span class="sig-arg">variance</span>,
+        <span class="sig-arg">burnin</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.mh">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Simple Metropolis hastings.
+Assumes symmetric proposal distributions.
+  <dl class="fields">
+  </dl>
+<div class="fields">      <p><strong>Parameters:</strong>
+        -<code class="link">n</code>: number of samples to obtain
+-<code class="link">t</code>: Length of time-series
+-<code class="link">data</code>: Observation dictionary {'variable':[time-series]}
+-<code class="link">likfun</code>: likelihood function to use
+-<code class="link">variance</code>: variance of the likelihood function
+-<code class="link">burnin</code>: number of samples to discard at the beginning of the chain.
+      </p>
+</div></td></tr></table>
+</div>
 <a name="sir"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -749,14 +956,15 @@ Returns 1 if successful or 0 if not.
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">runModel</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">savetemp</span>,
-        <span class="sig-arg">t</span>=<span class="sig-default">1</span>)</span>
+        <span class="sig-arg">t</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">k</span>=<span class="sig-default">None</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="BIP.Bayes.Melding-pysrc.html#Meld.runModel">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  Handles running the model self.K times keeping a temporary savefile for
+  Handles running the model k times keeping a temporary savefile for
 resuming calculation in case of interruption.
   <dl class="fields">
     <dt>Parameters:</dt>
@@ -798,7 +1006,7 @@ resuming calculation in case of interruption.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Nov 24 11:46:40 2009
+    Generated by Epydoc 3.0.1 on Fri Dec 11 16:20:57 2009
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
