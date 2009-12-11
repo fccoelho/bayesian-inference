@@ -144,7 +144,7 @@ class Meld:
         
         :Parameters:
             -`dataset`: vector of data
-            -`band`: Fraction of range to extend: [0,1[
+            -`band`: Fraction of range to extend [0,1[
             
         :Returns:
             Salted dataset.
@@ -454,9 +454,8 @@ class Meld:
         :Parameters:
             - `data`: observed time series on the model's output
             - `t`: length of the observed time series
-            - `variance`: variance of the Normal likelihood function
+            - `likvariance`: variance of the Normal likelihood function
             - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
-            - `savetemp`: Boolean. create a temp file?
             - `method`: Step method. defaults to Metropolis hastings
         """
         self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
