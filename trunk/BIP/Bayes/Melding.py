@@ -45,6 +45,101 @@ if Viz:
 
 __docformat__ = "restructuredtext en"
 
+class FitModel:
+    """
+    Fit a model to data generating
+    Bayesian posterior distributions of input and
+    outputs of the model.
+    """
+    def __init__(self, K,L,model, ntheta, nphi,inits,tf,phinames,thetanames, verbose=False):
+        """
+        Initialize the model fitter.
+
+        :Parameters:
+            -`K`: Number of samples from the priors. On MCMC also the number of samples of the posterior.
+            -`L`: Number of samples of the posteriors. Only used on SIR and ABC methods.
+            -`model`: Callable (function) returning the output of the model, from a set of parameter values received as argument.
+            -`ntheta`: Number of parameters included in the inference.
+            -`nphi`: Number of outputs of the model.
+            -`inits`: inits initial values for the model's variables.
+            -`tf`: Length of the simulation, in units of time.
+            -`phinames`: List of names (strings) with names of the model's variables
+            -`thetanames`: List of names (strings) with names of parameters included on the inference.
+            -`verbose`: Verbose output if True.
+        """
+        self.Me = Meld(K=K,L=L,model=runModel,ntheta=3,nphi=5,verbose=verbose)
+        self.inits = inits
+        self.tf = tf
+        self.model = model
+        self.nphi = nphi
+        self.ntheta = ntheta
+        self.phinames = phinames
+        self.thetanames = thetanames
+        
+    def init_priors(self, prior=None):
+        if prior['theta'] and prior['phi']:
+            self.Me.setThetaFromData(names_theta,prior['theta'],[(0,.9),(0,.0001),(0,1)])
+            self.Me.setPhiFromData(names_phi,prior['phi'],[(0,1)]*self.nphi)
+        else:
+            print "++++>"
+            self.Me.setTheta(self.thetanames,[stats.uniform]*nt,[(0.001,.2),(0,.0001),(0.1,.5)])
+            self.Me.setPhi(self.phinames,[stats.uniform]*np,[(0,1)]*self.nphi,[(0,1)]*self.nphi)
+    def do_inference(self, prior,data,predlen,method):
+        self.init_priors(prior)
+        succ=0
+        att = 1
+        if method == "SIR":
+            while not succ: #run sir Until is able to get a fit
+                print 'attempt #',att
+                succ = self.Me.sir(data=data,variance=1e-6,nopool=True,t=tf)
+                att += 1
+            pt,series = self.Me.getPosteriors(t=tf)
+        elif method == "mcmc":
+            while not succ: #run sir Until is able to get a fitd == "mcmc":
+                print 'attempt #',att
+                succ = self.Me.mcmc_run(data,t=tf,likvariance=.5e-7,burnin=1000)
+            pt,series = self.Me.getPosteriors(t=tf)
+
+        elif method == "ABC":
+            Me.abcRun(data=data,fitfun=fitInc,t=105)
+            pt,series = Me.getPosteriors(t=tf)
+
+    def run(self, wl, nw, data,method,monitor=False):
+        """
+        Fit the model against data
+        """
+        start = time.time()
+        d = prepdata()
+        prior = {'theta':[],'phi':[]}
+        os.system('rm weekd_*')
+        for w in range(nw):
+        print '==> Window # %s of %s!'%(w,nw)
+        self.tf=wl
+        d2 = {}
+        for k,v in d.items():#Slicing data to the current window
+            d2[k] = v[w*wl:w*wl+wl]
+        print v.shape
+        if w==0:
+            inits[2] = d2['I'][0]
+            inits[0] += 1-sum(inits) #adjusting sunceptibles
+        pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method)
+        f = open('weekd_%s'%w,'w')
+        #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
+        cPickle.dump((pt,pp,series,d,predseries, att*K),f)
+        f.close()
+        prior = {'theta':[],'phi':[]}
+        for n in pt.dtype.names:
+            prior['theta'].append(pt[n])
+        #beta,alpha,sigma,Ri  = median(pt.beta),median(pt.alpha),median(pt.sigma),median(pt.Ri
+        for n in pp.dtype.names:
+            #print compress(isinf(pp[n]),pp[n])
+            prior['phi'].append(pp[n])
+        print "time: %s seconds"%(time.time()-start)
+    def monitor(self):
+        pass
+    def plot(self):
+        pass
+
 
 class Meld:
     """
@@ -173,6 +268,17 @@ class Meld:
         """
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
+        tlimits = dict(zip(names,limits))
+        class Proposal:
+            def __init__(self,name, dist):
+                self.name = name
+                self.dist = dist
+            def __call__(self):
+                smp = -numpy.inf
+                while not (smp>=tlimits[self.name][0] and smp<=tlimits[self.name][1]):
+                    smp = self.dist.resample(1)[0][0]
+                return smp
+                
         if os.path.exists('q1theta'):
             self.q1theta = CP.load(open('q1theta','r'))
         else:
@@ -180,19 +286,14 @@ class Meld:
                 smp = []
                 #add some points uniformly across the support 
                 #to help MCMC to escape from prior bounds
-                d = self.add_salt(d,self.salt_band)
+                salted = self.add_salt(d,self.salt_band)
 
-                dist = gaussian_kde(d)
+                dist = gaussian_kde(salted)
                 while len(smp)<self.K:
                     smp += [x for x in dist.resample(self.K)[0] if x >= lim[0] and x <= lim[1]]
                 #print self.q1theta[n].shape, array(smp[:self.K]).shape
                 self.q1theta[n] = array(smp[:self.K])
-                def proposal(): #resample from kde within bounds
-                    smp = -numpy.inf
-                    while not (smp>=lim[0] and smp<=lim[1]):
-                        smp = dist.resample(1)[0][0]
-                    return smp
-                self.theta_dists[n] = proposal
+                self.theta_dists[n] = Proposal(copy.deepcopy(n),copy.deepcopy(dist))
 
     def setPhiFromData(self,names,data,limits):
         """
@@ -436,15 +537,20 @@ class Meld:
             returns a sample of size n
         """
         #sanitizing weights
+        print "Starting importance Sampling"
         w /=sum(w)
         w = nan_to_num(w)
         j=0
+        k=0
         smp = copy.deepcopy(data[:n])
         while j < n:
             i = randint(0,w.size)# Random position of w
             if random() <= w[i]:
                 smp[j] = data[j]
                 j += 1
+                
+            k+=1
+        print "Done imp samp."
         return smp
     
     def mcmc_run(self, data, t=1, likvariance=10,burnin=100, nopool=False, method="MH" ):
@@ -528,6 +634,8 @@ class Meld:
                 j += 1 #update good sample counter 
             last_lik = lik
             i+=1
+            if i%n ==0:
+                print "==>",n,"\r"
             
         self.post_theta = self.imp_sample(self.L,ptheta,liklist)
         ar = (i-rej)/float(i) 
@@ -536,7 +644,9 @@ class Meld:
                 self.salt_band = 0.05
             elif self.salt_band < 30:
                 self.salt_band *= 10
-        if ar < 0.4:
+        elif ar > 0.7:
+            self.salt_band *= 2
+        elif ar < 0.4:
             self.salt_band = 0.001 #no more expansion
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Salt-Band: %s"%self.salt_band
@@ -692,6 +802,8 @@ class Meld:
         print "==> Done Running the K (%s) replicates (took %s seconds)\n"%(k,(time()-t0))
         
         return self.phi
+
+
 def enumRun(model,theta,k):
     """
     Returns model results plus run number.
