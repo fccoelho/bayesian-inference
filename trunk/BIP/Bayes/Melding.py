@@ -77,6 +77,7 @@ class FitModel:
         self.thetanames = thetanames
         
     def init_priors(self, prior=None):
+        """"""
         if prior['theta'] and prior['phi']:
             self.Me.setThetaFromData(names_theta,prior['theta'],[(0,.9),(0,.0001),(0,1)])
             self.Me.setPhiFromData(names_phi,prior['phi'],[(0,1)]*self.nphi)
@@ -85,6 +86,7 @@ class FitModel:
             self.Me.setTheta(self.thetanames,[stats.uniform]*nt,[(0.001,.2),(0,.0001),(0.1,.5)])
             self.Me.setPhi(self.phinames,[stats.uniform]*np,[(0,1)]*self.nphi,[(0,1)]*self.nphi)
     def do_inference(self, prior,data,predlen,method):
+        """"""
         self.init_priors(prior)
         succ=0
         att = 1
@@ -113,33 +115,38 @@ class FitModel:
         prior = {'theta':[],'phi':[]}
         os.system('rm weekd_*')
         for w in range(nw):
-        print '==> Window # %s of %s!'%(w,nw)
-        self.tf=wl
-        d2 = {}
-        for k,v in d.items():#Slicing data to the current window
-            d2[k] = v[w*wl:w*wl+wl]
-        print v.shape
-        if w==0:
-            inits[2] = d2['I'][0]
-            inits[0] += 1-sum(inits) #adjusting sunceptibles
-        pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method)
-        f = open('weekd_%s'%w,'w')
-        #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
-        cPickle.dump((pt,pp,series,d,predseries, att*K),f)
-        f.close()
-        prior = {'theta':[],'phi':[]}
-        for n in pt.dtype.names:
-            prior['theta'].append(pt[n])
-        #beta,alpha,sigma,Ri  = median(pt.beta),median(pt.alpha),median(pt.sigma),median(pt.Ri
-        for n in pp.dtype.names:
-            #print compress(isinf(pp[n]),pp[n])
-            prior['phi'].append(pp[n])
+            print '==> Window # %s of %s!'%(w,nw)
+            self.tf=wl
+            d2 = {}
+            for k,v in d.items():#Slicing data to the current window
+                d2[k] = v[w*wl:w*wl+wl]
+            print v.shape
+            if w==0:
+                inits[2] = d2['I'][0]
+                inits[0] += 1-sum(inits) #adjusting sunceptibles
+            pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method)
+            f = open('weekd_%s'%w,'w')
+            #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
+            cPickle.dump((pt,pp,series,d,predseries, att*K),f)
+            f.close()
+            prior = {'theta':[],'phi':[]}
+            for n in pt.dtype.names:
+                prior['theta'].append(pt[n])
+            #beta,alpha,sigma,Ri  = median(pt.beta),median(pt.alpha),median(pt.sigma),median(pt.Ri
+            for n in pp.dtype.names:
+                #print compress(isinf(pp[n]),pp[n])
+                prior['phi'].append(pp[n])
         print "time: %s seconds"%(time.time()-start)
-    def monitor(self):
-        pass
-    def plot(self):
-        pass
 
+    def monitor(self):
+        """
+        """
+        pass
+    
+    def plot(self):
+        """
+        """
+        pass
 
 class Meld:
     """
