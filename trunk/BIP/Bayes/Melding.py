@@ -29,6 +29,7 @@ import numpy
 from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var,sqrt,floor
 from time import time
 from numpy.random import normal, randint,  random, seed
+import PlotMeld as PM
 try:
     from BIP.Viz.realtime import RTplot
     Viz=True
@@ -51,7 +52,7 @@ class FitModel:
     Bayesian posterior distributions of input and
     outputs of the model.
     """
-    def __init__(self, K,L,model, ntheta, nphi,inits,tf,phinames,thetanames, verbose=False):
+    def __init__(self, K,L,model, ntheta, nphi,inits,tf,phinames,thetanames,wl=None,nw=1,verbose=False):
         """
         Initialize the model fitter.
 
@@ -65,6 +66,8 @@ class FitModel:
             - `tf`: Length of the simulation, in units of time.
             - `phinames`: List of names (strings) with names of the model's variables
             - `thetanames`: List of names (strings) with names of parameters included on the inference.
+            - `wl`: window lenght length of the inference window.
+            - `nw`: Number of windows to analyze on iterative inference mode
             - `verbose`: Verbose output if True.
         """
         self.Me = Meld(K=K,L=L,model=runModel,ntheta=3,nphi=5,verbose=verbose)
@@ -75,9 +78,13 @@ class FitModel:
         self.ntheta = ntheta
         self.phinames = phinames
         self.thetanames = thetanames
+        self.wl = wl
+        self.nw = nw
+        self.done_running = False
         
     def init_priors(self, prior=None):
-        """"""
+        """
+        """
         if prior['theta'] and prior['phi']:
             self.Me.setThetaFromData(names_theta,prior['theta'],[(0,.9),(0,.0001),(0,1)])
             self.Me.setPhiFromData(names_phi,prior['phi'],[(0,1)]*self.nphi)
@@ -85,8 +92,9 @@ class FitModel:
             print "++++>"
             self.Me.setTheta(self.thetanames,[stats.uniform]*nt,[(0.001,.2),(0,.0001),(0.1,.5)])
             self.Me.setPhi(self.phinames,[stats.uniform]*np,[(0,1)]*self.nphi,[(0,1)]*self.nphi)
-    def do_inference(self, prior,data,predlen,method):
-        """"""
+    def do_inference(self, prior, data, predlen, method):
+        """
+        """
         self.init_priors(prior)
         succ=0
         att = 1
@@ -96,7 +104,7 @@ class FitModel:
                 succ = self.Me.sir(data=data,variance=1e-6,nopool=True,t=tf)
                 att += 1
             pt,series = self.Me.getPosteriors(t=tf)
-        elif method == "mcmc":
+        elif method == "MCMC":
             while not succ: #run sir Until is able to get a fitd == "mcmc":
                 print 'attempt #',att
                 succ = self.Me.mcmc_run(data,t=tf,likvariance=.5e-7,burnin=1000)
@@ -106,15 +114,22 @@ class FitModel:
             Me.abcRun(data=data,fitfun=fitInc,t=105)
             pt,series = Me.getPosteriors(t=tf)
 
-    def run(self, wl, nw, data,method,monitor=False):
+    def run(self, data,method,monitor=False):
         """
         Fit the model against data
+
+        :Parameters:
+            - `data`: dictionary with variable names and observed series, as Key and value respectively.
+            - `method`: Inference method: "ABC", "SIR" or "MCMC"
         """
+        if monitor:
+            self._monitor_setup()
         start = time.time()
-        d = prepdata()
+        d = data
         prior = {'theta':[],'phi':[]}
-        os.system('rm weekd_*')
-        for w in range(nw):
+        os.system('rm wres_*')
+        wl = self.wl
+        for w in range(self.nw):
             print '==> Window # %s of %s!'%(w,nw)
             self.tf=wl
             d2 = {}
@@ -125,7 +140,7 @@ class FitModel:
                 inits[2] = d2['I'][0]
                 inits[0] += 1-sum(inits) #adjusting sunceptibles
             pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method)
-            f = open('weekd_%s'%w,'w')
+            f = open('wres_%s'%w,'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
             cPickle.dump((pt,pp,series,d,predseries, att*K),f)
             f.close()
@@ -136,17 +151,69 @@ class FitModel:
             for n in pp.dtype.names:
                 #print compress(isinf(pp[n]),pp[n])
                 prior['phi'].append(pp[n])
+            if monitor:
+                self._monitor_plot(series,prior)
         print "time: %s seconds"%(time.time()-start)
+        self.done_running = True
 
-    def monitor(self):
+
+    def _monitor_setup(self):
         """
+        Sets up realtime plotting of inference
         """
-        pass
+        self.hst = RTplot() #realtime display of theta histograms
+        self.hsp = RTplot()#realtime display of phi histograms
+        self.ser = RTplot()#realtime display of phi time series
+    def _monitor_plot(self, series, prior ):
+        """
+        Plots real time data
+        """
+        self.ser.plotlines(d2[r'I'],style='points', names=['Obs. I'])
+        i5 = array([stats.scoreatpercentile(t,2.5) for t in series[r'I'].T])
+        i95 = array([stats.scoreatpercentile(t,97.5) for t in series[r'I'].T])
+        diff = abs(series.I[:,-1]-(d2['I'][-1]))
+        initind = diff.tolist().index(min(diff))
+        self.ser.plotlines(data=series[r'I'][initind], names=["Best run's I"])
+        self.ser.plotlines(data=i5, names=['2.5%'])
+        self.ser.plotlines(data=i95, names=['97.5%'],title='Week %s'%(w+1))
+        self.hst.plothist(data=array(prior['theta']),names=list(self.thetanames),title='Week %s'%(w+1))
+        self.ser.clearFig()
+        self.hst.clearFig()
+        self.hsp.clearFig()
     
-    def plot(self):
+    def plot_results(self, names=[]):
         """
+        Plot the final results of the inference
         """
-        pass
+        if not self.done_running:
+            return
+        pt,pp,series,predseries = self._read_results()
+        PM.plot_par_series(range(len(pt)),pt)
+        PM.plot_par_violin(range(len(pt)),pt)
+        P.figure()
+        PM.predNewCases(obs,predseries,nc,fig,names,ws)
+        plot_series2(range(nc*ws),obs,series,names=names)
+        plot_series2(range(nc*ws),obs,predseries,names=names,tit='Predicted vs. Observed series',lag=True)
+        P.show()
+
+    def _read_results(self):
+        """
+        read results from disk
+        """
+        pt,pp,series,predseries = [],[],[],[]
+        for w in range(self.nw):
+            fn = 'wres_%s'%w
+            print fn
+            f = open(fn,'r')
+            a,b,c,obs,pred, samples = cPickle.load(f)
+            f.close()
+
+            pt.append(a)
+            pp.append(b)
+            series.append(c)
+            predseries.append(pred)
+        return pt,pp,series,predseries
+            
 
 class Meld:
     """
@@ -863,7 +930,7 @@ def plotRaHist(arr):
 
 def main2():
     start = time()
-    Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
+    #Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
     Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
     Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
     #Me.add_data(normal(7.5,1,400),'normal',(6,9))
@@ -871,14 +938,15 @@ def main2():
     Me.sir(data ={'p':[7.5]} )
     pt,pp = Me.getPosteriors(1)
     end = time()
+    print end-start, ' seconds'
     plotRaHist(pt)
     plotRaHist(pp)
     P.show()
-    print end-start, ' seconds'
+    
     
 def mh_test():
     start = time()
-    Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
+    #Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
     Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
     Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
     #Me.add_data(normal(7.5,1,400),'normal',(6,9))
@@ -886,12 +954,14 @@ def mh_test():
     Me.mcmc_run(data ={'p':[7.5]},burnin=1000)
     pt,pp = Me.getPosteriors(1)
     end = time()
+    print end-start, ' seconds'
     plotRaHist(pt)
     plotRaHist(pp)
     P.show()
-    print end-start, ' seconds'
+    
 
 if __name__ == '__main__':
+    Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
     mh_test()
     #main2()
      
