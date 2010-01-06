@@ -1,5 +1,7 @@
+import Melding
 import unittest
-
+from BIP.Bayes import Melding
+from numpy.testing import *
 
 class TestFitModel(unittest.TestCase):
     def test___init__(self):
@@ -31,10 +33,15 @@ class TestFitModel(unittest.TestCase):
         # self.assertEqual(expected, fit_model.run(wl, nw, data, method, monitor))
         assert False # TODO: implement your test here
 
+    def test_plot_results(self):
+        # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, wl, nw, verbose)
+        # self.assertEqual(expected, fit_model.plot_results(names))
+        assert False # TODO: implement your test here
+
 class TestMeld(unittest.TestCase):
     def test___init__(self):
-        # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
-        assert False # TODO: implement your test here
+        self.meld = Meld(2000, 100, Melding.model, 2, 1, alpha=0.5, verbose=False, viz=False)
+        assert isinstance(self.meld, Melding.Meld) 
 
     def test_abcRun(self):
         # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
@@ -112,9 +119,10 @@ class TestMeld(unittest.TestCase):
         assert False # TODO: implement your test here
 
     def test_sir(self):
-        # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
+        self.meld.sir(data ={'p':[7.5]} )
+        pt,pp = self.meld.getPosteriors(1)
         # self.assertEqual(expected, meld.sir(data, t, variance, nopool, savetemp))
-        assert False # TODO: implement your test here
+        assert_almost_equal(pp.P.mean(),7.5,1)
 
 class TestEnumRun(unittest.TestCase):
     def test_enum_run(self):
