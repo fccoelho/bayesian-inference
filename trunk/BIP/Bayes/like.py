@@ -43,9 +43,9 @@ def Uniform(x,min,max):
     Uniform Log-likelihood
 
     :Parameters:
-        -`x`: data vector(list)
-        -`min`: lower limit of the distribution
-        -`max`: upper limit of the distribution
+        - `x`: data vector(list)
+        - `min`: lower limit of the distribution
+        - `max`: upper limit of the distribution
 
     >>> Uniform([1.1,2.3,3.4,4],0,5)
     -6.4377516497364011
