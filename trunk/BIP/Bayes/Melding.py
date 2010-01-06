@@ -56,16 +56,16 @@ class FitModel:
         Initialize the model fitter.
 
         :Parameters:
-            -`K`: Number of samples from the priors. On MCMC also the number of samples of the posterior.
-            -`L`: Number of samples of the posteriors. Only used on SIR and ABC methods.
-            -`model`: Callable (function) returning the output of the model, from a set of parameter values received as argument.
-            -`ntheta`: Number of parameters included in the inference.
-            -`nphi`: Number of outputs of the model.
-            -`inits`: inits initial values for the model's variables.
-            -`tf`: Length of the simulation, in units of time.
-            -`phinames`: List of names (strings) with names of the model's variables
-            -`thetanames`: List of names (strings) with names of parameters included on the inference.
-            -`verbose`: Verbose output if True.
+            - `K`: Number of samples from the priors. On MCMC also the number of samples of the posterior.
+            - `L`: Number of samples of the posteriors. Only used on SIR and ABC methods.
+            - `model`: Callable (function) returning the output of the model, from a set of parameter values received as argument.
+            - `ntheta`: Number of parameters included in the inference.
+            - `nphi`: Number of outputs of the model.
+            - `inits`: inits initial values for the model's variables.
+            - `tf`: Length of the simulation, in units of time.
+            - `phinames`: List of names (strings) with names of the model's variables
+            - `thetanames`: List of names (strings) with names of parameters included on the inference.
+            - `verbose`: Verbose output if True.
         """
         self.Me = Meld(K=K,L=L,model=runModel,ntheta=3,nphi=5,verbose=verbose)
         self.inits = inits
@@ -245,8 +245,8 @@ class Meld:
         This is done by adding from a uniform dist.
         
         :Parameters:
-            -`dataset`: vector of data
-            -`band`: Fraction of range to extend [0,1[
+            - `dataset`: vector of data
+            - `band`: Fraction of range to extend [0,1[
             
         :Returns:
             Salted dataset.
@@ -586,12 +586,12 @@ class Meld:
         Assumes symmetric proposal distributions.
         
         :Parameters:
-            -`n`: number of samples to obtain
-            -`t`: Length of time-series
-            -`data`: Observation dictionary {'variable':[time-series]}
-            -`likfun`: likelihood function to use
-            -`variance`: variance of the likelihood function
-            -`burnin`: number of samples to discard at the beginning of the chain.
+            - `n`: number of samples to obtain
+            - `t`: Length of time-series
+            - `data`: Observation dictionary {'variable':[time-series]}
+            - `likfun`: likelihood function to use
+            - `variance`: variance of the likelihood function
+            - `burnin`: number of samples to discard at the beginning of the chain.
         """
         def tune(ar):
             if ar<0.05:

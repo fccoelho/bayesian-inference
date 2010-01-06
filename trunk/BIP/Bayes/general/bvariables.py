@@ -121,8 +121,8 @@ class _BayesVar(object):
         Updates variable with information from dataset
 
         :Parameters:
-            -`data`: sequence of numbers
-            -`model`: probabilistic model underlying data
+            - `data`: sequence of numbers
+            - `model`: probabilistic model underlying data
         """
         self.data = array(data) 
         self._update(model.dist.name)

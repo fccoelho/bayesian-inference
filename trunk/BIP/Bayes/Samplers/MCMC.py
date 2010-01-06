@@ -101,8 +101,8 @@ class Metropolis(object):
         This is done by adding from a uniform dist.
         
         :Parameters:
-            -`dataset`: vector of data
-            -`band`: Fraction of range to extend: [0,1[
+            - `dataset`: vector of data
+            - `band`: Fraction of range to extend: [0,1[
             
         :Returns:
             Salted dataset.

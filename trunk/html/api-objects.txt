@@ -67,6 +67,13 @@ BIP.Viz.ascii	BIP.Viz.ascii-module.html
 BIP.Viz.asciihist	BIP.Viz.asciihist-module.html
 BIP.Viz.asciihist.__licence__	BIP.Viz.asciihist-module.html#__licence__
 BIP.Viz.realtime	BIP.Viz.realtime-module.html
+BIP.Bayes.Melding.FitModel	BIP.Bayes.Melding.FitModel-class.html
+BIP.Bayes.Melding.FitModel.plot	BIP.Bayes.Melding.FitModel-class.html#plot
+BIP.Bayes.Melding.FitModel.run	BIP.Bayes.Melding.FitModel-class.html#run
+BIP.Bayes.Melding.FitModel.monitor	BIP.Bayes.Melding.FitModel-class.html#monitor
+BIP.Bayes.Melding.FitModel.do_inference	BIP.Bayes.Melding.FitModel-class.html#do_inference
+BIP.Bayes.Melding.FitModel.init_priors	BIP.Bayes.Melding.FitModel-class.html#init_priors
+BIP.Bayes.Melding.FitModel.__init__	BIP.Bayes.Melding.FitModel-class.html#__init__
 BIP.Bayes.Melding.Meld	BIP.Bayes.Melding.Meld-class.html
 BIP.Bayes.Melding.Meld.filtM	BIP.Bayes.Melding.Meld-class.html#filtM
 BIP.Bayes.Melding.Meld.logPooling	BIP.Bayes.Melding.Meld-class.html#logPooling
