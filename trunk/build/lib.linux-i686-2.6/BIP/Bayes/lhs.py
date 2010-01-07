@@ -106,10 +106,10 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
     the desired correlation structure.
     
     :Parameters:
-        -`nvars`: number of variables
-        -`smp`: number of samples
-        -`noCorrRestr`: No correlation restriction if True
-        -`Corrmat`: Correlation matrix. If None, assure uncorrelated samples.
+        - `nvars`: number of variables
+        - `smp`: number of samples
+        - `noCorrRestr`: No correlation restriction if True
+        - `Corrmat`: Correlation matrix. If None, assure uncorrelated samples.
     """
     if isinstance(smp,(tuple,list)):
             smp=numpy.product(smp)

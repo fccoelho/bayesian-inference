@@ -12,6 +12,7 @@ BIP.egg-info/not-zip-safe
 BIP.egg-info/top_level.txt
 BIP/Bayes/Melding.py
 BIP/Bayes/Melding.pyc
+BIP/Bayes/PlotMeld.py
 BIP/Bayes/__init__.py
 BIP/Bayes/__init__.pyc
 BIP/Bayes/conjugate_priors.py.py

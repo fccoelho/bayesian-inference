@@ -52,7 +52,7 @@ class FitModel:
     Bayesian posterior distributions of input and
     outputs of the model.
     """
-    def __init__(self, K,L,model, ntheta, nphi,inits,tf,phinames,thetanames,wl=None,nw=1,verbose=False):
+    def __init__(self, K,L,model, ntheta, nphi,inits,tf,thetanames,phinames,wl=None ,nw=1,verbose=False):
         """
         Initialize the model fitter.
 
@@ -70,7 +70,9 @@ class FitModel:
             - `nw`: Number of windows to analyze on iterative inference mode
             - `verbose`: Verbose output if True.
         """
-        self.Me = Meld(K=K,L=L,model=runModel,ntheta=3,nphi=5,verbose=verbose)
+        self.K = K
+        self.L = L
+        self.Me = Meld(K=K,L=L,model=model,ntheta=ntheta,nphi=nphi,verbose=verbose)
         self.inits = inits
         self.tf = tf
         self.model = model
@@ -81,68 +83,98 @@ class FitModel:
         self.wl = wl
         self.nw = nw
         self.done_running = False
+        self.prior_set = False
         
-    def init_priors(self, prior=None):
+    def set_priors(self,tdists,tpars, tlims,pdists,ppars,plims):
+        """
+        Set the prior distributions for Phi and Theta
+
+        :Parameters:
+            - `pdists`: distributions for the output variables. For example: [scipy.stats.uniform,scipy.stats.norm]
+            - `ppars`: paramenters for the distributions in pdists. For example: [(0,1),(0,1)]
+            - `tdists`: same as pdists, but for input parameters (Theta).
+            - `tpars`: same as ppars, but for tdists.
+        """
+        self.pdists = pdists
+        self.ppars = ppars
+        self.plims = plims
+        self.tdists = tdists
+        self.tpars = tpars
+        self.tlims = tlims
+        self.prior_set = True
+    
+    def _init_priors(self, prior=None):
         """
         """
         if prior['theta'] and prior['phi']:
-            self.Me.setThetaFromData(names_theta,prior['theta'],[(0,.9),(0,.0001),(0,1)])
-            self.Me.setPhiFromData(names_phi,prior['phi'],[(0,1)]*self.nphi)
+            self.Me.setThetaFromData(self.thetanames,prior['theta'],self.tlims)
+            self.Me.setPhiFromData(self.phinames,prior['phi'],self.plims)
         else:
             print "++++>"
-            self.Me.setTheta(self.thetanames,[stats.uniform]*nt,[(0.001,.2),(0,.0001),(0.1,.5)])
-            self.Me.setPhi(self.phinames,[stats.uniform]*np,[(0,1)]*self.nphi,[(0,1)]*self.nphi)
-    def do_inference(self, prior, data, predlen, method):
+            self.Me.setTheta(self.thetanames,self.tdists,self.tpars)
+            self.Me.setPhi(self.phinames,self.pdists,self.ppars,self.plims)
+            
+    def do_inference(self, prior, data, predlen, method, likvar):
         """
         """
-        self.init_priors(prior)
+        self._init_priors(prior)
         succ=0
         att = 1
         if method == "SIR":
             while not succ: #run sir Until is able to get a fit
                 print 'attempt #',att
-                succ = self.Me.sir(data=data,variance=1e-6,nopool=True,t=tf)
+                succ = self.Me.sir(data=data,variance=likvar,nopool=True,t=self.tf)
                 att += 1
-            pt,series = self.Me.getPosteriors(t=tf)
+            pt,series = self.Me.getPosteriors(t=self.tf)
         elif method == "MCMC":
             while not succ: #run sir Until is able to get a fitd == "mcmc":
                 print 'attempt #',att
-                succ = self.Me.mcmc_run(data,t=tf,likvariance=.5e-7,burnin=1000)
-            pt,series = self.Me.getPosteriors(t=tf)
+                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=1000)
+            pt,series = self.Me.getPosteriors(t=self.tf)
 
         elif method == "ABC":
-            Me.abcRun(data=data,fitfun=fitInc,t=105)
-            pt,series = Me.getPosteriors(t=tf)
+            #TODO: allow passing of fitfun
+            self.Me.abcRun(data=data,fitfun=None,t=self.tf)
+            pt,series = self.Me.getPosteriors(t=self.tf)
+        pp = series[:,-1]
+        # TODO: figure out what to do by default with inits
+        #tf = predlen
+        predseries = self.Me.getPosteriors(predlen)[1]
+        return pt,pp,series,predseries,att
 
-    def run(self, data,method,monitor=False):
+    def run(self, data,method,likvar,monitor=False):
         """
         Fit the model against data
 
         :Parameters:
             - `data`: dictionary with variable names and observed series, as Key and value respectively.
             - `method`: Inference method: "ABC", "SIR" or "MCMC"
+            - `likvar`: Variance of the likelihood function in the SIR and MCMC method
         """
+        if not self.prior_set: return
         if monitor:
             self._monitor_setup()
-        start = time.time()
+        start = time()
         d = data
         prior = {'theta':[],'phi':[]}
         os.system('rm wres_*')
+        if self.wl == None:
+            self.wl = floor(len(d.values()[0])/self.nw)
         wl = self.wl
         for w in range(self.nw):
-            print '==> Window # %s of %s!'%(w,nw)
+            print '==> Window # %s of %s!'%(w,self.nw)
             self.tf=wl
             d2 = {}
             for k,v in d.items():#Slicing data to the current window
                 d2[k] = v[w*wl:w*wl+wl]
             print v.shape
             if w==0:
-                inits[2] = d2['I'][0]
-                inits[0] += 1-sum(inits) #adjusting sunceptibles
-            pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method)
+                self.inits[2] = d2['I'][0]
+                self.inits[0] += 1-sum(self.inits) #adjusting sunceptibles
+            pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
             f = open('wres_%s'%w,'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
-            cPickle.dump((pt,pp,series,d,predseries, att*K),f)
+            CP.dump((pt,pp,series,d,predseries, att*self.K),f)
             f.close()
             prior = {'theta':[],'phi':[]}
             for n in pt.dtype.names:
@@ -153,7 +185,7 @@ class FitModel:
                 prior['phi'].append(pp[n])
             if monitor:
                 self._monitor_plot(series,prior)
-        print "time: %s seconds"%(time.time()-start)
+        print "time: %s seconds"%(time()-start)
         self.done_running = True
 
 
@@ -187,13 +219,19 @@ class FitModel:
         """
         if not self.done_running:
             return
-        pt,pp,series,predseries = self._read_results()
+        pt,pp,series,predseries,obs = self._read_results()
+        if obs.has_key('time'):
+            tim = obs['time']
+        else:
+            tim = range(self.nw*self.wl)
         PM.plot_par_series(range(len(pt)),pt)
         PM.plot_par_violin(range(len(pt)),pt)
-        P.figure()
-        PM.predNewCases(obs,predseries,nc,fig,names,ws)
-        plot_series2(range(nc*ws),obs,series,names=names)
-        plot_series2(range(nc*ws),obs,predseries,names=names,tit='Predicted vs. Observed series',lag=True)
+        fig = P.figure()
+        PM.plot_series2(tim,obs,series,names=names)
+        if self.nw > 1:
+            PM.pred_new_cases(obs,predseries,self.nw,fig,names,self.wl)
+            PM.plot_series2(tim,obs,predseries,names=names,
+                            tit='Predicted vs. Observed series',lag=True)
         P.show()
 
     def _read_results(self):
@@ -205,14 +243,13 @@ class FitModel:
             fn = 'wres_%s'%w
             print fn
             f = open(fn,'r')
-            a,b,c,obs,pred, samples = cPickle.load(f)
+            a,b,c,obs,pred, samples = CP.load(f)
             f.close()
-
             pt.append(a)
             pp.append(b)
             series.append(c)
             predseries.append(pred)
-        return pt,pp,series,predseries
+        return pt,pp,series,predseries,obs
             
 
 class Meld:
