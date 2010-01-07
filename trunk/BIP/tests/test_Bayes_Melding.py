@@ -1,7 +1,7 @@
-import Melding
 import unittest
 from BIP.Bayes import Melding
 from numpy.testing import *
+import scipy.stats as st
 
 class TestFitModel(unittest.TestCase):
     def test___init__(self):

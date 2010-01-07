@@ -61,7 +61,7 @@ def plot_pred(tim,series,y, fig,names=[],title='series'):
                 pass
     P.savefig(title+'.png')
 
-def pred_new_cases(obs,series,weeks,fig, names=[],ws=7):
+def pred_new_cases(obs,series,weeks,names=[],ws=7):
     """
     Predicted total new cases in a week vs oserved.
     """
@@ -103,8 +103,10 @@ def plot_series2(tim,obs,series,names=[],tit='Simulated vs Observed series',ws=7
 def plot_par_series(tim,ptlist):
     P.figure()
     P.title('Parameters temporal variation')
+    sq = sqrt(len(ptlist[0].dtype.names))
+    r= floor(sq);c=ceil(sq)
     for i,n in enumerate(ptlist[0].dtype.names):
-        P.subplot(3,1,i+1)
+        P.subplot(r,c,i+1)
         P.boxplot([s[n] for s in ptlist],notch=1,positions=tim,vert=1)
         #P.errorbar(tim,[median(t[n]) for t in ptlist],yerr=[std(t[n]) for t in ptlist],label=n)
         P.ylabel(n)
@@ -113,8 +115,10 @@ def plot_par_series(tim,ptlist):
 def plot_par_violin(tim,ptlist):
     fig = P.figure()
     #P.title('Parameters temporal variation')
+    sq = sqrt(len(ptlist[0].dtype.names))
+    r= floor(sq);c=ceil(sq)
     for i,n in enumerate(ptlist[0].dtype.names):
-        ax = fig.add_subplot(3,1,i+1)
+        ax = fig.add_subplot(r,c,i+1)
         violin_plot(ax,[s[n] for s in ptlist],tim,bp=True)
         P.ylabel(n)
     P.xlabel('Weeks')

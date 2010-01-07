@@ -226,10 +226,9 @@ class FitModel:
             tim = range(self.nw*self.wl)
         PM.plot_par_series(range(len(pt)),pt)
         PM.plot_par_violin(range(len(pt)),pt)
-        fig = P.figure()
         PM.plot_series2(tim,obs,series,names=names)
         if self.nw > 1:
-            PM.pred_new_cases(obs,predseries,self.nw,fig,names,self.wl)
+            PM.pred_new_cases(obs,predseries,self.nw,names,self.wl)
             PM.plot_series2(tim,obs,predseries,names=names,
                             tit='Predicted vs. Observed series',lag=True)
         P.show()
