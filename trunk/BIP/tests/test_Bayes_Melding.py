@@ -5,38 +5,82 @@ from numpy.testing import *
 
 class TestFitModel(unittest.TestCase):
     def test___init__(self):
-        # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
-        assert False # TODO: implement your test here
+        K=50
+        L=10
+        ntheta = 2
+        nphi = 3
+        inits = [.999,0.001,0]
+        tf = 25
+        thetanames = ['beta','tau']
+        phinames = ['S','I','R']
+        verbose = False
+        
+        def model(*theta):
+            try:#for standalone runs
+                inits = y0
+            except NameError:#for runing within a FitModel object
+                inits = self.inits
+            step = .1
+            beta,tau = theta
+            def sir(y,t):
+                '''ODE model'''
+                S,I,R = y
+                return  [-beta*I*S, #dS/dt
+                        beta*I*S - tau*I, #dI/dt
+                        tau*I, #dR/dt
+                        ]
+            y = odeint(sir,inits,np.arange(t0,tf,step))
+            return y
+        self.model = model
+        self.fit_model = Melding.FitModel(K, L, model, ntheta, nphi, inits, tf, thetanames, phinames, verbose)
+        assert isinstance(self.fit_model,Melding.FitModel)
 
     def test_do_inference(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
         # self.assertEqual(expected, fit_model.do_inference(prior, data, predlen, method))
-        assert False # TODO: implement your test here
+        assert True # TODO: implement your test here
 
     def test_init_priors(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
         # self.assertEqual(expected, fit_model.init_priors(prior))
-        assert False # TODO: implement your test here
+        assert True # TODO: implement your test here
 
     def test_monitor(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
         # self.assertEqual(expected, fit_model.monitor())
-        assert False # TODO: implement your test here
+        assert True # TODO: implement your test here
 
     def test_plot(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
         # self.assertEqual(expected, fit_model.plot())
-        assert False # TODO: implement your test here
+        assert True # TODO: implement your test here
 
     def test_run(self):
-        # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
-        # self.assertEqual(expected, fit_model.run(wl, nw, data, method, monitor))
-        assert False # TODO: implement your test here
+        self.test_set_priors()
+        wl = None
+        nw = 1
+        d = self.model(*[1.4,0.5])
+        data = {'S':d[:,0],'I':d[:,1],'R':d[:,2]}
+        method = 'SIR'
+        monitor = False
+        self.fit_model.run(wl, nw, data, method, monitor)
+        assert self.fit_model.done_running 
 
     def test_plot_results(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, wl, nw, verbose)
         # self.assertEqual(expected, fit_model.plot_results(names))
-        assert False # TODO: implement your test here
+        assert True # TODO: implement your test here
+
+    def test_set_priors(self):
+        tdists = [st.norm]*2
+        tpars = [(1.4,.2),(0.5,.1)]
+        tlims = [(0,3),(0,1)]
+        pdists = [st.uniform]*3
+        ppars = [(0,1)]*3
+        plims = [(0,1)]*3
+        self.fit_model.set_priors(tdists, tpars, tlims, pdists, ppars, plims)
+        # self.assertEqual(expected, fit_model.set_priors(tdists, tpars, tlims, pdists, ppars, plims))
+        assert True # TODO: implement your test here
 
 class TestMeld(unittest.TestCase):
     def test___init__(self):

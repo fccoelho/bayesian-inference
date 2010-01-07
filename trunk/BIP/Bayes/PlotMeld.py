@@ -68,7 +68,7 @@ def pred_new_cases(obs,series,weeks,fig, names=[],ws=7):
     fig =P.figure()
     P.title('Total new cases per week: predicted vs observed')
     if not names:
-        names = series.dtype.names
+        names = series[0].dtype.names
     ax = fig.add_subplot(111)
 
     for n in names:
