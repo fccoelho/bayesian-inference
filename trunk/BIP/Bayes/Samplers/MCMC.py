@@ -77,6 +77,36 @@ class Metropolis(object):
         print ">>> Acceptance rate: %s"%ar
         
         return 1
+    
+    def imp_sample(self,n,data, w):
+        """
+        Importance sampling
+
+        :Parameters:
+            - `n`: Number of samples to return
+            - `data`: record array to be resampled
+            - `w`: Weight vector
+        
+        :Returns:
+            returns a sample of size n
+        """
+        #sanitizing weights
+        print "Starting importance Sampling"
+        w /=sum(w)
+        w = nan_to_num(w)
+        j=0
+        k=0
+        smp = copy.deepcopy(data[:n])
+        while j < n:
+            i = randint(0,w.size)# Random position of w
+            if random() <= w[i]:
+                smp[j] = data[j]
+                j += 1
+                
+            k+=1
+        print "Done imp samp."
+        return smp
+
     def tune(self, ar):
         """
         Tune the proposal distribtion variance

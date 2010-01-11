@@ -184,7 +184,7 @@ class FitModel:
                 #print compress(isinf(pp[n]),pp[n])
                 prior['phi'].append(pp[n])
             if monitor:
-                self._monitor_plot(series,prior)
+                self._monitor_plot(series,prior,d2)
         print "time: %s seconds"%(time()-start)
         self.done_running = True
 
@@ -196,7 +196,7 @@ class FitModel:
         self.hst = RTplot() #realtime display of theta histograms
         self.hsp = RTplot()#realtime display of phi histograms
         self.ser = RTplot()#realtime display of phi time series
-    def _monitor_plot(self, series, prior ):
+    def _monitor_plot(self, series, prior, d2 ):
         """
         Plots real time data
         """
