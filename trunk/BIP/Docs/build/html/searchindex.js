@@ -1,1 +1,1 @@
-Search.setIndex({desctypes:{},terms:{index:0,search:0,welcom:0,python:0,modul:0,indic:0,infer:0,content:0,tabl:0,bayesian:0,document:0,page:0,bip:0},titles:["Welcome to BIP - Bayesian Inference with Python&#8217;s documentation!"],modules:{},descrefs:{},filenames:["index"]})
+Search.setIndex({desctypes:{},terms:{index:0,search:0,welcom:0,python:0,modul:0,indic:0,page:0,content:0,tabl:0,bayesian:0,document:0,infer:0,bip:0},titles:["Welcome to BIP - Bayesian Inference with Python&#8217;s documentation!"],modules:{},descrefs:{},filenames:["index"]})
