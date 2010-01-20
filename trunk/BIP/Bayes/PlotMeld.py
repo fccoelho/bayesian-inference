@@ -92,7 +92,8 @@ def plot_series2(tim,obs,series,names=[],tit='Simulated vs Observed series',ws=7
     print len(tim), len(obs['I']),len(median(ser2['I'],axis=0))
     for n in names:
         co = c.next()
-        ax.plot(tim,obs[n],'%s+'%co, label="Observed %s"%n)
+        if n in obs:
+            ax.plot(tim,obs[n][:len(tim)],'%s+'%co, label="Observed %s"%n)
         ax.plot(array(tim)+ws*int(lag),median(ser2[n],axis=0),'k-')
         lower = [stats.scoreatpercentile(t,2) for t in ser2[n].T]
         upper =[stats.scoreatpercentile(t,98) for t in ser2[n].T]

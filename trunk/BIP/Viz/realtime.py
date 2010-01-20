@@ -3,6 +3,8 @@ __date__ ="$26/02/2009 10:44:29$"
 __docformat__ = "restructuredtext en"
 import Gnuplot
 import numpy
+import matplotlib
+import pylab as P
 
 
 class RTplot:
@@ -18,7 +20,7 @@ class RTplot:
         Clears the figure.
         '''
         self.plots = []
-        self.gp.reset()
+        #self.gp.reset()
 
     def scatter(self,x,y,names=[],title='',style='points'):
         """
@@ -64,6 +66,8 @@ class RTplot:
             - `style`: plot styles from gnuplot: lines, boxes, points, linespoints, etc.
         '''
         self.gp('set title "%s"'%title)
+        if isinstance (data, list):
+            data = numpy.array(data)
         if isinstance(data,numpy.core.records.recarray):
             return self._linesFromRA(data,style)
         if len(data.shape) > 1 and len(data.shape) <= 2:
@@ -147,5 +151,42 @@ class RTplot:
                 self.plots.append(Gnuplot.PlotItems.Data(d,title=n))
         self.gp.plot(*tuple(self.plots))
 
+class RTpyplot:
+    """
+    Creates an animated plot based on pylab
+    """
+    def __init__(self,  nseries=1, leng =10, names=['l'], title = ""):
+        self.nseries = nseries
+        self.leng = leng
+        self.names = names
+        self.title = title
+        self.lines = []
+        self.started = False
+
+    def _setup(self):
+        self.ax = P.subplot(111)
+        self.canvas = self.ax.figure.canvas
+        for i in range(self.nseries):
+            line, = P.plot(numpy.arange(self.leng), [1]*self.leng,label=self.names[i],  title=self.title, animated=True)
+            self.lines.append(line)
+        P.legend(loc=0)
+        P.grid()
+        P.show()
+        self.started = True
+    def plotlines(self, data):
+        if not self.started:
+            self._setup()
+        nlines = data.shape[0]
+        assert nlines == self.nseries
+        for i, d in enumerate(data):
+            background = self.canvas.copy_from_bbox(self.ax.bbox)
+            self.lines[i].set_ydata(d)
+            self.ax.draw_artist(self.lines[i])
+            self.canvas.blit(self.ax.bbox)
+
+        
+        
+        
+    
 if __name__ == "__main__":
     pass
