@@ -24,12 +24,13 @@ import like
 import pylab as P
 from scipy.stats.kde import gaussian_kde
 from scipy.linalg import LinAlgError
-from scipy import stats
+from scipy import stats,  optimize as optim
 import numpy
 from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var,sqrt,floor
 from time import time
 from numpy.random import normal, randint,  random, seed
 import PlotMeld as PM
+from BIP.Bayes.Samplers import MCMC
 try:
     from BIP.Viz.realtime import RTplot
     Viz=True
@@ -40,7 +41,7 @@ except:
     """
 import lhs
 
-from multiprocessing import Pool
+from multiprocessing import Pool, Process
 if Viz:
     dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
 
@@ -52,7 +53,7 @@ class FitModel:
     Bayesian posterior distributions of input and
     outputs of the model.
     """
-    def __init__(self, K,L,model, ntheta, nphi,inits,tf,thetanames,phinames,wl=None ,nw=1,verbose=False):
+    def __init__(self, K,L,model, ntheta, nphi,inits,tf,thetanames,phinames,wl=None ,nw=1,verbose=False,  burnin=1000):
         """
         Initialize the model fitter.
 
@@ -69,11 +70,13 @@ class FitModel:
             - `wl`: window lenght length of the inference window.
             - `nw`: Number of windows to analyze on iterative inference mode
             - `verbose`: Verbose output if True.
+            - `burnin`: number of burnin samples, used in the case on mcmc method.
         """
         self.K = K
         self.L = L
         self.Me = Meld(K=K,L=L,model=model,ntheta=ntheta,nphi=nphi,verbose=verbose)
         self.inits = inits
+        self.totpop = sum(inits)
         self.tf = tf
         self.model = model
         self.nphi = nphi
@@ -84,6 +87,47 @@ class FitModel:
         self.nw = nw
         self.done_running = False
         self.prior_set = False
+        self.burnin = burnin
+        
+    def optimize(self, data, p0):
+        """
+        Finds best parameters using an optimization approach
+        """
+        def mse(theta):
+            s1 = self.Me.model_as_ra(theta)
+            return self._rms_error(s1, data)
+        potimo = optim.fmin_powell(mse, p0, disp=True)
+        return potimo
+        
+    def _rms_error(self, s1, s2):
+        '''
+        Calculates a the error between a model-
+        generated time series and a observed time series.
+        It uses a normalized RMS deviation.
+
+        :Parameters:
+            - `s1`: model-generated time series. 
+            - `s2`: observed time series. dictionary with keys matching names of s1
+        :Types:
+            - s1: Record array or list.
+            - s2: Dictionary or list
+        
+        s1 and s2 can also be both lists of lists or lists of arrays of the same length.
+
+        :Return:
+            The Root mean square deviation between `s1` and `s2`.
+        '''
+        if isinstance(s1, recarray):
+            assert isinstance(s2, dict)
+            err = []
+            for k in s2.keys():
+                e = mean((s1[k]-s2[k])**2./s2[k]**2)
+                err.append(e) 
+        elif isinstance(s1, list):
+            assert isinstance(s2, list) and len(s1) ==len(s2)
+            err = [mean((s-t)**2./t**2) for s, t in zip(s1, s2)]
+        rmsd = nan_to_num(mean(err))
+        return rmsd
         
     def set_priors(self,tdists,tpars, tlims,pdists,ppars,plims):
         """
@@ -101,17 +145,18 @@ class FitModel:
         self.tdists = tdists
         self.tpars = tpars
         self.tlims = tlims
+        self._init_priors()
         self.prior_set = True
     
     def _init_priors(self, prior=None):
         """
         """
-        if prior['theta'] and prior['phi']:
+        if prior!=None and prior['theta'] and prior['phi']:
             self.Me.setThetaFromData(self.thetanames,prior['theta'],self.tlims)
             self.Me.setPhiFromData(self.phinames,prior['phi'],self.plims)
         else:
             print "++++>"
-            self.Me.setTheta(self.thetanames,self.tdists,self.tpars)
+            self.Me.setTheta(self.thetanames,self.tdists,self.tpars, self.tlims)
             self.Me.setPhi(self.phinames,self.pdists,self.ppars,self.plims)
             
     def do_inference(self, prior, data, predlen, method, likvar):
@@ -129,15 +174,18 @@ class FitModel:
         elif method == "MCMC":
             while not succ: #run sir Until is able to get a fitd == "mcmc":
                 print 'attempt #',att
-                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=1000)
+                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin)
             pt,series = self.Me.getPosteriors(t=self.tf)
 
         elif method == "ABC":
             #TODO: allow passing of fitfun
-            self.Me.abcRun(data=data,fitfun=None,t=self.tf)
+            self.Me.abcRun(data=data,fitfun=None,nopool=True, t=self.tf)
             pt,series = self.Me.getPosteriors(t=self.tf)
         pp = series[:,-1]
         # TODO: figure out what to do by default with inits
+        diff = array([abs(pp[vn]-data[vn][-1])/mean(pp[vn]) for vn in data.keys()]).sum(axis=0) #sum errors for all oserved variables
+        initind = diff.tolist().index(min(diff))
+        self.inits = list(pp[initind])
         #tf = predlen
         predseries = self.Me.getPosteriors(predlen)[1]
         return pt,pp,series,predseries,att
@@ -169,8 +217,8 @@ class FitModel:
                 d2[k] = v[w*wl:w*wl+wl]
             print v.shape
             if w==0:
-                self.inits[2] = d2['I'][0]
-                self.inits[0] += 1-sum(self.inits) #adjusting sunceptibles
+                self.inits[2] = d2[self.phinames[2]][0]
+                self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
             pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
             f = open('wres_%s'%w,'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
@@ -184,7 +232,7 @@ class FitModel:
                 #print compress(isinf(pp[n]),pp[n])
                 prior['phi'].append(pp[n])
             if monitor:
-                self._monitor_plot(series,prior,d2)
+                self._monitor_plot(series,prior,d2,w,data,vars=monitor)
         print "time: %s seconds"%(time()-start)
         self.done_running = True
 
@@ -194,36 +242,50 @@ class FitModel:
         Sets up realtime plotting of inference
         """
         self.hst = RTplot() #realtime display of theta histograms
-        self.hsp = RTplot()#realtime display of phi histograms
+        self.fsp = RTplot()#realtime display of full data and simulated series
         self.ser = RTplot()#realtime display of phi time series
-    def _monitor_plot(self, series, prior, d2 ):
+
+    def _get95_bands(self,series,vname):
+        i5 = array([stats.scoreatpercentile(t,2.5) for t in series[vname].T])
+        i95 = array([stats.scoreatpercentile(t,97.5) for t in series[vname].T])
+        return i5,i95
+    def _monitor_plot(self, series, prior, d2,w,data, vars):
         """
         Plots real time data
         """
-        self.ser.plotlines(d2[r'I'],style='points', names=['Obs. I'])
-        i5 = array([stats.scoreatpercentile(t,2.5) for t in series[r'I'].T])
-        i95 = array([stats.scoreatpercentile(t,97.5) for t in series[r'I'].T])
-        diff = abs(series.I[:,-1]-(d2['I'][-1]))
-        initind = diff.tolist().index(min(diff))
-        self.ser.plotlines(data=series[r'I'][initind], names=["Best run's I"])
-        self.ser.plotlines(data=i5, names=['2.5%'])
-        self.ser.plotlines(data=i95, names=['97.5%'],title='Week %s'%(w+1))
-        self.hst.plothist(data=array(prior['theta']),names=list(self.thetanames),title='Week %s'%(w+1))
+        self.ser.plotlines(d2.values(),style='points', names=d2.keys(),title='Window %s'%(w+1))
+        for n in vars:
+            if n not in d2:
+                continue
+            i5,i95 = self._get95_bands(series,n)
+            diff = abs(series[n][:,-1]-(d2[n][-1]))
+            initind = diff.tolist().index(min(diff))
+            self.ser.plotlines(data=series[n][initind], names=["Best run's %s"%n])
+            self.ser.plotlines(data=i5, names=['2.5%'])
+            self.ser.plotlines(data=i95, names=['97.5%'])
+            self.ser.plotlines(d2[n],style='points', names=['Obs. %s'%n])
+            self.fsp.plotlines(data[n],style='points', names=['Obs. %s'%n])
+        self.hst.plothist(data=array(prior['theta']),names=list(self.thetanames),title='Window %s'%(w+1))
+        cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
+        simseries = self.model(*cpars)
+        self.fsp.plotlines(data=simseries.T, names=list(self.phinames))
         self.ser.clearFig()
         self.hst.clearFig()
-        self.hsp.clearFig()
+        self.fsp.clearFig()
     
     def plot_results(self, names=[]):
         """
         Plot the final results of the inference
         """
+        if not names:
+            names = self.phinames
         if not self.done_running:
             return
         pt,pp,series,predseries,obs = self._read_results()
         if obs.has_key('time'):
-            tim = obs['time']
+            tim = numpy.array(obs['time'])
         else:
-            tim = range(self.nw*self.wl)
+            tim = numpy.arange(self.nw*self.wl)
         PM.plot_par_series(range(len(pt)),pt)
         PM.plot_par_violin(range(len(pt)),pt)
         PM.plot_series2(tim,obs,series,names=names)
@@ -321,7 +383,7 @@ class Meld:
 
 
         
-    def setTheta(self, names, dists=[stats.norm], pars=[(0, 1)]):
+    def setTheta(self, names, dists=[stats.norm], pars=[(0, 1)], lims=[(0, 1)]):
         """
         Setup the models inputs and generate the samples from prior distributions 
         needed for the dists the melding replicates.
@@ -334,6 +396,7 @@ class Meld:
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
         self.thetapars = pars
+        self.tlimits = lims
         if os.path.exists('q1theta'):
             self.q1theta = CP.load(open('q1theta','r'))
         else:
@@ -378,6 +441,7 @@ class Meld:
         """
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
+        self.tlimits = limits
         tlimits = dict(zip(names,limits))
         class Proposal:
             def __init__(self,name, dist):
@@ -535,27 +599,6 @@ class Meld:
 
         return f
 
-    def basicfit(self,s1,s2):
-        '''
-        Calculates a basic fitness calculation between a model-
-        generated time series and a observed time series.
-        it uses a normalized RMS variation.
-
-        :Parameters:
-            - `s1`: model-generated time series. record array.
-            - `s2`: observed time series. dictionary with keys matching names of s1
-
-        :Return:
-            Root mean square deviation between ´s1´ and ´s2´.
-        '''
-        fit = []
-        for k in s2.keys():
-            if s2[k] == [] or (not s2[k].any()):
-                continue #no observations for this variable
-            e = numpy.sqrt(mean((s1[k]-s2[k])**2.))
-            fit.append(e) #min to guarantee error is bounded to (0,1)
-
-        return mean(fit) #mean r-squared
         
 
     def logPooling(self,phi):
@@ -591,7 +634,7 @@ class Meld:
         """
         seed()
         if not fitfun:
-            fitfun = self.basicfit
+            fitfun = basicfit
         if savetemp:
             CP.dump(self.q1theta,open('q1theta','w'))
 #       Running the model ==========================
@@ -611,14 +654,17 @@ class Meld:
                 print 'Pooled prior on ouputs is null, please check your priors, and try again.'
                 return 0
 #      
-#        calculate weights
-        w = [fitfun(phi[i],data) for i in xrange(phi.shape[0])]
+        print "Calculating weights"
+        po = Pool()
+        jobs = [po.apply_async(fitfun, (phi[i],data)) for i in xrange(phi.shape[0])]
+        w = [j.get() for j in jobs]
+        po.close();po.join()
         w /=sum(w)
         w = 1-w
         #print "w=",w, mean(w), var(w)
 #        print
 #        print 'qtilphi=',qtilphi
-        # Resampling Thetas
+        print "Resampling Thetas"
         w = nan_to_num(w)
         w = array(w)*qtilphi
         w /=sum(w)
@@ -663,7 +709,7 @@ class Meld:
         print "Done imp samp."
         return smp
     
-    def mcmc_run(self, data, t=1, likvariance=10,burnin=100, nopool=False, method="MH" ):
+    def mcmc_run(self, data, t=1, likvariance=10,burnin=1000, nopool=False, method="MH" ):
         """
         MCMC based fitting
 
@@ -674,99 +720,51 @@ class Meld:
             - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
             - `method`: Step method. defaults to Metropolis hastings
         """
-        self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+        #self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
+        ta = True #if self.verbose else False
+        tc = True #if self.verbose else False
+        
         if method == "MH":
-            self.mh(self.K,t,data,like.Normal,likvariance,burnin)
+            sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc)
+            sampler.step()
+            self.phi = sampler.phi
+            #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
         else:
             sys.exit("Invalid MCMC method!\nTry 'MH'.")
         self.done_running = 1
         return 1
 
-
-    def mh(self, n,t, data, likfun,variance, burnin):
+    def _output_loglike(self, prop, data, likfun=like.Normal,likvar=1e-1, po=None):
         """
-        Simple Metropolis hastings. 
-        Assumes symmetric proposal distributions.
+        Returns the log-likelihood of a simulated series
         
         :Parameters:
-            - `n`: number of samples to obtain
-            - `t`: Length of time-series
-            - `data`: Observation dictionary {'variable':[time-series]}
-            - `likfun`: likelihood function to use
-            - `variance`: variance of the likelihood function
-            - `burnin`: number of samples to discard at the beginning of the chain.
-        """
-        def tune(ar):
-            if ar<0.05:
-                self.adaptscalefactor *= 0.5
-            elif ar <0.2:
-                self.adaptscalefactor *= 0.9
-            elif ar >0.9:
-                self.adaptscalefactor *= 10
-            elif ar >0.75:
-                self.adaptscalefactor *= 2
-            elif ar >0.5:
-                self.adaptscalefactor *= 1.1
-        ptheta = recarray((self.K),formats=['f8']*self.ntheta, names = self.post_theta.dtype.names)
-        i=0;j=0;rej=0 #total samples,accepted samples, rejected proposals
-        last_lik = None
-        liklist = []
-        while j < n:
-            #generating proposals
-            pvar = self.proposal_variance*self.adaptscalefactor
-            theta = [self.theta_dists[dist]() for dist in self.q1theta.dtype.names]
-            prop = self.model(*theta)
-            if t == 1:
-                prop=[(v,) for v in prop]
-            #calculate likelihoods
-            lik=0 
-            for k in xrange(self.nphi): #loop on series
-                if self.q2phi.dtype.names[k] not in data:
-                    continue#Only calculate liks of series for which we have data
-                obs = data[self.q2phi.dtype.names[k]]
-                for p in xrange(t): #Loop on time
-                    lik += likfun(obs[p],prop[p][k],1./variance)
-            #store samples
-            if last_lik == None: #on first sample
-                last_lik = lik
-                continue
-            
-            if not (lik-last_lik) > numpy.log(1):
-                if not numpy.log(random())< lik-last_lik:
-                    rej +=1 #adjust rejection counter
-                    i +=1
-                    #print theta
-                    continue
-            if i >= burnin:#store only after burnin samples
-                self.phi[j] = prop[0] if t==1 else [tuple(point) for point in prop]
-                ptheta[j] = tuple(theta)
-                liklist.append(lik)
-                j += 1 #update good sample counter 
-            last_lik = lik
-            i+=1
-            if i%n ==0:
-                print "==>",n,"\r"
-            
-        self.post_theta = self.imp_sample(self.L,ptheta,liklist)
-        ar = (i-rej)/float(i) 
-        if ar > 0.9:
-            if self.salt_band < 0:
-                self.salt_band = 0.05
-            elif self.salt_band < 30:
-                self.salt_band *= 10
-        elif ar > 0.7:
-            self.salt_band *= 2
-        elif ar < 0.4:
-            self.salt_band = 0.001 #no more expansion
-        print "Total steps(i): ",i,"rej:",rej, "j:",j
-        print ">>> Salt-Band: %s"%self.salt_band
-        print ">>> Acceptance rate: %s"%ar
+            - `prop`: Proposed output
+            - `data`: Data against which proposal will be measured
+            - `likfun`: Likelihood function
+            - `likvar`: Variance of the likelihood function
+            - `po`: Pool of processes for parallel execution
         
-        return 1
-                
-
-
-
+        :Types:
+            - prop: array of shape (t,nphi) with series as columns.
+            - data: Dictionary with keys being the names (as in phinames) of observed variables
+            - likfun: Log likelihood function object
+        """
+        if isinstance(prop, numpy.recarray):
+            prop= numpy.array(prop.tolist())
+        t = prop.shape[0] #1 if model's output is a scalar, larger if it is a time series (or a set of them)
+        lik=0
+        for k in xrange(self.nphi): #loop on series
+            if self.q2phi.dtype.names[k] not in data:
+                continue#Only calculate liks of series for which we have data
+            obs = data[self.q2phi.dtype.names[k]]
+            if po != None:# Parallel version
+                lik = [po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in range(t)]
+                lik = sum([l.get() for l in lik])
+            else:
+                for p in xrange(t): #Loop on time
+                    lik += likfun(obs[p],prop[p][k],1./likvar)
+        return lik
     def sir(self, data={}, t=1,variance=0.1, nopool=False,savetemp=False):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
@@ -797,7 +795,7 @@ class Meld:
 #       Calculating the likelihood of each phi[i] considering the observed data
         lik = zeros(self.K)
         t0=time()
-#       po = Pool()
+        po = Pool()
         for i in xrange(self.K):
             l=1
             for n in data.keys():
@@ -806,14 +804,13 @@ class Meld:
                 elif isinstance(data[n],numpy.ndarray) and (not data[n].any()):
                     continue #no observations for this variable
                 p = phi[n]
-#                liklist=[po.apply_async(like.Normal,(data[n][m], j, tau)) for m,j in enumerate(p[i])]
-#                l=product([p.get() for p in liklist])
-                l *= product([exp(like.Normal(data[n][m], j,1./(variance))) for m,j in enumerate(p[i])])
+                liklist=[po.apply_async(like.Normal,(data[n][m], j, 1./variance)) for m,j in enumerate(p[i])]
+                l=sum([p.get() for p in liklist])
+                #l *= product([exp(like.Normal(data[n][m], j,1./2*j)) for m,j in enumerate(p[i])])
                 #l += sum([like.Normal(data[n][m], j,1./(tau*j+.0001)) for m,j in enumerate(p[i])])
-            
             lik[i]=l
-#        po.close()
-#        po.join()
+        po.close()
+        po.join()
         if self.viz:
             dtplot.clearFig();phiplot.clearFig();thplot.clearFig()
             dtplot.gp.xlabel('observed')
@@ -857,10 +854,19 @@ class Meld:
         else:
             print 'Resampling weights are all zero, please check your model or data, and try again.\n'
             print '==> Likelihood (min,mean,max): ',min(lik),mean(lik),max(lik)
-            print '==> RMS deviation of outputs: %s'%(self.basicfit(phi, data),)
+            print '==> RMS deviation of outputs: %s'%(basicfit(phi, data),)
             return 0
         return 1
-
+    def model_as_ra(self, theta):
+        """
+        Does a single run of self.model and returns the results as a record array
+        """
+        r = self.model(*theta)
+        res = recarray(r.shape[0],formats=['f8']*self.nphi, names = self.phi.dtype.names)
+        for i, n in enumerate(res.dtype.names):
+            res[n] = r[:, i]
+        return res
+        
     def runModel(self,savetemp,t=1, k=None):
         '''
         Handles running the model k times keeping a temporary savefile for
@@ -868,6 +874,10 @@ class Meld:
 
         :Parameters:
             - `savetemp`: Boolean. create a temp file?
+            - `t`: number of time steps
+        
+        :Returns:
+            - self.phi: a record array of shape (k,t) with the results.
         '''
         if savetemp:
             CP.dump(self.q1theta,open('q1theta','w'))
@@ -913,7 +923,27 @@ class Meld:
         
         return self.phi
 
+def basicfit(s1,s2):
+    '''
+    Calculates a basic fitness calculation between a model-
+    generated time series and a observed time series.
+    it uses a Mean square error.
 
+    :Parameters:
+        - `s1`: model-generated time series. record array.
+        - `s2`: observed time series. dictionary with keys matching names of s1
+
+    :Return:
+        Root mean square deviation between ´s1´ and ´s2´.
+    '''
+    mse = []
+    for k in s2.keys():
+        if s2[k] == [] or (not s2[k].any()):
+            continue #no observations for this variable
+        e = mean((s1[k]-s2[k])**2.)
+        mse.append(e) #min to guarantee error is bounded to (0,1)
+    #print mean(mse),  
+    return mean(mse) #mean r-squared
 def enumRun(model,theta,k):
     """
     Returns model results plus run number.
@@ -967,8 +997,8 @@ def plotRaHist(arr):
 def main2():
     start = time()
     #Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
-    Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
-    Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
+    Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)], [(0, 10), (0, 10)])
+    Me.setPhi(['p'],[stats.uniform],[(6,9)],[(0,10)])
     #Me.add_data(normal(7.5,1,400),'normal',(6,9))
     #Me.run()
     Me.sir(data ={'p':[7.5]} )
@@ -983,10 +1013,8 @@ def main2():
 def mh_test():
     start = time()
     #Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
-    Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)])
-    Me.setPhi(['p'],[stats.uniform],[(6,9)],[(6,9)])
-    #Me.add_data(normal(7.5,1,400),'normal',(6,9))
-    #Me.run()
+    Me.setTheta(['r','p0'],[stats.uniform,stats.uniform],[(2,4),(0,5)], [(0, 10), (0, 10)])
+    Me.setPhi(['p'],[stats.uniform],[(6,9)],[(0,10)])
     Me.mcmc_run(data ={'p':[7.5]},burnin=1000)
     pt,pp = Me.getPosteriors(1)
     end = time()
@@ -997,7 +1025,7 @@ def mh_test():
     
 
 if __name__ == '__main__':
-    Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=False,viz=False)
+    Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=True,viz=False)
     mh_test()
     #main2()
      

@@ -11,9 +11,6 @@ from setuptools import setup, find_packages
 #    print "copy from www.cython.org and install it"
 #    sys.exit(1)
 
-
-
-
 setup(name='BIP', 
         version  = '0.3.23',
         author = 'Flavio Codeco Coelho', 
@@ -22,6 +19,7 @@ setup(name='BIP',
         description = 'Bayesian Inference Tools for Python',
         zip_safe = False,
         packages = find_packages(),#['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
+        install_requires = ["numpy >= 1.2", "scipy >= 0.7"], 
         test_suite = 'nose.collector', 
         license = 'GPL',
 #        cmdclass = {'build_ext': build_ext},
