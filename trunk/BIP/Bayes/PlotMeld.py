@@ -16,7 +16,7 @@ import matplotlib.pyplot as P
 from scipy.stats import gaussian_kde
 
 
-def plot_series(tim,series,y, names=[],title='series'):
+def plot_series(tim,obs, series, names=[],title='series'):
     c = cycle(['b','g','r','c','m','y','k'])
     if not names:
         names = series.dtype.names
@@ -30,7 +30,7 @@ def plot_series(tim,series,y, names=[],title='series'):
         P.plot(tim,[stats.scoreatpercentile(t,50) for t in series[n].T],co+'-',lw=2,label=n)
         #P.plot(tim,y[:,list(series.dtype.names).index(n)],'*',label=n+' obs.')
         if n in y:
-            P.plot(tim,y[n],'*',label=n+' obs.')
+            P.plot(tim,obs[n],'*',label=n+' obs.')
     P.savefig(title+'.png')
 
 def plot_pred(tim,series,y, fig,names=[],title='series'):
@@ -78,13 +78,13 @@ def pred_new_cases(obs,series,weeks,names=[],ws=7):
     P.xlabel('weeks')
     ax.legend(loc=0)
 
-def plot_series2(tim,obs,series,names=[],tit='Simulated vs Observed series',ws=7,lag=False):
+def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',ws=7,lag=False):
     ser2={}
     for n in series[0].dtype.names:
         ser2[n] = concatenate([s[n] for s in series],axis=1)
     #print type (series)#.I.shape
     fig =P.figure()
-    P.title(tit)
+    P.title(title)
     if not names:
         names = ser2.keys()
     ax = fig.add_subplot(111)

@@ -274,7 +274,7 @@ class FitModel:
         self.hst.plothist(data=array(prior['theta']),names=list(self.thetanames),title='Window %s'%(w+1))
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         simseries = self.model(*cpars)
-        self.fsp.plotlines(data=simseries.T, names=list(self.phinames))
+        self.fsp.plotlines(data=simseries.T, names=list(self.phinames), title="Best fit simulation")
         self.ser.clearFig()
         self.hst.clearFig()
         self.fsp.clearFig()
