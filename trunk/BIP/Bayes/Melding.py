@@ -88,6 +88,7 @@ class FitModel:
         self.done_running = False
         self.prior_set = False
         self.burnin = burnin
+        self.pool = False #this will be updated by the run method.
         
     def optimize(self, data, p0):
         """
@@ -109,8 +110,8 @@ class FitModel:
             - `s1`: model-generated time series. 
             - `s2`: observed time series. dictionary with keys matching names of s1
         :Types:
-            - s1: Record array or list.
-            - s2: Dictionary or list
+            - `s1`: Record array or list.
+            - `s2`: Dictionary or list
         
         s1 and s2 can also be both lists of lists or lists of arrays of the same length.
 
@@ -168,7 +169,7 @@ class FitModel:
         if method == "SIR":
             while not succ: #run sir Until is able to get a fit
                 print 'attempt #',att
-                succ = self.Me.sir(data=data,variance=likvar,nopool=True,t=self.tf)
+                succ = self.Me.sir(data=data,variance=likvar,pool=self.pool,t=self.tf)
                 att += 1
             pt,series = self.Me.getPosteriors(t=self.tf)
         elif method == "MCMC":
@@ -179,7 +180,7 @@ class FitModel:
 
         elif method == "ABC":
             #TODO: allow passing of fitfun
-            self.Me.abcRun(data=data,fitfun=None,nopool=True, t=self.tf)
+            self.Me.abcRun(data=data,fitfun=None,pool=self.pool, t=self.tf)
             pt,series = self.Me.getPosteriors(t=self.tf)
         pp = series[:,-1]
         # TODO: figure out what to do by default with inits
@@ -190,7 +191,7 @@ class FitModel:
         predseries = self.Me.getPosteriors(predlen)[1]
         return pt,pp,series,predseries,att
 
-    def run(self, data,method,likvar,monitor=False):
+    def run(self, data,method,likvar,pool=False, monitor=False):
         """
         Fit the model against data
 
@@ -198,7 +199,10 @@ class FitModel:
             - `data`: dictionary with variable names and observed series, as Key and value respectively.
             - `method`: Inference method: "ABC", "SIR" or "MCMC"
             - `likvar`: Variance of the likelihood function in the SIR and MCMC method
+            - `pool`: Pool priors on model's outputs.
+            - `monitor`: Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.
         """
+        self.pool = pool
         if not self.prior_set: return
         if monitor:
             self._monitor_setup()
@@ -621,7 +625,7 @@ class Meld:
         qtilphi = (phidens.evaluate(lastp.T)**(1-self.alpha))*q2dens.evaluate(lastp.T)**self.alpha
         return qtilphi/sum(qtilphi)
 
-    def abcRun(self,fitfun=None, data={}, t=1,nopool=False,savetemp=False):
+    def abcRun(self,fitfun=None, data={}, t=1,pool=False,savetemp=False):
         """
         Runs the model for inference through Approximate Bayes Computation
         techniques. This method should be used as an alternative to the sir.
@@ -630,6 +634,7 @@ class Meld:
              - `fitfun`: Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit
              - `t`: number of time steps to retain at the end of the of the model run for fitting purposes.
              - `data`: dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.
+             - `pool`: if True, Pools the user provided priors on the model's outputs, with the model induced priors.
              - `savetemp`: Should temp results be saved. Useful for long runs. Alows for resuming the simulation from last sa
         """
         seed()
@@ -642,7 +647,7 @@ class Meld:
 
         print "==> Done Running the K replicates\n"
         # Do Log Pooling
-        if nopool:
+        if not pool:
             qtilphi = ones(self.K)
         else:
             t0 = time()
@@ -746,9 +751,9 @@ class Meld:
             - `po`: Pool of processes for parallel execution
         
         :Types:
-            - prop: array of shape (t,nphi) with series as columns.
-            - data: Dictionary with keys being the names (as in phinames) of observed variables
-            - likfun: Log likelihood function object
+            - `prop`: array of shape (t,nphi) with series as columns.
+            - `data`: Dictionary with keys being the names (as in phinames) of observed variables
+            - `likfun`: Log likelihood function object
         """
         if isinstance(prop, numpy.recarray):
             prop= numpy.array(prop.tolist())
@@ -765,7 +770,7 @@ class Meld:
                 for p in xrange(t): #Loop on time
                     lik += likfun(obs[p],prop[p][k],1./likvar)
         return lik
-    def sir(self, data={}, t=1,variance=0.1, nopool=False,savetemp=False):
+    def sir(self, data={}, t=1,variance=0.1, pool=False,savetemp=False):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
         Returns 1 if successful or 0 if not.
@@ -774,13 +779,13 @@ class Meld:
             - `data`: observed time series on the model's output
             - `t`: length of the observed time series
             - `variance`: variance of the Normal likelihood function
-            - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
+            - `pool`: False if no priors on the outputs are available. Leads to faster calculations
             - `savetemp`: Boolean. create a temp file?
         """
         seed()
         phi = self.runModel(savetemp,t)
         # Do Log Pooling
-        if nopool:
+        if not pool:
             qtilphi = ones(self.K)
         else:
             t0 = time()
