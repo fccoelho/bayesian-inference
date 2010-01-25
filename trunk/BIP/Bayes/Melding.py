@@ -97,7 +97,7 @@ class FitModel:
         def mse(theta):
             s1 = self.Me.model_as_ra(theta)
             return self._rms_error(s1, data)
-        potimo = optim.fmin_powell(mse, p0, disp=True)
+        potimo = optim.fmin(mse, p0, disp=True)
         return potimo
         
     def _rms_error(self, s1, s2):
@@ -137,8 +137,10 @@ class FitModel:
         :Parameters:
             - `pdists`: distributions for the output variables. For example: [scipy.stats.uniform,scipy.stats.norm]
             - `ppars`: paramenters for the distributions in pdists. For example: [(0,1),(0,1)]
+            - `plims`: Limits of the range of each phi. List of (min,max) tuples.
             - `tdists`: same as pdists, but for input parameters (Theta).
             - `tpars`: same as ppars, but for tdists.
+            - `tlims`: Limits of the range of each theta. List of (min,max) tuples.
         """
         self.pdists = pdists
         self.ppars = ppars
@@ -257,7 +259,7 @@ class FitModel:
         """
         Plots real time data
         """
-        self.ser.plotlines(d2.values(),style='points', names=d2.keys(),title='Window %s'%(w+1))
+        #self.ser.plotlines((d2[n] for n in vars),style='points', names=vars,title='Window %s'%(w+1))
         for n in vars:
             if n not in d2:
                 continue

@@ -111,7 +111,7 @@ class RTplot:
             - `data`: must be a numpy array or record array, with series as rows
             - `names`: is a list of strings to serve as legend labels
         '''
-        self.gp('set data style boxes')
+        self.gp('set style data boxes')
         self.gp('set title "%s"'%title)
         if isinstance(data,numpy.core.records.recarray):
             return self._histFromRA(data)
