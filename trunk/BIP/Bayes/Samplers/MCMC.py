@@ -184,8 +184,8 @@ class Metropolis(_Sampler):
             - `s1`: model-generated time series. 
             - `s2`: observed time series. dictionary with keys matching names of s1
         :Types:
-            - s1: Record array or list.
-            - s2: Dictionary or list
+            - `s1`: Record array or list.
+            - `s2`: Dictionary or list
         
         s1 and s2 can also be both lists of lists or lists of arrays of the same length.
 
