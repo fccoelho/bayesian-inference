@@ -252,10 +252,12 @@ class FitModel(object):
                 d2[k] = v[w*wl:w*wl+wl]
             print v.shape
             if w==0:
-                self.inits[2] = d2[self.phinames[2]][0]
-                self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
-                print "++> inits: ", self.inits
-                self.model.func_globals['inits'] = self.inits
+                for n in d2.keys():
+                    i = self.phinames.index(n)
+                    self.inits[i] = d2[n][0]
+                    #TODO: figure out how to balance the total pop
+#                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
+                    self.model.func_globals['inits'] = self.inits
             pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
             #print series[:, 0], self.inits
             f = open('wres_%s'%w,'w')
