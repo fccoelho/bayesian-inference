@@ -47,7 +47,7 @@ if Viz:
 
 __docformat__ = "restructuredtext en"
 
-class FitModel:
+class FitModel(object):
     """
     Fit a model to data generating
     Bayesian posterior distributions of input and
@@ -74,11 +74,14 @@ class FitModel:
         """
         self.K = K
         self.L = L
-        self.Me = Meld(K=K,L=L,model=model,ntheta=ntheta,nphi=nphi,verbose=verbose)
+        self.finits = inits
+        self.ftf = tf
         self.inits = inits
-        self.totpop = sum(inits)
         self.tf = tf
+        self.totpop = sum(inits)
         self.model = model
+        self.model.func_globals['inits'] = self.inits
+        self.model.func_globals['tf'] = self.tf
         self.nphi = nphi
         self.ntheta = ntheta
         self.phinames = phinames
@@ -89,7 +92,22 @@ class FitModel:
         self.prior_set = False
         self.burnin = burnin
         self.pool = False #this will be updated by the run method.
-        
+        self.Me = Meld(K=K,L=L,model=self.model,ntheta=ntheta,nphi=nphi,verbose=verbose)
+#    @property
+#    def inits(self):
+#        return self._inits
+#    @inits.setter
+#    def inits(self, value):
+#        self.model.func_globals['inits']=value
+#        self._inits = value
+#    @property
+#    def tf(self):
+#        return self._tf
+#    @tf.setter
+#    def tf(self, value):
+#        self.model.func_globals['tf']=value
+#        self._tf = value
+
     def optimize(self, data, p0):
         """
         Finds best parameters using an optimization approach
@@ -97,7 +115,7 @@ class FitModel:
         def mse(theta):
             s1 = self.Me.model_as_ra(theta)
             return self._rms_error(s1, data)
-        potimo = optim.fmin(mse, p0, disp=True)
+        potimo = optim.fmin(mse, p0,ftol=1e-15, xtol=1e-15,  disp=True)
         return potimo
         
     def _rms_error(self, s1, s2):
@@ -173,22 +191,32 @@ class FitModel:
                 print 'attempt #',att
                 succ = self.Me.sir(data=data,variance=likvar,pool=self.pool,t=self.tf)
                 att += 1
-            pt,series = self.Me.getPosteriors(t=self.tf)
         elif method == "MCMC":
             while not succ: #run sir Until is able to get a fitd == "mcmc":
                 print 'attempt #',att
                 succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin)
-            pt,series = self.Me.getPosteriors(t=self.tf)
 
         elif method == "ABC":
             #TODO: allow passing of fitfun
             self.Me.abcRun(data=data,fitfun=None,pool=self.pool, t=self.tf)
-            pt,series = self.Me.getPosteriors(t=self.tf)
+        pt,series = self.Me.getPosteriors(t=self.tf)
         pp = series[:,-1]
+#        print "var:", numpy.std(series.I[:, 0])
+#        for i, s in enumerate(series):
+#                try:
+#                    assert tuple(s[0]) == tuple(self.inits) 
+#                except AssertionError:
+#                    print i, ":", s[0]
+#                    print self.inits
         # TODO: figure out what to do by default with inits
-        diff = array([abs(pp[vn]-data[vn][-1])/mean(pp[vn]) for vn in data.keys()]).sum(axis=0) #sum errors for all oserved variables
+        adiff = array([abs(pp[vn]-data[vn][-1]) for vn in data.keys()])
+        diff = adiff.sum(axis=0) #sum errors for all oserved variables
         initind = diff.tolist().index(min(diff))
-        self.inits = list(pp[initind])
+        self.inits = [pp[vn][initind] for vn in self.phinames]
+        for i, v in enumerate(self.phinames):
+            if v in data.keys():
+                self.inits[i] = data[v][-1] 
+        self.model.func_globals['inits'] = self.inits
         #tf = predlen
         predseries = self.Me.getPosteriors(predlen)[1]
         return pt,pp,series,predseries,att
@@ -216,8 +244,9 @@ class FitModel:
             self.wl = floor(len(d.values()[0])/self.nw)
         wl = self.wl
         for w in range(self.nw):
-            print '==> Window # %s of %s!'%(w,self.nw)
+            print '==> Window # %s of %s!'%(w+1,self.nw)
             self.tf=wl
+            self.model.func_globals['tf'] = wl
             d2 = {}
             for k,v in d.items():#Slicing data to the current window
                 d2[k] = v[w*wl:w*wl+wl]
@@ -225,7 +254,10 @@ class FitModel:
             if w==0:
                 self.inits[2] = d2[self.phinames[2]][0]
                 self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
+                print "++> inits: ", self.inits
+                self.model.func_globals['inits'] = self.inits
             pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
+            #print series[:, 0], self.inits
             f = open('wres_%s'%w,'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
             CP.dump((pt,pp,series,d,predseries, att*self.K),f)
@@ -247,9 +279,9 @@ class FitModel:
         """
         Sets up realtime plotting of inference
         """
-        self.hst = RTplot() #realtime display of theta histograms
-        self.fsp = RTplot()#realtime display of full data and simulated series
-        self.ser = RTplot()#realtime display of phi time series
+        self.hst = RTplot() #theta histograms
+        self.fsp = RTplot()#full data and simulated series
+        self.ser = RTplot()# phi time series
 
     def _get95_bands(self,series,vname):
         i5 = array([stats.scoreatpercentile(t,2.5) for t in series[vname].T])
@@ -259,22 +291,24 @@ class FitModel:
         """
         Plots real time data
         """
-        #self.ser.plotlines((d2[n] for n in vars),style='points', names=vars,title='Window %s'%(w+1))
+        
+        diff = array([abs(series[vn][:, -1]-d2[vn][-1]) for vn in d2.keys()]).sum(axis=0) #sum errors for all oserved variables
+        initind = diff.tolist().index(min(diff))
         for n in vars:
             if n not in d2:
                 continue
             i5,i95 = self._get95_bands(series,n)
-            diff = abs(series[n][:,-1]-(d2[n][-1]))
-            initind = diff.tolist().index(min(diff))
-            self.ser.plotlines(data=series[n][initind], names=["Best run's %s"%n])
+            self.ser.plotlines(data=series[n][initind],  names=["Best run's %s"%n], title='Window %s'%(w+1))
             self.ser.plotlines(data=i5, names=['2.5%'])
             self.ser.plotlines(data=i95, names=['97.5%'])
             self.ser.plotlines(d2[n],style='points', names=['Obs. %s'%n])
-            self.fsp.plotlines(data[n],style='points', names=['Obs. %s'%n])
+            self.fsp.plotlines(data[n],style='points', names=['Obs. %s'%n], title='Window %s'%(w+1))
         self.hst.plothist(data=array(prior['theta']),names=list(self.thetanames),title='Window %s'%(w+1))
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
+        self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.ftf
         simseries = self.model(*cpars)
-        self.fsp.plotlines(data=simseries.T, names=list(self.phinames), title="Best fit simulation")
+        self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
+        self.fsp.plotlines(data=simseries.T, names=list(self.phinames), title="Best fit simulation after window %s"%(w+1))
         self.ser.clearFig()
         self.hst.clearFig()
         self.fsp.clearFig()
@@ -298,7 +332,7 @@ class FitModel:
         if self.nw > 1:
             PM.pred_new_cases(obs,predseries,self.nw,names,self.wl)
             PM.plot_series2(tim,obs,predseries,names=names,
-                            tit='Predicted vs. Observed series',lag=True)
+                            title='Predicted vs. Observed series',lag=True)
         P.show()
 
     def _read_results(self):
@@ -319,7 +353,7 @@ class FitModel:
         return pt,pp,series,predseries,obs
             
 
-class Meld:
+class Meld(object):
     """
     Bayesian Melding class
     """
@@ -557,11 +591,6 @@ class Meld:
         for i in xrange(self.L):#Monte Carlo with values of the posterior of Theta
             theta = [self.post_theta[n][pti[j,i]] for j,n in enumerate(self.post_theta.dtype.names)]
             po.apply_async(enumRun, (self.model,theta,i), callback=cb)
-#            r = po.apply_async(self.model,theta)
-#            if t == 1:
-#                self.post_phi[i] = r.get()[-1]
-#            else:
-#                self.post_phi[i]= [tuple(l) for l in r.get()[-t:]]
             if i%100 == 0 and self.verbose:
                 print "==> L = %s\r"%i
 
@@ -668,10 +697,7 @@ class Meld:
         po.close();po.join()
         w /=sum(w)
         w = 1-w
-        #print "w=",w, mean(w), var(w)
-#        print
-#        print 'qtilphi=',qtilphi
-        print "Resampling Thetas"
+        
         w = nan_to_num(w)
         w = array(w)*qtilphi
         w /=sum(w)
@@ -680,6 +706,7 @@ class Meld:
         if sum(w) == 0.0:
             print 'Resampling weights are all zero, please check your model or data.'
             return 0
+        print "Resampling Thetas"
         t0 = time()
         j = 0
         while j < self.L: # Extract L samples from q1theta
