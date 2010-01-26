@@ -18,18 +18,20 @@ from scipy.stats import gaussian_kde
 
 def plot_series(tim,obs, series, names=[],title='series'):
     c = cycle(['b','g','r','c','m','y','k'])
+    ser2={}
+    for n in series[0].dtype.names:
+        ser2[n] = concatenate([s[n] for s in series],axis=1)
     if not names:
-        names = series.dtype.names
-    #l = len(names)
+        names = series[0].dtype.names
     for i,n in enumerate(names):
         #print n
         #P.subplot(l,1,i)
         co = c.next()
-        P.plot(tim,[stats.scoreatpercentile(t,5) for t in series[n].T],co+'-.')
-        P.plot(tim,[stats.scoreatpercentile(t,95) for t in series[n].T],co+'-.')
-        P.plot(tim,[stats.scoreatpercentile(t,50) for t in series[n].T],co+'-',lw=2,label=n)
+        P.plot(tim,[stats.scoreatpercentile(t,5) for t in ser2[n].T],co+'-.')
+        P.plot(tim,[stats.scoreatpercentile(t,95) for t in ser2[n].T],co+'-.')
+        P.plot(tim,[stats.scoreatpercentile(t,50) for t in ser2[n].T],co+'-',lw=2,label=n)
         #P.plot(tim,y[:,list(series.dtype.names).index(n)],'*',label=n+' obs.')
-        if n in y:
+        if n in obs:
             P.plot(tim,obs[n],'*',label=n+' obs.')
     P.savefig(title+'.png')
 
@@ -63,18 +65,19 @@ def plot_pred(tim,series,y, fig,names=[],title='series'):
 
 def pred_new_cases(obs,series,weeks,names=[],ws=7):
     """
-    Predicted total new cases in a week vs oserved.
+    Predicted total new cases in a window vs oserved.
     """
     fig =P.figure()
-    P.title('Total new cases per week: predicted vs observed')
+    P.title('Total new cases per window: predicted vs observed')
     if not names:
         names = series[0].dtype.names
     ax = fig.add_subplot(111)
-
+    c = cycle(['b','g','r','c','m','y','k'])
     for n in names:
+        co = c.next()
         ax.boxplot([sum(s[n],axis=1) for s in series] ,positions = range(weeks),notch=1,vert=1)
-        ax.plot(range(weeks),[mean(sum(s[n],axis=1)) for s in series],'^', label="Mean pred. %s"%n)
-        ax.plot(range(weeks-1),[sum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'r-o', label="obs. Prev")
+        ax.plot(range(weeks),[mean(sum(s[n],axis=1)) for s in series],'%s^'%co, label="Mean pred. %s"%n)
+        ax.plot(range(weeks-1),[sum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'%s-o'%co, label="obs. Prev")
     P.xlabel('weeks')
     ax.legend(loc=0)
 
@@ -86,7 +89,7 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',ws
     fig =P.figure()
     P.title(title)
     if not names:
-        names = ser2.keys()
+        names = series[0].dtype.names
     ax = fig.add_subplot(111)
     c = cycle(['b','g','r','c','m','y','k'])
     print len(tim), len(obs['I']),len(median(ser2['I'],axis=0))
