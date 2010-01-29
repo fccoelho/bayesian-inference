@@ -11,6 +11,7 @@ __docformat__ = "restructuredtext en"
 from itertools import cycle
 from scipy import stats
 import glob
+import datetime
 from numpy import *
 import matplotlib.pyplot as P
 from scipy.stats import gaussian_kde
@@ -74,17 +75,20 @@ def pred_new_cases(obs,series,weeks,names=[],ws=7):
     ax = fig.add_subplot(111)
     c = cycle(['b','g','r','c','m','y','k'])
     for n in names:
-        co = c.next()
-        ax.boxplot([sum(s[n],axis=1) for s in series] ,positions = range(weeks),notch=1,vert=1)
-        ax.plot(range(weeks),[mean(sum(s[n],axis=1)) for s in series],'%s^'%co, label="Mean pred. %s"%n)
-        ax.plot(range(weeks-1),[sum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'%s-o'%co, label="obs. Prev")
-    P.xlabel('weeks')
+        if n in obs:
+            co = c.next()
+            ax.boxplot([sum(s[n],axis=1) for s in series] ,positions = range(weeks),notch=1,vert=1)
+            ax.plot(range(weeks),[mean(sum(s[n],axis=1)) for s in series],'%s^'%co, label="Mean pred. %s"%n)
+            ax.plot(range(weeks-1),[sum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'%s-o'%co, label="obs. Prev")
+    P.xlabel('windows')
     ax.legend(loc=0)
 
 def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl=7,lag=False):
     ser2={}
     for n in series[0].dtype.names:
         ser2[n] = concatenate([s[n] for s in series],axis=1)
+    ls = ser2[n].shape[1]
+    tim = tim[:ls]
     #print type (series)#.I.shape
     fig =P.figure()
     P.title(title)
@@ -92,14 +96,18 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
         names = series[0].dtype.names
     ax = fig.add_subplot(111)
     c = cycle(['b','g','r','c','m','y','k'])
+    if isinstance(tim[0], datetime.date):
+        lag = datetime.timedelta(int(lag)*wl)
+    else:
+        lag = int(lag)*wl
     for n in names:
         co = c.next()
         if n in obs:
             ax.plot(tim,obs[n][:len(tim)],'%s+'%co, label="Observed %s"%n)
-        ax.plot(array(tim)+wl*int(lag),median(ser2[n],axis=0),'k-')
-        lower = [stats.scoreatpercentile(t,2) for t in ser2[n].T]
-        upper =[stats.scoreatpercentile(t,98) for t in ser2[n].T]
-        ax.fill_between(array(tim)+wl*int(lag),lower,upper,facecolor=co,alpha=0.6)
+            ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-')
+            lower = [stats.scoreatpercentile(t,2) for t in ser2[n].T]
+            upper =[stats.scoreatpercentile(t,98) for t in ser2[n].T]
+            ax.fill_between(array(tim)+lag,lower,upper,facecolor=co,alpha=0.6)
     P.xlabel('days')
     ax.legend()
 
