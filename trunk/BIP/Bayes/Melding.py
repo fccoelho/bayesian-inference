@@ -72,6 +72,10 @@ class FitModel(object):
             - `verbose`: Verbose output if True.
             - `burnin`: number of burnin samples, used in the case on mcmc method.
         """
+        try:
+            assert wl<=tf
+        except AssertionError:
+           sys.exit("Window Length cannot be larger that Length of the simulation(tf)" )
         self.K = K
         self.L = L
         self.finits = inits
@@ -115,7 +119,7 @@ class FitModel(object):
         def mse(theta):
             s1 = self.Me.model_as_ra(theta)
             return self._rms_error(s1, data)
-        potimo = optim.fmin(mse, p0,ftol=1e-15, xtol=1e-15,  disp=True)
+        potimo = optim.anneal(mse, p0)[0]
         return potimo
         
     def _rms_error(self, s1, s2):
@@ -169,6 +173,19 @@ class FitModel(object):
         self._init_priors()
         self.prior_set = True
     
+    def prior_sample(self):
+        """
+        Generates a set of sample from the starting theta prior distributions
+        for reporting purposes.
+        
+        :Returns:
+            Dictionary with (name,sample) pairs
+        """
+        s = {}
+        for i, n in enumerate(self.thetanames):
+            s[n]=self.tdists[i](*self.tpars[i]).rvs(self.K)
+        return s
+            
     def _init_priors(self, prior=None):
         """
         """
@@ -186,6 +203,9 @@ class FitModel(object):
         self._init_priors(prior)
         succ=0
         att = 1
+        for n in data.keys():
+            if n not in self.phinames:
+                data.pop(n)
         if method == "SIR":
             while not succ: #run sir Until is able to get a fit
                 print 'attempt #',att
@@ -209,19 +229,21 @@ class FitModel(object):
 #                    print i, ":", s[0]
 #                    print self.inits
         # TODO: figure out what to do by default with inits
-        adiff = array([abs(pp[vn]-data[vn][-1]) for vn in data.keys()])
-        diff = adiff.sum(axis=0) #sum errors for all oserved variables
-        initind = diff.tolist().index(min(diff))
-        self.inits = [pp[vn][initind] for vn in self.phinames]
-        for i, v in enumerate(self.phinames):
-            if v in data.keys():
-                self.inits[i] = data[v][-1] 
-        self.model.func_globals['inits'] = self.inits
-        #tf = predlen
-        predseries = self.Me.getPosteriors(predlen)[1]
+        if self.nw >1:
+            adiff = array([abs(pp[vn]-data[vn][-1]) for vn in data.keys()])
+            diff = adiff.sum(axis=0) #sum errors for all oserved variables
+            initind = diff.tolist().index(min(diff))
+            self.inits = [pp[vn][initind] for vn in self.phinames]
+            for i, v in enumerate(self.phinames):
+                if v in data.keys():
+                    self.inits[i] = data[v][-1] 
+            self.model.func_globals['inits'] = self.inits
+        
+        if predlen:
+            predseries = self.Me.getPosteriors(predlen)[1]
         return pt,pp,series,predseries,att
 
-    def run(self, data,method,likvar,pool=False, monitor=False):
+    def run(self, data,method,likvar,pool=False,adjinits=False,  monitor=False):
         """
         Fit the model against data
 
@@ -230,6 +252,7 @@ class FitModel(object):
             - `method`: Inference method: "ABC", "SIR" or "MCMC"
             - `likvar`: Variance of the likelihood function in the SIR and MCMC method
             - `pool`: Pool priors on model's outputs.
+            - `adjinits`: whether to adjust inits to data
             - `monitor`: Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.
         """
         self.pool = pool
@@ -249,10 +272,11 @@ class FitModel(object):
             self.model.func_globals['tf'] = wl
             d2 = {}
             for k,v in d.items():#Slicing data to the current window
-                d2[k] = v[w*wl:w*wl+wl]
-            print v.shape
-            if w==0:
+                d2[k] = v[w*wl:w*wl+wl]            
+            if w==0 and adjinits:
                 for n in d2.keys():
+                    if n not in self.phinames:
+                        continue
                     i = self.phinames.index(n)
                     self.inits[i] = d2[n][0]
                     #TODO: figure out how to balance the total pop
@@ -321,16 +345,19 @@ class FitModel(object):
         """
         if not names:
             names = self.phinames
-        if not self.done_running:
-            return
-        pt,pp,series,predseries,obs = self._read_results()
+        try: #read the data files
+            pt,pp,series,predseries,obs = self._read_results()
+        except:
+            if not self.done_running:
+                return
         if obs.has_key('time'):
             tim = numpy.array(obs['time'])
         else:
             tim = numpy.arange(self.nw*self.wl)
-        PM.plot_par_series(range(len(pt)),pt)
-        PM.plot_par_violin(range(len(pt)),pt)
-        PM.plot_series2(tim,obs,series,names=names)
+        #PM.plot_par_series(range(len(pt)),pt)
+        priors = self.prior_sample()
+        PM.plot_par_violin(range(len(pt)),pt, priors)
+        PM.plot_series2(tim,obs,series,names=names, wl=self.wl)
         if self.nw > 1:
             PM.pred_new_cases(obs,predseries,self.nw,names,self.wl)
             PM.plot_series2(tim,obs,predseries,names=names,

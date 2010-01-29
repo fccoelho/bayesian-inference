@@ -111,11 +111,14 @@ class Metropolis(_Sampler):
         """
         if step <= 1: 
             #sample from the priors
-            theta = [self.parpriors[dist]() for dist in self.parnames]
+            while 1:
+                theta = [self.parpriors[dist]() for dist in self.parnames]
+                if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
+                    break
             self.lastcv = None
         else:
             #use gaussian proposal
-            if (self.lastcv==None) or (step%10==0): #recalculate covariance matrix only every ten steps
+            if (self.lastcv==None) or (step%3==0): #recalculate covariance matrix only every ten steps
                 cv = self.scaling_factor*st.cov(np.array(self.history))+self.scaling_factor*self.e*np.identity(self.dimensions)
                 self.lastcv = cv
             else:
@@ -143,7 +146,7 @@ class Metropolis(_Sampler):
             theta,prop = self._propose(step=j)
             #calculate likelihoods
             lik = self.meld._output_loglike(prop, self.data, self.likfun, self.likvariance)
-            accepted = self._accept(np.exp(last_lik), np.exp(lik)) if last_lik else 0
+            accepted = self._accept(last_lik, lik) if last_lik else 0
             # ABC fit
 #            lik = self._rms_fit(prop, self.data)
 #            accepted = self._accept(last_lik, lik) if last_lik else 0
@@ -154,6 +157,9 @@ class Metropolis(_Sampler):
             if not accepted:
                 rej +=1 #adjust rejection counter
                 i +=1
+                if rej%100 == 0: 
+                    print "-->%s Rejected. Last Proposal: %s ; alpha: %s"%(rej,theta, np.exp(lik-last_lik))
+                    print j," Accepted."
                 continue
             self.history.append(theta)
             self.phi[j] = prop[0] if self.t==1 else [tuple(point) for point in prop]
@@ -161,12 +167,12 @@ class Metropolis(_Sampler):
             liklist.append(lik)
             if j%100==0:
 #                self.watch_chain()
-                if self.trace_acceptance:print "%s: Acc. rate: %s"%(j, ar)
-                if self.trace_convergence: print "%s: Proposal: %s"%(j, theta)
+                if self.trace_acceptance:print "++>%s: Acc. ratio: %s"%(j, ar)
+                if self.trace_convergence: print "%s: Mean Proposal: %s; STD: %s"%(j, np.array(self.history[-100:]).mean(axis=0),np.array(self.history[-100:]).std(axis=0) )
             last_lik = lik
             j += 1 #update good sample counter 
             i+=1
-            ar = (i-rej)/float(i)
+            ar = j/(float(j)+rej)
         self.meld.post_theta = ptheta[self.burnin:]
         self.phi = self.phi[self.burnin:]
         self.meld.post_theta = self._imp_sample(self.meld.L,ptheta,liklist)
@@ -212,9 +218,13 @@ class Metropolis(_Sampler):
         """
         Decides whether to accept a proposal
         """
-        if last_lik >0:
-            alpha = min(lik/last_lik, 1)
-        elif last_lik == 0:
+        # liks are logliks
+        if lik == -np.inf:#0:
+            return 0
+        if last_lik >-np.inf:#0:
+            alpha = min( np.exp(lik-last_lik), 1)
+            #alpha = min(lik-last_lik, 1)
+        elif last_lik == -np.int:#0:
             alpha = 1
         else:
             return 0

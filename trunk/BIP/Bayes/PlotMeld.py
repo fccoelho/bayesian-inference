@@ -81,7 +81,7 @@ def pred_new_cases(obs,series,weeks,names=[],ws=7):
     P.xlabel('weeks')
     ax.legend(loc=0)
 
-def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',ws=7,lag=False):
+def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl=7,lag=False):
     ser2={}
     for n in series[0].dtype.names:
         ser2[n] = concatenate([s[n] for s in series],axis=1)
@@ -92,15 +92,14 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',ws
         names = series[0].dtype.names
     ax = fig.add_subplot(111)
     c = cycle(['b','g','r','c','m','y','k'])
-    print len(tim), len(obs['I']),len(median(ser2['I'],axis=0))
     for n in names:
         co = c.next()
         if n in obs:
             ax.plot(tim,obs[n][:len(tim)],'%s+'%co, label="Observed %s"%n)
-        ax.plot(array(tim)+ws*int(lag),median(ser2[n],axis=0),'k-')
+        ax.plot(array(tim)+wl*int(lag),median(ser2[n],axis=0),'k-')
         lower = [stats.scoreatpercentile(t,2) for t in ser2[n].T]
         upper =[stats.scoreatpercentile(t,98) for t in ser2[n].T]
-        ax.fill_between(array(tim)+ws*int(lag),lower,upper,facecolor=co,alpha=0.6)
+        ax.fill_between(array(tim)+wl*int(lag),lower,upper,facecolor=co,alpha=0.6)
     P.xlabel('days')
     ax.legend()
 
@@ -116,32 +115,52 @@ def plot_par_series(tim,ptlist):
         P.ylabel(n)
     P.xlabel('Weeks')
 
-def plot_par_violin(tim,ptlist):
+def plot_par_violin(tim,ptlist, priors={}, bp=True):
     fig = P.figure()
     #P.title('Parameters temporal variation')
     sq = sqrt(len(ptlist[0].dtype.names))
     r= floor(sq);c=ceil(sq)
+    if len(ptlist[0].dtype.names) == 3:
+        r = 1; c = 3
+    if priors:
+        if len(tim)==1:
+            tim  = [-1, 0]
+        else:
+            tim = [tim[0]-(tim[1]-tim[0])]+tim
     for i,n in enumerate(ptlist[0].dtype.names):
         ax = fig.add_subplot(r,c,i+1)
-        violin_plot(ax,[s[n] for s in ptlist],tim,bp=True)
+        violin_plot(ax,[priors[n]]+[s[n] for s in ptlist],tim,bp, True)
         P.ylabel(n)
     P.xlabel('Weeks')
 
-def violin_plot(ax,data,positions,bp=False):
+def violin_plot(ax,data,positions,bp=False, prior = False):
     '''
     Create violin plots on an axis
+    
+    :Parameters:
+        - `ax`: A subplot object
+        - `data`: A list of data sets to plot
+        - `positions`: x values to position the violins
+        - `bp`: Whether to plot the boxplot on top.
+        - `prior`: whether the first element of data is a Prior distribution.
     '''
     dist = max(positions)-min(positions)
     w = min(0.15*max(dist,1.0),0.5)
-    for d,p in zip(data,positions):
+    i = 0
+    for d,p  in zip(data, positions):
+        if prior and i == 0:
+            color = 'g'
+        else:
+            color = 'y'
         k = gaussian_kde(d) #calculates the kernel density
         m = k.dataset.min() #lower bound of violin
         M = k.dataset.max() #upper bound of violin
         x = arange(m,M,(M-m)/100.) # support for violin
         v = k.evaluate(x) #violin profile (density curve)
         v = v/v.max()*w #scaling the violin to the available space
-        ax.fill_betweenx(x,p,v+p,facecolor='y',alpha=0.3)
-        ax.fill_betweenx(x,p,-v+p,facecolor='y',alpha=0.3)
+        ax.fill_betweenx(x,p,v+p,facecolor=color,alpha=0.3)
+        ax.fill_betweenx(x,p,-v+p,facecolor=color,alpha=0.3)
+        i+=1
     if bp:
         ax.boxplot(data,notch=1,positions=positions,vert=1)
 

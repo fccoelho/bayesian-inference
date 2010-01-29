@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        gillespie.py
-# Project:	Bayesian-Inference
+# Project:  Bayesian-Inference
 # Purpose:     
 #
 # Author:      Flávio Codeço Coelho<fccoelho@gmail.com>
@@ -85,7 +85,6 @@ class Model:
                 self.res = array(pool.map(dispatch,[self]*reps, chunksize=10))
                 pool.close()
                 pool.join()
-                print self.steps
             else:# Serial
                 self.res = array(map(dispatch,[self]*reps))
             
