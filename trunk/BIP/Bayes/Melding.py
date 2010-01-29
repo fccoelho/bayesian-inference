@@ -243,7 +243,7 @@ class FitModel(object):
             predseries = self.Me.getPosteriors(predlen)[1]
         return pt,pp,series,predseries,att
 
-    def run(self, data,method,likvar,pool=False,adjinits=False,  monitor=False):
+    def run(self, data,method,likvar,pool=False,adjinits=True,  monitor=False):
         """
         Fit the model against data
 
