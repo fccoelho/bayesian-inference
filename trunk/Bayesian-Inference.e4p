@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Project SYSTEM "Project-4.6.dtd">
+<!-- eric4 project file for project Bayesian-Inference -->
+<!-- Saved: 2010-01-12, 14:17:52 -->
+<!-- Copyright (C) 2010 Flávio Codeço Coelho, fccoelho@gmail.com -->
+<Project version="4.6">
+  <Language></Language>
+  <ProgLanguage mixed="0">Python</ProgLanguage>
+  <ProjectType>Console</ProjectType>
+  <Description>BIP package</Description>
+  <Version>0.1</Version>
+  <Author>Flávio Codeço Coelho</Author>
+  <Email>fccoelho@gmail.com</Email>
+  <Sources>
+    <Source>distribute_setup.py</Source>
+    <Source>setup.py</Source>
+    <Source>ez_setup.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/SDE/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/SDE/gillespie.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/SDE/example.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/general/bvariables.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/general/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/conjugate_priors.py.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/like.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/PlotMeld.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/Samplers/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/Samplers/MCMC.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/lhs.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/conjugate/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Bayes/Melding.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Viz/realtime.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Viz/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Viz/ascii.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/Viz/asciihist.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/SMC/__init__.py</Source>
+    <Source>build/lib.linux-i686-2.6/BIP/SMC/condensation.py</Source>
+    <Source>BIP/Docs/source/conf.py</Source>
+    <Source>BIP/SDE/__init__.py</Source>
+    <Source>BIP/SDE/gillespie.py</Source>
+    <Source>BIP/SDE/example.py</Source>
+    <Source>BIP/examples/Bayes/flu_stochastic.py</Source>
+    <Source>BIP/examples/Bayes/flu_deterministic.py</Source>
+    <Source>BIP/examples/Bayes/plotmeld.py</Source>
+    <Source>BIP/Bayes/general/bvariables.py</Source>
+    <Source>BIP/Bayes/general/__init__.py</Source>
+    <Source>BIP/Bayes/conjugate_priors.py.py</Source>
+    <Source>BIP/Bayes/like.py</Source>
+    <Source>BIP/Bayes/PlotMeld.py</Source>
+    <Source>BIP/Bayes/__init__.py</Source>
+    <Source>BIP/Bayes/Samplers/__init__.py</Source>
+    <Source>BIP/Bayes/Samplers/MCMC.py</Source>
+    <Source>BIP/Bayes/lhs.py</Source>
+    <Source>BIP/Bayes/Melding.py</Source>
+    <Source>BIP/tests/test_SMC_condensation.py</Source>
+    <Source>BIP/tests/test_Bayes_lhs.py</Source>
+    <Source>BIP/tests/test_Bayes_like.py</Source>
+    <Source>BIP/tests/test_Viz_realtime.py</Source>
+    <Source>BIP/tests/test_SDE_gillespie.py</Source>
+    <Source>BIP/tests/test_Bayes_Samplers_MCMC.py</Source>
+    <Source>BIP/tests/test_SDE_example.py</Source>
+    <Source>BIP/tests/test_Bayes_Melding.py</Source>
+    <Source>BIP/__init__.py</Source>
+    <Source>BIP/Viz/realtime.py</Source>
+    <Source>BIP/Viz/__init__.py</Source>
+    <Source>BIP/Viz/ascii.py</Source>
+    <Source>BIP/Viz/asciihist.py</Source>
+    <Source>BIP/SMC/__init__.py</Source>
+    <Source>BIP/SMC/condensation.py</Source>
+    <Source>__init__.py</Source>
+  </Sources>
+  <Forms>
+  </Forms>
+  <Translations>
+  </Translations>
+  <Resources>
+  </Resources>
+  <Interfaces>
+  </Interfaces>
+  <Others>
+  </Others>
+  <Vcs>
+    <VcsType>None</VcsType>
+  </Vcs>
+  <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.pyw" type="SOURCES" />
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
+    <FiletypeAssociation pattern="*.py" type="SOURCES" />
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
+  </FiletypeAssociations>
+</Project>

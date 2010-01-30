@@ -10,8 +10,9 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+
    overview
-   Paramest
+   paramest
 
 Indices and tables
 ==================
