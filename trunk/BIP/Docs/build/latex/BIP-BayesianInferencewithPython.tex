@@ -10,7 +10,7 @@
 
 
 \title{BIP - Bayesian Inference with Python Documentation}
-\date{January 11, 2010}
+\date{January 30, 2010}
 \release{0.3}
 \author{Flávio Codeço Coelho}
 \newcommand{\sphinxlogo}{\includegraphics{BIP_large.png}\par}
@@ -103,6 +103,31 @@
 
 
 Contents:
+
+\resetcurrentobjects
+\hypertarget{--doc-overview}{}
+
+\chapter{Overview}
+
+The Bip Package is a collection of useful classes for basic Bayesian inference. Currently, its main goal is to be a tool for learning and exploration of Bayesian probabilistic calculations.
+
+Currently it also includes subpackages for stochastic simulation tools which are not strictly related to Bayesian inference, but are currently being developed within BIP. One such package is the BIP.SDE which contains a parallelized solver for stochastic differential equations, an implementation of the Gillespie direct algorithm.
+
+The Subpackage Bayes also offers a tool for parameter estimation of Deterministic and Stochastic Dynamical Models. This tool will be fully described briefly in a scientific paper currently submitted for publication.
+
+\resetcurrentobjects
+\hypertarget{--doc-paramest}{}
+
+\chapter{Parameter Estimation in Dynamic Models}
+
+A growing theme in mathamatical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model's parameters and variables into the model, in order to explore the full uncertainty associated with a model.
+
+Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.
+
+
+\section{Example Usage}
+
+This first example includes a simple SIR model which is fitted against simulated data to which noise is added:
 
 
 \chapter{Indices and tables}
