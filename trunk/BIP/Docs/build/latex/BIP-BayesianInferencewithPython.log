@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2009.10.12)  11 JAN 2010 10:33
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2009.10.12)  30 JAN 2010 14:38
 entering extended mode
  %&-line parsing enabled.
 **BIP-BayesianInferencewithPython.tex
@@ -754,7 +754,7 @@ LaTeX Info: Redefining \pageref on input line 98.
 \@outlinefile=\write7
 \openout7 = `BIP-BayesianInferencewithPython.out'.
 
-<BIP_large.png, id=11, 632.00114pt x 189.3474pt>
+<BIP_large.png, id=23, 632.00114pt x 189.3474pt>
 File: BIP_large.png Graphic file (type png)
  <use BIP_large.png>
 File: BIP_large.png Graphic file (type png)
@@ -813,32 +813,41 @@ l.101 \tableofcontents
 ]
 Chapter 1.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 108.
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 110.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 110.
+[3] [4
+
+]
+Chapter 2.
+[5] [6
+
+]
+Chapter 3.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 135.
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 (./modBIP-BayesianInferencewithPython.ind)
-(./BIP-BayesianInferencewithPython.ind) [3]
+(./BIP-BayesianInferencewithPython.ind) [7]
 (./BIP-BayesianInferencewithPython.aux) ) 
 Here is how much of TeX's memory you used:
- 6461 strings out of 94101
- 83961 string characters out of 1165809
+ 6481 strings out of 94101
+ 84179 string characters out of 1165809
  148435 words of memory out of 1500000
- 9598 multiletter control sequences out of 10000+50000
- 43239 words of font info for 42 fonts, out of 1200000 for 2000
+ 9608 multiletter control sequences out of 10000+50000
+ 45429 words of font info for 45 fonts, out of 1200000 for 2000
  638 hyphenation exceptions out of 8191
- 34i,11n,45p,252b,407s stack positions out of 5000i,500n,6000p,200000b,5000s
+ 34i,11n,45p,394b,407s stack positions out of 5000i,500n,6000p,200000b,5000s
 {/usr/share/texmf-texlive/fonts/enc/dv
 ips/base/8r.enc}</usr/share/texmf-texlive/fonts/type1/urw/helvetic/uhvb8a.pfb><
 /usr/share/texmf-texlive/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/share/texmf
 -texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/fonts/type1
 /urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.p
 fb>
-Output written on BIP-BayesianInferencewithPython.pdf (7 pages, 133179 bytes).
+Output written on BIP-BayesianInferencewithPython.pdf (11 pages, 148741 bytes).
+
 PDF statistics:
- 72 PDF objects out of 1000 (max. 8388607)
- 9 named destinations out of 1000 (max. 131072)
- 30 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 106 PDF objects out of 1000 (max. 8388607)
+ 18 named destinations out of 1000 (max. 131072)
+ 54 words of extra memory for PDF output out of 10000 (max. 10000000)
 
