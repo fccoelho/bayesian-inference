@@ -13,6 +13,7 @@ Contents:
 
    overview
    paramest
+   sde
 
 Indices and tables
 ==================
