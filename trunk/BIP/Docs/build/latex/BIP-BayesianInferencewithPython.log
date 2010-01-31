@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2009.10.12)  30 JAN 2010 22:07
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2009.10.12)  31 JAN 2010 12:02
 entering extended mode
  %&-line parsing enabled.
 **BIP-BayesianInferencewithPython.tex
@@ -754,7 +754,7 @@ LaTeX Info: Redefining \pageref on input line 98.
 \@outlinefile=\write7
 \openout7 = `BIP-BayesianInferencewithPython.out'.
 
-<BIP_large.png, id=23, 632.00114pt x 189.3474pt>
+<BIP_large.png, id=27, 632.00114pt x 189.3474pt>
 File: BIP_large.png Graphic file (type png)
  <use BIP_large.png>
 File: BIP_large.png Graphic file (type png)
@@ -827,28 +827,32 @@ LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
 (Font)              Font shape `T1/pcr/m/sl' tried instead on input line 138.
  [5]
-<fit_series.png, id=76, 1149.093pt x 640.3122pt>
+<fit_series.png, id=81, 1149.093pt x 640.3122pt>
 File: fit_series.png Graphic file (type png)
  <use fit_series.png>
-<fit_par.png, id=77, 1149.093pt x 640.3122pt>
+<fit_par.png, id=82, 1149.093pt x 640.3122pt>
 File: fit_par.png Graphic file (type png)
  <use fit_par.png> [6 <./fit_series.png>] [7 <./fit_par.png>] [8
 
 ]
 Chapter 3.
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 194.
+[9] [10
+
+]
+Chapter 4.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 203.
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 (./modBIP-BayesianInferencewithPython.ind)
-(./BIP-BayesianInferencewithPython.ind) [9]
+(./BIP-BayesianInferencewithPython.ind) [11]
 (./BIP-BayesianInferencewithPython.aux) ) 
 Here is how much of TeX's memory you used:
- 6538 strings out of 94101
- 84906 string characters out of 1165809
+ 6543 strings out of 94101
+ 84949 string characters out of 1165809
  151435 words of memory out of 1500000
- 9651 multiletter control sequences out of 10000+50000
+ 9652 multiletter control sequences out of 10000+50000
  49673 words of font info for 54 fonts, out of 1200000 for 2000
  638 hyphenation exceptions out of 8191
  34i,11n,45p,952b,449s stack positions out of 5000i,500n,6000p,200000b,5000s
@@ -860,10 +864,10 @@ xlive/fonts/type1/urw/courier/ucrro8a.pfb></usr/share/texmf-texlive/fonts/type1
 bo8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share
 /texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts
 /type1/urw/times/utmri8a.pfb>
-Output written on BIP-BayesianInferencewithPython.pdf (13 pages, 359771 bytes).
+Output written on BIP-BayesianInferencewithPython.pdf (15 pages, 363523 bytes).
 
 PDF statistics:
- 132 PDF objects out of 1000 (max. 8388607)
- 20 named destinations out of 1000 (max. 131072)
- 64 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 146 PDF objects out of 1000 (max. 8388607)
+ 24 named destinations out of 1000 (max. 131072)
+ 72 words of extra memory for PDF output out of 10000 (max. 10000000)
 
