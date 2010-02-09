@@ -16,6 +16,7 @@ from multiprocessing import Pool,  Process
 from multiprocessing.managers import BaseManager
 import scipy.stats as st
 import sys
+import xmlrpclib
 from BIP.Viz.realtime import RTplot
 
 
@@ -158,15 +159,17 @@ class Metropolis(_Sampler):
                 rej +=1 #adjust rejection counter
                 i +=1
                 if rej%100 == 0: 
-                    print "-->%s Rejected. Last Proposal: %s ; alpha: %s"%(rej,theta, np.exp(lik-last_lik))
-                    print j," Accepted."
+                    #self._tune_likvar(ar)
+                    print "-->%s Rejected. Last Proposal: %s"%(rej,theta)
+                    print j," Accepted. likvar: %s"%self.likvariance
                 continue
             self.history.append(theta)
             self.phi[j] = prop[0] if self.t==1 else [tuple(point) for point in prop]
             ptheta[j] = tuple(theta)
             liklist.append(lik)
+            #self._tune_likvar(ar)
             if j%100==0:
-#                self.watch_chain()
+                self._watch_chain()
                 if self.trace_acceptance:print "++>%s: Acc. ratio: %s"%(j, ar)
                 if self.trace_convergence: print "%s: Mean Proposal: %s; STD: %s"%(j, np.array(self.history[-100:]).mean(axis=0),np.array(self.history[-100:]).std(axis=0) )
             last_lik = lik
@@ -180,6 +183,19 @@ class Metropolis(_Sampler):
         print ">>> Acceptance rate: %s"%ar
         self.term_pool()
         return 1
+    def _tune_likvar(self, ar):
+        if ar<=.1:
+            self.likvariance *= 5
+        elif ar <= .15:
+            self.likvariance *= 2
+        elif ar <= .2:
+            self.likvariance *= 1.2
+        elif ar >.7:
+            self.likvariance *= 0.8
+        elif ar > .8:
+            self.likvariance *= 0.5
+        elif ar > .9:
+            self.likvariance *= 0.2
     def _rms_fit(self, s1, s2):
         '''
         Calculates a basic fitness calculation between a model-
@@ -264,12 +280,13 @@ class Metropolis(_Sampler):
         print "Done importance sampling."
         return smp
 
-    def watch_chain(self):
-        p = Process(target=self.chp.show)
-        p.daemon = True
-        p.start()
-        p2 = Process(target=self.chp.plotlines, args=(np.array(self.history[-100:]).T, ))
-        p2.start()
+    def _watch_chain(self):
+        if len(self.history)<100:
+            return
+        s = xmlrpclib.ServerProxy('http://localhost:9876')
+        s.clearFig()
+        data = np.array(self.history[-100:]).T.tolist()
+        s.plotlines(data, self.parnames, "Chain Progress") 
 
     def _add_salt(self,dataset,band):
         """

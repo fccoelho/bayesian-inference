@@ -5,13 +5,18 @@ import Gnuplot
 import numpy
 import matplotlib
 import pylab as P
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+from multiprocessing import Process
 
+# Create server
+server = SimpleXMLRPCServer(("localhost", 9876),logRequests=False, allow_none=True)
+server.register_introspection_functions()
 
 class RTplot:
     '''
     Real time plotting class based on Gnuplot
     '''
-    def __init__(self, persist=1,debug=0):
+    def __init__(self, persist=0,debug=0):
         self.gp = Gnuplot.Gnuplot(persist = persist, debug=debug)
         self.plots = []
 
@@ -22,11 +27,15 @@ class RTplot:
         self.plots = []
         #self.gp.reset()
 
-    def scatter(self,x,y,names=[],title='',style='points'):
+    def scatter(self,x,y,names=[],title='',style='points', jitter = True):
         """
         Makes scatter plots from numpy arrays.
         if arrays are multidimensional, multiple scatter plots will be generated, pairing rows.
         """
+        if jitter:
+            jt = numpy.random.normalvariate(1, 1e-4)
+        else:
+            jt = 1
         if isinstance(x, numpy.ndarray):
             if not isinstance(y, numpy.ndarray):
                 raise TypeError("If x is a numpy array, y must also be an array.")
@@ -46,14 +55,14 @@ class RTplot:
         if len(x.shape) > 1 and len(x.shape) <= 2:
             i = 0
             for n in range(x.shape[0]):
-                self.plots.append(Gnuplot.PlotItems.Data(x[n],y[n],title=names[i],with_=style))
+                self.plots.append(Gnuplot.PlotItems.Data(x[n]*jt,y[n]*jt,title=names[i],with_=style))
                 i += 1
             self.gp.plot(*tuple(self.plots))
         elif len(x.shape) >2:
                 pass
         else:
             #print data
-            self.plots.append(Gnuplot.PlotItems.Data(x,y,title=names[0],with_=style))
+            self.plots.append(Gnuplot.PlotItems.Data(x*jt,y*jt,title=names[0],with_=style))
             self.gp.plot(*tuple(self.plots))
         
     def plotlines(self,data,names=[],title='',style='lines'):
@@ -185,8 +194,13 @@ class RTpyplot:
             self.canvas.blit(self.ax.bbox)
 
         
-        
-        
-    
+def start_server():
+    server.register_instance(RTplot(persist=1))
+    server.register_introspection_functions()
+    server.serve_forever()
+
+p = Process(target=start_server)
+p.daemon = True
+p.start()
 if __name__ == "__main__":
     pass

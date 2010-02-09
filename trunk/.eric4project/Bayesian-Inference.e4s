@@ -2,18 +2,18 @@
 <!DOCTYPE Session SYSTEM "Session-4.3.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-01-30, 14:02:19 -->
+<!-- Saved: 2010-02-08, 14:09:11 -->
 <Session version="4.3">
   <Filenames>
-    <Filename cline="160" cindex="30" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
-    <Filename cline="341" cindex="35" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
+    <Filename cline="287" cindex="40" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="366" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
     <Filename cline="14" cindex="26" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
-    <Filename cline="58" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/realtime.py</Filename>
-    <Filename cline="103" cindex="21" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
+    <Filename cline="67" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/realtime.py</Filename>
+    <Filename cline="114" cindex="5" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
     <Filename cline="100" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/like.py</Filename>
     <Filename cline="86" cindex="27" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/gillespie.py</Filename>
   </Filenames>
-  <ActiveWindow cline="14" cindex="26">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</ActiveWindow>
+  <ActiveWindow cline="114" cindex="5">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>

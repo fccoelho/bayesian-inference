@@ -91,25 +91,30 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
     tim = tim[:ls]
     #print type (series)#.I.shape
     fig =P.figure()
-    P.title(title)
+    
     if not names:
         names = series[0].dtype.names
-    ax = fig.add_subplot(111)
     c = cycle(['b','g','r','c','m','y','k'])
     if isinstance(tim[0], datetime.date):
         lag = datetime.timedelta(int(lag)*wl)
     else:
         lag = int(lag)*wl
-    for n in names:
+    for i, n in enumerate(names):
+        ax = fig.add_subplot(len(names), 1, i+1)
         co = c.next()
         if n in obs:
             ax.plot(tim,obs[n][:len(tim)],'%s+'%co, label="Observed %s"%n)
-            ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-')
-            lower = [stats.scoreatpercentile(t,2) for t in ser2[n].T]
-            upper =[stats.scoreatpercentile(t,98) for t in ser2[n].T]
-            ax.fill_between(array(tim)+lag,lower,upper,facecolor=co,alpha=0.6)
+            #print len(tim),  ls
+        ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-', label=n)
+        lower = [stats.scoreatpercentile(t,2) for t in ser2[n].T]
+        upper =[stats.scoreatpercentile(t,98) for t in ser2[n].T]
+        ax.fill_between(array(tim)+lag,lower,upper,facecolor=co,alpha=0.6)
+        ax.xaxis.set_visible(False)
+        ax.legend()
+    ax.xaxis.set_visible(True)
+    #P.title(title)
     P.xlabel('days')
-    ax.legend()
+    
 
 def plot_par_series(tim,ptlist):
     P.figure()

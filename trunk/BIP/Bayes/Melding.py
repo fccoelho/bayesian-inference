@@ -20,6 +20,8 @@ import sys
 import os
 import copy
 import cPickle as CP
+import sqlite3
+import glob
 import like
 import pylab as P
 from scipy.stats.kde import gaussian_kde
@@ -78,8 +80,9 @@ class FitModel(object):
            sys.exit("Window Length cannot be larger that Length of the simulation(tf)" )
         self.K = K
         self.L = L
-        self.finits = inits
+        self.finits = inits #first initial values
         self.ftf = tf
+        self.full_len =  wl*nw
         self.inits = inits
         self.tf = tf
         self.totpop = sum(inits)
@@ -229,7 +232,7 @@ class FitModel(object):
 #                    print i, ":", s[0]
 #                    print self.inits
         # TODO: figure out what to do by default with inits
-        if self.nw >1:
+        if self.nw >1 and self.adjinits:
             adiff = array([abs(pp[vn]-data[vn][-1]) for vn in data.keys()])
             diff = adiff.sum(axis=0) #sum errors for all oserved variables
             initind = diff.tolist().index(min(diff))
@@ -241,9 +244,56 @@ class FitModel(object):
         
         if predlen:
             predseries = self.Me.getPosteriors(predlen)[1]
-        return pt,pp,series,predseries,att
-
-    def run(self, data,method,likvar,pool=False,adjinits=True,  monitor=False):
+        return pt,pp, series,predseries,att
+    
+    def _save_to_db(self, dbname, data):
+        '''
+        Saves data to a sqlite3 db.
+        
+        :Parameters:
+            - `dbname`: name of the database file
+            - `data`: Data dictionary
+        '''
+        def row_generator(var):
+            '''
+            var is record array.
+            '''
+            if isinstance(var, numpy.recarray):
+                for repl in var:
+                    for t in repl:
+                        if not isinstance(t, numpy.core.records.record):
+                            t=(t,)
+                        yield tuple(t) #variable tuple at time t in replicate repl
+            elif isinstance(var, dict):
+                for r in zip(*var.values()):
+                    if not isinstance(r, tuple):
+                        r = (r,)
+                    yield r
+        create = True
+        if not dbname.endswith('.sqlite'):
+            dbname += '.sqlite'
+        if os.path.exists(dbname):
+            create = False
+        con = sqlite3.connect(dbname)
+        #create tables
+        for k, v in data.items():
+            if isinstance(v, dict):
+                nv = len(v.keys())
+                tstr = k+'('+','.join(v.keys())+')'
+                if create:
+                    con.execute('create table '+tstr)
+            elif isinstance(v, numpy.recarray):
+                nv = len(v.dtype.names)
+                tstr = k+"("+','.join(v.dtype.names)+')'
+                if create:
+                    con.execute("create table "+ tstr)
+            else:
+                raise TypeError("Non-valid data structure.")
+            print "insert into "+tstr+" values("+",".join(['?']*nv)+")"
+            con.executemany("insert into "+tstr+" values("+",".join(['?']*nv)+")", row_generator(v))
+        con.commit()
+        con.close()
+    def run(self, data,method,likvar,pool=False,adjinits=True,dbname='results', monitor=False):
         """
         Fit the model against data
 
@@ -253,8 +303,10 @@ class FitModel(object):
             - `likvar`: Variance of the likelihood function in the SIR and MCMC method
             - `pool`: Pool priors on model's outputs.
             - `adjinits`: whether to adjust inits to data
+            - `dbname`: name of the sqlite3 database
             - `monitor`: Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.
         """
+        self.adjinits = adjinits
         self.pool = pool
         if not self.prior_set: return
         if monitor:
@@ -262,7 +314,7 @@ class FitModel(object):
         start = time()
         d = data
         prior = {'theta':[],'phi':[]}
-        os.system('rm wres_*')
+        os.system('rm %s_*'%dbname)
         if self.wl == None:
             self.wl = floor(len(d.values()[0])/self.nw)
         wl = self.wl
@@ -282,12 +334,20 @@ class FitModel(object):
                     #TODO: figure out how to balance the total pop
 #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
                     self.model.func_globals['inits'] = self.inits
-            pt,pp,series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
+            pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
             #print series[:, 0], self.inits
-            f = open('wres_%s'%w,'w')
+            f = open('%s_%s'%(dbname+".pickle", w),'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
-            CP.dump((pt,pp,series,d,predseries, att*self.K),f)
+            CP.dump((pt,series,d,predseries, att*self.K),f)
             f.close()
+            if dbname:
+                if os.path.exists(dbname+".sqlite") and w ==0:
+                    os.remove(dbname+".sqlite")
+                self._save_to_db(dbname, {'post_theta':pt, 
+                                                                     'series':series, 
+                                                                     'data': d2, 
+                                                                     'predicted_series':predseries, 
+                                                                     })
             prior = {'theta':[],'phi':[]}
             for n in pt.dtype.names:
                 prior['theta'].append(pt[n])
@@ -317,7 +377,6 @@ class FitModel(object):
         """
         Plots real time data
         """
-        
         diff = array([abs(series[vn][:, -1]-d2[vn][-1]) for vn in d2.keys()]).sum(axis=0) #sum errors for all oserved variables
         initind = diff.tolist().index(min(diff))
         for n in vars:
@@ -325,13 +384,13 @@ class FitModel(object):
                 continue
             i5,i95 = self._get95_bands(series,n)
             self.ser.plotlines(data=series[n][initind],  names=["Best run's %s"%n], title='Window %s'%(w+1))
-            self.ser.plotlines(data=i5, names=['2.5%'])
-            self.ser.plotlines(data=i95, names=['97.5%'])
-            self.ser.plotlines(d2[n],style='points', names=['Obs. %s'%n])
+            self.ser.plotlines(data=i5, names=['2.5%'], title='Window %s'%(w+1))
+            self.ser.plotlines(data=i95, names=['97.5%'], title='Window %s'%(w+1))
+            self.ser.plotlines(d2[n],style='points', names=['Obs. %s'%n], title='Window %s'%(w+1))
             self.fsp.plotlines(data[n],style='points', names=['Obs. %s'%n], title='Window %s'%(w+1))
         self.hst.plothist(data=array(prior['theta']),names=list(self.thetanames),title='Window %s'%(w+1))
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
-        self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.ftf
+        self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
         simseries = self.model(*cpars)
         self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
         self.fsp.plotlines(data=simseries.T, names=list(self.phinames), title="Best fit simulation after window %s"%(w+1))
@@ -339,14 +398,14 @@ class FitModel(object):
         self.hst.clearFig()
         self.fsp.clearFig()
     
-    def plot_results(self, names=[]):
+    def plot_results(self, names=[],  dbname=""):
         """
         Plot the final results of the inference
         """
         if not names:
             names = self.phinames
         try: #read the data files
-            pt,pp,series,predseries,obs = self._read_results()
+            pt,series,predseries,obs = self._read_results(dbname)
         except:
             if not self.done_running:
                 return
@@ -364,22 +423,25 @@ class FitModel(object):
                             title='Predicted vs. Observed series',lag=True)
         P.show()
 
-    def _read_results(self):
+    def _read_results(self, nam=''):
         """
         read results from disk
         """
         pt,pp,series,predseries = [],[],[],[]
-        for w in range(self.nw):
-            fn = 'wres_%s'%w
+        if nam:
+            plist = glob.glob("%s.pickle"%nam)
+        else:
+            plist = glob.glob("*.pickle")
+        for w in plist:
+            fn = w
             print fn
             f = open(fn,'r')
             a,b,c,obs,pred, samples = CP.load(f)
             f.close()
             pt.append(a)
-            pp.append(b)
             series.append(c)
             predseries.append(pred)
-        return pt,pp,series,predseries,obs
+        return pt,series,predseries,obs
             
 
 class Meld(object):
