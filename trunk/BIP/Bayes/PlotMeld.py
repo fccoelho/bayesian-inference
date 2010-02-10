@@ -109,9 +109,11 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
         lower = [stats.scoreatpercentile(t,2) for t in ser2[n].T]
         upper =[stats.scoreatpercentile(t,98) for t in ser2[n].T]
         ax.fill_between(array(tim)+lag,lower,upper,facecolor=co,alpha=0.6)
-        ax.xaxis.set_visible(False)
+        if i < (len(names)-1):ax.xaxis.set_ticklabels([])
         ax.legend()
-    ax.xaxis.set_visible(True)
+        if i == 0:
+            ax.set_title(title)
+    #ax.xaxis.set_visible(True)
     #P.title(title)
     P.xlabel('days')
     

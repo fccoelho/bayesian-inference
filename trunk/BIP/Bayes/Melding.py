@@ -314,7 +314,7 @@ class FitModel(object):
         start = time()
         d = data
         prior = {'theta':[],'phi':[]}
-        os.system('rm %s_*'%dbname)
+        os.system('rm %s_*.pickle'%dbname)
         if self.wl == None:
             self.wl = floor(len(d.values()[0])/self.nw)
         wl = self.wl
@@ -336,7 +336,7 @@ class FitModel(object):
                     self.model.func_globals['inits'] = self.inits
             pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
             #print series[:, 0], self.inits
-            f = open('%s_%s'%(dbname+".pickle", w),'w')
+            f = open('%s_%s%s'%(dbname, w, ".pickle"),'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
             CP.dump((pt,series,d,predseries, att*self.K),f)
             f.close()
@@ -423,23 +423,20 @@ class FitModel(object):
                             title='Predicted vs. Observed series',lag=True)
         P.show()
 
-    def _read_results(self, nam=''):
+    def _read_results(self, nam):
         """
         read results from disk
         """
-        pt,pp,series,predseries = [],[],[],[]
-        if nam:
-            plist = glob.glob("%s.pickle"%nam)
-        else:
-            plist = glob.glob("*.pickle")
-        for w in plist:
-            fn = w
+        pt,series,predseries = [],[],[]
+
+        for w in range(self.nw):
+            fn = "%s_%s.pickle"%(nam, w)
             print fn
             f = open(fn,'r')
-            a,b,c,obs,pred, samples = CP.load(f)
+            a,b,obs,pred, samples = CP.load(f)
             f.close()
             pt.append(a)
-            series.append(c)
+            series.append(b)
             predseries.append(pred)
         return pt,series,predseries,obs
             
