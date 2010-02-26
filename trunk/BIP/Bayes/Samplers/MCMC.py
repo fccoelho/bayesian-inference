@@ -17,7 +17,7 @@ from multiprocessing.managers import BaseManager
 import scipy.stats as st
 import sys
 import xmlrpclib
-from BIP.Viz.realtime import RTplot
+from BIP.Viz.realtime import rpc_plot
 
 
 class _Sampler(object):
@@ -103,8 +103,16 @@ class Metropolis(_Sampler):
         if kwargs:
             for k, v in kwargs.iteritems():
                 exec('self.%s = %s'%(k, v))
-        
-        self.chp = RTplot()
+        self.setup_xmlrpc_plotserver()
+
+    def setup_xmlrpc_plotserver(self):
+        """
+        Sets up the server for real-time chain watch
+        """
+        p=0
+        while p==0:
+            p = rpc_plot()
+        self.pserver = xmlrpclib.ServerProxy('http://localhost:%s'%p)
 
     def _propose(self, step=0):
         """
@@ -182,6 +190,7 @@ class Metropolis(_Sampler):
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %s"%ar
         self.term_pool()
+        self.pserver.close_plot()
         return 1
     def _tune_likvar(self, ar):
         if ar<=.1:
@@ -283,10 +292,9 @@ class Metropolis(_Sampler):
     def _watch_chain(self):
         if len(self.history)<100:
             return
-        s = xmlrpclib.ServerProxy('http://localhost:9876')
-        s.clearFig()
+        self.pserver.clearFig()
         data = np.array(self.history[-100:]).T.tolist()
-        s.plotlines(data, self.parnames, "Chain Progress") 
+        self.pserver.plotlines(data, self.parnames, "Chain Progress") 
 
     def _add_salt(self,dataset,band):
         """

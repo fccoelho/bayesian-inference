@@ -9,8 +9,10 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from multiprocessing import Process
 
 # Create server
-server = SimpleXMLRPCServer(("localhost", 9876),logRequests=False, allow_none=True)
-server.register_introspection_functions()
+#server = SimpleXMLRPCServer(("localhost", 9876),logRequests=False, allow_none=True)
+#server.register_introspection_functions()
+
+__ports_used = []
 
 class RTplot:
     '''
@@ -26,6 +28,8 @@ class RTplot:
         '''
         self.plots = []
         #self.gp.reset()
+    def close_plot(self):
+        self.gp.close()
 
     def scatter(self,x,y,names=[],title='',style='points', jitter = True):
         """
@@ -194,13 +198,37 @@ class RTpyplot:
             self.canvas.blit(self.ax.bbox)
 
         
-def start_server():
-    server.register_instance(RTplot(persist=1))
+def start_server(server):
+    server.register_instance(RTplot(persist=0))
     server.register_introspection_functions()
     server.serve_forever()
 
-p = Process(target=start_server)
-p.daemon = True
-p.start()
+
+def rpc_plot(port=None):
+    """
+    XML RPC plot server factory function
+    returns port if server successfully started or 0
+    """
+    if port == None:
+        po = 9876
+        while 1:
+            if po not in __ports_used:break
+            po += 1
+        port = po
+    try:
+        server = SimpleXMLRPCServer(("localhost", port),logRequests=False, allow_none=True)
+        server.register_introspection_functions()
+        p = Process(target=start_server, args=(server, ))
+        p.daemon = True
+        p.start()
+    except:
+        return 0
+    __ports_used.append(port)
+    return port
+    
+    
+#p = Process(target=start_server)
+#p.daemon = True
+#p.start()
 if __name__ == "__main__":
     pass
