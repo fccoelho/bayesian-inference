@@ -78,7 +78,8 @@ def pred_new_cases(obs,series,weeks,names=[],ws=7):
     c = cycle(['b','g','r','c','m','y','k'])
     if 'time' in obs: #setting the xlabel 
         x = date2num([obs['time'][ws*i] for i in range(1, weeks)])
-        W = 3
+        sc= 1 if len(series) ==1 else 5
+        W = min(0.5*max(len(x),1.0),0.5)*sc
         ax.xaxis_date()
     else:
         x = range(weeks)
@@ -119,13 +120,14 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
         ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-', label=n)
         lower = [stats.scoreatpercentile(t,2.5) for t in ser2[n].T]
         upper =[stats.scoreatpercentile(t,97.5) for t in ser2[n].T]
-        dif = (array(upper)-array(lower))
-        dif  = dif/max(dif)*10
-        pe, va = peakdet(dif, 1)
-        xp = [0]+ pe[:, 0].tolist()+[len(lower)-1]
-        lower_i = interp(range(len(lower)), xp, array(lower)[xp]) # valley-to-valley interpolated band
-        upper_i = interp(range(len(upper)), xp, array(upper)[xp])#peak-to-peak interpolated band
-        ax.fill_between(array(tim)+lag,lower_i,upper_i,facecolor=co,alpha=0.1)
+        if len(series)>1: #in the case of iterative simulations
+            dif = (array(upper)-array(lower))
+            dif  = dif/max(dif)*10
+            pe, va = peakdet(dif, 1)
+            xp = [0]+ pe[:, 0].tolist()+[len(lower)-1]
+            lower = interp(range(len(lower)), xp, array(lower)[xp]) # valley-to-valley interpolated band
+            upper = interp(range(len(upper)), xp, array(upper)[xp])#peak-to-peak interpolated band
+        ax.fill_between(array(tim)+lag,lower,upper,facecolor=co,alpha=0.1)
         #ax.fill_between(array(tim)+lag,lower,upper,facecolor='k',alpha=0.1)
         if i < (len(names)-1):ax.xaxis.set_ticklabels([])
         ax.legend()
@@ -185,11 +187,14 @@ def violin_plot(ax,data,positions,bp=False, prior = False):
         - `bp`: Whether to plot the boxplot on top.
         - `prior`: whether the first element of data is a Prior distribution.
     '''
+    sc = 1
+    dist = len(positions)
     if isinstance(positions[0], datetime.date):
         ax.xaxis_date()
         positions = date2num(positions)
-    dist = max(positions)-min(positions)
-    w = 3#min(0.5*max(dist,1.0),0.5)
+        sc = 5 if (dist>1 ) else 1
+        print sc
+    w = min(0.5*max(dist,1.0),0.5)*sc
     i = 0
     
     for d,p  in zip(data, positions):

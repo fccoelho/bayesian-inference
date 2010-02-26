@@ -415,7 +415,7 @@ class FitModel(object):
             tim = numpy.arange(self.nw*self.wl)
         #PM.plot_par_series(range(len(pt)),pt)
         priors = self.prior_sample()
-        PM.plot_par_violin(tim[self.wl::self.wl],pt, priors)
+        PM.plot_par_violin(tim[self.wl-1::self.wl],pt, priors)
         PM.plot_series2(tim,obs,series,names=names, wl=self.wl)
         if self.nw > 1:
             PM.pred_new_cases(obs,predseries,self.nw,names,self.wl)
