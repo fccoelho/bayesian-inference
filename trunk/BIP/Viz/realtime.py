@@ -3,7 +3,6 @@ __date__ ="$26/02/2009 10:44:29$"
 __docformat__ = "restructuredtext en"
 import Gnuplot
 import numpy
-import matplotlib
 import pylab as P
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from multiprocessing import Process
