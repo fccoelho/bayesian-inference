@@ -115,14 +115,51 @@ class FitModel(object):
 #        self.model.func_globals['tf']=value
 #        self._tf = value
 
-    def optimize(self, data, p0):
+    def _plot_MAP(self,data,pmap):
+        """
+        Generates a plot of a full run of the model parameterized with the maximum a posteriori
+        estimates of the parameters.
+
+        :Parameters:
+            - `data`: data dictionary as passed to optimize
+            - `pmap`: MAP parameter values
+        """
+        p = RTplot(persist=1)
+        self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
+        simseries = self.model(*pmap)
+        self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
+        if 'time' in data:data.pop('time')
+        for n,d in data.items():
+            p.plotlines(d,style='points', names=['Obs. %s'%n])
+            v=self.phinames.index(n)
+            p.plotlines(data=simseries.T[v], names=data.keys(), title="Simulation with MAP parameters %s=%s"%(self.thetanames,pmap))
+
+    def optimize(self, data, p0, method='fmin', tol=0.0001, verbose=0, plot=0):
         """
         Finds best parameters using an optimization approach
+
+        :Parameters:
+            - `data`: Dictionary of observed series
+            - `p0`: Sequence (list or tuple) of initial values for the parameters
+            - `method`: Optimization method: fmin (Nelder-Mead), fmin_powel.
+            - `tol`: Tolerance of the error
+            - `verbose`: If true show stats of the optimization run at the end
+            - `plot`: If true plots a run based on the optimized parameters.
         """
+        assert isinstance(p0,(list,tuple))
         def mse(theta):
             s1 = self.Me.model_as_ra(theta)
             return self._rms_error(s1, data)
-        potimo = optim.anneal(mse, p0)[0]
+        if method == "fmin":
+            potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
+        elif method == "fmin_powell":
+            potimo = optim.fmin_powell(mse,p0,ftol=tol, disp=verbose)
+            if len(p0) ==1 :
+                potimo = [potimo]
+        else:#use fmin as fallback method
+            potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
+        if plot:
+            self._plot_MAP(data, potimo)
         return potimo
         
     def _rms_error(self, s1, s2):
@@ -136,7 +173,7 @@ class FitModel(object):
             - `s2`: observed time series. dictionary with keys matching names of s1
         :Types:
             - `s1`: Record array or list.
-            - `s2`: Dictionary or list
+            - `s2`: Dictionary or list; must be a dictionary if s1 is a RA
         
         s1 and s2 can also be both lists of lists or lists of arrays of the same length.
 
@@ -147,10 +184,16 @@ class FitModel(object):
             assert isinstance(s2, dict)
             err = []
             for k in s2.keys():
-                e = mean((s1[k]-s2[k])**2./s2[k]**2)
+                if k not in s1.dtype.names:
+                    continue
+                ls1 = len(s1[k]) #handles the cases where data is slightly longer that simulated series.
+#                print k, len(s1[k]), len(s2[k])
+                e = mean((s1[k]-s2[k][:ls1])**2./s2[k][:ls1]**2)
                 err.append(e) 
         elif isinstance(s1, list):
             assert isinstance(s2, list) and len(s1) ==len(s2)
+            s1 = array(s1)
+            s2 = array(s2)
             err = [mean((s-t)**2./t**2) for s, t in zip(s1, s2)]
         rmsd = nan_to_num(mean(err))
         return rmsd
