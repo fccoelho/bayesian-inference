@@ -100,6 +100,8 @@ class FitModel(object):
         self.burnin = burnin
         self.pool = False #this will be updated by the run method.
         self.Me = Meld(K=K,L=L,model=self.model,ntheta=ntheta,nphi=nphi,verbose=verbose)
+        self.AIC = 0
+        self.BIC = 0
 #    @property
 #    def inits(self):
 #        return self._inits
@@ -133,6 +135,13 @@ class FitModel(object):
             p.plotlines(d,style='points', names=['Obs. %s'%n])
             v=self.phinames.index(n)
             p.plotlines(data=simseries.T[v], names=data.keys(), title="Simulation with MAP parameters %s=%s"%(self.thetanames,pmap))
+
+    def AIC_from_RSS(self,):
+        """
+        Calculates the Akaike information criterion from the residual sum of squares 
+        of the best fitting run.
+        """
+        pass
 
     def optimize(self, data, p0, method='fmin', tol=0.0001, verbose=0, plot=0):
         """
@@ -400,7 +409,12 @@ class FitModel(object):
                 prior['phi'].append(pp[n])
             if monitor:
                 self._monitor_plot(series,prior,d2,w,data,vars=monitor)
+            self.AIC += 2. * (self.ntheta - self.Me.likmax) # 2k - 2 ln(L)
+            self.BIC += self.ntheta * numpy.log(self.full_len) - 2. * self.Me.likmax # k ln(n) - 2 ln(L)
+        self.Me.AIC = self.AIC
+        self.Me.BIC = self.BIC
         print "time: %s seconds"%(time()-start)
+        
         self.done_running = True
 
 
@@ -520,6 +534,9 @@ class Meld(object):
         self.done_running = False
         self.theta_dists = {}#parameterized rngs for each parameter
         self.phi_dists = {}#parameterized rngs for each variable
+        self.likmax = -numpy.inf
+        self.AIC = None
+        self.BIC = None
         self.proposal_variance = 0.0000001
         self.adaptscalefactor = 1 #adaptive variance. Used my metropolis hastings
         self.salt_band = 0.1
