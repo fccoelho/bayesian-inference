@@ -68,37 +68,43 @@ class RTplot:
             self.plots.append(Gnuplot.PlotItems.Data(x*jt,y*jt,title=names[0],with_=style))
             self.gp.plot(*tuple(self.plots))
         
-    def plotlines(self,data,names=[],title='',style='lines'):
+    def plotlines(self, data, x=None, names=[],title='',style='lines'):
         '''
         Create a sinlge/multiple line plot from a numpy array or record array.
         
         :Parameters:
             - `data`: must be a numpy array or record array, with series as rows
+            - `x`: x values for the series: numpy array
             - `names`: is a list of strings to serve as legend labels
             - `style`: plot styles from gnuplot: lines, boxes, points, linespoints, etc.
         '''
+
         self.gp('set title "%s"'%title)
         if isinstance (data, list):
             data = numpy.array(data)
         if isinstance(data,numpy.core.records.recarray):
-            return self._linesFromRA(data,style)
+            return self._linesFromRA(data,x, style)
         if len(data.shape) > 1 and len(data.shape) <= 2:
             i = 0
             for row in data:
+                if  x== None:
+                    x = numpy.arange(len(row))
                 if names:
-                    self.plots.append(Gnuplot.PlotItems.Data(row,title=names[i],with_=style))
+                    self.plots.append(Gnuplot.PlotItems.Data(x, row,title=names[i],with_=style))
                 else:
-                    self.plots.append(Gnuplot.PlotItems.Data(row,with_=style))
+                    self.plots.append(Gnuplot.PlotItems.Data(x, row,with_=style))
                 i += 1
             self.gp.plot(*tuple(self.plots))
         elif len(data.shape) >2:
                 pass
         else:
-            #print data
-            self.plots.append(Gnuplot.PlotItems.Data(data,title=names[0],with_=style))
+#            print data
+            if x==None:
+                x = numpy.arange(len(data))
+            self.plots.append(Gnuplot.PlotItems.Data(x,data,title=names[0],with_=style))
             self.gp.plot(*tuple(self.plots))
 
-    def _linesFromRA(self,data, style):
+    def _linesFromRA(self,data,x, style):
         '''
         Record-array specific code
         '''
@@ -106,13 +112,15 @@ class RTplot:
             if len(data.shape) > 1 and len(data.shape) <= 2:
                 i = 0
                 for row in data[n]:
-                    self.plots.append(Gnuplot.PlotItems.Data(row,title=n+':%s'%i,with_=style))
+                    if x == None:
+                        x = numpy.arange(len(row))
+                    self.plots.append(Gnuplot.PlotItems.Data(x, row,title=n+':%s'%i,with_=style))
                     i += 1
             elif len(data.shape) >2:
                 pass
             # TODO: figure out what to do with higher dimensional data
             else:
-                self.plots.append(Gnuplot.PlotItems.Data(data[n],title=n,with_=style))
+                self.plots.append(Gnuplot.PlotItems.Data(x, data[n],title=n,with_=style))
         self.gp.plot(*tuple(self.plots))
 
     def plothist(self,data, title='', names=[]):

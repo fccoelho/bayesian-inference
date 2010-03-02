@@ -177,7 +177,7 @@ class Metropolis(_Sampler):
             liklist.append(lik)
             #self._tune_likvar(ar)
             if j%100==0:
-                self._watch_chain()
+                self._watch_chain(j)
                 if self.trace_acceptance:print "++>%s: Acc. ratio: %s"%(j, ar)
                 if self.trace_convergence: print "%s: Mean Proposal: %s; STD: %s"%(j, np.array(self.history[-100:]).mean(axis=0),np.array(self.history[-100:]).std(axis=0) )
             last_lik = lik
@@ -187,6 +187,7 @@ class Metropolis(_Sampler):
         self.meld.post_theta = ptheta[self.burnin:]
         self.phi = self.phi[self.burnin:]
         self.meld.post_theta = self._imp_sample(self.meld.L,ptheta,liklist)
+        self.meld.likmax = max(liklist)
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %s"%ar
         self.term_pool()
@@ -289,12 +290,12 @@ class Metropolis(_Sampler):
         print "Done importance sampling."
         return smp
 
-    def _watch_chain(self):
+    def _watch_chain(self, j):
         if len(self.history)<100:
             return
         self.pserver.clearFig()
         data = np.array(self.history[-100:]).T.tolist()
-        self.pserver.plotlines(data, self.parnames, "Chain Progress") 
+        self.pserver.plotlines(data,range(j, j+100), self.parnames, "Chain Progress") 
 
     def _add_salt(self,dataset,band):
         """
