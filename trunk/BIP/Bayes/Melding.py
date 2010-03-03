@@ -24,6 +24,7 @@ import sqlite3
 import glob
 import like
 import pylab as P
+import xmlrpclib
 from scipy.stats.kde import gaussian_kde
 from scipy.linalg import LinAlgError
 from scipy import stats,  optimize as optim
@@ -34,7 +35,7 @@ from numpy.random import normal, randint,  random, seed
 import PlotMeld as PM
 from BIP.Bayes.Samplers import MCMC
 try:
-    from BIP.Viz.realtime import RTplot
+    from BIP.Viz.realtime import RTplot,  rpc_plot
     Viz=True
 except:
     Viz=False
@@ -425,9 +426,9 @@ class FitModel(object):
         """
         Sets up realtime plotting of inference
         """
-        self.hst = RTplot() #theta histograms
-        self.fsp = RTplot()#full data and simulated series
-        self.ser = RTplot()# phi time series
+        self.hst = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(), allow_none=1)#RTplot() #theta histograms
+        self.fsp = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(), allow_none=1)#RTplot()#full data and simulated series
+        self.ser = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(), allow_none=1)#RTplot()# phi time series
 
     def _get95_bands(self,series,vname):
         i5 = array([stats.scoreatpercentile(t,2.5) for t in series[vname].T])
@@ -443,17 +444,17 @@ class FitModel(object):
             if n not in d2:
                 continue
             i5,i95 = self._get95_bands(series,n)
-            self.ser.plotlines(data=series[n][initind],  names=["Best run's %s"%n], title='Window %s'%(w+1))
-            self.ser.plotlines(data=i5, names=['2.5%'], title='Window %s'%(w+1))
-            self.ser.plotlines(data=i95, names=['97.5%'], title='Window %s'%(w+1))
-            self.ser.plotlines(d2[n],style='points', names=['Obs. %s'%n], title='Window %s'%(w+1))
-            self.fsp.plotlines(data[n],style='points', names=['Obs. %s'%n], title='Window %s'%(w+1))
-        self.hst.plothist(data=array(prior['theta']),names=list(self.thetanames),title='Window %s'%(w+1))
+            self.ser.plotlines(series[n][initind].tolist(), None,  ["Best run's %s"%n], 'Window %s'%(w+1))
+            self.ser.plotlines(i5.tolist(),None, ['2.5%'], 'Window %s'%(w+1))
+            self.ser.plotlines(i95.tolist(),None,  ['97.5%'],'Window %s'%(w+1))
+            self.ser.plotlines(d2[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
+            self.fsp.plotlines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
+        self.hst.plothist(array(prior['theta']).tolist(),list(self.thetanames),'Window %s'%(w+1))
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
         simseries = self.model(*cpars)
         self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
-        self.fsp.plotlines(data=simseries.T, names=list(self.phinames), title="Best fit simulation after window %s"%(w+1))
+        self.fsp.plotlines(simseries.T.tolist(),None,  list(self.phinames), "Best fit simulation after window %s"%(w+1))
         self.ser.clearFig()
         self.hst.clearFig()
         self.fsp.clearFig()

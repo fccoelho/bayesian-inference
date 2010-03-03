@@ -127,7 +127,7 @@ class Metropolis(_Sampler):
             self.lastcv = None
         else:
             #use gaussian proposal
-            if (self.lastcv==None) or (step%3==0): #recalculate covariance matrix only every ten steps
+            if (self.lastcv==None) or (step%10==0): #recalculate covariance matrix only every ten steps
                 cv = self.scaling_factor*st.cov(np.array(self.history))+self.scaling_factor*self.e*np.identity(self.dimensions)
                 self.lastcv = cv
             else:

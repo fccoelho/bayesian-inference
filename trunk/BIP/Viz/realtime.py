@@ -73,7 +73,7 @@ class RTplot:
         Create a sinlge/multiple line plot from a numpy array or record array.
         
         :Parameters:
-            - `data`: must be a numpy array or record array, with series as rows
+            - `data`: must be a numpy array or a list of lists,or record array, with series as rows
             - `x`: x values for the series: numpy array
             - `names`: is a list of strings to serve as legend labels
             - `style`: plot styles from gnuplot: lines, boxes, points, linespoints, etc.
@@ -133,6 +133,8 @@ class RTplot:
         '''
         self.gp('set style data boxes')
         self.gp('set title "%s"'%title)
+        if isinstance (data, list):
+            data = numpy.array(data)
         if isinstance(data,numpy.core.records.recarray):
             return self._histFromRA(data)
         if not names:
