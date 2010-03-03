@@ -11,11 +11,11 @@
 # Licence:     GPL v3
 #-----------------------------------------------------------------------------
 from numpy.core.records import recarray
-try:
-    import psyco
-    psyco.full()
-except:
-    pass
+#try:
+#    import psyco
+#    psyco.full()
+#except:
+#    pass
 import sys
 import os
 import copy
@@ -312,10 +312,13 @@ class FitModel(object):
             '''
             if isinstance(var, numpy.recarray):
                 for repl in var:
-                    for t in repl:
-                        if not isinstance(t, numpy.core.records.record):
-                            t=(t,)
-                        yield tuple(t) #variable tuple at time t in replicate repl
+                    if isinstance(repl, numpy.recarray): # this is the case of variables, where each replicate is a time series
+                        for t in repl:
+                            if not isinstance(t, numpy.core.records.record):
+                                t=(t,)
+                            yield tuple(t) #variable tuple at time t in replicate repl
+                    else: #this is the case of parameters
+                        yield tuple(repl)
             elif isinstance(var, dict):
                 for r in zip(*var.values()):
                     if not isinstance(r, tuple):
