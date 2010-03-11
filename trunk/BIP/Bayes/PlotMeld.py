@@ -66,15 +66,15 @@ def plot_pred(tim,series,y, fig,names=[],title='series'):
                 pass
     P.savefig(title+'.png')
 
-def pred_new_cases(obs,series,weeks,names=[],ws=7):
+def pred_new_cases(obs,series,weeks,names=[], title='Total new cases per window: predicted vs observed' ,ws=7):
     """
     Predicted total new cases in a window vs oserved.
     """
-    fig =P.figure()
-    P.title('Total new cases per window: predicted vs observed')
+    fig =P.gcf()
+    P.title(title)
     if not names:
         names = series[0].dtype.names
-    ax = fig.add_subplot(111)
+    ax = P.gca()#fig.add_subplot(111)
     c = cycle(['b','g','r','c','m','y','k'])
     if 'time' in obs: #setting the xlabel 
         x = date2num([obs['time'][ws*i] for i in range(1, weeks)])
@@ -89,8 +89,8 @@ def pred_new_cases(obs,series,weeks,names=[],ws=7):
             ax.plot([date2num(obs['time'][ws])]+x.tolist(), [mean(sum(s[n],axis=1)) for s in series],'%s^'%co, label="Mean pred. %s"%n)
             ax.plot(x,[sum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'%s-o'%co, label="obs. Prev")
             ax.boxplot([sum(s[n],axis=1) for s in series] ,positions = x, widths=W,notch=1,vert=1)
-    P.xlabel('windows')
-    ax.legend(loc=0)
+    #P.xlabel('windows')
+    #ax.legend(loc=0)
     if 'time' in obs: 
         fig.autofmt_xdate()
 
@@ -101,7 +101,7 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
     ls = ser2[n].shape[1]
     tim = tim[:ls]
     #print type (series)#.I.shape
-    fig =P.figure()
+    fig =P.gcf()
     if not names:
         names = series[0].dtype.names
     c = cycle(['b','g','r','c','m','y','k'])
@@ -127,7 +127,7 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
             xp = [0]+ pe[:, 0].tolist()+[len(lower)-1]
             lower = interp(range(len(lower)), xp, array(lower)[xp]) # valley-to-valley interpolated band
             upper = interp(range(len(upper)), xp, array(upper)[xp])#peak-to-peak interpolated band
-        ax.fill_between(array(tim)+lag,lower,upper,facecolor=co,alpha=0.1)
+        ax.fill_between(array(tim)+lag,lower,upper,facecolor=co,alpha=0.2)
         #ax.fill_between(array(tim)+lag,lower,upper,facecolor='k',alpha=0.1)
         if i < (len(names)-1):ax.xaxis.set_ticklabels([])
         ax.legend()
@@ -172,7 +172,7 @@ def plot_par_violin(tim,ptlist, priors={}, bp=True):
         ax = fig.add_subplot(r,c,i+1)
         violin_plot(ax,[priors[n]]+[s[n] for s in ptlist],tim,bp, True)
         P.ylabel(n)
-    P.xlabel('Windows')
+    #P.xlabel('Windows')
     if isinstance(tim[0], datetime.date):
         fig.autofmt_xdate()
 
@@ -183,7 +183,7 @@ def violin_plot(ax,data,positions,bp=False, prior = False):
     :Parameters:
         - `ax`: A subplot object
         - `data`: A list of data sets to plot
-        - `positions`: x values to position the violins
+        - `positions`: x values to position the violins. Can be datetime.date objects.
         - `bp`: Whether to plot the boxplot on top.
         - `prior`: whether the first element of data is a Prior distribution.
     '''
@@ -193,7 +193,7 @@ def violin_plot(ax,data,positions,bp=False, prior = False):
         ax.xaxis_date()
         positions = date2num(positions)
         sc = 5 if (dist>1 ) else 1
-        print sc
+        #print sc
     w = min(0.5*max(dist,1.0),0.5)*sc
     i = 0
     

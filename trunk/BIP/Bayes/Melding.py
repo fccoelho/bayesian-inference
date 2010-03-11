@@ -56,16 +56,13 @@ class FitModel(object):
     Bayesian posterior distributions of input and
     outputs of the model.
     """
-    def __init__(self, K,L,model, ntheta, nphi,inits,tf,thetanames,phinames,wl=None ,nw=1,verbose=False,  burnin=1000):
+    def __init__(self, K,model, inits,tf,thetanames,phinames,wl=None ,nw=1,verbose=False,  burnin=1000):
         """
         Initialize the model fitter.
 
         :Parameters:
             - `K`: Number of samples from the priors. On MCMC also the number of samples of the posterior.
-            - `L`: Number of samples of the posteriors. Only used on SIR and ABC methods.
             - `model`: Callable (function) returning the output of the model, from a set of parameter values received as argument.
-            - `ntheta`: Number of parameters included in the inference.
-            - `nphi`: Number of outputs of the model.
             - `inits`: inits initial values for the model's variables.
             - `tf`: Length of the simulation, in units of time.
             - `phinames`: List of names (strings) with names of the model's variables
@@ -80,7 +77,7 @@ class FitModel(object):
         except AssertionError:
            sys.exit("Window Length cannot be larger that Length of the simulation(tf)" )
         self.K = K
-        self.L = L
+        self.L = .1*K if K>2000 else 200
         self.finits = inits #first initial values
         self.ftf = tf
         self.full_len =  wl*nw
@@ -88,35 +85,23 @@ class FitModel(object):
         self.tf = tf
         self.totpop = sum(inits)
         self.model = model
-        self.model.func_globals['inits'] = self.inits
-        self.model.func_globals['tf'] = self.tf
-        self.nphi = nphi
-        self.ntheta = ntheta
+        self.nphi = len(phinames)
+        self.ntheta = len(thetanames)
         self.phinames = phinames
         self.thetanames = thetanames
+        self.model.func_globals['inits'] = self.inits
+        self.model.func_globals['tf'] = self.tf
+        self.model.func_globals['thetanames'] = self.thetanames
         self.wl = wl
         self.nw = nw
         self.done_running = False
         self.prior_set = False
         self.burnin = burnin
+        self.verbose = verbose
         self.pool = False #this will be updated by the run method.
-        self.Me = Meld(K=K,L=L,model=self.model,ntheta=ntheta,nphi=nphi,verbose=verbose)
+        self.Me = Meld(K=self.K,L=self.L,model=self.model,ntheta=self.ntheta,nphi=self.nphi,verbose=self.verbose)
         self.AIC = 0
         self.BIC = 0
-#    @property
-#    def inits(self):
-#        return self._inits
-#    @inits.setter
-#    def inits(self, value):
-#        self.model.func_globals['inits']=value
-#        self._inits = value
-#    @property
-#    def tf(self):
-#        return self._tf
-#    @tf.setter
-#    def tf(self, value):
-#        self.model.func_globals['tf']=value
-#        self._tf = value
 
     def _plot_MAP(self,data,pmap):
         """
@@ -144,28 +129,36 @@ class FitModel(object):
         """
         pass
 
-    def optimize(self, data, p0, method='fmin', tol=0.0001, verbose=0, plot=0):
+    def optimize(self, data, p0, optimizer='scipy', tol=0.0001, verbose=0, plot=0):
         """
         Finds best parameters using an optimization approach
 
         :Parameters:
             - `data`: Dictionary of observed series
             - `p0`: Sequence (list or tuple) of initial values for the parameters
-            - `method`: Optimization method: fmin (Nelder-Mead), fmin_powel.
+            - `optimizer`: Optimization library to use: 'scipy': fmin (Nelder-Mead) or 'oo':OpenOpt.NLP
             - `tol`: Tolerance of the error
             - `verbose`: If true show stats of the optimization run at the end
             - `plot`: If true plots a run based on the optimized parameters.
         """
+        try:
+            import openopt
+            oo = True
+        except ImportError:
+            oo = False
         assert isinstance(p0,(list,tuple))
         def mse(theta):
             s1 = self.Me.model_as_ra(theta)
             return self._rms_error(s1, data)
-        if method == "fmin":
+        if optimizer == "scipy":
             potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
-        elif method == "fmin_powell":
-            potimo = optim.fmin_powell(mse,p0,ftol=tol, disp=verbose)
-            if len(p0) ==1 :
-                potimo = [potimo]
+        elif optimizer == "oo":
+            if not oo:
+                potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
+            else: 
+                p = openopt.GLP(mse, p0, ftol=tol, iprint=10)
+                p.solve('ralg')
+                potimo = p.xf
         else:#use fmin as fallback method
             potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
         if plot:
@@ -198,13 +191,13 @@ class FitModel(object):
                     continue
                 ls1 = len(s1[k]) #handles the cases where data is slightly longer that simulated series.
 #                print k, len(s1[k]), len(s2[k])
-                e = mean((s1[k]-s2[k][:ls1])**2./s2[k][:ls1]**2)
+                e = sum((s1[k]-s2[k][:ls1])**2./s2[k][:ls1]**2)
                 err.append(e) 
         elif isinstance(s1, list):
             assert isinstance(s2, list) and len(s1) ==len(s2)
             s1 = array(s1)
             s2 = array(s2)
-            err = [mean((s-t)**2./t**2) for s, t in zip(s1, s2)]
+            err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
         rmsd = nan_to_num(mean(err))
         return rmsd
         
@@ -449,12 +442,12 @@ class FitModel(object):
             self.ser.plotlines(i95.tolist(),None,  ['97.5%'],'Window %s'%(w+1))
             self.ser.plotlines(d2[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
             self.fsp.plotlines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
-        self.hst.plothist(array(prior['theta']).tolist(),list(self.thetanames),'Window %s'%(w+1))
+        self.hst.plothist(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
         simseries = self.model(*cpars)
         self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
-        self.fsp.plotlines(simseries.T.tolist(),None,  list(self.phinames), "Best fit simulation after window %s"%(w+1))
+        self.fsp.plotlines(simseries.T.tolist(),None,  self.phinames, "Best fit simulation after window %s"%(w+1))
         self.ser.clearFig()
         self.hst.clearFig()
         self.fsp.clearFig()
@@ -477,11 +470,18 @@ class FitModel(object):
         #PM.plot_par_series(range(len(pt)),pt)
         priors = self.prior_sample()
         PM.plot_par_violin(tim[self.wl-1::self.wl],pt, priors)
+        P.ylabel('windows')
+        P.figure()
         PM.plot_series2(tim,obs,series,names=names, wl=self.wl)
         if self.nw > 1:
+            P.figure()
             PM.pred_new_cases(obs,predseries,self.nw,names,self.wl)
+            P.gca().legend(loc=0)
+            P.ylabel('windows')
+            P.figure()
             PM.plot_series2(tim,obs,predseries,names=names,
                             title='Predicted vs. Observed series',lag=True)
+            P.ylabel('windows')
         P.show()
 
     def _read_results(self, nam):
@@ -907,9 +907,8 @@ class Meld(object):
             - `method`: Step method. defaults to Metropolis hastings
         """
         #self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
-        ta = True #if self.verbose else False
-        tc = True #if self.verbose else False
-        
+        ta = True if self.verbose else False
+        tc = True if self.verbose else False
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc)
             sampler.step()
