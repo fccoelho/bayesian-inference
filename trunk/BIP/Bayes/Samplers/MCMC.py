@@ -168,8 +168,9 @@ class Metropolis(_Sampler):
                 i +=1
                 if rej%100 == 0: 
                     #self._tune_likvar(ar)
-                    print "-->%s Rejected. Last Proposal: %s"%(rej,theta)
-                    print j," Accepted. likvar: %s"%self.likvariance
+                    if self.trace_acceptance:
+                        print "-->%s Rejected. Last Proposal: %s"%(rej,theta)
+                        print j," Accepted. likvar: %s"%self.likvariance
                 continue
             self.history.append(theta)
             self.phi[j] = prop[0] if self.t==1 else [tuple(point) for point in prop]
