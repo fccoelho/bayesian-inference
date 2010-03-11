@@ -1046,7 +1046,7 @@ class Meld(object):
         """
         Does a single run of self.model and returns the results as a record array
         """
-        theta = theta.tolist()
+        theta = list(theta)
         r = self.model(theta)
         res = recarray(r.shape[0],formats=['f8']*self.nphi, names = self.phi.dtype.names)
         for i, n in enumerate(res.dtype.names):
