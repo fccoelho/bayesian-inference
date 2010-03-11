@@ -369,6 +369,9 @@ class FitModel(object):
         wl = self.wl
         for w in range(self.nw):
             print '==> Window # %s of %s!'%(w+1,self.nw)
+            if w>0:
+                rt = (self.nw-w+1)*tel
+                print "==> Remaining time: %s minutes and %s seconds."%(rt//60, rt%60)
             self.tf=wl
             self.model.func_globals['tf'] = wl
             d2 = {}
@@ -383,7 +386,9 @@ class FitModel(object):
                     #TODO: figure out how to balance the total pop
 #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
                     self.model.func_globals['inits'] = self.inits
+            t0 = time.time()
             pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
+            tel = time.time()-t0
             #print series[:, 0], self.inits
             f = open('%s_%s%s'%(dbname, w, ".pickle"),'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
