@@ -114,7 +114,7 @@ class FitModel(object):
         """
         p = RTplot(persist=1)
         self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
-        simseries = self.model(*pmap)
+        simseries = self.model(list(pmap))
         self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
         if 'time' in data:data.pop('time')
         for n,d in data.items():
@@ -1046,7 +1046,8 @@ class Meld(object):
         """
         Does a single run of self.model and returns the results as a record array
         """
-        r = self.model(*theta)
+        theta = theta.tolist()
+        r = self.model(theta)
         res = recarray(r.shape[0],formats=['f8']*self.nphi, names = self.phi.dtype.names)
         for i, n in enumerate(res.dtype.names):
             res[n] = r[:, i]
@@ -1142,7 +1143,7 @@ def enumRun(model,theta,k):
         - res: result list
         - `k`: run number
     """
-    res =model(*theta)
+    res =model(theta)
     return (res,k)
 
 
