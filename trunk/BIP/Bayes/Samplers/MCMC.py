@@ -177,8 +177,9 @@ class Metropolis(_Sampler):
             liklist.append(lik)
             #self._tune_likvar(ar)
             if j%100==0:
-                self._watch_chain(j)
-                if self.trace_acceptance:print "++>%s: Acc. ratio: %s"%(j, ar)
+                if self.trace_acceptance:
+                    print "++>%s: Acc. ratio: %s"%(j, ar)
+                    self._watch_chain(j)
                 if self.trace_convergence: print "%s: Mean Proposal: %s; STD: %s"%(j, np.array(self.history[-100:]).mean(axis=0),np.array(self.history[-100:]).std(axis=0) )
             last_lik = lik
             j += 1 #update good sample counter 

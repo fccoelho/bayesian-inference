@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Bayesian-Inference -->
-<!-- Saved: 2010-01-12, 14:17:52 -->
+<!-- Saved: 2010-03-03, 16:49:43 -->
 <!-- Copyright (C) 2010 Flávio Codeço Coelho, fccoelho@gmail.com -->
 <Project version="4.6">
   <Language></Language>
@@ -69,6 +69,8 @@
     <Source>BIP/SMC/__init__.py</Source>
     <Source>BIP/SMC/condensation.py</Source>
     <Source>__init__.py</Source>
+    <Source>BIP/SDE/cgillespie.pyx</Source>
+    <Source>BIP/SDE/cgillespie.c</Source>
   </Sources>
   <Forms>
   </Forms>
