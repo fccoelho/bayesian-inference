@@ -445,7 +445,7 @@ class FitModel(object):
         self.hst.plothist(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
-        simseries = self.model(*cpars)
+        simseries = self.model(cpars)
         self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
         self.fsp.plotlines(simseries.T.tolist(),None,  self.phinames, "Best fit simulation after window %s"%(w+1))
         self.ser.clearFig()
@@ -470,18 +470,18 @@ class FitModel(object):
         #PM.plot_par_series(range(len(pt)),pt)
         priors = self.prior_sample()
         PM.plot_par_violin(tim[self.wl-1::self.wl],pt, priors)
-        P.ylabel('windows')
+        P.xlabel('windows')
         P.figure()
         PM.plot_series2(tim,obs,series,names=names, wl=self.wl)
         if self.nw > 1:
             P.figure()
             PM.pred_new_cases(obs,predseries,self.nw,names,self.wl)
             P.gca().legend(loc=0)
-            P.ylabel('windows')
+            P.xlabel('windows')
             P.figure()
             PM.plot_series2(tim,obs,predseries,names=names,
                             title='Predicted vs. Observed series',lag=True)
-            P.ylabel('windows')
+            P.xlabel('windows')
         P.show()
 
     def _read_results(self, nam):
