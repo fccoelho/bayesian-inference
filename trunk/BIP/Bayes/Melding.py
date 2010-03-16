@@ -434,15 +434,18 @@ class FitModel(object):
         i95 = array([stats.scoreatpercentile(t,97.5) for t in series[vname].T])
         return i5,i95
     def _long_term_prediction_plot(self, initind,cpars,vind,  w):
+        """
+        Plots the simulated trajectory predicted from best fit parameters.
+        """
+        if self.full_len-(self.wl*(w+1)) == 0:
+            return
         self.model.func_globals['tf'] = self.full_len-(self.wl*(w+1))
         simseries = self.model(cpars)
         simseries = [simseries[:, i].tolist() for i in range(self.nphi) if i in vind]
         snames = [n for n in self.phinames if i in vind]
         self.model.func_globals['tf'] = self.tf
-#        r=RTplot()
-#        r.plotlines(simseries.T.tolist(),None, self.phinames, "Best fit simulation after window %s"%(w+1))
-#        range(self.wl*w+self.wl, self.full_len+self.wl)
         xinit = self.wl*w+self.wl
+#        print xinit, xinit+len(simseries[0])
         self.fsp.plotlines(simseries,range(xinit,xinit+len(simseries[0])), snames, "Best fit simulation after window %s"%(w+1))
     
     def _monitor_plot(self, series, prior, d2,w,data, vars):
