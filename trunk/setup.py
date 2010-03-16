@@ -12,14 +12,14 @@ from setuptools import setup, find_packages
 #    sys.exit(1)
 
 setup(name='BIP', 
-        version  = '0.3.24',
+        version  = '0.3.25', 
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
         description = 'Bayesian Inference Tools for Python',
         zip_safe = False,
         packages = find_packages(),#['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
-        install_requires = ["numpy >= 1.2", "scipy >= 0.7"], 
+        install_requires = ["numpy >= 1.2", "scipy >= 0.7", "openopt >= 0.27"], 
         test_suite = 'nose.collector', 
         license = 'GPL',
 #        cmdclass = {'build_ext': build_ext},
