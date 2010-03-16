@@ -338,7 +338,7 @@ class FitModel(object):
                     con.execute("create table "+ tstr)
             else:
                 raise TypeError("Non-valid data structure.")
-            print "insert into "+tstr+" values("+",".join(['?']*nv)+")"
+            #print "insert into "+tstr+" values("+",".join(['?']*nv)+")"
             con.executemany("insert into "+tstr+" values("+",".join(['?']*nv)+")", row_generator(v))
         con.commit()
         con.close()
@@ -368,6 +368,7 @@ class FitModel(object):
             self.wl = floor(len(d.values()[0])/self.nw)
         wl = self.wl
         for w in range(self.nw):
+            t0 = time()
             print '==> Window # %s of %s!'%(w+1,self.nw)
             if w>0:
                 rt = (self.nw-w+1)*tel
@@ -386,9 +387,8 @@ class FitModel(object):
                     #TODO: figure out how to balance the total pop
 #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
                     self.model.func_globals['inits'] = self.inits
-            t0 = time.time()
             pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
-            tel = time.time()-t0
+            
             #print series[:, 0], self.inits
             f = open('%s_%s%s'%(dbname, w, ".pickle"),'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
@@ -413,6 +413,7 @@ class FitModel(object):
                 self._monitor_plot(series,prior,d2,w,data,vars=monitor)
             self.AIC += 2. * (self.ntheta - self.Me.likmax) # 2k - 2 ln(L)
             self.BIC += self.ntheta * numpy.log(self.full_len) - 2. * self.Me.likmax # k ln(n) - 2 ln(L)
+            tel = time()-t0
         self.Me.AIC = self.AIC
         self.Me.BIC = self.BIC
         print "time: %s seconds"%(time()-start)
@@ -432,12 +433,25 @@ class FitModel(object):
         i5 = array([stats.scoreatpercentile(t,2.5) for t in series[vname].T])
         i95 = array([stats.scoreatpercentile(t,97.5) for t in series[vname].T])
         return i5,i95
+    def _long_term_prediction_plot(self, initind,cpars,vind,  w):
+        self.model.func_globals['tf'] = self.full_len-(self.wl*(w+1))
+        simseries = self.model(cpars)
+        simseries = [simseries[:, i].tolist() for i in range(self.nphi) if i in vind]
+        snames = [n for n in self.phinames if i in vind]
+        self.model.func_globals['tf'] = self.tf
+#        r=RTplot()
+#        r.plotlines(simseries.T.tolist(),None, self.phinames, "Best fit simulation after window %s"%(w+1))
+#        range(self.wl*w+self.wl, self.full_len+self.wl)
+        xinit = self.wl*w+self.wl
+        self.fsp.plotlines(simseries,range(xinit,xinit+len(simseries[0])), snames, "Best fit simulation after window %s"%(w+1))
+    
     def _monitor_plot(self, series, prior, d2,w,data, vars):
         """
         Plots real time data
         """
         diff = array([abs(series[vn][:, -1]-d2[vn][-1]) for vn in d2.keys()]).sum(axis=0) #sum errors for all oserved variables
         initind = diff.tolist().index(min(diff))
+        vindices = [self.phinames.index(n) for n in vars]
         for n in vars:
             if n not in d2:
                 continue
@@ -449,10 +463,7 @@ class FitModel(object):
             self.fsp.plotlines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
         self.hst.plothist(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
-        self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
-        simseries = self.model(cpars)
-        self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
-        self.fsp.plotlines(simseries.T.tolist(),None,  self.phinames, "Best fit simulation after window %s"%(w+1))
+        self._long_term_prediction_plot(initind,cpars,vindices, w)
         self.ser.clearFig()
         self.hst.clearFig()
         self.fsp.clearFig()

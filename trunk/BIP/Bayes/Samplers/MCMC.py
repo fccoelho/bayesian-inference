@@ -188,7 +188,7 @@ class Metropolis(_Sampler):
             ar = j/(float(j)+rej)
         self.meld.post_theta = ptheta[self.burnin:]
         self.phi = self.phi[self.burnin:]
-        self.meld.post_theta = self._imp_sample(self.meld.L,ptheta,liklist)
+        self.meld.post_theta = ptheta#self._imp_sample(self.meld.L,ptheta,liklist)
         self.meld.likmax = max(liklist)
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %s"%ar
