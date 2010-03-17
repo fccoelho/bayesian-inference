@@ -156,7 +156,7 @@ class FitModel(object):
             if not oo:
                 potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
             else: 
-                p = openopt.GLP(mse, p0, ftol=tol, iprint=10)
+                p = openopt.NLP(mse, p0, ftol=tol, iprint=10)
                 p.solve('ralg')
                 potimo = p.xf
         else:#use fmin as fallback method
@@ -270,13 +270,6 @@ class FitModel(object):
             self.Me.abcRun(data=data,fitfun=None,pool=self.pool, t=self.tf)
         pt,series = self.Me.getPosteriors(t=self.tf)
         pp = series[:,-1]
-#        print "var:", numpy.std(series.I[:, 0])
-#        for i, s in enumerate(series):
-#                try:
-#                    assert tuple(s[0]) == tuple(self.inits) 
-#                except AssertionError:
-#                    print i, ":", s[0]
-#                    print self.inits
         # TODO: figure out what to do by default with inits
         if self.nw >1 and self.adjinits:
             adiff = array([abs(pp[vn]-data[vn][-1]) for vn in data.keys()])
@@ -291,7 +284,7 @@ class FitModel(object):
         if predlen:
             predseries = self.Me.getPosteriors(predlen)[1]
         return pt,pp, series,predseries,att
-    
+
     def _save_to_db(self, dbname, data):
         '''
         Saves data to a sqlite3 db.
@@ -302,7 +295,7 @@ class FitModel(object):
         '''
         def row_generator(var):
             '''
-            var is record array.
+            var is record array or a dictionary.
             '''
             if isinstance(var, numpy.recarray):
                 for repl in var:
@@ -314,10 +307,14 @@ class FitModel(object):
                     else: #this is the case of parameters
                         yield tuple(repl)
             elif isinstance(var, dict):
-                for r in zip(*var.values()):
-                    if not isinstance(r, tuple):
-                        r = (r,)
-                    yield r
+                try:
+                    for r in zip(*var.values()):
+                        if not isinstance(r, tuple):
+                            r = (r,)
+                        yield r
+                except:
+                    print var.keys(),  var.values()
+                    
         create = True
         if not dbname.endswith('.sqlite'):
             dbname += '.sqlite'
@@ -388,8 +385,9 @@ class FitModel(object):
 #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
                     self.model.func_globals['inits'] = self.inits
             pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
-            
-            #print series[:, 0], self.inits
+            self.AIC += 2. * (self.ntheta - self.Me.likmax) # 2k - 2 ln(L)
+            self.BIC += self.ntheta * numpy.log(self.wl*len(d2)) - 2. * self.Me.likmax # k ln(n) - 2 ln(L)
+            # ===Saving results===
             f = open('%s_%s%s'%(dbname, w, ".pickle"),'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
             CP.dump((pt,series,d,predseries, att*self.K),f)
@@ -397,11 +395,7 @@ class FitModel(object):
             if dbname:
                 if os.path.exists(dbname+".sqlite") and w ==0:
                     os.remove(dbname+".sqlite")
-                self._save_to_db(dbname, {'post_theta':pt, 
-                                                                     'series':series, 
-                                                                     'data': d2, 
-                                                                     'predicted_series':predseries, 
-                                                                     })
+                self._format_db_tables(dbname, w, data, pt, series, predseries, self.AIC, self.BIC)
             prior = {'theta':[],'phi':[]}
             for n in pt.dtype.names:
                 prior['theta'].append(pt[n])
@@ -411,16 +405,47 @@ class FitModel(object):
                 prior['phi'].append(pp[n])
             if monitor:
                 self._monitor_plot(series,prior,d2,w,data,vars=monitor)
-            self.AIC += 2. * (self.ntheta - self.Me.likmax) # 2k - 2 ln(L)
-            self.BIC += self.ntheta * numpy.log(self.full_len) - 2. * self.Me.likmax # k ln(n) - 2 ln(L)
+            
             tel = time()-t0
-        self.Me.AIC = self.AIC
-        self.Me.BIC = self.BIC
+        self.Me.AIC = self.AIC/self.nw
+        self.Me.BIC = self.BIC/self.nw
         print "time: %s seconds"%(time()-start)
         
         self.done_running = True
-
-
+    
+    def _format_db_tables(self, dbname, w, data, pt, series, predseries, AIC, BIC):
+        """
+        Formats results for writing to database
+        """
+        #TODO: Write tests for this
+        #data table does not require formatting
+        # Dates for this window
+        if 'time' in data:
+            dates = data['time'][w*self.wl:w*self.wl+self.wl]
+            preddates = data['time'][(w+1)*self.wl:(w+1)*self.wl+self.wl]
+        else:
+            dates = range(w*self.wl, w*self.wl+self.wl)
+            preddates = range((w+1)*self.wl, (w+1)*self.wl+self.wl)
+        # Parameters table
+        ptd = dict([('time',dates[-1] ) ]*len(pt[pt.dtype.names[0]]))
+        for n in pt.dtype.names:
+            ptd[n] = pt[n]
+        # Series table
+        seriesd = {'time':dates*series.shape[0]}
+        predseriesd = {'time':preddates*series.shape[0]}
+        for n in series.dtype.names:
+            seriesd[n] = series[n].ravel()
+        for n in predseries.dtype.names:
+            predseriesd[n] = predseries[n].ravel()
+        # AIC and BIC table
+        gof = {'time':[dates[-1]], 'AIC':[AIC], 'BIC':[BIC]}
+        self._save_to_db(dbname, {'post_theta':ptd, 
+                                                                     'series':seriesd, 
+                                                                     'data': data, 
+                                                                     'predicted_series':predseriesd, 
+                                                                     'GOF':gof,
+                                                                     })
+    
     def _monitor_setup(self):
         """
         Sets up realtime plotting of inference
@@ -471,7 +496,7 @@ class FitModel(object):
         self.hst.clearFig()
         self.fsp.clearFig()
     
-    def plot_results(self, names=[],  dbname=""):
+    def plot_results(self, names=[],  dbname="results"):
         """
         Plot the final results of the inference
         """
