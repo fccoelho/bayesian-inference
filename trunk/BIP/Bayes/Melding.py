@@ -421,13 +421,17 @@ class FitModel(object):
         #data table does not require formatting
         # Dates for this window
         if 'time' in data:
-            dates = data['time'][w*self.wl:w*self.wl+self.wl]
-            preddates = data['time'][(w+1)*self.wl:(w+1)*self.wl+self.wl]
+            if isinstance(data['time'],  numpy.ndarray):
+                ts = data['time'].tolist()
+            else:
+                ts = data['time']
+            dates = ts[w*self.wl:w*self.wl+self.wl]
+            preddates = ts[(w+1)*self.wl:(w+1)*self.wl+self.wl]
         else:
             dates = range(w*self.wl, w*self.wl+self.wl)
             preddates = range((w+1)*self.wl, (w+1)*self.wl+self.wl)
         # Parameters table
-        ptd = dict([('time',dates[-1] ) ]*len(pt[pt.dtype.names[0]]))
+        ptd = {'time':[dates[-1]]*len(pt[pt.dtype.names[0]])}
         for n in pt.dtype.names:
             ptd[n] = pt[n]
         # Series table
