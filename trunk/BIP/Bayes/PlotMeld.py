@@ -115,7 +115,7 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
             ax.xaxis_date()
         co = c.next()
         if n in obs:
-            ax.plot(tim,obs[n][:len(tim)],'%s+'%co, label="Observed %s"%n)
+            ax.plot(tim,obs[n][:len(tim)],'ko', label="Observed %s"%n)
             #print len(tim),  ls
         ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-', label=n)
         lower = [stats.scoreatpercentile(t,2.5) for t in ser2[n].T]

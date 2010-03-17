@@ -167,9 +167,10 @@ class Metropolis(_Sampler):
                 rej +=1 #adjust rejection counter
                 i +=1
                 if rej%100 == 0: 
-                    #self._tune_likvar(ar)
+                    ar = j/(float(j)+rej)
+                    self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        print "-->%s Rejected. Last Proposal: %s"%(rej,theta)
+                        print "-->%s Rejected. Accept. ratio: %s"%(rej,ar)
                         print j," Accepted. likvar: %s"%self.likvariance
                 continue
             self.history.append(theta)
@@ -196,18 +197,38 @@ class Metropolis(_Sampler):
         self.pserver.close_plot()
         return 1
     def _tune_likvar(self, ar):
-        if ar<=.1:
-            self.likvariance *= 5
-        elif ar <= .15:
-            self.likvariance *= 2
-        elif ar <= .2:
-            self.likvariance *= 1.2
-        elif ar >.7:
-            self.likvariance *= 0.8
-        elif ar > .8:
-            self.likvariance *= 0.5
-        elif ar > .9:
-            self.likvariance *= 0.2
+        try:
+            self.arhist.append(ar)
+        except AttributeError:
+            self.tsig = 1
+            self.tstep = .05
+            self.arhist = [ar]
+        dev = (0.35-ar)**2
+        if dev > 0.02:
+            self.likvariance *= 1+self.tsig *(.5*(np.tanh(8*dev-3)+1))
+        else: return #ar at target, don't change anything
+        improv = (0.35-np.mean(self.arhist[-5:-1]))**2 - (0.35-ar)**2
+        if improv < 0:
+            self.tsig *= -1 #change signal if AR is not improving
+            self.tstep = .05 #reset to small steps if changing direction
+        elif improv  > 0 and improv <.01:
+            if np.random.random() <.05: #1 in 20 chance to change direction if no improvements
+                self.tsig *= -1 #change signal if AR is not improving
+        elif improv > 0.01:
+            self.tstep *= 0.97 #reduce step if approacching sweet spot
+        
+#        if ar<=.1:
+#            self.likvariance *= 5
+#        elif ar <= .15:
+#            self.likvariance *= 2
+#        elif ar <= .2:
+#            self.likvariance *= 1.2
+#        elif ar >.7:
+#            self.likvariance *= 0.8
+#        elif ar > .8:
+#            self.likvariance *= 0.5
+#        elif ar > .9:
+#            self.likvariance *= 0.2
     def _rms_fit(self, s1, s2):
         '''
         Calculates a basic fitness calculation between a model-
