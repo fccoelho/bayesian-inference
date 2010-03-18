@@ -141,3 +141,4 @@ This example fits a stochastic model to simulated data. It uses the :ref:`SDE <S
     #==Uncomment the line below to see plots of the results
     #F.plot_results()
 
+This example can be found in the examples folder of BIP under the name of "flu_stochastic.py".
