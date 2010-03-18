@@ -2,17 +2,17 @@
 <!DOCTYPE Session SYSTEM "Session-4.3.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-03-16, 13:56:49 -->
+<!-- Saved: 2010-03-17, 16:41:17 -->
 <Session version="4.3">
   <Filenames>
-    <Filename cline="190" cindex="38" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
-    <Filename cline="451" cindex="11" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
+    <Filename cline="214" cindex="94" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="433" cindex="61" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
     <Filename cline="21" cindex="76" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
     <Filename cline="100" cindex="13" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/realtime.py</Filename>
-    <Filename cline="154" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
+    <Filename cline="117" cindex="45" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
     <Filename cline="100" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/like.py</Filename>
   </Filenames>
-  <ActiveWindow cline="21" cindex="76">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</ActiveWindow>
+  <ActiveWindow cline="433" cindex="61">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>
