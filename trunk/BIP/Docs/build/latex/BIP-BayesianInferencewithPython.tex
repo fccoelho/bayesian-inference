@@ -194,10 +194,82 @@ One important argument in the run call, is the likvar, Which is the initial valu
 
 The code for the above example can be found in the examples directory of the BIP distribution as ``deterministic.py''
 
+
+\section{Stochastic Model Example}
+
+This example fits a stochastic model to simulated data. It uses the \hyperlink{sde}{\emph{SDE}} package of BIP:
+
+\begin{Verbatim}[commandchars=@\[\]]
+@PYG[k+kn][from] @PYG[n+nn][BIP.SDE.gillespie] @PYG[k+kn][import] @PYG[n][Model]
+@PYG[k+kn][from] @PYG[n+nn][BIP.Bayes.Melding] @PYG[k+kn][import] @PYG[n][FitModel]
+@PYG[k+kn][import] @PYG[n+nn][numpy] @PYG[k+kn][as] @PYG[n+nn][np]
+@PYG[k+kn][from] @PYG[n+nn][scipy] @PYG[k+kn][import] @PYG[n][stats] @PYG[k][as] @PYG[n][st]
+
+@PYG[n][mu] @PYG[o][=] @PYG[l+m+mf][0.0] @PYG[c][@#birth and death rate.FIXED]
+@PYG[n][beta] @PYG[o][=] @PYG[l+m+mf][0.00058] @PYG[c][@#Transmission rate]
+@PYG[n][eta] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][5] @PYG[c][@#infectivity of asymptomatic infections relative to clinical ones. FIXED]
+@PYG[n][epsilon] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][1] @PYG[c][@#latency period]
+@PYG[n][alpha] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][2] @PYG[c][@#Probability of developing clinical influenza symptoms]
+@PYG[n][sigma] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][5] @PYG[c][@#reduced risk of re-infection after recovery]
+@PYG[n][tau] @PYG[o][=] @PYG[o][.]@PYG[l+m+mo][01] @PYG[c][@#infectious period. FIXED]
+@PYG[c][@# Initial conditions]
+@PYG[k][global] @PYG[n][inits]@PYG[p][,]@PYG[n][tf]
+@PYG[n][tf]@PYG[o][=] @PYG[l+m+mi][140]
+@PYG[n][inits] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[l+m+mi][490]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][10]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]
+@PYG[n][pars] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[n][beta]@PYG[p][,]@PYG[n][alpha]@PYG[p][,]@PYG[n][sigma]@PYG[p][@PYGZrb[]]
+
+
+@PYG[c][@# propensity functions]
+@PYG[k][def] @PYG[n+nf][f1]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[p][(]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[o][+]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[p][)]@PYG[c][@#S-@textgreater[]E]
+@PYG[k][def] @PYG[n+nf][f2]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[c][@#E-@textgreater[]I]
+@PYG[k][def] @PYG[n+nf][f3]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[c][@#I-@textgreater[]R]
+@PYG[k][def] @PYG[n+nf][f4]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[c][@#E-@textgreater[]A]
+@PYG[k][def] @PYG[n+nf][f5]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][4]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[c][@#A-@textgreater[]R]
+
+@PYG[k][def] @PYG[n+nf][runModel]@PYG[p][(]@PYG[n][theta]@PYG[p][)]@PYG[p][:]
+    @PYG[k][global] @PYG[n][tf]@PYG[p][,]@PYG[n][inits]
+    @PYG[n][step] @PYG[o][=] @PYG[l+m+mi][1]
+    @PYG[c][@#setting parameters]
+    @PYG[n][beta]@PYG[p][,]@PYG[n][alpha]@PYG[p][,]@PYG[n][sigma] @PYG[o][=] @PYG[n][theta]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]
+    @PYG[n][vnames] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][E]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][A]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]
+    @PYG[c][@#rates: b,ki,ka,ri,ra]
+    @PYG[c][@#r = (0.001, 0.1, 0.1, 0.01, 0.01)]
+    @PYG[n][r] @PYG[o][=] @PYG[p][(]@PYG[n][beta]@PYG[p][,] @PYG[p][(]@PYG[n][alpha]@PYG[p][)]@PYG[o][*]@PYG[n][epsilon]@PYG[p][,] @PYG[p][(]@PYG[l+m+mi][1]@PYG[o][-]@PYG[n][alpha]@PYG[p][)]@PYG[o][*]@PYG[n][epsilon]@PYG[p][,] @PYG[n][tau]@PYG[p][,] @PYG[n][tau]@PYG[p][)]
+    @PYG[c][@#print r,inits]
+    @PYG[c][@# propensity functions]
+    @PYG[n][propf] @PYG[o][=] @PYG[p][(]@PYG[n][f1]@PYG[p][,]@PYG[n][f2]@PYG[p][,]@PYG[n][f3]@PYG[p][,]@PYG[n][f4]@PYG[p][,]@PYG[n][f5]@PYG[p][)]
+
+    @PYG[n][tmat] @PYG[o][=] @PYG[n][np]@PYG[o][.]@PYG[n][array]@PYG[p][(]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZlb[]]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]
+                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][1]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]
+                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]
+                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[p][,]
+                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]
+                @PYG[p][@PYGZrb[]]@PYG[p][)]
+    @PYG[n][M]@PYG[o][=]@PYG[n][Model]@PYG[p][(]@PYG[n][vnames]@PYG[o][=]@PYG[n][vnames]@PYG[p][,]@PYG[n][rates] @PYG[o][=] @PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[o][=]@PYG[n][inits]@PYG[p][,]@PYG[n][tmat]@PYG[o][=]@PYG[n][tmat]@PYG[p][,]@PYG[n][propensity]@PYG[o][=]@PYG[n][propf]@PYG[p][)]
+    @PYG[c][@#t0 = time.time()]
+    @PYG[n][M]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][tmax]@PYG[o][=]@PYG[n][tf]@PYG[p][,]@PYG[n][reps]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][viz]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][serial]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][)]
+    @PYG[n][t]@PYG[p][,]@PYG[n][series]@PYG[p][,]@PYG[n][steps] @PYG[o][=] @PYG[n][M]@PYG[o][.]@PYG[n][getStats]@PYG[p][(]@PYG[p][)]
+    @PYG[n][ser] @PYG[o][=] @PYG[n][series]@PYG[o][.]@PYG[n][mean]@PYG[p][(]@PYG[n][axis]@PYG[o][=]@PYG[l+m+mi][0]@PYG[p][)]
+    @PYG[c][@#print series.shape]
+    @PYG[k][return] @PYG[n][ser]
+
+@PYG[n][d] @PYG[o][=] @PYG[n][runModel]@PYG[p][(]@PYG[p][@PYGZlb[]]@PYG[n][beta]@PYG[p][,]@PYG[n][alpha]@PYG[p][,]@PYG[n][sigma]@PYG[p][@PYGZrb[]]@PYG[p][)]
+@PYG[n][dt] @PYG[o][=] @PYG[p][{]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][E]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][A]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][4]@PYG[p][@PYGZrb[]]@PYG[p][}]
+@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][300]@PYG[p][,] @PYG[n][runModel]@PYG[p][,]@PYG[n][inits]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][alpha]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][sigma]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][E]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][A]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
+            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][7]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][20]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
+@PYG[n][F]@PYG[o][.]@PYG[n][set@_priors]@PYG[p][(]@PYG[n][tdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][tpars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][0.00001]@PYG[p][,]@PYG[o][.]@PYG[l+m+mo][0006]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mo][01]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][5]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tlims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mo][001]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]
+    @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][5]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][500]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][5]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][500]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][5]@PYG[p][)]
+
+@PYG[n][F]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][dt]@PYG[p][,]@PYG[l+s][']@PYG[l+s][MCMC]@PYG[l+s][']@PYG[p][,]@PYG[n][likvar]@PYG[o][=]@PYG[l+m+mf][2e2]@PYG[p][,]@PYG[n][pool]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][monitor]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZrb[]]@PYG[p][)]
+@PYG[c][@#print F.optimize(data=dt,p0=@PYGZlb[]0.1,.5,.1@PYGZrb[], optimizer='scipy',tol=1e-5, verbose=1, plot=1)]
+@PYG[c][@#==Uncomment the line below to see plots of the results]
+@PYG[c][@#F.plot@_results()]
+\end{Verbatim}
+
 \resetcurrentobjects
 \hypertarget{--doc-sde}{}
 
-\chapter{Stochastic Differential Equations}
+\hypertarget{sde}{}\chapter{Stochastic Differential Equations}
 
 The SDE package in BIP, was born out of the need to simulate stochastic model to test the Parameters estimation routines in the Bayes Package. However, it is useful in many general-purpose application since it provides a pure Python implementation of an SDE solver.
 
