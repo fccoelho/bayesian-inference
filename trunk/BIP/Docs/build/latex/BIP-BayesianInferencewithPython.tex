@@ -10,7 +10,7 @@
 
 
 \title{BIP - Bayesian Inference with Python Documentation}
-\date{March 17, 2010}
+\date{March 18, 2010}
 \release{0.3}
 \author{Flávio Codeço Coelho}
 \newcommand{\sphinxlogo}{\includegraphics{BIP_large.png}\par}
@@ -120,14 +120,14 @@ The Subpackage Bayes also offers a tool for parameter estimation of Deterministi
 
 \chapter{Parameter Estimation in Dynamic Models}
 
-A growing theme in mathamatical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model's parameters and variables into the model, in order to explore the full uncertainty associated with a model.
+A growing theme in mathematical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model's parameters and variables into the model, in order to explore the full uncertainty associated with a model.
 
 Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.
 
 
 \section{Example Usage}
 
-This first example includes a simple ODE (an epidemic model) model which is fitted against simulated data to which noise is added:
+This first example includes a simple ODE (an SIR epidemic model) model which is fitted against simulated data to which noise is added:
 
 \begin{Verbatim}[commandchars=@\[\]]
 @PYG[k+kn][from] @PYG[n+nn][BIP.Bayes.Melding] @PYG[k+kn][import] @PYG[n][FitModel]
@@ -137,29 +137,29 @@ This first example includes a simple ODE (an epidemic model) model which is fitt
 
 @PYG[n][beta] @PYG[o][=] @PYG[l+m+mi][1] @PYG[c][@#Transmission coefficient]
 @PYG[n][tau] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][2] @PYG[c][@#infectious period. FIXED]
-@PYG[n][t0] @PYG[o][=] @PYG[l+m+mi][0]
 @PYG[n][tf] @PYG[o][=] @PYG[l+m+mi][36]
 @PYG[n][y0] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[o][.]@PYG[l+m+mi][999]@PYG[p][,]@PYG[l+m+mf][0.001]@PYG[p][,]@PYG[l+m+mf][0.0]@PYG[p][@PYGZrb[]]
-@PYG[k][def] @PYG[n+nf][model]@PYG[p][(]@PYG[o][*]@PYG[n][theta]@PYG[p][)]@PYG[p][:]
-        @PYG[n][beta] @PYG[o][=] @PYG[n][theta]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]
-        @PYG[k][def] @PYG[n+nf][sir]@PYG[p][(]@PYG[n][y]@PYG[p][,]@PYG[n][t]@PYG[p][)]@PYG[p][:]
-                @PYG[l+s+sd]['''ODE model''']
-                @PYG[n][S]@PYG[p][,]@PYG[n][I]@PYG[p][,]@PYG[n][R] @PYG[o][=] @PYG[n][y]
-                @PYG[k][return]  @PYG[p][@PYGZlb[]]@PYG[o][-]@PYG[n][beta]@PYG[o][*]@PYG[n][I]@PYG[o][*]@PYG[n][S]@PYG[p][,] @PYG[c][@#dS/dt]
-                                @PYG[n][beta]@PYG[o][*]@PYG[n][I]@PYG[o][*]@PYG[n][S] @PYG[o][-] @PYG[n][tau]@PYG[o][*]@PYG[n][I]@PYG[p][,] @PYG[c][@#dI/dt]
-                                @PYG[n][tau]@PYG[o][*]@PYG[n][I]@PYG[p][@PYGZrb[]] @PYG[c][@#dR/dt]
-        @PYG[n][y] @PYG[o][=] @PYG[n][odeint]@PYG[p][(]@PYG[n][sir]@PYG[p][,]@PYG[n][inits]@PYG[p][,]@PYG[n][np]@PYG[o][.]@PYG[n][arange]@PYG[p][(]@PYG[n][t0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][)]@PYG[c][@#np.arange(t0,tf,step))]
-        @PYG[k][return] @PYG[n][y]
+@PYG[k][def] @PYG[n+nf][model]@PYG[p][(]@PYG[n][theta]@PYG[p][)]@PYG[p][:]
+    @PYG[n][beta] @PYG[o][=] @PYG[n][theta]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]
+    @PYG[k][def] @PYG[n+nf][sir]@PYG[p][(]@PYG[n][y]@PYG[p][,]@PYG[n][t]@PYG[p][)]@PYG[p][:]
+        @PYG[l+s+sd]['''ODE model''']
+        @PYG[n][S]@PYG[p][,]@PYG[n][I]@PYG[p][,]@PYG[n][R] @PYG[o][=] @PYG[n][y]
+        @PYG[k][return]  @PYG[p][@PYGZlb[]]@PYG[o][-]@PYG[n][beta]@PYG[o][*]@PYG[n][I]@PYG[o][*]@PYG[n][S]@PYG[p][,] @PYG[c][@#dS/dt]
+                @PYG[n][beta]@PYG[o][*]@PYG[n][I]@PYG[o][*]@PYG[n][S] @PYG[o][-] @PYG[n][tau]@PYG[o][*]@PYG[n][I]@PYG[p][,] @PYG[c][@#dI/dt]
+                @PYG[n][tau]@PYG[o][*]@PYG[n][I]@PYG[p][@PYGZrb[]] @PYG[c][@#dR/dt]
+    @PYG[n][y] @PYG[o][=] @PYG[n][odeint]@PYG[p][(]@PYG[n][sir]@PYG[p][,]@PYG[n][inits]@PYG[p][,]@PYG[n][np]@PYG[o][.]@PYG[n][arange]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][)]@PYG[c][@#np.arange(t0,tf,step))]
+    @PYG[k][return] @PYG[n][y]
 
-@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][3000]@PYG[p][,]@PYG[l+m+mi][1000]@PYG[p][,]@PYG[n][model]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][,]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][y0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
-                        @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][1000]@PYG[p][)]
+@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][300]@PYG[p][,] @PYG[n][model]@PYG[p][,]@PYG[n][y0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
+            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
 @PYG[n][F]@PYG[o][.]@PYG[n][set@_priors]@PYG[p][(]@PYG[n][tdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tpars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][1.1]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tlims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][0.5]@PYG[p][,]@PYG[l+m+mf][1.5]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]
-        @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mi][8]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][)]
-@PYG[n][d] @PYG[o][=] @PYG[n][model]@PYG[p][(]@PYG[o][*]@PYG[p][@PYGZlb[]]@PYG[l+m+mf][1.0]@PYG[p][@PYGZrb[]]@PYG[p][)] @PYG[c][@#simulate some data]
+    @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mi][8]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][)]
+@PYG[n][d] @PYG[o][=] @PYG[n][model]@PYG[p][(]@PYG[p][@PYGZlb[]]@PYG[l+m+mf][1.0]@PYG[p][@PYGZrb[]]@PYG[p][)] @PYG[c][@#simulate some data]
 @PYG[n][noise] @PYG[o][=] @PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mf][0.01]@PYG[p][)]@PYG[o][.]@PYG[n][rvs]@PYG[p][(]@PYG[l+m+mi][36]@PYG[p][)]
 @PYG[n][dt] @PYG[o][=] @PYG[p][{]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[o][+]@PYG[n][noise]@PYG[p][}] @PYG[c][@# add noise]
-@PYG[n][F]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][dt]@PYG[p][,]@PYG[l+s][']@PYG[l+s][MCMC]@PYG[l+s][']@PYG[p][,]@PYG[n][likvar]@PYG[o][=]@PYG[l+m+mf][1e-2]@PYG[p][,]@PYG[n][pool]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][monitor]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][)]
-@PYG[n][F]@PYG[o][.]@PYG[n][plot@_results]@PYG[p][(]@PYG[p][)]
+@PYG[n][F]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][dt]@PYG[p][,]@PYG[l+s][']@PYG[l+s][MCMC]@PYG[l+s][']@PYG[p][,]@PYG[n][likvar]@PYG[o][=]@PYG[l+m+mf][1e-2]@PYG[p][,]@PYG[n][pool]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][monitor]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZrb[]]@PYG[p][)]
+@PYG[c][@#==Uncomment the line below to see plots of the results]
+@PYG[c][@#F.plot@_results()]
 \end{Verbatim}
 
 The code above starts by defining the models parameters and initial conditions, and a function which takes in the parameters runs the model and returns the output.
@@ -167,17 +167,19 @@ The code above starts by defining the models parameters and initial conditions, 
 After that, we Instantiate our fitting Object:
 
 \begin{Verbatim}[commandchars=@\[\]]
-@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][3000]@PYG[p][,]@PYG[l+m+mi][1000]@PYG[p][,]@PYG[n][model]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][,]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][y0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
-                        @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][1000]@PYG[p][)]
+@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][300]@PYG[p][,]@PYG[n][model]@PYG[p][,]@PYG[n][y0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
+            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
 \end{Verbatim}
 
-Here we have to pass a few arguments: the first (\code{K=3000}) is the number of samples we will take from the joint prior distribution of the parameters to run the inference. The second one (\code{L=1000}) is the number to retain if the inference method chosen (see below) in the sampling-importance-resampling (SIR) or approximate Bayes (ABC). then we we have the number of parameters to be analyzed (\code{ntheta=1}), the number of output variables (\code{nphi=3}), the initial condition vector(\code{inits=y0}), the list of parameter names (\code{thetanames = {[}'beta'{]}}), the list of variable names (\code{phinames={[}'S','I','R'{]}}), inference window length (\code{wl=36}), number of juxtaposed windows (\code{nw=1}), verbosity flag (\code{verbose=False}) and finally the number of burnin samples (\code{burnin=1000}), which is only needed for if the inference method chosen is \code{MCMC}.
+Here we have to pass a few arguments: the first (\code{K=300}) is the number of samples we will take from the joint prior distribution of the parameters to run the inference. The second one (\code{model}) is the callable(function) which corresponds to the model you want to fit to data. Then you have the initial condition vector(\code{inits=y0}), the list of parameter names (\code{thetanames = {[}'beta'{]}}), the list of variable names (\code{phinames={[}'S','I','R'{]}}), inference window length (\code{wl=36}), number of juxtaposed windows (\code{nw=1}), verbosity flag (\code{verbose=False}) and finally the number of burnin samples (\code{burnin=1000}), which is only needed for if the inference method chosen is \code{MCMC}.
+
+One should always have \code{verbose=True} on a first fitting run of a model or if the simulations seems to be taking longer than expected. When \code{verbose} is true, printed and graphical is generated regarding the behavior of fitting, which can be useful to fine tune its parameters.
 
 The next line of code also carries a lot of relevant information about the inference: the specification of the prior distributions. By now you must have noticed that not all parameters included in the model need to be included in the analysis. any number of them except for one can be set constant, which is what happens with the parameter \code{tau} in this example:
 
 \begin{Verbatim}[commandchars=@\[\]]
 @PYG[n][F]@PYG[o][.]@PYG[n][set@_priors]@PYG[p][(]@PYG[n][tdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tpars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][1.1]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tlims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][0.5]@PYG[p][,]@PYG[l+m+mf][1.5]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]
-        @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mi][8]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][)]
+    @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mi][8]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][)]
 \end{Verbatim}
 
 here we set the prior distributions for the theta (the model's parameters) and phi (the model's variables). \code{tdists}, \code{tpars} and \code{tlims} are theta's distributions, parameters, and ranges. For example here we use a Normal distribution (\code{st.norm}) for \code{beta}, with mean and standard deviation equal to 1.1 and .2, respectively. we also set the range of \code{beta} to be from 0.5 to 1.5. We do the same for phi.
@@ -187,6 +189,10 @@ The remaining lines just generate some simulated data to fit the model with, run
 \includegraphics[width=15cm]{fit_series.png}
 
 \includegraphics[width=15cm]{fit_par.png}
+
+One important argument in the run call, is the likvar, Which is the initial value for the likelihood variance. Try to increase its value if the acceptance ratio of the markov chain is too llow. Ideal levels for the acceptance ratio should be between 0.3 and 0.5.
+
+The code for the above example can be found in the examples directory of the BIP distribution as ``deterministic.py''
 
 \resetcurrentobjects
 \hypertarget{--doc-sde}{}

@@ -78,15 +78,16 @@ def pred_new_cases(obs,series,weeks,names=[], title='Total new cases per window:
     c = cycle(['b','g','r','c','m','y','k'])
     if 'time' in obs: #setting the xlabel 
         x = date2num([obs['time'][ws*i] for i in range(1, weeks)])
-        sc= 1 if len(series) ==1 else 5
-        W = min(0.5*max(len(x),1.0),0.5)*sc
         ax.xaxis_date()
     else:
-        x = range(weeks)
+        x = arange(1, weeks)
+    sc= 1 if len(series) ==1 else 5
+    W = min(0.5*max(len(x),1.0),0.5)*sc
     for n in names:
         if n in obs:
             co = c.next()
-            ax.plot([date2num(obs['time'][ws])]+x.tolist(), [mean(sum(s[n],axis=1)) for s in series],'%s^'%co, label="Mean pred. %s"%n)
+            print len(x),  len([mean(sum(s[n],axis=1)) for s in series]),  type(x)
+            ax.plot([x[7]]+x.tolist(), [mean(sum(s[n],axis=1)) for s in series],'%s^'%co, label="Mean pred. %s"%n)
             ax.plot(x,[sum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'%s-o'%co, label="obs. Prev")
             ax.boxplot([sum(s[n],axis=1) for s in series] ,positions = x, widths=W,notch=1,vert=1)
     #P.xlabel('windows')
