@@ -83,6 +83,7 @@ class FitModel(object):
         self.full_len =  wl*nw
         self.inits = inits
         self.tf = tf
+        self.ew = 0 #expanding windows?
         self.totpop = sum(inits)
         self.model = model
         self.nphi = len(phinames)
@@ -271,7 +272,7 @@ class FitModel(object):
         pt,series = self.Me.getPosteriors(t=self.tf)
         pp = series[:,-1]
         # TODO: figure out what to do by default with inits
-        if self.nw >1 and self.adjinits:
+        if self.nw >1 and self.adjinits and not self.ew:
             adiff = array([abs(pp[vn]-data[vn][-1]) for vn in data.keys()])
             diff = adiff.sum(axis=0) #sum errors for all oserved variables
             initind = diff.tolist().index(min(diff))
@@ -339,7 +340,7 @@ class FitModel(object):
             con.executemany("insert into "+tstr+" values("+",".join(['?']*nv)+")", row_generator(v))
         con.commit()
         con.close()
-    def run(self, data,method,likvar,pool=False,adjinits=True,dbname='results', monitor=False):
+    def run(self, data,method,likvar,pool=False,adjinits=True,ew=0, dbname='results', monitor=False):
         """
         Fit the model against data
 
@@ -349,9 +350,11 @@ class FitModel(object):
             - `likvar`: Variance of the likelihood function in the SIR and MCMC method
             - `pool`: Pool priors on model's outputs.
             - `adjinits`: whether to adjust inits to data
+            - `ew`: Whether to use expanding windows instead of moving ones.
             - `dbname`: name of the sqlite3 database
             - `monitor`: Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.
         """
+        self.ew = ew
         self.adjinits = adjinits
         self.pool = pool
         if not self.prior_set: return
@@ -370,11 +373,11 @@ class FitModel(object):
             if w>0:
                 rt = (self.nw-w+1)*tel
                 print "==> Remaining time: %s minutes and %s seconds."%(rt//60, rt%60)
-            self.tf=wl
-            self.model.func_globals['tf'] = wl
+            self.tf=(w+1)*wl if ew else wl #setting tf according to window type
+            self.model.func_globals['tf'] = self.tf
             d2 = {}
             for k,v in d.items():#Slicing data to the current window
-                d2[k] = v[w*wl:w*wl+wl]            
+                d2[k] = v[:self.tf] if ew else v[w*wl:w*wl+wl]            
             if w==0 and adjinits:
                 for n in d2.keys():
                     if n not in self.phinames:
