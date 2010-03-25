@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Bayesian-Inference -->
-<!-- Saved: 2010-03-03, 16:49:43 -->
+<!-- Saved: 2010-03-18, 15:22:08 -->
 <!-- Copyright (C) 2010 Flávio Codeço Coelho, fccoelho@gmail.com -->
 <Project version="4.6">
   <Language></Language>
@@ -41,8 +41,6 @@
     <Source>BIP/SDE/gillespie.py</Source>
     <Source>BIP/SDE/example.py</Source>
     <Source>BIP/examples/Bayes/flu_stochastic.py</Source>
-    <Source>BIP/examples/Bayes/flu_deterministic.py</Source>
-    <Source>BIP/examples/Bayes/plotmeld.py</Source>
     <Source>BIP/Bayes/general/bvariables.py</Source>
     <Source>BIP/Bayes/general/__init__.py</Source>
     <Source>BIP/Bayes/conjugate_priors.py.py</Source>
@@ -71,6 +69,11 @@
     <Source>__init__.py</Source>
     <Source>BIP/SDE/cgillespie.pyx</Source>
     <Source>BIP/SDE/cgillespie.c</Source>
+    <Source>BIP/Docs/source/index.rst</Source>
+    <Source>BIP/Docs/source/overview.rst</Source>
+    <Source>BIP/Docs/source/paramest.rst</Source>
+    <Source>BIP/Docs/source/sde.rst</Source>
+    <Source>BIP/examples/Bayes/deterministic.py</Source>
   </Sources>
   <Forms>
   </Forms>
