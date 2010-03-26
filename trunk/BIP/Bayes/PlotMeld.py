@@ -159,7 +159,7 @@ def plot_par_violin(tim,ptlist, priors={}, bp=True):
     sq = sqrt(len(ptlist[0].dtype.names))
     r= floor(sq);c=ceil(sq)
     if len(ptlist[0].dtype.names) == 3:
-        r = 1; c = 3
+        r = 3; c = 1
     if priors:
         if isinstance(tim[0], datetime.date):
             pdate = tim[0]-datetime.timedelta(1) if len(tim)==1 else tim[0]-(tim[1]-tim[0])
@@ -193,7 +193,7 @@ def violin_plot(ax,data,positions,bp=False, prior = False):
     if isinstance(positions[0], datetime.date):
         ax.xaxis_date()
         positions = date2num(positions)
-        sc = 5 if (dist>1 ) else 1
+        sc = 5 if (dist>2 ) else 1
         #print sc
     w = min(0.5*max(dist,1.0),0.5)*sc
     i = 0
