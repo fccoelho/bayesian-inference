@@ -96,10 +96,12 @@ class Metropolis(_Sampler):
         self.meld = meldobj
         self.t = t
         self.burnin = burnin
+        self.nchains = 1 if 'nchains' not in kwargs else kwargs['nchains']
         self.phi = np.recarray((self.samples+self.burnin,t),formats=['f8']*self.meld.nphi, names = self.meld.phi.dtype.names)
         self.scaling_factor = (2.4**2)/self.dimensions
         self.e = 1e-20
-        self.history = []
+        self.history = np.zeros((self.nchains*(samples+self.burnin), self.dimensions))
+        self.seqhist = np.zeros((self.nchains, self.dimensions, samples+self.burnin))
         if kwargs:
             for k, v in kwargs.iteritems():
                 exec('self.%s = %s'%(k, v))
@@ -116,33 +118,46 @@ class Metropolis(_Sampler):
 
     def _propose(self, step=0):
         """
-        Generates proposals
+        Generates proposals.
+        returns two lists
+        
+        :Parameters:
+            - `step`: Position in the markov chain history.
+            
+        :Returns:
+            - `theta`: List of proposed self.dimensional points in parameter space
+            - `prop`: List of self.nchains proposed phis.
         """
-        if step <= 1: 
-            #sample from the priors
-            while 1:
-                theta = [self.parpriors[dist]() for dist in self.parnames]
-                if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
-                    break
-            self.lastcv = None
-        else:
-            #use gaussian proposal
-            if (self.lastcv==None) or (step%10==0): #recalculate covariance matrix only every ten steps
-                cv = self.scaling_factor*st.cov(np.array(self.history))+self.scaling_factor*self.e*np.identity(self.dimensions)
-                self.lastcv = cv
+        thetalist = []
+        proplist = []
+        for c in range(self.nchains):
+            if step <= 1: 
+                #sample from the priors
+                while 1:
+                    theta = [self.parpriors[dist]() for dist in self.parnames]
+                    if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
+                        break
+                self.lastcv = None
             else:
-                cv = self.lastcv
-            while 1:
-                theta = np.random.multivariate_normal(self.history[-1],cv, size=1).tolist()[0]
-                if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
-                    break
-        prop = self.meld.model_as_ra(theta)[:self.t]
-#        if self.t == 1:
-#            prop=[(v,) for v in prop]
+                #use gaussian proposal
+                if (self.lastcv==None) or (step%10==0): #recalculate covariance matrix only every ten steps
+                    cv = self.scaling_factor*st.cov(self.history[:step])+self.scaling_factor*self.e*np.identity(self.dimensions)
+                    self.lastcv = cv
+                else:
+                    cv = self.lastcv
+                while 1:
+                    theta = np.random.multivariate_normal(self.history[step],cv, size=1).tolist()[0]
+                    if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
+                        break
+            thetalist.append(theta)
+        po = Pool()
+        proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+        po.close()
+        po.join()
+        propl = [p[:self.t] for p in proplist]
+        return thetalist,propl
 
-        return theta,prop
-
-    def step(self):
+    def step(self,  nchains=1):
         """
         Does the actual sampling loop.
         """
@@ -154,8 +169,13 @@ class Metropolis(_Sampler):
             #generate proposals
             theta,prop = self._propose(step=j)
             #calculate likelihoods
-            lik = self.meld._output_loglike(prop, self.data, self.likfun, self.likvariance)
-            accepted = self._accept(last_lik, lik) if last_lik else 0
+            po = Pool()
+            lik = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
+            po.close()
+            po.join()
+#            print "lik:" , lik,  last_lik,  j
+            accepted = self._accept(self, last_lik, lik)# have to include self in the call because method is vectorized.
+#            print "acc:", accepted,  theta
             # ABC fit
 #            lik = self._rms_fit(prop, self.data)
 #            accepted = self._accept(last_lik, lik) if last_lik else 0
@@ -163,29 +183,34 @@ class Metropolis(_Sampler):
             if last_lik == None: #on first sample
                 last_lik = lik
                 continue
-            if not accepted:
-                rej +=1 #adjust rejection counter
-                i +=1
-                if rej%100 == 0: 
+            if sum(accepted) < self.nchains:
+                rej += self.nchains-sum(accepted) #adjust rejection counter
+                i += self.nchains
+                if i%100 == 0: 
                     ar = j/(float(j)+rej)
                     self._tune_likvar(ar)
-                    if self.trace_acceptance:
-                        print "-->%s Rejected. Accept. ratio: %s"%(rej,ar)
-                        print j," Accepted. likvar: %s"%self.likvariance
-                continue
-            self.history.append(theta)
-            self.phi[j] = prop[0] if self.t==1 else [tuple(point) for point in prop]
-            ptheta[j] = tuple(theta)
-            liklist.append(lik)
+                if sum(accepted) == 0:
+                    continue
+            # Store accepted values
+            c=0
+            for t,pr,  a in zip(theta, prop, accepted): #Iterates over the results of each chain
+                if a: #if accepted
+                    self.history[j] = t
+                    self.seqhist[c, :, j] = t
+                    self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
+                    ptheta[j] = tuple(t)
+                    liklist.append(lik[c])
+                    j += 1 #update good sample counter 
+                    i+=1
+                c+=1
             #self._tune_likvar(ar)
-            if j%100==0:
+            if i%100==0:
                 if self.trace_acceptance:
                     print "++>%s: Acc. ratio: %s"%(j, ar)
                     self._watch_chain(j)
-                if self.trace_convergence: print "%s: Mean Proposal: %s; STD: %s"%(j, np.array(self.history[-100:]).mean(axis=0),np.array(self.history[-100:]).std(axis=0) )
+                if self.trace_convergence: print "%s: Mean Proposal: %s; STD: %s"%(j, self.history[j-100:j].mean(axis=0),self.history[j-100:j].std(axis=0) )
             last_lik = lik
-            j += 1 #update good sample counter 
-            i+=1
+            
             ar = j/(float(j)+rej)
         self.meld.post_theta = ptheta[self.burnin:]
         self.phi = self.phi[self.burnin:]
@@ -216,19 +241,7 @@ class Metropolis(_Sampler):
                 self.tsig *= -1 #change signal if AR is not improving
         elif improv > 0.01:
             self.tstep *= 0.97 #reduce step if approacching sweet spot
-        
-#        if ar<=.1:
-#            self.likvariance *= 5
-#        elif ar <= .15:
-#            self.likvariance *= 2
-#        elif ar <= .2:
-#            self.likvariance *= 1.2
-#        elif ar >.7:
-#            self.likvariance *= 0.8
-#        elif ar > .8:
-#            self.likvariance *= 0.5
-#        elif ar > .9:
-#            self.likvariance *= 0.2
+ 
     def _rms_fit(self, s1, s2):
         '''
         Calculates a basic fitness calculation between a model-
@@ -262,18 +275,19 @@ class Metropolis(_Sampler):
         if fit ==np.inf:
             sys.exit()
         return fit #mean r-squared
-        
-    def _accept(self,  last_lik,  lik):
+    @np.vectorize
+    def _accept(self, last_lik,  lik):
         """
         Decides whether to accept a proposal
         """
+        if last_lik == None: last_lik = -np.inf
         # liks are logliks
         if lik == -np.inf:#0:
             return 0
         if last_lik >-np.inf:#0:
             alpha = min( np.exp(lik-last_lik), 1)
             #alpha = min(lik-last_lik, 1)
-        elif last_lik == -np.int:#0:
+        elif last_lik == -np.inf:#0:
             alpha = 1
         else:
             return 0
@@ -314,10 +328,10 @@ class Metropolis(_Sampler):
         return smp
 
     def _watch_chain(self, j):
-        if len(self.history)<100:
+        if j <100:
             return
         self.pserver.clearFig()
-        data = np.array(self.history[-100:]).T.tolist()
+        data = self.history[j-100:j].T.tolist()
         self.pserver.plotlines(data,range(j, j+100), self.parnames, "Chain Progress") 
 
     def _add_salt(self,dataset,band):
@@ -340,6 +354,19 @@ class Metropolis(_Sampler):
         d = numpy.concatenate((dataset,stats.uniform(dmin-hb,dmax-dmin+hb).rvs(self.K*.05)))
         return d
 
+
+def model_as_ra(theta, model, phinames):
+    """
+    Does a single run of self.model and returns the results as a record array
+    """
+    theta = list(theta)
+    nphi = len(phinames)
+    r = model(theta)
+    res = np.recarray(r.shape[0],formats=['f8']*nphi, names = phinames)
+    for i, n in enumerate(res.dtype.names):
+        res[n] = r[:, i]
+    return res
+    
 class Dream(_Sampler):
     '''
     DiffeRential Evolution Adaptive Markov chain sampler
