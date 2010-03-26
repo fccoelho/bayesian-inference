@@ -471,12 +471,13 @@ class FitModel(object):
         """
         if self.full_len-(self.wl*(w+1)) == 0:
             return
-        self.model.func_globals['tf'] = self.full_len-(self.wl*(w+1))
+        self.model.func_globals['tf'] = self.full_len if self.ew else self.full_len-(self.wl*(w+1))
+        if self.ew: self.model.func_globals['inits'] = self.finits
         simseries = self.model(cpars)
         simseries = [simseries[:, i].tolist() for i in range(self.nphi) if i in vind]
         snames = [n for n in self.phinames if i in vind]
         self.model.func_globals['tf'] = self.tf
-        xinit = self.wl*w+self.wl
+        xinit = 0 if self.ew else self.wl*w+self.wl
 #        print xinit, xinit+len(simseries[0])
         self.fsp.plotlines(simseries,range(xinit,xinit+len(simseries[0])), snames, "Best fit simulation after window %s"%(w+1))
     
