@@ -962,7 +962,7 @@ class Meld(object):
         ta = True if self.verbose else False
         tc = True if self.verbose else False
         if method == "MH":
-            sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc)
+            sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta)
             sampler.step()
             self.phi = sampler.phi
             #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
@@ -1094,16 +1094,7 @@ class Meld(object):
             print '==> RMS deviation of outputs: %s'%(basicfit(phi, data),)
             return 0
         return 1
-    def model_as_ra(self, theta):
-        """
-        Does a single run of self.model and returns the results as a record array
-        """
-        theta = list(theta)
-        r = self.model(theta)
-        res = recarray(r.shape[0],formats=['f8']*self.nphi, names = self.phi.dtype.names)
-        for i, n in enumerate(res.dtype.names):
-            res[n] = r[:, i]
-        return res
+
         
     def runModel(self,savetemp,t=1, k=None):
         '''
@@ -1198,7 +1189,17 @@ def enumRun(model,theta,k):
     res =model(theta)
     return (res,k)
 
-
+def model_as_ra(theta, model, phinames):
+    """
+    Does a single run of self.model and returns the results as a record array
+    """
+    theta = list(theta)
+    nphi = len(phinames)
+    r = model(theta)
+    res = recarray(r.shape[0],formats=['f8']*nphi, names = phinames)
+    for i, n in enumerate(res.dtype.names):
+        res[n] = r[:, i]
+    return res
 
 def model(r, p0, n=1):
     """
