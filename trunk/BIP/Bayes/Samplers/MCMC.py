@@ -229,7 +229,7 @@ class Metropolis(_Sampler):
                 if self.trace_acceptance:
                     print "++>%s: Acc. ratio: %s"%(j, ar)
                     self._watch_chain(j)
-                if self.trace_convergence: print "%s: Mean Proposal: %s;\nSTD: %s\nLikvar: %s"%(j, self.history[j-100:j].mean(axis=0),self.history[j-100:j].std(axis=0), self.likvariance )
+                if self.trace_convergence: print "%s: Mean Proposal: %s;\nSTD: %s\nLikvar: %s\nLik:%s"%(j, self.history[j-100:j].mean(axis=0),self.history[j-100:j].std(axis=0), self.likvariance, np.mean(liklist[-100:]) )
             last_lik = lik
             last_prop = prop
             last_theta = theta
