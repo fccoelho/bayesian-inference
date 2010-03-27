@@ -61,10 +61,20 @@ class _Sampler(object):
             self._po = None
     def gr_R(self):
         return self._R
-    def gr_convergence(self, sequences, relevantHistoryEnd, relevantHistoryStart):
+    def gr_convergence(self, relevantHistoryEnd, relevantHistoryStart):
         """
+        Gelman-Rubin Convergence
         """
-        pass
+        start = relevantHistoryStart
+        end = relevantHistoryEnd
+        N = end - start
+        sequences = self.seqhist[:,:,start:end]
+        variances  = np.var(sequences,axis = 2)
+        means = np.mean(sequences, axis = 2)
+        withinChainVariances = np.mean(variances, axis = 0)
+        betweenChainVariances = np.var(means, axis = 0) * N
+        varEstimate = (1 - 1.0/N) * withinChainVariances + (1.0/N) * betweenChainVariances
+        self._R = np.sqrt(varEstimate/ withinChainVariances)
 
 #TODO: remove dependency on the meld object
 class Metropolis(_Sampler):
@@ -96,7 +106,7 @@ class Metropolis(_Sampler):
         self.meld = meldobj
         self.t = t
         self.burnin = burnin
-        self.nchains = 1 if 'nchains' not in kwargs else kwargs['nchains']
+        self.nchains = 1 
         self.phi = np.recarray((self.samples+self.burnin,t),formats=['f8']*self.meld.nphi, names = self.meld.phi.dtype.names)
         self.scaling_factor = (2.4**2)/self.dimensions
         self.e = 1e-20
@@ -105,6 +115,7 @@ class Metropolis(_Sampler):
         if kwargs:
             for k, v in kwargs.iteritems():
                 exec('self.%s = %s'%(k, v))
+        self.nchains = 1 
         self.setup_xmlrpc_plotserver()
 
     def setup_xmlrpc_plotserver(self):
@@ -137,16 +148,16 @@ class Metropolis(_Sampler):
                     theta = [self.parpriors[dist]() for dist in self.parnames]
                     if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
                         break
-                self.lastcv = None
+                self.lastcv = np.identity(self.dimensions) #assume no covariance at the beginning
             else:
                 #use gaussian proposal
-                if (self.lastcv==None) or (step%10==0): #recalculate covariance matrix only every ten steps
-                    cv = self.scaling_factor*st.cov(self.history[:step])+self.scaling_factor*self.e*np.identity(self.dimensions)
+                if (self.lastcv==np.identity(self.dimensions)).all() or (step%10==0): #recalculate covariance matrix only every ten steps
+                    cv = self.scaling_factor*st.cov(self.seqhist[c, :, :step-1].T)+self.scaling_factor*self.e*np.identity(self.dimensions) if step>2 else self.lastcv #cannot compute covariance with less the 2 samples
                     self.lastcv = cv
                 else:
                     cv = self.lastcv
                 while 1:
-                    theta = np.random.multivariate_normal(self.history[step],cv, size=1).tolist()[0]
+                    theta = np.random.multivariate_normal(self.seqhist[c, :, step-1],cv, size=1).tolist()[0]
                     if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
                         break
             thetalist.append(theta)
@@ -154,6 +165,7 @@ class Metropolis(_Sampler):
         proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
         po.close()
         po.join()
+        #proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
         propl = [p[:self.t] for p in proplist]
         return thetalist,propl
 
@@ -168,9 +180,12 @@ class Metropolis(_Sampler):
         while j < self.samples+self.burnin:
             #generate proposals
             theta,prop = self._propose(step=j)
+            if j == 0:
+                last_prop = prop
+                last_theta = theta
             #calculate likelihoods
             po = Pool()
-            lik = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
+            lik = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance, po) for p in prop]
             po.close()
             po.join()
 #            print "lik:" , lik,  last_lik,  j
@@ -189,28 +204,35 @@ class Metropolis(_Sampler):
                 if i%100 == 0: 
                     ar = j/(float(j)+rej)
                     self._tune_likvar(ar)
-                if sum(accepted) == 0:
-                    continue
+#                if sum(accepted) == 0:
+#                    continue
             # Store accepted values
             c=0
+#            print "nchains:", self.nchains
             for t,pr,  a in zip(theta, prop, accepted): #Iterates over the results of each chain
-                if a: #if accepted
-                    self.history[j] = t
-                    self.seqhist[c, :, j] = t
-                    self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
-                    ptheta[j] = tuple(t)
-                    liklist.append(lik[c])
-                    j += 1 #update good sample counter 
-                    i+=1
+                #if not accepted repeat last value
+                if not a:
+                    t = last_theta[c]
+                    pr = last_prop[c]
+                self.history[j, :] = t 
+#                print c, j,  theta
+                self.seqhist[c, :, j] = t 
+                self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
+                ptheta[j] = tuple(t)
+                liklist.append(lik[c])
+                if j == self.samples+self.burnin:break
+                j += 1 #update good sample counter 
+                i+=1
                 c+=1
             #self._tune_likvar(ar)
             if i%100==0:
                 if self.trace_acceptance:
                     print "++>%s: Acc. ratio: %s"%(j, ar)
                     self._watch_chain(j)
-                if self.trace_convergence: print "%s: Mean Proposal: %s; STD: %s"%(j, self.history[j-100:j].mean(axis=0),self.history[j-100:j].std(axis=0) )
+                if self.trace_convergence: print "%s: Mean Proposal: %s;\nSTD: %s\nLikvar: %s"%(j, self.history[j-100:j].mean(axis=0),self.history[j-100:j].std(axis=0), self.likvariance )
             last_lik = lik
-            
+            last_prop = prop
+            last_theta = theta
             ar = j/(float(j)+rej)
         self.meld.post_theta = ptheta[self.burnin:]
         self.phi = self.phi[self.burnin:]
@@ -330,9 +352,10 @@ class Metropolis(_Sampler):
     def _watch_chain(self, j):
         if j <100:
             return
+        self.gr_convergence(j, j-100)
         self.pserver.clearFig()
         data = self.history[j-100:j].T.tolist()
-        self.pserver.plotlines(data,range(j, j+100), self.parnames, "Chain Progress") 
+        self.pserver.plotlines(data,range(j, j+100), self.parnames, "Chain Progress. GR Convergence: %s"%self.gr_R()) 
 
     def _add_salt(self,dataset,band):
         """

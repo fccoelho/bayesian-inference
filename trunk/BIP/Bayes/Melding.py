@@ -149,7 +149,7 @@ class FitModel(object):
             oo = False
         assert isinstance(p0,(list,tuple))
         def mse(theta):
-            s1 = self.Me.model_as_ra(theta)
+            s1 = model_as_ra(theta,  self.model,  self.phinames)
             return self._rms_error(s1, data)
         if optimizer == "scipy":
             potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
