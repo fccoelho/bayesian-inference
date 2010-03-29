@@ -261,15 +261,17 @@ class FitModel(object):
                 print 'attempt #',att
                 succ = self.Me.sir(data=data,variance=likvar,pool=self.pool,t=self.tf)
                 att += 1
+            pt,series = self.Me.getPosteriors(t=self.tf)
         elif method == "MCMC":
             while not succ: #run sir Until is able to get a fitd == "mcmc":
                 print 'attempt #',att
                 succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin)
-
+            pt = self.Me.post_theta
+            series = self.Me.post_phi
         elif method == "ABC":
             #TODO: allow passing of fitfun
             self.Me.abcRun(data=data,fitfun=None,pool=self.pool, t=self.tf)
-        pt,series = self.Me.getPosteriors(t=self.tf)
+            pt,series = self.Me.getPosteriors(t=self.tf)
         pp = series[:,-1]
         # TODO: figure out what to do by default with inits
         if self.nw >1 and self.adjinits and not self.ew:
@@ -497,7 +499,7 @@ class FitModel(object):
             self.ser.plotlines(i95.tolist(),None,  ['97.5%'],'Window %s'%(w+1))
             self.ser.plotlines(d2[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
             self.fsp.plotlines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
-        self.hst.plothist(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames)
+        self.hst.plothist(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames, 1)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self._long_term_prediction_plot(initind,cpars,vindices, w)
         self.ser.clearFig()
@@ -996,8 +998,8 @@ class Meld(object):
                 continue#Only calculate liks of series for which we have data
             obs = data[self.q2phi.dtype.names[k]]
             if po != None:# Parallel version
-                lik = [po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in range(t)]
-                lik = sum([l.get() for l in lik])
+                lik = sum([po.apply(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t)])
+                #lik = sum([l.get() for l in lik])
             else:
                 for p in xrange(t): #Loop on time
                     lik += likfun(obs[p],prop[p][k],1./likvar)
