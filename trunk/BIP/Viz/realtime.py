@@ -68,18 +68,28 @@ class RTplot:
             self.plots.append(Gnuplot.PlotItems.Data(x*jt,y*jt,title=names[0],with_=style))
             self.gp.plot(*tuple(self.plots))
         
-    def plotlines(self, data, x=None, names=[],title='',style='lines'):
+    def plotlines(self, data, x=None, names=[],title='',style='lines', multiplot=0):
         '''
-        Create a sinlge/multiple line plot from a numpy array or record array.
+        Create a single/multiple line plot from a numpy array or record array.
         
         :Parameters:
             - `data`: must be a numpy array or a list of lists,or record array, with series as rows
             - `x`: x values for the series: numpy array
             - `names`: is a list of strings to serve as legend labels
+            - `title`: Figure Title.
             - `style`: plot styles from gnuplot: lines, boxes, points, linespoints, etc.
+            - `multiplot`: Whether to make multiple subplots
         '''
-
-        self.gp('set title "%s"'%title)
+        
+        if multiplot:
+            sq = numpy.sqrt(len(data))
+            r= numpy.floor(sq);c=numpy.ceil(sq)
+            if len(data) == 3:
+                r=3;c=1
+            self.gp('set multiplot layout %s,%s title "%s"'%(r, c, title))
+        else:
+            self.gp('set title "%s"'%title)
+        
         if isinstance (data, list):
             data = numpy.array(data)
         if isinstance(data,numpy.core.records.recarray):
@@ -90,11 +100,14 @@ class RTplot:
                 if  x== None:
                     x = numpy.arange(len(row))
                 if names:
-                    self.plots.append(Gnuplot.PlotItems.Data(x, row,title=names[i],with_=style))
+                    self.plots.append(Gnuplot.PlotItems.Data(x, row,title=names[i], with_=style))
                 else:
-                    self.plots.append(Gnuplot.PlotItems.Data(x, row,with_=style))
+                    self.plots.append(Gnuplot.PlotItems.Data(x, row, with_=style))
                 i += 1
-            self.gp.plot(*tuple(self.plots))
+            if not multiplot:
+                self.gp.plot(*tuple(self.plots))
+            else:
+                [self.gp.plot(pl) for pl in self.plots]
         elif len(data.shape) >2:
                 pass
         else:
@@ -102,7 +115,10 @@ class RTplot:
             if x==None:
                 x = numpy.arange(len(data))
             self.plots.append(Gnuplot.PlotItems.Data(x,data,title=names[0],with_=style))
-            self.gp.plot(*tuple(self.plots))
+            if not multiplot:
+                self.gp.plot(*tuple(self.plots))
+            else:
+                [self.gp.plot(pl) for pl in self.plots]
 
     def _linesFromRA(self,data,x, style):
         '''
@@ -123,7 +139,7 @@ class RTplot:
                 self.plots.append(Gnuplot.PlotItems.Data(x, data[n],title=n,with_=style))
         self.gp.plot(*tuple(self.plots))
 
-    def plothist(self,data, title='', names=[]):
+    def plothist(self,data, title='', names=[], multiplot=0):
         '''
         Create a sinlge/multiple Histogram plot from a numpy array or record array.
         
@@ -131,8 +147,16 @@ class RTplot:
             - `data`: must be a numpy array or record array, with series as rows
             - `names`: is a list of strings to serve as legend labels
         '''
+        if multiplot:
+            sq = numpy.sqrt(len(data))
+            r= numpy.floor(sq);c=numpy.ceil(sq)
+            if len(data) == 3:
+                r=3;c=1
+            self.gp('set multiplot layout %s,%s title "%s"'%(r, c, title))
+        else:
+            self.gp('set title "%s"'%title)
         self.gp('set style data boxes')
-        self.gp('set title "%s"'%title)
+        
         if isinstance (data, list):
             data = numpy.array(data)
         if isinstance(data,numpy.core.records.recarray):
@@ -144,14 +168,14 @@ class RTplot:
                 m,bins = numpy.histogram(row,normed=True,bins=50)
                 d = zip(bins[:-1],m)
                 self.plots.append(Gnuplot.PlotItems.Data(d,title=names[n]))
-            self.gp.plot(*tuple(self.plots))
+            [self.gp.plot(pl) for pl in self.plots]
         elif len(data.shape) >2:
             pass
         else:
             m,bins = numpy.histogram(data,normed=True,bins=50)
             d = zip(bins[:-1],m)
             self.plots.append(Gnuplot.PlotItems.Data(d,title=names[0]))
-            self.gp.plot(*tuple(self.plots))
+            [self.gp.plot(pl) for pl in self.plots]
 
     def _histFromRA(self,data):
         '''
@@ -219,7 +243,7 @@ def rpc_plot(port=None):
     returns port if server successfully started or 0
     """
     if port == None:
-        po = 9876
+        po = 10001
         while 1:
             if po not in __ports_used:break
             po += 1
@@ -240,4 +264,5 @@ def rpc_plot(port=None):
 #p.daemon = True
 #p.start()
 if __name__ == "__main__":
-    pass
+    gp = RTplot()
+    gp.plotlines([range(10), range(10)], range(10, 20),['a', 'b'], 'multi', 'lines', 1 )
