@@ -16,6 +16,7 @@ from multiprocessing import Pool,  Process
 from multiprocessing.managers import BaseManager
 import scipy.stats as st
 import sys
+from random import sample
 import xmlrpclib
 from BIP.Viz.realtime import rpc_plot
 
@@ -112,7 +113,7 @@ class Metropolis(_Sampler):
         self.burnin = burnin
         self.nchains = 1 
         self.phi = np.recarray((self.samples+self.burnin,t),formats=['f8']*self.meld.nphi, names = self.meld.phi.dtype.names)
-        self.scaling_factor = (2.4**2)/self.dimensions
+        self.scaling_factor = (2.38**2)/self.dimensions
         self.e = 1e-20
         if kwargs:
             for k, v in kwargs.iteritems():
@@ -133,7 +134,29 @@ class Metropolis(_Sampler):
         while p==0:
             p = rpc_plot()
         self.pserver = xmlrpclib.ServerProxy('http://localhost:%s'%p)
-
+    
+    def _chain_evolution(self, prop,  CR=.5):
+        """
+        Chain evolution as describe in ter Braak's Dream algorithm.
+        """
+        b = np.std(array(prop), axis=0)
+        delta = (self.nchains-1)//2
+        gam = 2.38/np.sqrt(2*delta*self.dimensions)
+        evolved = []
+        for c in range(self.nchains):
+            e = st.uniform(-b, 2*b).rvs()
+            eps = st.normal(0, b).rvs()
+            others = [x for x in prop if x!=prop[c]]
+            dif = np.zeros(self.dimension)
+            for d in range(delta):
+                    d1, d2 = sample(others, 2)
+                    dif+=np.array(d1)-np.array(d2)
+            zi = np.array(prop[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
+            for i in range(len(zi)): #Cross over
+                zi[i] = prop[c][i] if np.random.rand() < 1-CR else zi[i]
+            
+        return evolved
+        
     def _propose(self, step, po=None):
         """
         Generates proposals.
@@ -159,7 +182,7 @@ class Metropolis(_Sampler):
                 self.lastcv = initcov #assume no covariance at the beginning
             else:
                 #use gaussian proposal
-                if step%3==0 and len(self.seqhist[c]) >=3: #recalculate covariance matrix only every ten steps
+                if step%10==0 and len(self.seqhist[c]) >=10: #recalculate covariance matrix only every ten steps
                     cv = self.scaling_factor*st.cov(np.array(self.seqhist[c][-10:]))+self.scaling_factor*self.e*np.identity(self.dimensions)
                     self.lastcv = cv
                 else:
