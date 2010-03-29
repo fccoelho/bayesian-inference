@@ -356,7 +356,8 @@ class Metropolis(_Sampler):
             return
         self.gr_convergence(j, j-100)
         self.pserver.clearFig()
-        data = self.history[:j].T.tolist()
+        thin = j//500 if j//500 !=0 else 1 #history is thinned to show at most 500 points, equally spaced over the entire range
+        data = self.history[:j:thin].T.tolist()
         self.pserver.plotlines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress. GR Convergence: %s"%self.gr_R(),'points' , 1) 
 
     def _add_salt(self,dataset,band):
