@@ -164,8 +164,8 @@ class FitModel(object):
             if not oo:
                 potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
             else: 
-                lb = [l[0] for l in self.tlims] if self.tlims else []
-                ub = [l[1] for l in self.tlims] if self.tlims else []
+                lb = array([l[0] for l in self.tlims]) if self.tlims else array([-numpy.inf]*self.ntheta)
+                ub = array([l[1] for l in self.tlims]) if self.tlims else array([numpy.inf]*self.ntheta)
                 p = openopt.NLP(mse, p0, lb=lb, ub=ub, ftol=tol, iprint=10)
                 p.solve('ralg')
                 potimo = p.xf
