@@ -5,6 +5,7 @@ setup.py
 .ropeproject/objectdb
 BIP/__init__.py
 BIP/__init__.pyc
+BIP/__version__.py
 BIP.egg-info/PKG-INFO
 BIP.egg-info/SOURCES.txt
 BIP.egg-info/dependency_links.txt
