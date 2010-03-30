@@ -69,7 +69,7 @@ The remaining lines just generate some simulated data to fit the model with, run
 
 One important argument in the run call, is the likvar, Which is the initial value for the likelihood variance. Try to increase its value if the acceptance ratio of the markov chain is too llow. Ideal levels for the acceptance ratio should be between 0.3 and 0.5.
 
-The code for the above example can be found in the examples directory of the BIP distribution as "deterministic.py"
+The code for the above example can be found in the examples directory of the BIP distribution as :download:`deterministic.py <../../examples/deterministic.py>`
 
 Stochastic Model Example
 ------------------------------------
@@ -141,4 +141,4 @@ This example fits a stochastic model to simulated data. It uses the :ref:`SDE <S
     #==Uncomment the line below to see plots of the results
     #F.plot_results()
 
-This example can be found in the examples folder of BIP under the name of "flu_stochastic.py".
+This example can be found in the examples folder of BIP under the name of :download:`flu_stochastic.py <../../examples/flu_stochastic.py>`.

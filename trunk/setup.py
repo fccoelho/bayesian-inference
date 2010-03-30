@@ -4,6 +4,7 @@ use_setuptools()
 #from distutils.core import setup
 #from distutils.extension import Extension
 from setuptools import setup, find_packages
+from BIP import __version__
 #try:
 #    from Cython.Distutils import build_ext
 #except:
@@ -12,7 +13,7 @@ from setuptools import setup, find_packages
 #    sys.exit(1)
 
 setup(name='BIP', 
-        version  = '0.3.25', 
+        version  = __version__.version, 
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
