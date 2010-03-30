@@ -103,6 +103,13 @@ class FitModel(object):
         self.Me = Meld(K=self.K,L=self.L,model=self.model,ntheta=self.ntheta,nphi=self.nphi,verbose=self.verbose)
         self.AIC = 0
         self.BIC = 0
+        # To be defined by self.set.priors
+        self.pdists = None
+        self.ppars = None
+        self.plims = None
+        self.tdists = None
+        self.tpars = None
+        self.tlims = None
 
     def _plot_MAP(self,data,pmap):
         """
@@ -157,7 +164,9 @@ class FitModel(object):
             if not oo:
                 potimo = optim.fmin(mse,p0,ftol=tol, disp=verbose)
             else: 
-                p = openopt.NLP(mse, p0, ftol=tol, iprint=10)
+                lb = [l[0] for l in self.tlims] if self.tlims else []
+                ub = [l[1] for l in self.tlims] if self.tlims else []
+                p = openopt.NLP(mse, p0, lb=lb, ub=ub, ftol=tol, iprint=10)
                 p.solve('ralg')
                 potimo = p.xf
         else:#use fmin as fallback method
