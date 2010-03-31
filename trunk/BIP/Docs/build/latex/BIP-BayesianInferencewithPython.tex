@@ -10,7 +10,7 @@
 
 
 \title{BIP - Bayesian Inference with Python Documentation}
-\date{March 30, 2010}
+\date{March 31, 2010}
 \release{0.3.25}
 \author{Flávio Codeço Coelho}
 \newcommand{\sphinxlogo}{\includegraphics{BIP_large.png}\par}
@@ -122,14 +122,32 @@ The Subpackage Bayes also offers a tool for parameter estimation of Deterministi
 
 A growing theme in mathematical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model's parameters and variables into the model, in order to explore the full uncertainty associated with a model.
 
+This framework is inspired on the original Bayesian Melding paper by Poole and Raftery \footnote{
+Poole, D., \& Raftery, A. E. (2000). Inference for Deterministic Simulation Models: The Bayesian Melding Approach. Journal of the American Statistical Association, 95(452), 1244-1255. doi:10.2307/2669764
+}, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC.
+
 Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.
 
 
-\section{Example Usage}
+\section{Single Session Retrospective estimation}
+
+Frequently, we have a complete time series corresponding to one or more state variables of our dynamic model. In such cases it may be interesting to use this information, to estimate the parameter values which maximize the fit of our model to the data. Below are examples of such inference situations.
+
+
+\subsection{Example Usage}
 
 This first example includes a simple ODE (an SIR epidemic model) model which is fitted against simulated data to which noise is added:
 
 \begin{Verbatim}[commandchars=@\[\]]
+@PYG[c][@#-*- coding: utf-8 -*-]
+@PYG[l+s+sd]["""]
+@PYG[l+s+sd][Parameter estimation and series forcasting based on simulated data with moving window.]
+@PYG[l+s+sd][Deterministic model]
+@PYG[l+s+sd]["""]
+@PYG[c][@#]
+@PYG[c][@# Copyright 2009- by Flávio Codeço Coelho]
+@PYG[c][@# License gpl v3]
+@PYG[c][@#]
 @PYG[k+kn][from] @PYG[n+nn][BIP.Bayes.Melding] @PYG[k+kn][import] @PYG[n][FitModel]
 @PYG[k+kn][from] @PYG[n+nn][scipy.integrate] @PYG[k+kn][import] @PYG[n][odeint]
 @PYG[k+kn][import] @PYG[n+nn][scipy.stats] @PYG[k+kn][as] @PYG[n+nn][st]
@@ -149,17 +167,17 @@ This first example includes a simple ODE (an SIR epidemic model) model which is 
                 @PYG[n][tau]@PYG[o][*]@PYG[n][I]@PYG[p][@PYGZrb[]] @PYG[c][@#dR/dt]
     @PYG[n][y] @PYG[o][=] @PYG[n][odeint]@PYG[p][(]@PYG[n][sir]@PYG[p][,]@PYG[n][inits]@PYG[p][,]@PYG[n][np]@PYG[o][.]@PYG[n][arange]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][)]@PYG[c][@#np.arange(t0,tf,step))]
     @PYG[k][return] @PYG[n][y]
-
+    
 @PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][300]@PYG[p][,] @PYG[n][model]@PYG[p][,]@PYG[n][y0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
-            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
+            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
 @PYG[n][F]@PYG[o][.]@PYG[n][set@_priors]@PYG[p][(]@PYG[n][tdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tpars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][1.1]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tlims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][0.5]@PYG[p][,]@PYG[l+m+mf][1.5]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]
     @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mi][8]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][)]
 @PYG[n][d] @PYG[o][=] @PYG[n][model]@PYG[p][(]@PYG[p][@PYGZlb[]]@PYG[l+m+mf][1.0]@PYG[p][@PYGZrb[]]@PYG[p][)] @PYG[c][@#simulate some data]
 @PYG[n][noise] @PYG[o][=] @PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mf][0.01]@PYG[p][)]@PYG[o][.]@PYG[n][rvs]@PYG[p][(]@PYG[l+m+mi][36]@PYG[p][)]
 @PYG[n][dt] @PYG[o][=] @PYG[p][{]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[o][+]@PYG[n][noise]@PYG[p][}] @PYG[c][@# add noise]
-@PYG[n][F]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][dt]@PYG[p][,]@PYG[l+s][']@PYG[l+s][MCMC]@PYG[l+s][']@PYG[p][,]@PYG[n][likvar]@PYG[o][=]@PYG[l+m+mf][1e-2]@PYG[p][,]@PYG[n][pool]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][monitor]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZrb[]]@PYG[p][)]
+@PYG[n][F]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][dt]@PYG[p][,]@PYG[l+s][']@PYG[l+s][MCMC]@PYG[l+s][']@PYG[p][,]@PYG[n][likvar]@PYG[o][=]@PYG[l+m+mf][1e-4]@PYG[p][,]@PYG[n][pool]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][monitor]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZrb[]]@PYG[p][)]
 @PYG[c][@#==Uncomment the line below to see plots of the results]
-@PYG[c][@#F.plot@_results()]
+@PYG[n][F]@PYG[o][.]@PYG[n][plot@_results]@PYG[p][(]@PYG[p][)]
 \end{Verbatim}
 
 The code above starts by defining the models parameters and initial conditions, and a function which takes in the parameters runs the model and returns the output.
@@ -185,21 +203,36 @@ The next line of code also carries a lot of relevant information about the infer
 here we set the prior distributions for the theta (the model's parameters) and phi (the model's variables). \code{tdists}, \code{tpars} and \code{tlims} are theta's distributions, parameters, and ranges. For example here we use a Normal distribution (\code{st.norm}) for \code{beta}, with mean and standard deviation equal to 1.1 and .2, respectively. we also set the range of \code{beta} to be from 0.5 to 1.5. We do the same for phi.
 
 The remaining lines just generate some simulated data to fit the model with, run the inference and plot the results which should include plots like this:
+\begin{figure}[htbp]
+\centering
 
 \includegraphics[width=15cm]{fit_series.png}
+\caption{Series posterior distributions. Colored areas represent 95\% credible intervals.}\end{figure}
+\begin{figure}[htbp]
+\centering
 
 \includegraphics[width=15cm]{fit_par.png}
+\end{figure}
 
 One important argument in the run call, is the likvar, Which is the initial value for the likelihood variance. Try to increase its value if the acceptance ratio of the markov chain is too llow. Ideal levels for the acceptance ratio should be between 0.3 and 0.5.
 
 The code for the above example can be found in the examples directory of the BIP distribution as \textbf{deterministic.py}
 
 
-\section{Stochastic Model Example}
+\subsection{Stochastic Model Example}
 
 This example fits a stochastic model to simulated data. It uses the \hyperlink{sde}{\emph{SDE}} package of BIP:
 
 \begin{Verbatim}[commandchars=@\[\]]
+@PYG[c][@#-*- coding:utf-8 -*-]
+@PYG[l+s+sd]["""]
+@PYG[l+s+sd][Parameter estimation and series forcasting based on simulated data with moving window.]
+@PYG[l+s+sd][Stochastic model]
+@PYG[l+s+sd]["""]
+@PYG[c][@#]
+@PYG[c][@# Copyright 2009- by Flávio Codeço Coelho]
+@PYG[c][@# License gpl v3]
+@PYG[c][@#]
 @PYG[k+kn][from] @PYG[n+nn][BIP.SDE.gillespie] @PYG[k+kn][import] @PYG[n][Model]
 @PYG[k+kn][from] @PYG[n+nn][BIP.Bayes.Melding] @PYG[k+kn][import] @PYG[n][FitModel]
 @PYG[k+kn][import] @PYG[n+nn][numpy] @PYG[k+kn][as] @PYG[n+nn][np]
@@ -208,7 +241,7 @@ This example fits a stochastic model to simulated data. It uses the \hyperlink{s
 @PYG[n][mu] @PYG[o][=] @PYG[l+m+mf][0.0] @PYG[c][@#birth and death rate.FIXED]
 @PYG[n][beta] @PYG[o][=] @PYG[l+m+mf][0.00058] @PYG[c][@#Transmission rate]
 @PYG[n][eta] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][5] @PYG[c][@#infectivity of asymptomatic infections relative to clinical ones. FIXED]
-@PYG[n][epsilon] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][1] @PYG[c][@#latency period]
+@PYG[n][epsilon] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][1] @PYG[c][@#latency period ]
 @PYG[n][alpha] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][2] @PYG[c][@#Probability of developing clinical influenza symptoms]
 @PYG[n][sigma] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][5] @PYG[c][@#reduced risk of re-infection after recovery]
 @PYG[n][tau] @PYG[o][=] @PYG[o][.]@PYG[l+m+mo][01] @PYG[c][@#infectious period. FIXED]
@@ -267,6 +300,21 @@ This example fits a stochastic model to simulated data. It uses the \hyperlink{s
 \end{Verbatim}
 
 This example can be found in the examples folder of BIP under the name of \textbf{flu\_stochastic.py}.
+
+
+\section{Iterative Estimation and Forecast}
+
+In some other types of application, one's data accrue gradually and it may be interesting to use newly available data to improve previously obtained parameter estimations.
+
+Here we envision two types of scenarios: one assuming constant parameters and another where parameter values can actually vary with time. These two scenarios lead to the two fitting strategies depicted on figure
+\begin{figure}[htbp]
+\centering
+
+\includegraphics[width=15cm]{Inference_scenarios2.png}
+\caption{Fitting scenarios: Moving windows and expanding windows.}\end{figure}
+
+
+\section{References}
 
 \resetcurrentobjects
 \hypertarget{--doc-sde}{}
