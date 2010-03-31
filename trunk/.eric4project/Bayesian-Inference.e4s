@@ -2,18 +2,19 @@
 <!DOCTYPE Session SYSTEM "Session-4.3.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-03-29, 18:24:55 -->
+<!-- Saved: 2010-03-31, 12:38:39 -->
 <Session version="4.3">
   <Filenames>
-    <Filename cline="439" cindex="32" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
-    <Filename cline="344" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
+    <Filename cline="201" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="984" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
     <Filename cline="245" cindex="18" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/realtime.py</Filename>
     <Filename cline="121" cindex="33" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
     <Filename cline="100" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/like.py</Filename>
-    <Filename cline="19" cindex="24" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
+    <Filename cline="14" cindex="18" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
     <Filename cline="0" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/lhs.py</Filename>
+    <Filename cline="73" cindex="5" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Docs/source/paramest.rst</Filename>
   </Filenames>
-  <ActiveWindow cline="439" cindex="32">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</ActiveWindow>
+  <ActiveWindow cline="73" cindex="5">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Docs/source/paramest.rst</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>
