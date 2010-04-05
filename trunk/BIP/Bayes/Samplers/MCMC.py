@@ -58,12 +58,14 @@ class _Sampler(object):
     def term_pool(self):
         if self._po == None:
             return
-        if not self_po._state: #Pool needs terminating
+        if not self._po._state: #Pool needs terminating
             self._po.close()
             self._po.join()
             self._po = None
+            
     def gr_R(self):
         return self._R
+        
     def gr_convergence(self, relevantHistoryEnd, relevantHistoryStart):
         """
         Gelman-Rubin Convergence
@@ -80,7 +82,30 @@ class _Sampler(object):
         betweenChainVariances = np.var(means, axis = 0) * N
         varEstimate = (1 - 1.0/N) * withinChainVariances + (1.0/N) * betweenChainVariances
         self._R = np.sqrt(varEstimate/ withinChainVariances)
-        
+    
+    @np.vectorize
+    def _accept(self, last_lik,  lik):
+        """
+        Decides whether to accept a proposal
+        """
+        if last_lik == None: last_lik = -np.inf
+        # liks are logliks
+        if lik == -np.inf:#0:
+            return 0
+        if last_lik >-np.inf:#0:
+            alpha = min( np.exp(lik-last_lik), 1)
+            #alpha = min(lik-last_lik, 1)
+        elif last_lik == -np.inf:#0:
+            alpha = 1
+        else:
+            return 0
+            raise ValueError("Negative likelihood!?!")
+#        print "last_lik, lik, alpha: ",  last_lik, lik, alpha
+        if np.random.random() < alpha:
+            return 1
+        else:
+            return 0
+            
     def _propose(self, step, po=None):
         """
         Generates proposals.
@@ -345,6 +370,7 @@ class Metropolis(_Sampler):
         if fit ==np.inf:
             sys.exit()
         return fit #mean r-squared
+
     @np.vectorize
     def _accept(self, last_lik,  lik):
         """
@@ -467,7 +493,7 @@ class Dream(_Sampler):
         b = np.std(array(prop), axis=0)
         delta = (self.nchains-1)//2
         gam = 2.38/np.sqrt(2*delta*self.dimensions)
-        evolved = []
+        zis = []
         for c in range(self.nchains):
             e = st.uniform(-b, 2*b).rvs()
             eps = st.normal(0, b).rvs()
@@ -479,7 +505,11 @@ class Dream(_Sampler):
             zi = np.array(prop[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
             for i in range(len(zi)): #Cross over
                 zi[i] = prop[c][i] if np.random.rand() < 1-CR else zi[i]
-            
+            zis.append(zi)
+        evolved = []
+        liks = self._get_likelihoods(zis)
+        for z, l, x in zip(zis, liks, prop):
+            evolved.append()
         return evolved
         
     def _get_likelihoods(prop, po = None):
