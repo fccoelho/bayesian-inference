@@ -163,6 +163,9 @@ class Metropolis(_Sampler):
             - `sampmax`: Maximum number of samples drawn.
             - `data`: observed time series on the model's output
             - `t`: length of the observed time series
+            - `parpriors`: Dictionary with frozen distributions objects as values and parnames as keys
+            - `parnames`: List of parameter names
+            - `parlimits`: list of tuples with (min,max) for every parameter.
             - `likfun`: Likelihood function
             - `likvariance`: variance of the Normal likelihood function
             - `burnin`: Number of burnin samples
@@ -225,7 +228,7 @@ class Metropolis(_Sampler):
             if step <= 1 or self.seqhist[c] ==[]: 
                 #sample from the priors
                 while 1:
-                    theta = [self.parpriors[dist]() for dist in self.parnames]
+                    theta = [self.parpriors[par]() for par in self.parnames]
                     if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
                         break
                 self.lastcv = initcov #assume no covariance at the beginning
@@ -469,7 +472,7 @@ class Dream(_Sampler):
     '''
     DiffeRential Evolution Adaptive Markov chain sampler
     '''
-    def __init(self, samples = 1000, sampmax = 20000 , parpriors=[], parnames=[], burnIn = 100, thin = 5, convergenceCriteria = 1.1,  nCR = 3, DEpairs = 1, adaptationRate = .65, eps = 5e-6, mConvergence = False, mAccept = False):
+    def __init__(self, samples = 1000, sampmax = 20000 , parpriors=[], parnames=[], burnIn = 100, thin = 5, convergenceCriteria = 1.1,  nCR = 3, DEpairs = 1, adaptationRate = .65, eps = 5e-6, mConvergence = False, mAccept = False):
         self.samples = samples
         self.sampmax = sampmax
         self.parpriors = parpriors
@@ -478,15 +481,20 @@ class Dream(_Sampler):
         self.maxChainDraws = floor(samples/self.nchains)
         self.nCR = nCR
         self.DEpairs = DEpairs
+        self.burnin = burnin
         #initialize the history arrays   
-        self.combinedHistory = zeros((self.nchains * self.maxChainDraws , self.dimensions))
-        self.sequenceHistories = zeros((self.nchains, self.dimensions, self.maxChainDraws))
+        self.history = np.zeros((self.nchains * self.maxChainDraws , self.dimensions))
+        self.seqhist = dict([(i, [])for i in range(self.nchains)])
+        #self.sequenceHistories = np.zeros((self.nchains, self.dimensions, self.maxChainDraws))
         # initialize the temporary storage vectors
-        self.currentVectors = zeros((nChains, dimensions))
-        self.currentLiks = zeros(nChains)
+        self.currentVectors = np.zeros((nChains, dimensions))
+        self.currentLiks = np.ones(nChains)*-np.inf
         self.scaling_factor = 2.38/np.sqrt(2*Depairs*self.dimensions)
-       
-    def _chain_evolution(self, prop,  CR=.5):
+    def _remove_outlier_chains(self):
+        pass
+    def update_CR_dist(self):
+        pass
+    def _chain_evolution(self, prop, last_lik,  CR=.5):
         """
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
@@ -507,26 +515,112 @@ class Dream(_Sampler):
                 zi[i] = prop[c][i] if np.random.rand() < 1-CR else zi[i]
             zis.append(zi)
         evolved = []
-        liks = self._get_likelihoods(zis)
-        for z, l, x in zip(zis, liks, prop):
-            evolved.append()
-        return evolved
+        zprobs = self._get_post_prob(zis)
+        pps = zeros(self.nchains)
+        accepted = self._accept(self, last_lik, zprobs)#have to pass self because method is vectorized
+        i = 0
+        for z, a, x in zip(zis, accepted, prop):
+            if a:
+                evolved.append(z)
+                pps[i] = zprobs[i]
+            else:
+                evolved.append(x)
+                try:
+                    pps[i] = last_lik[i]
+                except: #when last_lik == None
+                    pps[i] = -np.inf
+            i += 1
+        return evolved,  pps
         
-    def _get_likelihoods(prop, po = None):
+    def _get_post_prob(prop, po = None):
         '''
-        Calculate the likelihoods for each chain
+        Calculates the posterior porobability for the proposal of each chain
         '''
+        pri = 1
+        pris = []
+        for p in prop:
+            for i, x in enumerate(p):
+                try:
+                    pri *= self.parpriors[self.parnames[i]].pdf(x)
+                except AttributeError: #in case distribution is discrete
+                    pri *= self.parpriors[self.parnames[i]].pmf(x)
+            pris.append(pri)
+            
         if po:
             listoliks = [po.apply_async(self.meld._output_loglike, (p, self.data, self.likfun, self.likvariance)) for p in prop]
             listoliks = [l.get() for l in listoliks]
             self.term_pool()
         else:
             listoliks = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
-        return listoliks
+#        Multiply by prior values to obtain posterior probs
+        posts = (array(pris)*array(listoliks)).tolist()
+        return posts
         
     def step(self):
         """
+        Does the actual sampling loop.
         """
+        ptheta = np.recarray(self.samples+self.burnin,formats=['f8']*self.dimensions, names = self.parnames)
+        i=0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
+        last_lik = None
+        liklist = []
+        while j < self.samples+self.burnin:
+            #generate proposals
+            theta,prop = self._propose(j, self.po)
+            # Evolve chains
+            evolved,  lik, = self._chain_evolution(prop, last_lik)
+            # Remove Outlier Chains
+            #Compute GR R
+            #Update last_lik
+            if last_lik == None: #on first sample
+                last_lik = lik
+                continue
+            i +=self.nchains
+            if sum(accepted) < self.nchains:
+                rej += self.nchains-sum(accepted) #adjust rejection counter
+                if i%100 == 0: 
+                    ar = (i-rej)/float(i)
+                    self._tune_likvar(ar)
+                    if self.trace_acceptance:
+                        print "--> %s: Acc. ratio: %s"%(rej, ar)
+            # Store accepted values
+#            print "nchains:", self.nchains
+            for c, t,pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
+                #if not accepted repeat last value
+                if not a:
+                    continue
+                self.history[j, :] = t 
+                self.seqhist[c].append(t)
+                #self.seqhist[c, :, j] = t 
+                try:
+                    self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
+                    ptheta[j] = tuple(t)
+                except:
+                    print j, self.samples+self.burnin
+                liklist.append(lik[c])
+                if j == self.samples+self.burnin:break
+                j += 1 #update accepted sample counter 
+            #print j,  len(self.seqhist[0])
+            if j%100==0 and j>0:
+                if self.trace_acceptance:
+                    print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)
+                    self._watch_chain(j)
+                if self.trace_convergence: print "++> %s: Likvar: %s\nML:%s"%(j, self.likvariance, np.max(liklist) )
+#            print "%s\r"%j
+            last_lik = lik
+            last_prop = prop
+            last_theta = theta
+            ar = (i-rej)/float(i)
+        self.term_pool()
+        self.meld.post_theta = ptheta[self.burnin:]
+        self.meld.post_phi = self.phi[self.burnin:]
+        self.meld.post_theta = ptheta#self._imp_sample(self.meld.L,ptheta,liklist)
+        self.meld.likmax = max(liklist)
+        print "Total steps(i): ",i,"rej:",rej, "j:",j
+        print ">>> Acceptance rate: %s"%ar
+        self.term_pool()
+        self.pserver.close_plot()
+        return 1
         
 if __name__ == "__main__":
     pass
