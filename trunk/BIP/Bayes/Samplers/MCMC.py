@@ -80,6 +80,49 @@ class _Sampler(object):
         betweenChainVariances = np.var(means, axis = 0) * N
         varEstimate = (1 - 1.0/N) * withinChainVariances + (1.0/N) * betweenChainVariances
         self._R = np.sqrt(varEstimate/ withinChainVariances)
+        
+    def _propose(self, step, po=None):
+        """
+        Generates proposals.
+        returns two lists
+        
+        :Parameters:
+            - `step`: Position in the markov chain history.
+            - `po`: Process pool for parallel proposal generation
+            
+        :Returns:
+            - `theta`: List of proposed self.dimensional points in parameter space
+            - `prop`: List of self.nchains proposed phis.
+        """
+        thetalist = []
+        proplist = []
+        initcov = np.identity(self.dimensions)
+        for c in range(self.nchains):
+            if step <= 1 or self.seqhist[c] ==[]: 
+                #sample from the priors
+                while 1:
+                    theta = [self.parpriors[dist]() for dist in self.parnames]
+                    if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
+                        break
+                self.lastcv = initcov #assume no covariance at the beginning
+            else:
+                #use gaussian proposal
+                if step%10==0 and len(self.seqhist[c]) >=10: #recalculate covariance matrix only every ten steps
+                    cv = self.scaling_factor*st.cov(np.array(self.seqhist[c][-10:]))+self.scaling_factor*self.e*np.identity(self.dimensions)
+                    self.lastcv = cv
+                else:
+                    cv = self.lastcv
+                while 1:
+                    theta = np.random.multivariate_normal(self.seqhist[c][-1],cv, size=1).tolist()[0]
+                    if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
+                        break
+            thetalist.append(theta)
+        if po:
+            proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+        else:
+            proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
+        propl = [p[:self.t] for p in proplist]
+        return thetalist,propl
 
 #TODO: remove dependency on the meld object
 class Metropolis(_Sampler):
@@ -135,27 +178,7 @@ class Metropolis(_Sampler):
             p = rpc_plot()
         self.pserver = xmlrpclib.ServerProxy('http://localhost:%s'%p)
     
-    def _chain_evolution(self, prop,  CR=.5):
-        """
-        Chain evolution as describe in ter Braak's Dream algorithm.
-        """
-        b = np.std(array(prop), axis=0)
-        delta = (self.nchains-1)//2
-        gam = 2.38/np.sqrt(2*delta*self.dimensions)
-        evolved = []
-        for c in range(self.nchains):
-            e = st.uniform(-b, 2*b).rvs()
-            eps = st.normal(0, b).rvs()
-            others = [x for x in prop if x!=prop[c]]
-            dif = np.zeros(self.dimension)
-            for d in range(delta):
-                    d1, d2 = sample(others, 2)
-                    dif+=np.array(d1)-np.array(d2)
-            zi = np.array(prop[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
-            for i in range(len(zi)): #Cross over
-                zi[i] = prop[c][i] if np.random.rand() < 1-CR else zi[i]
-            
-        return evolved
+
         
     def _propose(self, step, po=None):
         """
@@ -164,6 +187,7 @@ class Metropolis(_Sampler):
         
         :Parameters:
             - `step`: Position in the markov chain history.
+            - `po`: Process pool for parallel proposal generation
             
         :Returns:
             - `theta`: List of proposed self.dimensional points in parameter space
@@ -207,12 +231,11 @@ class Metropolis(_Sampler):
         i=0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
         last_lik = None
         liklist = []
-        po = Pool()
         while j < self.samples+self.burnin:
             #generate proposals
-            theta,prop = self._propose(j, po)
+            theta,prop = self._propose(j, self.po)
             #calculate likelihoods
-            lik = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance, po) for p in prop]
+            lik = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance, self.po) for p in prop]
 
 #            print "lik:" , lik,  last_lik,  j
             accepted = self._accept(self, last_lik, lik)# have to include self in the call because method is vectorized.
@@ -257,8 +280,7 @@ class Metropolis(_Sampler):
             last_prop = prop
             last_theta = theta
             ar = (i-rej)/float(i)
-        po.close()
-        po.join()
+        self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]
         self.meld.post_theta = ptheta#self._imp_sample(self.meld.L,ptheta,liklist)
@@ -268,6 +290,7 @@ class Metropolis(_Sampler):
         self.term_pool()
         self.pserver.close_plot()
         return 1
+    
     def _tune_likvar(self, ar):
         try:
             self.arhist.append(ar)
@@ -425,45 +448,40 @@ class Dream(_Sampler):
         self.sampmax = sampmax
         self.parpriors = parpriors
         self.parnames = parnames
-        self.nChains = len(parpriors)
-        self.maxChainDraws = floor(samples/self.nChains)
+        self.nchains = len(parpriors)
+        self.maxChainDraws = floor(samples/self.nchains)
         self.nCR = nCR
         self.DEpairs = DEpairs
         #initialize the history arrays   
-        self.combinedHistory = zeros((self.nChains * self.maxChainDraws , self.dimensions))
-        self.sequenceHistories = zeros((self.nChains, self.dimensions, self.maxChainDraws))
+        self.combinedHistory = zeros((self.nchains * self.maxChainDraws , self.dimensions))
+        self.sequenceHistories = zeros((self.nchains, self.dimensions, self.maxChainDraws))
         # initialize the temporary storage vectors
         self.currentVectors = zeros((nChains, dimensions))
         self.currentLiks = zeros(nChains)
         self.scaling_factor = 2.38/np.sqrt(2*Depairs*self.dimensions)
-
-    def _propose(self,  step=0):
-        """
-        Generates proposals
-
-        :Returns:
-            - theta: list of parameters vectors of length `self.dimensions`
-            - prop: list of output arrays of length `self.dimensions`
-        """
-        #Draw a Theta for each chain
-        for i in range(self.nChains):
-            if step == 0:
-                theta = [self.parpriors[dist](self.dimensions) for dist in self.parnames]
-                self.lastcv = None
-            else:
-                #draw from gaussian proposal dist
-                if (self.lastcv==None) or (step%1==0): #recalculate covariance matrix only every ten steps
-                    cv = self.scaling_factor*st.cov(np.array(self.history))+self.scaling_factor*self.e*np.identity(self.dimensions)
-                    self.lastcv = cv
-                else:
-                    cv = self.lastcv
-                while 1:
-                    theta = np.random.multivariate_normal(self.history[-1],cv, size=1).tolist()[0]
-                    if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
-                        break
-        prop = self.meld.model_as_ra(theta)[:self.t]
        
-
+    def _chain_evolution(self, prop,  CR=.5):
+        """
+        Chain evolution as describe in ter Braak's Dream algorithm.
+        """
+        b = np.std(array(prop), axis=0)
+        delta = (self.nchains-1)//2
+        gam = 2.38/np.sqrt(2*delta*self.dimensions)
+        evolved = []
+        for c in range(self.nchains):
+            e = st.uniform(-b, 2*b).rvs()
+            eps = st.normal(0, b).rvs()
+            others = [x for x in prop if x!=prop[c]]
+            dif = np.zeros(self.dimensions)
+            for d in range(delta):
+                    d1, d2 = sample(others, 2)
+                    dif+=np.array(d1)-np.array(d2)
+            zi = np.array(prop[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
+            for i in range(len(zi)): #Cross over
+                zi[i] = prop[c][i] if np.random.rand() < 1-CR else zi[i]
+            
+        return evolved
+        
     def _get_likelihoods(prop, po = None):
         '''
         Calculate the likelihoods for each chain
