@@ -51,7 +51,7 @@ class _Sampler(object):
         if self._po == None:
             self._po = Pool()
         else:
-            if self_po._state:
+            if self._po._state:
                 self._po = Pool() #Pool has been terminated
         return self._po
 
@@ -59,7 +59,7 @@ class _Sampler(object):
         if self._po == None:
             return
         if not self_po._state: #Pool needs terminating
-            self_po.close()
+            self._po.close()
             self._po.join()
             self._po = None
     def gr_R(self):
