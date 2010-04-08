@@ -499,7 +499,7 @@ class Dream(_Sampler):
         self.likvariance = likvariance
         self.burnIn = burnIn
         self.nchains = len(parpriors)
-        self.maxChainDraws = floor(samples/self.nchains)
+        self.maxChainDraws = np.floor(samples/self.nchains)
         self.nCR = nCR
         self.DEpairs = DEpairs
         self.delayRej = 1
