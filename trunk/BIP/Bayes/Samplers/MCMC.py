@@ -31,12 +31,24 @@ class _Sampler(object):
     trace_acceptance = False
     trace_convergence = False
     seqhist = None
+    liklist = []
+    _j=-1
     _R = np.inf #Gelman Rubin Convergence
     def __init__(self,  parpriors=[],  parnames = []):
         self.parpriors = parpriors
         self.parnames = parnames
 
-
+    @property
+    def DIC(self):
+        """
+        Calculates  the deviance information criterion
+        """
+        D = -2*np.array(self.liklist)
+        Dbar = np.nan_to_num(D).mean()
+        meanprop = np.array([self.meld.post_phi[i].mean(axis=0) for i in self.meld.post_phi.dtype.names])
+        pd = Dbar+2*self.meld._output_loglike(meanprop.T, self.data, self.likfun, self.likvariance)
+        DIC = pd +Dbar
+        return DIC
     @property
     def dimensions(self):
         if not self._dimensions:
@@ -46,7 +58,7 @@ class _Sampler(object):
     def po(self):
         '''
         Pool of processes for parallel execution of tasks
-        Remember to call self.po.close() and self.po.join() when done.
+        Remember to call self.term_pool() when done.
         '''
         if self._po == None:
             self._po = Pool()
@@ -62,9 +74,15 @@ class _Sampler(object):
             self._po.close()
             self._po.join()
             self._po = None
-            
-    def gr_R(self):
-        return self._R
+    
+    @property
+    def gr_R(self, end, start):
+        if self._j == end:
+            return self._R
+        else:
+            self.gr_convergence(end, start)
+            self._j = end
+            return self._R
         
     def gr_convergence(self, relevantHistoryEnd, relevantHistoryStart):
         """
@@ -258,7 +276,6 @@ class Metropolis(_Sampler):
         ptheta = np.recarray(self.samples+self.burnin,formats=['f8']*self.dimensions, names = self.parnames)
         i=0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
         last_lik = None
-        liklist = []
         while j < self.samples+self.burnin:
             #generate proposals
             theta,prop = self._propose(j, self.po)
@@ -289,12 +306,9 @@ class Metropolis(_Sampler):
                 self.history[j, :] = t 
                 self.seqhist[c].append(t)
                 #self.seqhist[c, :, j] = t 
-                try:
-                    self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
-                    ptheta[j] = tuple(t)
-                except:
-                    print j, self.samples+self.burnin
-                liklist.append(lik[c])
+                self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
+                ptheta[j] = tuple(t)
+                self.liklist.append(lik[c])
                 if j == self.samples+self.burnin:break
                 j += 1 #update accepted sample counter 
             #print j,  len(self.seqhist[0])
@@ -302,7 +316,7 @@ class Metropolis(_Sampler):
                 if self.trace_acceptance:
                     print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)
                     self._watch_chain(j)
-                if self.trace_convergence: print "++> %s: Likvar: %s\nML:%s"%(j, self.likvariance, np.max(liklist) )
+                if self.trace_convergence: print "++> %s: Likvar: %s\nML:%s"%(j, self.likvariance, np.max(self.liklist) )
 #            print "%s\r"%j
             last_lik = lik
             last_prop = prop
@@ -312,7 +326,8 @@ class Metropolis(_Sampler):
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]
         self.meld.post_theta = ptheta#self._imp_sample(self.meld.L,ptheta,liklist)
-        self.meld.likmax = max(liklist)
+        self.meld.likmax = max(self.liklist)
+        self.meld.DIC = self.DIC
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %s"%ar
         self.term_pool()
@@ -433,7 +448,7 @@ class Metropolis(_Sampler):
         self.pserver.clearFig()
         thin = j//500 if j//500 !=0 else 1 #history is thinned to show at most 500 points, equally spaced over the entire range
         data = self.history[:j:thin].T.tolist()
-        self.pserver.plotlines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress. GR Convergence: %s"%self.gr_R(),'points' , 1) 
+        self.pserver.plotlines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress. GR Convergence: %s"%self._R,'points' , 1) 
 
     def _add_salt(self,dataset,band):
         """
@@ -444,7 +459,6 @@ class Metropolis(_Sampler):
         :Parameters:
             - `dataset`: vector of data
             - `band`: Fraction of range to extend: [0,1[
-
         :Returns:
             Salted dataset.
         """
@@ -472,16 +486,27 @@ class Dream(_Sampler):
     '''
     DiffeRential Evolution Adaptive Markov chain sampler
     '''
-    def __init__(self, samples = 1000, sampmax = 20000 , parpriors=[], parnames=[], burnIn = 100, thin = 5, convergenceCriteria = 1.1,  nCR = 3, DEpairs = 1, adaptationRate = .65, eps = 5e-6, mConvergence = False, mAccept = False):
+    def __init__(self, meldobj, samples, sampmax, data, t , parpriors, parnames, parlimits,likfun, likvariance, burnIn, thin = 5, convergenceCriteria = 1.1,  nCR = 3, DEpairs = 1, adaptationRate = .65, eps = 5e-6, mConvergence = False, mAccept = False, **kwargs):
+        self.meld = meldobj
         self.samples = samples
         self.sampmax = sampmax
+        self.data = data
+        self.t = t
         self.parpriors = parpriors
         self.parnames = parnames
+        self.parlimits = parlimits
+        self.likfun = likfun
+        self.likvariance = likvariance
+        self.burnIn = burnIn
         self.nchains = len(parpriors)
         self.maxChainDraws = floor(samples/self.nchains)
         self.nCR = nCR
         self.DEpairs = DEpairs
-        self.burnin = burnin
+        self.delayRej = 1
+        if kwargs:
+            for k, v in kwargs.iteritems():
+                exec('self.%s = %s'%(k, v))
+        self._R = np.array([2]*self.nchains) #initializing _R
         #initialize the history arrays   
         self.history = np.zeros((self.nchains * self.maxChainDraws , self.dimensions))
         self.seqhist = dict([(i, [])for i in range(self.nchains)])
@@ -492,49 +517,99 @@ class Dream(_Sampler):
         self.scaling_factor = 2.38/np.sqrt(2*Depairs*self.dimensions)
     def _remove_outlier_chains(self):
         pass
-    def update_CR_dist(self):
+        #TODO: Implement this
+    def delayed_rejection(self):
         pass
-    def _chain_evolution(self, prop, last_lik,  CR=.5):
+    def update_CR_dist(self):
+        t = 1
+        Lm = 0 
+        pm =1./self.nCR
+        
+        for i in range(self.nchains):
+            m = np.random.multinomial(1, [pm]*self.nCR).nonzero()[0][0]+1
+            CR = float(m)/self.nCR
+            Lm +=1
+            #TODO: finish implementing this
+    
+    def _prop_initial_theta(self, step):
+        """
+        Generate Theta proposals from priors
+        """
+        thetalist = []
+        initcov = np.identity(self.dimensions)
+        for c in range(self.nchains):
+            #sample from the priors
+            while 1:
+                theta = [self.parpriors[par]() for par in self.parnames]
+                if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
+                    break
+            self.lastcv = initcov #assume no covariance at the beginning
+
+            thetalist.append(theta)
+        return thetalist 
+    
+    def _prop_phi(self, thetalist, po):
+        """
+        Returns proposed Phi derived from theta
+        """
+        if po:
+            proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+        else:
+            proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
+        propl = [p[:self.t] for p in proplist]
+        return propl
+    
+    def _chain_evolution(self, proptheta,  propphi,  pps,  liks):
         """
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
-        b = np.std(array(prop), axis=0)
+        CR = 1./self.nCR
+        b = np.std(array(proptheta), axis=0)
         delta = (self.nchains-1)//2
         gam = 2.38/np.sqrt(2*delta*self.dimensions)
         zis = []
         for c in range(self.nchains):
             e = st.uniform(-b, 2*b).rvs()
             eps = st.normal(0, b).rvs()
-            others = [x for x in prop if x!=prop[c]]
+            others = [x for x in proptheta if x!=proptheta[c]]
             dif = np.zeros(self.dimensions)
             for d in range(delta):
                     d1, d2 = sample(others, 2)
                     dif+=np.array(d1)-np.array(d2)
-            zi = np.array(prop[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
+            zi = np.array(proptheta[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
             for i in range(len(zi)): #Cross over
-                zi[i] = prop[c][i] if np.random.rand() < 1-CR else zi[i]
+                zi[i] = proptheta[c][i] if np.random.rand() < 1-CR else zi[i]
             zis.append(zi)
-        evolved = []
-        zprobs = self._get_post_prob(zis)
-        pps = zeros(self.nchains)
-        accepted = self._accept(self, last_lik, zprobs)#have to pass self because method is vectorized
+        #get the associated Phi's
+        propphi_z = self._prop_phi(zis)
+        evolved = [] #evolved Theta
+        zprobs,  zliks = self._get_post_prob(propphi_z)
+        prop_evo = []
+        pps_evo = zeros(self.nchains) #posterior probabilities
+        accepted = self._accept(self, pps, zprobs)#have to pass self because method is vectorized
+
+        #Store results
         i = 0
-        for z, a, x in zip(zis, accepted, prop):
+        for z, a, x in zip(zis, accepted, proptheta):
             if a:
                 evolved.append(z)
-                pps[i] = zprobs[i]
+                prop_evo.append(propphi_z[i])
+                pps_evo[i] = zprobs[i]
+                self.liklist.append(zliks[i])
             else:
                 evolved.append(x)
+                prop_evo.append(propphi[i])
+                self.liklist.append(liks[i])
                 try:
-                    pps[i] = last_lik[i]
-                except: #when last_lik == None
-                    pps[i] = -np.inf
+                    pps_evo[i] = pps[i]
+                except TypeError: #when pps == None
+                    pps_evo[i] = -np.inf
             i += 1
-        return evolved,  pps
+        return evolved, prop_evo, pps_evo,  accepted
         
     def _get_post_prob(prop, po = None):
         '''
-        Calculates the posterior porobability for the proposal of each chain
+        Calculates the posterior probability for the proposal of each chain
         '''
         pri = 1
         pris = []
@@ -553,27 +628,35 @@ class Dream(_Sampler):
         else:
             listoliks = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
 #        Multiply by prior values to obtain posterior probs
-        posts = (array(pris)*array(listoliks)).tolist()
-        return posts
+#        Actually sum the logs
+        posts = (np.log(array(pris))+array(listoliks)).tolist()
+        return posts, listoliks
         
     def step(self):
         """
         Does the actual sampling loop.
         """
         ptheta = np.recarray(self.samples+self.burnin,formats=['f8']*self.dimensions, names = self.parnames)
-        i=0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
-        last_lik = None
-        liklist = []
-        while j < self.samples+self.burnin:
+        i = 0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
+        last_pps = None
+        while j < self.samples:
             #generate proposals
-            theta,prop = self._propose(j, self.po)
+            if j == 0:
+                theta = self._prop_initial_theta(j)
+                prop = self._prop_phi(theta, self.po)
+                pps,  liks = self._get_post_prob(prop, self.po)
+            else:
+                theta = [self.seqhist[i][-1] for i in range(self.nchains)]
+                prop = self._prop_phi(theta, self.po)
             # Evolve chains
-            evolved,  lik, = self._chain_evolution(prop, last_lik)
-            # Remove Outlier Chains
-            #Compute GR R
+            while sum(self._R >=1.2)<self.nchains:
+                theta, prop,  pps, accepted = self._chain_evolution(theta, prop, pps, liks)
+                # Remove Outlier Chains
+                #Compute GR R
+                self.gr_R(j, -j//2)
             #Update last_lik
-            if last_lik == None: #on first sample
-                last_lik = lik
+            if last_pps == None: #on first sample
+                last_pps = pps
                 continue
             i +=self.nchains
             if sum(accepted) < self.nchains:
@@ -588,16 +671,18 @@ class Dream(_Sampler):
             for c, t,pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
                 #if not accepted repeat last value
                 if not a:
+                    #Add something to the seqhist so that they all have the same length
+                    if self.seqhist[c] == []:
+                        self.seqhist[c].append(t)
+                    else:
+                        self.seqhist[c].append(self.seqhist[c][-1])
                     continue
                 self.history[j, :] = t 
                 self.seqhist[c].append(t)
                 #self.seqhist[c, :, j] = t 
-                try:
-                    self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
-                    ptheta[j] = tuple(t)
-                except:
-                    print j, self.samples+self.burnin
-                liklist.append(lik[c])
+                self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
+                ptheta[j] = tuple(t)
+
                 if j == self.samples+self.burnin:break
                 j += 1 #update accepted sample counter 
             #print j,  len(self.seqhist[0])
@@ -615,7 +700,8 @@ class Dream(_Sampler):
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]
         self.meld.post_theta = ptheta#self._imp_sample(self.meld.L,ptheta,liklist)
-        self.meld.likmax = max(liklist)
+        self.meld.likmax = max(self.liklist)
+        self.meld.DIC = self.DIC
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %s"%ar
         self.term_pool()
