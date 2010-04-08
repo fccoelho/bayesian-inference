@@ -421,8 +421,11 @@ class FitModel(object):
                 self._monitor_plot(series,prior,d2,w,data,vars=monitor)
             
             tel = time()-t0
-        self.Me.AIC = self.AIC/self.nw
-        self.Me.BIC = self.BIC/self.nw
+        self.AIC /=self.nw #averaging
+        self.BIC /=self.nw
+        self.Me.AIC = self.AIC
+        self.Me.BIC = self.BIC
+        self.DIC = self.Me.DIC
         print "time: %s seconds"%(time()-start)
         
         self.done_running = True
@@ -972,11 +975,16 @@ class Meld(object):
         #self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         ta = True if self.verbose else False
         tc = True if self.verbose else False
+        method="dream"
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta)
             sampler.step()
             self.phi = sampler.phi
             #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
+        elif method == 'dream':
+            sampler = MCMC.Dream(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta)
+            sampler.step()
+            self.phi = sampler.phi
         else:
             sys.exit("Invalid MCMC method!\nTry 'MH'.")
         self.done_running = 1
