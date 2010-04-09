@@ -1,8 +1,7 @@
-******************************************
+**************************************
 Parameter Estimation in Dynamic Models
-******************************************
+**************************************
 
-Last updated on: |today|
 
 A growing theme in mathematical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model's parameters and variables into the model, in order to explore the full uncertainty associated with a model.
 
@@ -11,12 +10,12 @@ This framework is inspired on the original Bayesian Melding paper by Poole and R
 Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.
 
 Single Session Retrospective estimation
-=========================
+=======================================
 
 Frequently, we have a complete time series corresponding to one or more state variables of our dynamic model. In such cases it may be interesting to use this information, to estimate the parameter values which maximize the fit of our model to the data. Below are examples of such inference situations.
 
 Example Usage
----------------------
+-------------
 
 This first example includes a simple ODE (an SIR epidemic model) model which is fitted against simulated data to which noise is added:
 
@@ -59,7 +58,7 @@ One important argument in the run call, is the likvar, Which is the initial valu
 The code for the above example can be found in the examples directory of the BIP distribution as :download:`deterministic.py <../../examples/Bayes/deterministic.py>`
 
 Stochastic Model Example
-------------------------------------
+------------------------
 
 This example fits a stochastic model to simulated data. It uses the :ref:`SDE <SDE>` package of BIP:
 
@@ -68,7 +67,7 @@ This example fits a stochastic model to simulated data. It uses the :ref:`SDE <S
 This example can be found in the examples folder of BIP under the name of :download:`flu_stochastic.py <../../examples/Bayes/flu_stochastic.py>`.
 
 Iterative Estimation and Forecast
-=====================
+=================================
 
 In some other types of application, one's data accrue gradually and it may be interesting to use newly available data to improve previously obtained parameter estimations.
 
@@ -80,5 +79,5 @@ Here we envision two types of scenarios: one assuming constant parameters and an
     Fitting scenarios: Moving windows and expanding windows.
 
 References
-=======
+==========
 .. [1] Poole, D., & Raftery, A. E. (2000). Inference for Deterministic Simulation Models: The Bayesian Melding Approach. Journal of the American Statistical Association, 95(452), 1244-1255. doi:10.2307/2669764

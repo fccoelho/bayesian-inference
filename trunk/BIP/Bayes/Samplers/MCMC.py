@@ -522,7 +522,7 @@ class Dream(_Sampler):
         self.maxChainDraws = np.floor(samples/self.nchains)
         #initialize the history arrays
         # History of log posterior probs for all chains
-        self.omega = np.zeros((self.nchains, self.samples+self.burnin))
+        self.omega = np.zeros((self.samples+self.burnin, self.nchains))
         # Combined history of accepted samples
         self.history = np.zeros((self.nchains*(samples+self.burnin), self.dimensions))
         self.seqhist = dict([(i, [])for i in range(self.nchains)])
@@ -533,15 +533,15 @@ class Dream(_Sampler):
         self.scaling_factor = 2.38/np.sqrt(2*DEpairs*self.dimensions)
         self.setup_xmlrpc_plotserver()
         
-    def _remove_outlier_chains(self, step):
+    def _det_outlier_chains(self, step):
         """
+        Determine which chains are outliers
         """
-        means = self.omega[-step//2:step,:];mean(axis=0)
-        q1 = st.scoreatpercentile(self.omega[-step//2:step,:], 25)
-        q3 = st.scoreatpercentile(self.omega[-step//2:step,:], 75)
+        means = self.omega[step//2:step,:].mean(axis=0)
+        q1 = st.scoreatpercentile(self.omega[step//2:step,:], 25)
+        q3 = st.scoreatpercentile(self.omega[step//2:step,:], 75)
         iqr = q3-q1
-        outl = means<2*iqr
-        print outl
+        outl = means<q1-2*iqr
         return outl
         
     def delayed_rejection(self):
@@ -591,7 +591,7 @@ class Dream(_Sampler):
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
         CR = 1./self.nCR
-        b = np.std(np.array(proptheta), axis=0)/2.
+        b = [(l[1]-l[0])/5. for l in self.parlimits]
         delta = (self.nchains-1)//2
         gam = 2.38/np.sqrt(2*delta*self.dimensions)
         zis = []
@@ -612,6 +612,7 @@ class Dream(_Sampler):
         evolved = [] #evolved Theta
         zprobs,  zliks = self._get_post_prob(zis, propphi_z)
         prop_evo = []
+        liks_evo = []
         pps_evo = np.zeros(self.nchains) #posterior probabilities
         accepted = self._accept(self, pps, zprobs)#have to pass self because method is vectorized
 
@@ -622,17 +623,19 @@ class Dream(_Sampler):
                 evolved.append(z)
                 prop_evo.append(propphi_z[i])
                 pps_evo[i] = zprobs[i]
+                liks_evo.append(zliks[i])
                 self.liklist.append(zliks[i])
             else:
                 evolved.append(x)
                 prop_evo.append(propphi[i])
                 self.liklist.append(liks[i])
+                liks_evo.append(liks[i])
                 try:
                     pps_evo[i] = pps[i]
                 except TypeError: #when pps == None
                     pps_evo[i] = -np.inf
             i += 1
-        return evolved, prop_evo, pps_evo,  accepted
+        return evolved, prop_evo, pps_evo, liks_evo, accepted
         
     def _get_post_prob(self, theta, prop, po = None):
         '''
@@ -685,12 +688,10 @@ class Dream(_Sampler):
                 prop = self._prop_phi(theta, self.po)
             # Evolve chains
 #            while sum(self._R <=1.2)<self.nchains:
-            theta, prop,  pps, accepted = self._chain_evolution(theta, prop, pps, liks)
+            theta, prop, pps, liks, accepted = self._chain_evolution(theta, prop, pps, liks)
             #storing log post probs
-            self.omega[j] = pps
-            # Remove Outlier Chains
-            if j < self.burnin:
-                self._remove_outlier_chains()
+#            print self.omega.shape,  pps.shape
+            self.omega[j, :] = pps
             #Compute GR R
             self.gr_R(j, -j//2)
 #            if sum(self._R <=1.2)==self.nchains:
@@ -727,7 +728,16 @@ class Dream(_Sampler):
 
                 if j == self.samples+self.burnin:break
                 j += 1 #update accepted sample counter 
-            #print j,  len(self.seqhist[0])
+            # Remove Outlier Chains
+            if j>10 and j < self.burnin:
+                outl = self._det_outlier_chains(j)
+                imax = pps.tolist().index(pps.max())
+                for n, c in enumerate(outl):
+                    if c:
+                        theta[n] = theta[imax]
+                        prop[n] = prop[imax]
+                        pps [n] = pps[imax]
+                        liks[n] = liks[imax]
             if j%100==0 and j>0:
                 if self.trace_acceptance:
                     print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)

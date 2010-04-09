@@ -7,7 +7,6 @@ Welcome to BIP - Bayesian Inference with Python's documentation!
 ================================================================
 This documentation corresponds to version |version|.
 
-Last updated on: |today|
 
 Contents
 ========
