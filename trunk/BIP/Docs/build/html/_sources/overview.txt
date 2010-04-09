@@ -1,7 +1,6 @@
 Overview
 ========
 
-Last updated on: |today|
 
 The Bip Package is a collection of useful classes for basic Bayesian inference. Currently, its main goal is to be a tool for learning and exploration of Bayesian probabilistic calculations.
 

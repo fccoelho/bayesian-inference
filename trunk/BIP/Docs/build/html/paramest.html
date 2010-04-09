@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.3.25 documentation</title>
+    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.4.0 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '#',
-        VERSION:     '0.3.25',
+        VERSION:     '0.4.0',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="BIP - Bayesian Inference with Python v0.3.25 documentation" href="index.html" />
+    <link rel="top" title="BIP - Bayesian Inference with Python v0.4.0 documentation" href="index.html" />
     <link rel="next" title="Stochastic Differential Equations" href="sde.html" />
     <link rel="prev" title="Overview" href="overview.html" /> 
   </head>
@@ -92,7 +92,6 @@
             
   <div class="section" id="parameter-estimation-in-dynamic-models">
 <h1>Parameter Estimation in Dynamic Models<a class="headerlink" href="#parameter-estimation-in-dynamic-models" title="Permalink to this headline">¶</a></h1>
-<p>Last updated on: 2010-04-09</p>
 <p>A growing theme in mathematical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model&#8217;s parameters and variables into the model, in order to explore the full uncertainty associated with a model.</p>
 <p>This framework is inspired on the original Bayesian Melding paper by Poole and Raftery <a class="footnote-reference" href="#id2" id="id1">[1]</a>, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC.</p>
 <p>Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.</p>
