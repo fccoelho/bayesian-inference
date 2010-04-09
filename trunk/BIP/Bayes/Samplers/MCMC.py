@@ -49,11 +49,13 @@ class _Sampler(object):
         pd = Dbar+2*self.meld._output_loglike(meanprop.T, self.data, self.likfun, self.likvariance)
         DIC = pd +Dbar
         return DIC
+    
     @property
     def dimensions(self):
         if not self._dimensions:
             self._dimensions = len(self.parpriors)
         return self._dimensions
+    
     @property
     def po(self):
         '''
@@ -75,7 +77,6 @@ class _Sampler(object):
             self._po.join()
             self._po = None
     
-    @property
     def gr_R(self, end, start):
         if self._j == end:
             return self._R
@@ -91,6 +92,9 @@ class _Sampler(object):
         start = relevantHistoryStart
         end = relevantHistoryEnd
         N = end - start
+        if N==0:
+            self._R = np.inf*np.ones(self.nchains)
+            return
         N = min(min([len(self.seqhist[c]) for c in range(self.nchains)]), N)
         seq = [self.seqhist[c][-N:] for c in range(self.nchains)]
         sequences = np.array(seq) #this becomes an array (nchains,samples,dimensions)
@@ -123,7 +127,46 @@ class _Sampler(object):
             return 1
         else:
             return 0
-            
+
+    def setup_xmlrpc_plotserver(self):
+        """
+        Sets up the server for real-time chain watch
+        """
+        p=0
+        while p==0:
+            p = rpc_plot()
+        self.pserver = xmlrpclib.ServerProxy('http://localhost:%s'%p)
+
+    def _watch_chain(self, j):
+        if j<100:
+            return
+        self.gr_convergence(j, j-100)
+        self.pserver.clearFig()
+        thin = j//500 if j//500 !=0 else 1 #history is thinned to show at most 500 points, equally spaced over the entire range
+        data = self.history[:j:thin].T.tolist()
+        self.pserver.plotlines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress. GR Convergence: %s"%self._R,'points' , 1)
+
+    def _tune_likvar(self, ar):
+        try:
+            self.arhist.append(ar)
+        except AttributeError:
+            self.tsig = 1
+            self.tstep = .05
+            self.arhist = [ar]
+        dev = (0.35-ar)**2
+        if dev > 0.02:
+            self.likvariance *= 1+self.tsig *(.5*(np.tanh(8*dev-3)+1))
+        else: return #ar at target, don't change anything
+        improv = (0.35-np.mean(self.arhist[-5:-1]))**2 - (0.35-ar)**2
+        if improv < 0:
+            self.tsig *= -1 #change signal if AR is not improving
+            self.tstep = .05 #reset to small steps if changing direction
+        elif improv  > 0 and improv <.01:
+            if np.random.random() <.05: #1 in 20 chance to change direction if no improvements
+                self.tsig *= -1 #change signal if AR is not improving
+        elif improv > 0.01:
+            self.tstep *= 0.97 #reduce step if approacching sweet spot
+
     def _propose(self, step, po=None):
         """
         Generates proposals.
@@ -215,17 +258,6 @@ class Metropolis(_Sampler):
         #self.seqhist = np.zeros((self.nchains, self.dimensions, samples+self.burnin))
         self.setup_xmlrpc_plotserver()
 
-    def setup_xmlrpc_plotserver(self):
-        """
-        Sets up the server for real-time chain watch
-        """
-        p=0
-        while p==0:
-            p = rpc_plot()
-        self.pserver = xmlrpclib.ServerProxy('http://localhost:%s'%p)
-    
-
-        
     def _propose(self, step, po=None):
         """
         Generates proposals.
@@ -246,7 +278,7 @@ class Metropolis(_Sampler):
             if step <= 1 or self.seqhist[c] ==[]: 
                 #sample from the priors
                 while 1:
-                    theta = [self.parpriors[par]() for par in self.parnames]
+                    theta = [self.parpriors[par].rvs() for par in self.parnames]
                     if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
                         break
                 self.lastcv = initcov #assume no covariance at the beginning
@@ -334,26 +366,6 @@ class Metropolis(_Sampler):
         self.pserver.close_plot()
         return 1
     
-    def _tune_likvar(self, ar):
-        try:
-            self.arhist.append(ar)
-        except AttributeError:
-            self.tsig = 1
-            self.tstep = .05
-            self.arhist = [ar]
-        dev = (0.35-ar)**2
-        if dev > 0.02:
-            self.likvariance *= 1+self.tsig *(.5*(np.tanh(8*dev-3)+1))
-        else: return #ar at target, don't change anything
-        improv = (0.35-np.mean(self.arhist[-5:-1]))**2 - (0.35-ar)**2
-        if improv < 0:
-            self.tsig *= -1 #change signal if AR is not improving
-            self.tstep = .05 #reset to small steps if changing direction
-        elif improv  > 0 and improv <.01:
-            if np.random.random() <.05: #1 in 20 chance to change direction if no improvements
-                self.tsig *= -1 #change signal if AR is not improving
-        elif improv > 0.01:
-            self.tstep *= 0.97 #reduce step if approacching sweet spot
  
     def _rms_fit(self, s1, s2):
         '''
@@ -390,7 +402,7 @@ class Metropolis(_Sampler):
         return fit #mean r-squared
 
     @np.vectorize
-    def _accept(self, last_lik,  lik):
+    def _accept(self, last_lik, lik):
         """
         Decides whether to accept a proposal
         """
@@ -486,7 +498,7 @@ class Dream(_Sampler):
     '''
     DiffeRential Evolution Adaptive Markov chain sampler
     '''
-    def __init__(self, meldobj, samples, sampmax, data, t , parpriors, parnames, parlimits,likfun, likvariance, burnIn, thin = 5, convergenceCriteria = 1.1,  nCR = 3, DEpairs = 1, adaptationRate = .65, eps = 5e-6, mConvergence = False, mAccept = False, **kwargs):
+    def __init__(self, meldobj, samples, sampmax, data, t , parpriors, parnames, parlimits,likfun, likvariance, burnin, thin = 5, convergenceCriteria = 1.1,  nCR = 3, DEpairs = 1, adaptationRate = .65, eps = 5e-6, mConvergence = False, mAccept = False, **kwargs):
         self.meld = meldobj
         self.samples = samples
         self.sampmax = sampmax
@@ -497,9 +509,9 @@ class Dream(_Sampler):
         self.parlimits = parlimits
         self.likfun = likfun
         self.likvariance = likvariance
-        self.burnIn = burnIn
+        self.burnin = burnin
         self.nchains = len(parpriors)
-        self.maxChainDraws = np.floor(samples/self.nchains)
+        self.phi = np.recarray((self.samples+self.burnin,t),formats=['f8']*self.meld.nphi, names = self.meld.phi.dtype.names)
         self.nCR = nCR
         self.DEpairs = DEpairs
         self.delayRej = 1
@@ -507,14 +519,18 @@ class Dream(_Sampler):
             for k, v in kwargs.iteritems():
                 exec('self.%s = %s'%(k, v))
         self._R = np.array([2]*self.nchains) #initializing _R
+        self.maxChainDraws = np.floor(samples/self.nchains)
         #initialize the history arrays   
-        self.history = np.zeros((self.nchains * self.maxChainDraws , self.dimensions))
+        # Combined history of accepted samples
+        self.history = np.zeros((self.nchains*(samples+self.burnin), self.dimensions))
         self.seqhist = dict([(i, [])for i in range(self.nchains)])
         #self.sequenceHistories = np.zeros((self.nchains, self.dimensions, self.maxChainDraws))
         # initialize the temporary storage vectors
-        self.currentVectors = np.zeros((nChains, dimensions))
-        self.currentLiks = np.ones(nChains)*-np.inf
-        self.scaling_factor = 2.38/np.sqrt(2*Depairs*self.dimensions)
+        self.currentVectors = np.zeros((self.nchains, self.dimensions))
+        self.currentLiks = np.ones(self.nchains)*-np.inf
+        self.scaling_factor = 2.38/np.sqrt(2*DEpairs*self.dimensions)
+        self.setup_xmlrpc_plotserver()
+        
     def _remove_outlier_chains(self):
         pass
         #TODO: Implement this
@@ -540,7 +556,7 @@ class Dream(_Sampler):
         for c in range(self.nchains):
             #sample from the priors
             while 1:
-                theta = [self.parpriors[par]() for par in self.parnames]
+                theta = [self.parpriors[par].rvs() for par in self.parnames]
                 if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
                     break
             self.lastcv = initcov #assume no covariance at the beginning
@@ -548,7 +564,7 @@ class Dream(_Sampler):
             thetalist.append(theta)
         return thetalist 
     
-    def _prop_phi(self, thetalist, po):
+    def _prop_phi(self, thetalist, po=None):
         """
         Returns proposed Phi derived from theta
         """
@@ -559,19 +575,19 @@ class Dream(_Sampler):
         propl = [p[:self.t] for p in proplist]
         return propl
     
-    def _chain_evolution(self, proptheta,  propphi,  pps,  liks):
+    def _chain_evolution(self, proptheta,  propphi, pps, liks):
         """
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
         CR = 1./self.nCR
-        b = np.std(array(proptheta), axis=0)
+        b = np.std(np.array(proptheta), axis=0)/2.
         delta = (self.nchains-1)//2
         gam = 2.38/np.sqrt(2*delta*self.dimensions)
         zis = []
         for c in range(self.nchains):
-            e = st.uniform(-b, 2*b).rvs()
-            eps = st.normal(0, b).rvs()
-            others = [x for x in proptheta if x!=proptheta[c]]
+            e = [st.uniform(-i, 2*i).rvs() for i in b]
+            eps = [st.norm(0, i).rvs() for i in b]
+            others = [x for i, x in enumerate(proptheta) if i !=c]
             dif = np.zeros(self.dimensions)
             for d in range(delta):
                     d1, d2 = sample(others, 2)
@@ -583,9 +599,9 @@ class Dream(_Sampler):
         #get the associated Phi's
         propphi_z = self._prop_phi(zis)
         evolved = [] #evolved Theta
-        zprobs,  zliks = self._get_post_prob(propphi_z)
+        zprobs,  zliks = self._get_post_prob(zis, propphi_z)
         prop_evo = []
-        pps_evo = zeros(self.nchains) #posterior probabilities
+        pps_evo = np.zeros(self.nchains) #posterior probabilities
         accepted = self._accept(self, pps, zprobs)#have to pass self because method is vectorized
 
         #Store results
@@ -607,20 +623,28 @@ class Dream(_Sampler):
             i += 1
         return evolved, prop_evo, pps_evo,  accepted
         
-    def _get_post_prob(prop, po = None):
+    def _get_post_prob(self, theta, prop, po = None):
         '''
         Calculates the posterior probability for the proposal of each chain
+        
+        :Parameters:
+            - `theta`: list of nchains thetas
+            - `prop`: list of nchains phis
+            - `po`: Pool of processes
+            
+        :Returns:
+            - `posts`: list of posterior probabilities of length self.nchains
+            - `listoliks`: list of log-likelihoods of length self.nchains
         '''
         pri = 1
         pris = []
-        for p in prop:
-            for i, x in enumerate(p):
+        for c in range(self.nchains):#iterate over chains
+            for i in range(len(theta[c])):
                 try:
-                    pri *= self.parpriors[self.parnames[i]].pdf(x)
+                    pri *= self.parpriors[self.parnames[i]].pdf(theta[c][i])
                 except AttributeError: #in case distribution is discrete
-                    pri *= self.parpriors[self.parnames[i]].pmf(x)
+                    pri *= self.parpriors[self.parnames[i]].pmf(theta[c][i])
             pris.append(pri)
-            
         if po:
             listoliks = [po.apply_async(self.meld._output_loglike, (p, self.data, self.likfun, self.likvariance)) for p in prop]
             listoliks = [l.get() for l in listoliks]
@@ -629,7 +653,7 @@ class Dream(_Sampler):
             listoliks = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
 #        Multiply by prior values to obtain posterior probs
 #        Actually sum the logs
-        posts = (np.log(array(pris))+array(listoliks)).tolist()
+        posts = (np.log(np.array(pris))+np.array(listoliks)).tolist()
         return posts, listoliks
         
     def step(self):
@@ -639,21 +663,24 @@ class Dream(_Sampler):
         ptheta = np.recarray(self.samples+self.burnin,formats=['f8']*self.dimensions, names = self.parnames)
         i = 0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
         last_pps = None
-        while j < self.samples:
+        while j < self.samples+self.burnin:
             #generate proposals
             if j == 0:
                 theta = self._prop_initial_theta(j)
                 prop = self._prop_phi(theta, self.po)
-                pps,  liks = self._get_post_prob(prop, self.po)
+                pps,  liks = self._get_post_prob(theta, prop)
             else:
-                theta = [self.seqhist[i][-1] for i in range(self.nchains)]
+                theta = [self.seqhist[c][-1] for c in range(self.nchains)]
                 prop = self._prop_phi(theta, self.po)
             # Evolve chains
-            while sum(self._R >=1.2)<self.nchains:
-                theta, prop,  pps, accepted = self._chain_evolution(theta, prop, pps, liks)
-                # Remove Outlier Chains
-                #Compute GR R
-                self.gr_R(j, -j//2)
+#            while sum(self._R <=1.2)<self.nchains:
+            theta, prop,  pps, accepted = self._chain_evolution(theta, prop, pps, liks)
+            # Remove Outlier Chains
+            #Compute GR R
+            self.gr_R(j, -j//2)
+            if sum(self._R <=1.2)==self.nchains:
+                print "Converged on all dimensions"
+                print j, self._R
             #Update last_lik
             if last_pps == None: #on first sample
                 last_pps = pps
@@ -690,9 +717,9 @@ class Dream(_Sampler):
                 if self.trace_acceptance:
                     print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)
                     self._watch_chain(j)
-                if self.trace_convergence: print "++> %s: Likvar: %s\nML:%s"%(j, self.likvariance, np.max(liklist) )
+                if self.trace_convergence: print "++> %s: Likvar: %s\nML:%s"%(j, self.likvariance, np.max(self.liklist) )
 #            print "%s\r"%j
-            last_lik = lik
+            last_pps = pps
             last_prop = prop
             last_theta = theta
             ar = (i-rej)/float(i)

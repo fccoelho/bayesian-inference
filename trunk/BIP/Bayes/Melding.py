@@ -274,7 +274,13 @@ class FitModel(object):
         elif method == "MCMC":
             while not succ: #run sir Until is able to get a fitd == "mcmc":
                 print 'attempt #',att
-                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin)
+                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin, method = 'MH')
+            pt = self.Me.post_theta
+            series = self.Me.post_phi
+        elif method == "DREAM":
+            while not succ: #run sir Until is able to get a fitd == "mcmc":
+                print 'attempt #',att
+                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin,  method='dream')
             pt = self.Me.post_theta
             series = self.Me.post_phi
         elif method == "ABC":
@@ -660,7 +666,7 @@ class Meld(object):
         else:
             for n,d,p in zip(names,dists,pars):
                 self.q1theta[n] = lhs.lhs(d,p,self.K).ravel()
-                self.theta_dists[n]=d(*p).rvs
+                self.theta_dists[n]=d(*p)
         
     def add_salt(self,dataset,band):
         """
@@ -975,7 +981,6 @@ class Meld(object):
         #self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         ta = True if self.verbose else False
         tc = True if self.verbose else False
-        method="dream"
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta)
             sampler.step()
