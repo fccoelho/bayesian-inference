@@ -5,8 +5,12 @@
 
 Welcome to BIP - Bayesian Inference with Python's documentation!
 ================================================================
+This documentation corresponds to version |version|.
 
-Contents:
+Last updated on: |today|
+
+Contents
+========
 
 .. toctree::
    :maxdepth: 2

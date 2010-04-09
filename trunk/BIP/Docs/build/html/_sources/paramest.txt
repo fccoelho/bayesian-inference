@@ -2,6 +2,8 @@
 Parameter Estimation in Dynamic Models
 ******************************************
 
+Last updated on: |today|
+
 A growing theme in mathematical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model's parameters and variables into the model, in order to explore the full uncertainty associated with a model.
 
 This framework is inspired on the original Bayesian Melding paper by Poole and Raftery [1]_, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC.
