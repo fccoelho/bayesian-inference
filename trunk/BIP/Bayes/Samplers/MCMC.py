@@ -520,7 +520,9 @@ class Dream(_Sampler):
                 exec('self.%s = %s'%(k, v))
         self._R = np.array([2]*self.nchains) #initializing _R
         self.maxChainDraws = np.floor(samples/self.nchains)
-        #initialize the history arrays   
+        #initialize the history arrays
+        # History of log posterior probs for all chains
+        self.omega = np.zeros((self.nchains, self.samples+self.burnin))
         # Combined history of accepted samples
         self.history = np.zeros((self.nchains*(samples+self.burnin), self.dimensions))
         self.seqhist = dict([(i, [])for i in range(self.nchains)])
@@ -531,11 +533,20 @@ class Dream(_Sampler):
         self.scaling_factor = 2.38/np.sqrt(2*DEpairs*self.dimensions)
         self.setup_xmlrpc_plotserver()
         
-    def _remove_outlier_chains(self):
-        pass
-        #TODO: Implement this
+    def _remove_outlier_chains(self, step):
+        """
+        """
+        means = self.omega[-step//2:step,:];mean(axis=0)
+        q1 = st.scoreatpercentile(self.omega[-step//2:step,:], 25)
+        q3 = st.scoreatpercentile(self.omega[-step//2:step,:], 75)
+        iqr = q3-q1
+        outl = means<2*iqr
+        print outl
+        return outl
+        
     def delayed_rejection(self):
         pass
+        #TODO: Implement Delayed Rejection
     def update_CR_dist(self):
         t = 1
         Lm = 0 
@@ -633,7 +644,7 @@ class Dream(_Sampler):
             - `po`: Pool of processes
             
         :Returns:
-            - `posts`: list of posterior probabilities of length self.nchains
+            - `posts`: list of log posterior probabilities of length self.nchains
             - `listoliks`: list of log-likelihoods of length self.nchains
         '''
         pri = 1
@@ -675,12 +686,16 @@ class Dream(_Sampler):
             # Evolve chains
 #            while sum(self._R <=1.2)<self.nchains:
             theta, prop,  pps, accepted = self._chain_evolution(theta, prop, pps, liks)
+            #storing log post probs
+            self.omega[j] = pps
             # Remove Outlier Chains
+            if j < self.burnin:
+                self._remove_outlier_chains()
             #Compute GR R
             self.gr_R(j, -j//2)
-            if sum(self._R <=1.2)==self.nchains:
-                print "Converged on all dimensions"
-                print j, self._R
+#            if sum(self._R <=1.2)==self.nchains:
+#                print "Converged on all dimensions"
+#                print j, self._R
             #Update last_lik
             if last_pps == None: #on first sample
                 last_pps = pps
