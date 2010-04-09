@@ -722,9 +722,11 @@ class Dream(_Sampler):
                     continue
                 self.history[j, :] = t 
                 self.seqhist[c].append(t)
-                #self.seqhist[c, :, j] = t 
-                self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
-                ptheta[j] = tuple(t)
+                try:
+                    self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
+                    ptheta[j] = tuple(t)
+                except IndexError:
+                    print "index error",  j,  self.phi.shape
 
                 if j == self.samples+self.burnin:break
                 j += 1 #update accepted sample counter 
