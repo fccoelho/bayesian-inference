@@ -32,6 +32,7 @@ class _Sampler(object):
     trace_convergence = False
     seqhist = None
     liklist = []
+    e = 1e-20 #very small number used in the proposal covariance function calculation
     _j=-1
     _R = np.inf #Gelman Rubin Convergence
     def __init__(self,  parpriors=[],  parnames = []):
@@ -49,13 +50,13 @@ class _Sampler(object):
         pd = Dbar+2*self.meld._output_loglike(meanprop.T, self.data, self.likfun, self.likvariance)
         DIC = pd +Dbar
         return DIC
-    
+
     @property
     def dimensions(self):
         if not self._dimensions:
             self._dimensions = len(self.parpriors)
         return self._dimensions
-    
+
     @property
     def po(self):
         '''
@@ -76,7 +77,7 @@ class _Sampler(object):
             self._po.close()
             self._po.join()
             self._po = None
-    
+
     def gr_R(self, end, start):
         if self._j == end:
             return self._R
@@ -84,7 +85,7 @@ class _Sampler(object):
             self.gr_convergence(end, start)
             self._j = end
             return self._R
-        
+
     def gr_convergence(self, relevantHistoryEnd, relevantHistoryStart):
         """
         Gelman-Rubin Convergence
@@ -104,7 +105,7 @@ class _Sampler(object):
         betweenChainVariances = np.var(means, axis = 0) * N
         varEstimate = (1 - 1.0/N) * withinChainVariances + (1.0/N) * betweenChainVariances
         self._R = np.sqrt(varEstimate/ withinChainVariances)
-    
+
     @np.vectorize
     def _accept(self, last_lik,  lik):
         """
@@ -171,11 +172,11 @@ class _Sampler(object):
         """
         Generates proposals.
         returns two lists
-        
+
         :Parameters:
             - `step`: Position in the markov chain history.
             - `po`: Process pool for parallel proposal generation
-            
+
         :Returns:
             - `theta`: List of proposed self.dimensional points in parameter space
             - `prop`: List of self.nchains proposed phis.
@@ -262,11 +263,11 @@ class Metropolis(_Sampler):
         """
         Generates proposals.
         returns two lists
-        
+
         :Parameters:
             - `step`: Position in the markov chain history.
             - `po`: Process pool for parallel proposal generation
-            
+
         :Returns:
             - `theta`: List of proposed self.dimensional points in parameter space
             - `prop`: List of self.nchains proposed phis.
@@ -365,8 +366,8 @@ class Metropolis(_Sampler):
         self.term_pool()
         self.pserver.close_plot()
         return 1
-    
- 
+
+
     def _rms_fit(self, s1, s2):
         '''
         Calculates a basic fitness calculation between a model-
@@ -379,7 +380,7 @@ class Metropolis(_Sampler):
         :Types:
             - `s1`: Record array or list.
             - `s2`: Dictionary or list
-        
+
         s1 and s2 can also be both lists of lists or lists of arrays of the same length.
 
         :Return:
@@ -493,7 +494,7 @@ def model_as_ra(theta, model, phinames):
     for i, n in enumerate(res.dtype.names):
         res[n] = r[:, i]
     return res
-    
+
 class Dream(_Sampler):
     '''
     DiffeRential Evolution Adaptive Markov chain sampler
@@ -532,7 +533,7 @@ class Dream(_Sampler):
         self.currentLiks = np.ones(self.nchains)*-np.inf
         self.scaling_factor = 2.38/np.sqrt(2*DEpairs*self.dimensions)
         self.setup_xmlrpc_plotserver()
-        
+
     def _det_outlier_chains(self, step):
         """
         Determine which chains are outliers
@@ -543,21 +544,63 @@ class Dream(_Sampler):
         iqr = q3-q1
         outl = means<q1-2*iqr
         return outl
-        
-    def delayed_rejection(self):
-        pass
-        #TODO: Implement Delayed Rejection
+
+    def delayed_rejection(self, xi, zi, pxi, zprob):
+        """
+        Generates a second proposal based on rejected proposal xi
+        """
+        k=1./3 #Deflation factor for the second proposal
+        cv = self.scaling_factor*st.cov(xi)+self.scaling_factor*self.e*np.identity(self.dimensions)
+        while 1:
+            zdr = np.random.multivariate_normal(xi,k*cv, size=1).tolist()[0]
+            if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(zdr)]) == self.dimensions:
+                break
+
+        propphi_zdr = self._prop_phi([zdr])
+#        print propphi_zdr, zdr
+        zdrprob,  zdrlik = self._get_post_prob([zdr],propphi_zdr)
+        alpha2 = min(zdrprob[0]*(1-self._alpha1(self,zdrprob[0],zprob))/pxi*(1-self._alpha1(self, pxi, zprob)), 1)
+        acc = 0;lik = 0;pr = 0; prop = 0
+        if np.random.random()< alpha2:
+            xi = zdr
+            acc = 1
+            liks = zdrlik
+            pr = zdrprob[0]
+            prop = propphi_zdr
+        return xi, acc, lik, pr, prop
+
+    @np.vectorize
+    def _alpha1(self, p1, p2):
+        """
+        Returns the Metropolis acceptance probability:
+        alpha1(p1,p1) = min(1,p1/p2) if p2 >-np.inf else 1
+
+        :Parameters:
+            - `p1`: log probability
+            - `p2`: log probability
+        """
+        if p2 == None: p2 = -np.inf
+        # ps are log probabilities
+        if p2 >-np.inf:#np.exp(p2)>0
+            alpha = min( np.exp(p1-p2), 1)
+        elif p2 == -np.inf:#np.exp(p2)==0
+            alpha = 1
+        else:
+            print "proposal's logP: ", p2
+            alpha = 0
+        return alpha
+
     def update_CR_dist(self):
         t = 1
         Lm = 0 
         pm =1./self.nCR
-        
+
         for i in range(self.nchains):
             m = np.random.multinomial(1, [pm]*self.nCR).nonzero()[0][0]+1
             CR = float(m)/self.nCR
             Lm +=1
             #TODO: finish implementing this
-    
+
     def _prop_initial_theta(self, step):
         """
         Generate Theta proposals from priors
@@ -574,7 +617,7 @@ class Dream(_Sampler):
 
             thetalist.append(theta)
         return thetalist 
-    
+
     def _prop_phi(self, thetalist, po=None):
         """
         Returns proposed Phi derived from theta
@@ -585,7 +628,7 @@ class Dream(_Sampler):
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
         propl = [p[:self.t] for p in proplist]
         return propl
-    
+
     def _chain_evolution(self, proptheta,  propphi, pps, liks):
         """
         Chain evolution as describe in ter Braak's Dream algorithm.
@@ -596,63 +639,68 @@ class Dream(_Sampler):
         gam = 2.38/np.sqrt(2*delta*self.dimensions)
         zis = []
         for c in range(self.nchains):
-            e = [st.uniform(-i, 2*i).rvs() for i in b]
-            eps = [st.norm(0, i).rvs() for i in b]
-            others = [x for i, x in enumerate(proptheta) if i !=c]
-            dif = np.zeros(self.dimensions)
-            for d in range(delta):
-                    d1, d2 = sample(others, 2)
-                    dif+=np.array(d1)-np.array(d2)
-            zi = np.array(proptheta[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
+            while 1: #check limits
+                e = [st.uniform(-i, 2*i).rvs() for i in b]
+                eps = [st.norm(0, i).rvs() for i in b]
+                others = [x for i, x in enumerate(proptheta) if i !=c]
+                dif = np.zeros(self.dimensions)
+                for d in range(delta):
+                        d1, d2 = sample(others, 2)
+                        dif+=np.array(d1)-np.array(d2)
+                zi = np.array(proptheta[c])+(np.ones(self.dimensions)+e)*gam*dif+eps
+                if sum ([int(np.greater(t, self.parlimits[i][0]) and np.less(t, self.parlimits[i][1])) for i, t in enumerate(zi)]) == self.dimensions:
+                    break
             for i in range(len(zi)): #Cross over
                 zi[i] = proptheta[c][i] if np.random.rand() < 1-CR else zi[i]
             zis.append(zi)
         #get the associated Phi's
-        propphi_z = self._prop_phi(zis)
-        evolved = [] #evolved Theta
+        propphi_z = self._prop_phi(zis, self.po)
         zprobs,  zliks = self._get_post_prob(zis, propphi_z)
-        prop_evo = []
-        liks_evo = []
+        
+        evolved = [0]*len(proptheta) #evolved Theta
+        prop_evo = [0]*len(proptheta)
+        liks_evo = [0]*len(proptheta)
         pps_evo = np.zeros(self.nchains) #posterior probabilities
         accepted = self._accept(self, pps, zprobs)#have to pass self because method is vectorized
-
-        #Store results
+        # Do Delayed rejection with the chains that got rejected
+        # and store results.
         i = 0
         for z, a, x in zip(zis, accepted, proptheta):
             if a:
-                evolved.append(z)
-                prop_evo.append(propphi_z[i])
+                evolved[i] = z
+                prop_evo[i] = propphi_z[i]
                 pps_evo[i] = zprobs[i]
-                liks_evo.append(zliks[i])
+                liks_evo[i] = zliks[i]
                 self.liklist.append(zliks[i])
             else:
-                evolved.append(x)
-                prop_evo.append(propphi[i])
-                self.liklist.append(liks[i])
-                liks_evo.append(liks[i])
+                th2,acc,lk,pr,prop = self.delayed_rejection(x,z,pps[i],zprobs[i])
+                evolved[i] = th2
+                prop_evo[i] = prop if acc else propphi[i]
+                liks_evo[i] = lk if acc else liks[i]
+                self.liklist.append(liks_evo[i])
                 try:
-                    pps_evo[i] = pps[i]
+                    pps_evo[i] = pr if acc else pps[i]
                 except TypeError: #when pps == None
                     pps_evo[i] = -np.inf
             i += 1
         return evolved, prop_evo, pps_evo, liks_evo, accepted
-        
+
     def _get_post_prob(self, theta, prop, po = None):
         '''
         Calculates the posterior probability for the proposal of each chain
-        
+
         :Parameters:
             - `theta`: list of nchains thetas
             - `prop`: list of nchains phis
             - `po`: Pool of processes
-            
+
         :Returns:
             - `posts`: list of log posterior probabilities of length self.nchains
             - `listoliks`: list of log-likelihoods of length self.nchains
         '''
         pri = 1
         pris = []
-        for c in range(self.nchains):#iterate over chains
+        for c in range(len(theta)):#iterate over chains
             for i in range(len(theta[c])):
                 try:
                     pri *= self.parpriors[self.parnames[i]].pdf(theta[c][i])
@@ -669,7 +717,7 @@ class Dream(_Sampler):
 #        Actually sum the logs
         posts = (np.log(np.array(pris))+np.array(listoliks)).tolist()
         return posts, listoliks
-        
+
     def step(self):
         """
         Does the actual sampling loop.
@@ -761,6 +809,6 @@ class Dream(_Sampler):
         self.term_pool()
         self.pserver.close_plot()
         return 1
-        
+
 if __name__ == "__main__":
     pass
