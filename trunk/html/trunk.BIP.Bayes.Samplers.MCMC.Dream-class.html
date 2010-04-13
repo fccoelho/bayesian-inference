@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>trunk.BIP.Bayes.Samplers.MCMC.Dream</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="trunk.BIP-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;trunk ::
+        <a href="trunk.BIP-module.html">Package&nbsp;BIP</a> ::
+        <a href="trunk.BIP.Bayes-module.html">Package&nbsp;Bayes</a> ::
+        <a href="trunk.BIP.Bayes.Samplers-module.html">Package&nbsp;Samplers</a> ::
+        <a href="trunk.BIP.Bayes.Samplers.MCMC-module.html">Module&nbsp;MCMC</a> ::
+        Class&nbsp;Dream
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Dream</h1><p class="nomargin-top"><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+    
+         |    
+  <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a> --+
+             |
+            <strong class="uidshort">Dream</strong>
+</pre>
+
+<hr />
+DiffeRential Evolution Adaptive Markov chain sampler
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init"></a><span class="summary-sig-name">__init</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">samples</span>=<span class="summary-sig-default">1000</span>,
+        <span class="summary-sig-arg">sampmax</span>=<span class="summary-sig-default">20000</span>,
+        <span class="summary-sig-arg">parpriors</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">parnames</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">burnIn</span>=<span class="summary-sig-default">100</span>,
+        <span class="summary-sig-arg">thin</span>=<span class="summary-sig-default">5</span>,
+        <span class="summary-sig-arg">convergenceCriteria</span>=<span class="summary-sig-default">1.1</span>,
+        <span class="summary-sig-arg">nCR</span>=<span class="summary-sig-default">3</span>,
+        <span class="summary-sig-arg">DEpairs</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">adaptationRate</span>=<span class="summary-sig-default">.65</span>,
+        <span class="summary-sig-arg">eps</span>=<span class="summary-sig-default">5e-6</span>,
+        <span class="summary-sig-arg">mConvergence</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">mAccept</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.__init">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Dream-class.html#_propose" class="summary-sig-name" onclick="show_private();">_propose</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">step</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Generates proposals</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._propose">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_likelihoods"></a><span class="summary-sig-name">_get_likelihoods</span>(<span class="summary-sig-arg">prop</span>,
+        <span class="summary-sig-arg">po</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Calculate the likelihoods for each chain</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._get_likelihoods">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step"></a><span class="summary-sig-name">step</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.step">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#__init__">__init__</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions">dimensions</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_R">gr_R</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_convergence">gr_convergence</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#po">po</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#term_pool">term_pool</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_acceptance">trace_acceptance</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_convergence">trace_convergence</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b> (private):
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_R" onclick="show_private();">_R</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_dimensions" onclick="show_private();">_dimensions</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_po" onclick="show_private();">_po</a></code>
+      </p></div>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="_propose"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_propose</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">step</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._propose">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generates proposals
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd><ul class="rst-simple">
+<li>theta: list of parameters vectors of length <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions" class="link">self.dimensions</a></li>
+<li>prop: list of output arrays of length <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions" class="link">self.dimensions</a></li>
+</ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="trunk.BIP-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
