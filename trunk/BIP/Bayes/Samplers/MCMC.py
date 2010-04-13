@@ -665,8 +665,8 @@ class Dream(_Sampler):
         # Do Delayed rejection with the chains that got rejected
         # and store results.
         i = 0
-        for z, a, x in zip(zis, accepted, proptheta):
-            if a:
+        for z, x in zip(zis, proptheta):
+            if accepted[i]:
                 evolved[i] = z
                 prop_evo[i] = propphi_z[i]
                 pps_evo[i] = zprobs[i]
@@ -674,6 +674,7 @@ class Dream(_Sampler):
                 self.liklist.append(zliks[i])
             else:
                 th2,acc,lk,pr,prop = self.delayed_rejection(x,z,pps[i],zprobs[i])
+                if acc: accepted[i] = 1
                 evolved[i] = th2
                 prop_evo[i] = prop if acc else propphi[i]
                 liks_evo[i] = lk if acc else liks[i]
