@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
 <!-- eric4 tasks file for project Bayesian-Inference -->
-<!-- Saved: 2010-04-13, 14:40:01 -->
+<!-- Saved: 2010-04-13, 16:41:22 -->
 <Tasks version="4.2">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
@@ -24,7 +24,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: allow passing of fitfun</Summary>
     <Description></Description>
-    <Created>2010-04-13, 11:52:06</Created>
+    <Created>2010-04-13, 14:57:41</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>287</Linenumber>
@@ -33,7 +33,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out what to do by default with inits</Summary>
     <Description></Description>
-    <Created>2010-04-13, 11:52:06</Created>
+    <Created>2010-04-13, 14:57:41</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>291</Linenumber>
@@ -42,7 +42,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out how to balance the total pop</Summary>
     <Description></Description>
-    <Created>2010-04-13, 11:52:06</Created>
+    <Created>2010-04-13, 14:57:41</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>404</Linenumber>
@@ -51,7 +51,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Write tests for this</Summary>
     <Description></Description>
-    <Created>2010-04-13, 11:52:06</Created>
+    <Created>2010-04-13, 14:57:41</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>443</Linenumber>
@@ -60,7 +60,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out what to do with higher dimensional data</Summary>
     <Description></Description>
-    <Created>2010-04-13, 11:52:07</Created>
+    <Created>2010-04-13, 14:57:41</Created>
     <Resource>
       <Filename>BIP/Viz/realtime.py</Filename>
       <Linenumber>137</Linenumber>
@@ -69,7 +69,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: add support to correlation restricted multivariate samples</Summary>
     <Description></Description>
-    <Created>2010-04-13, 11:52:07</Created>
+    <Created>2010-04-13, 14:57:42</Created>
     <Resource>
       <Filename>BIP/Bayes/lhs.py</Filename>
       <Linenumber>29</Linenumber>
@@ -78,7 +78,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Extend lhsFromSample to allow multivariate correlated sampling</Summary>
     <Description></Description>
-    <Created>2010-04-13, 11:52:07</Created>
+    <Created>2010-04-13, 14:57:42</Created>
     <Resource>
       <Filename>BIP/Bayes/lhs.py</Filename>
       <Linenumber>165</Linenumber>
@@ -87,7 +87,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
     <Description></Description>
-    <Created>2010-04-13, 14:33:52</Created>
+    <Created>2010-04-13, 16:00:14</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>214</Linenumber>
@@ -96,7 +96,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: finish implementing this</Summary>
     <Description></Description>
-    <Created>2010-04-13, 14:33:52</Created>
+    <Created>2010-04-13, 16:00:14</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>602</Linenumber>
