@@ -7,9 +7,9 @@ import pylab as P
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from multiprocessing import Process
 
-# Create server
-#server = SimpleXMLRPCServer(("localhost", 9876),logRequests=False, allow_none=True)
-#server.register_introspection_functions()
+Gnuplot.GnuplotOpts.prefer_inline_data = 1
+Gnuplot.GnuplotOpts.prefer_fifo_data = 0
+
 
 __ports_used = []
 
