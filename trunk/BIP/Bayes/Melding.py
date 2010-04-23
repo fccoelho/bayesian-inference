@@ -23,6 +23,7 @@ import cPickle as CP
 import sqlite3
 import glob
 import like
+import pdb
 import pylab as P
 import xmlrpclib
 from scipy.stats.kde import gaussian_kde
@@ -200,14 +201,16 @@ class FitModel(object):
                 if k not in s1.dtype.names:
                     continue
                 ls1 = len(s1[k]) #handles the cases where data is slightly longer that simulated series.
-#                print k, len(s1[k]), len(s2[k])
-                e = sum((s1[k]-s2[k][:ls1])**2./s2[k][:ls1]**2)
+#                print s2[k]
+                e = sqrt(mean((s1[k]-s2[k][:ls1])**2))
+#                e = sum((s1[k]-s2[k][:ls1])**2./s2[k][:ls1]**2)
                 err.append(e) 
         elif isinstance(s1, list):
             assert isinstance(s2, list) and len(s1) ==len(s2)
             s1 = array(s1)
             s2 = array(s2)
-            err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
+            err = [sqrt(mean((s-t)**2)) for s, t in zip(s1, s2)]
+            #err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
         rmsd = nan_to_num(mean(err))
         return rmsd
         
