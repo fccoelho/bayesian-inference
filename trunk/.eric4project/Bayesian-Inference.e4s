@@ -2,19 +2,20 @@
 <!DOCTYPE Session SYSTEM "Session-4.3.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-04-08, 17:02:25 -->
+<!-- Saved: 2010-04-18, 10:19:17 -->
 <Session version="4.3">
   <Filenames>
-    <Filename cline="674" cindex="28" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
-    <Filename cline="662" cindex="41" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
-    <Filename cline="245" cindex="18" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/realtime.py</Filename>
-    <Filename cline="121" cindex="33" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
+    <Filename cline="649" cindex="75" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="217" cindex="11" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
+    <Filename cline="98" cindex="28" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/realtime.py</Filename>
+    <Filename cline="86" cindex="20" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
     <Filename cline="100" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/like.py</Filename>
-    <Filename cline="14" cindex="18" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
     <Filename cline="0" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/lhs.py</Filename>
-    <Filename cline="11" cindex="25" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Docs/source/paramest.rst</Filename>
+    <Filename cline="4" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Docs/source/paramest.rst</Filename>
+    <Filename cline="8" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Docs/source/index.rst</Filename>
+    <Filename cline="0" cindex="0" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
   </Filenames>
-  <ActiveWindow cline="674" cindex="28">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</ActiveWindow>
+  <ActiveWindow cline="649" cindex="75">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>
