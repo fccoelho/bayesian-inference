@@ -3,7 +3,7 @@
 """
 Module implementing MCMC samplers 
 
-    - Metropolis: Standard random Walk Metropolis Hastings sampler
+    - Metropolis: Adaptive Metropolis Hastings sampler
     - Dream: DiffeRential Evolution Adaptive Markov chain sampler
 """
 
@@ -760,7 +760,7 @@ class Dream(_Sampler):
                 rej += self.nchains-sum(accepted) #adjust rejection counter
                 if i%100 == 0: 
                     ar = (i-rej)/float(i)
-                    self._tune_likvar(ar)
+                    #self._tune_likvar(ar)
                     if self.trace_acceptance:
                         print "--> %s: Acc. ratio: %s"%(rej, ar)
             # Store accepted values
