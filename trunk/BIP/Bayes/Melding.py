@@ -30,7 +30,7 @@ from scipy.stats.kde import gaussian_kde
 from scipy.linalg import LinAlgError
 from scipy import stats,  optimize as optim
 import numpy
-from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var,sqrt,floor
+from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var,sqrt,floor,  nan,  inf,  isnan
 from time import time
 from numpy.random import normal, randint,  random, seed
 import PlotMeld as PM
@@ -1023,11 +1023,12 @@ class Meld(object):
                 continue#Only calculate liks of series for which we have data
             obs = data[self.q2phi.dtype.names[k]]
             if po != None:# Parallel version
-                lik = sum([po.apply(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t)])
+                lik = sum([po.apply(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])])
                 #lik = sum([l.get() for l in lik])
             else:
                 for p in xrange(t): #Loop on time
-                    lik += likfun(obs[p],prop[p][k],1./likvar)
+                    if not isnan(obs[p]): #nan == missing data
+                        lik += likfun(obs[p],prop[p][k],1./likvar)
         return lik
     def sir(self, data={}, t=1,variance=0.1, pool=False,savetemp=False):
         """
