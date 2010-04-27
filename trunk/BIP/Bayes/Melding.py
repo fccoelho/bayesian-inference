@@ -209,7 +209,9 @@ class FitModel(object):
             assert isinstance(s2, list) and len(s1) ==len(s2)
             s1 = array(s1)
             s2 = array(s2)
-            err = [sqrt(mean((s-t)**2)) for s, t in zip(s1, s2)]
+            #Removind missing data
+            filtered = [(i, j) for i, j in zip(s1, s2) if not isnan(j)]
+            err = sqrt(mean([(s-t)**2 for s, t in filtered ]))
             #err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
         rmsd = nan_to_num(mean(err))
         return rmsd

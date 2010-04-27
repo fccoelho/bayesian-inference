@@ -1,0 +1,36 @@
+\relax 
+\ifx\hyper@anchor\@undefined
+\global \let \oldcontentsline\contentsline
+\gdef \contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global \let \oldnewlabel\newlabel
+\gdef \newlabel#1#2{\newlabelxx{#1}#2}
+\gdef \newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\let \contentsline\oldcontentsline
+\let \newlabel\oldnewlabel}
+\else
+\global \let \hyper@last\relax 
+\fi
+
+\select@language{english}
+\@writefile{toc}{\select@language{english}}
+\@writefile{lof}{\select@language{english}}
+\@writefile{lot}{\select@language{english}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}Overview}{3}{chapter.1}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Parameter Estimation in Dynamic Models}{5}{chapter.2}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Single Session Retrospective estimation}{5}{section.2.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}Example Usage}{5}{subsection.2.1.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Series posterior distributions. Colored areas represent 95\% credible intervals.}}{7}{figure.2.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}Stochastic Model Example}{8}{subsection.2.1.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Iterative Estimation and Forecast}{9}{section.2.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}References}{9}{section.2.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces Fitting scenarios: Moving windows and expanding windows.}}{10}{figure.2.2}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Stochastic Differential Equations}{11}{chapter.3}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Indices and tables}{13}{chapter.4}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}

@@ -1,7 +1,9 @@
 import unittest
 from BIP.Bayes import Melding
 from numpy.testing import *
-import scipy.stats as st
+import scipy.stats as stfrom nose.tools import assert_equal
+from nose import SkipTest
+
 
 class TestFitModel(unittest.TestCase):
     def test___init__(self):
@@ -81,6 +83,21 @@ class TestFitModel(unittest.TestCase):
         self.fit_model.set_priors(tdists, tpars, tlims, pdists, ppars, plims)
         # self.assertEqual(expected, fit_model.set_priors(tdists, tpars, tlims, pdists, ppars, plims))
         assert True # TODO: implement your test here
+
+    def TestAIC_from_RSS(self):
+        # fit_model = FitModel(K, model, inits, tf, thetanames, phinames, wl, nw, verbose, burnin)
+        # assert_equal(expected, fit_model.AIC_from_RSS())
+        raise SkipTest # TODO: implement your test here
+
+    def test_optimize(self):
+        # fit_model = FitModel(K, model, inits, tf, thetanames, phinames, wl, nw, verbose, burnin)
+        # assert_equal(expected, fit_model.optimize(data, p0, optimizer, tol, verbose, plot))
+        raise SkipTest # TODO: implement your test here
+
+    def test_prior_sample(self):
+        # fit_model = FitModel(K, model, inits, tf, thetanames, phinames, wl, nw, verbose, burnin)
+        # assert_equal(expected, fit_model.prior_sample())
+        raise SkipTest # TODO: implement your test here
 
 class TestMeld(unittest.TestCase):
     def test___init__(self):
@@ -192,6 +209,11 @@ class TestMhTest(unittest.TestCase):
     def test_mh_test(self):
         # self.assertEqual(expected, mh_test())
         assert False # TODO: implement your test here
+
+class TestBasicfit:
+    def test_basicfit(self):
+        # assert_equal(expected, basicfit(s1, s2))
+        raise SkipTest # TODO: implement your test here
 
 if __name__ == '__main__':
     unittest.main()
