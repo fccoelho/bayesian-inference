@@ -80,7 +80,7 @@ class FitModel(object):
         except AssertionError:
            sys.exit("Window Length cannot be larger that Length of the simulation(tf)" )
         self.K = K
-        self.L = .1*K if K>2000 else 200
+        self.L = .1*K if K>2000 else K
         self.finits = inits #first initial values
         self.ftf = tf
         self.full_len =  wl*nw if wl !=None else tf
@@ -489,9 +489,9 @@ class FitModel(object):
         """
         Sets up realtime plotting of inference
         """
-        self.hst = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(), allow_none=1)#RTplot() #theta histograms
-        self.fsp = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(), allow_none=1)#RTplot()#full data and simulated series
-        self.ser = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(), allow_none=1)#RTplot()# phi time series
+        self.hst = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot() #theta histograms
+        self.fsp = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot()#full data and simulated series
+        self.ser = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot()# phi time series
 
     def _get95_bands(self,series,vname):
         i5 = array([stats.scoreatpercentile(t,2.5) for t in series[vname].T])
@@ -511,7 +511,7 @@ class FitModel(object):
         self.model.func_globals['tf'] = self.tf
         xinit = 0 if self.ew else self.wl*w+self.wl
 #        print xinit, xinit+len(simseries[0])
-        self.fsp.plotlines(simseries,range(xinit,xinit+len(simseries[0])), snames, "Best fit simulation after window %s"%(w+1))
+        self.fsp.lines(simseries,range(xinit,xinit+len(simseries[0])), snames, "Best fit simulation after window %s"%(w+1))
     
     def _monitor_plot(self, series, prior, d2,w,data, vars):
         """
@@ -524,12 +524,12 @@ class FitModel(object):
             if n not in d2:
                 continue
             i5,i95 = self._get95_bands(series,n)
-            self.ser.plotlines(series[n][initind].tolist(), None,  ["Best run's %s"%n], 'Window %s'%(w+1))
-            self.ser.plotlines(i5.tolist(),None, ['2.5%'], 'Window %s'%(w+1))
-            self.ser.plotlines(i95.tolist(),None,  ['97.5%'],'Window %s'%(w+1))
-            self.ser.plotlines(d2[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
-            self.fsp.plotlines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
-        self.hst.plothist(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames, 1)
+            self.ser.lines(series[n][initind].tolist(), None,  ["Best run's %s"%n], 'Window %s'%(w+1))
+            self.ser.lines(i5.tolist(),None, ['2.5%'], 'Window %s'%(w+1))
+            self.ser.lines(i95.tolist(),None,  ['97.5%'],'Window %s'%(w+1))
+            self.ser.lines(d2[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
+            self.fsp.lines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
+        self.hst.histogram(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames, 1)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self._long_term_prediction_plot(initind,cpars,vindices, w)
         self.ser.clearFig()

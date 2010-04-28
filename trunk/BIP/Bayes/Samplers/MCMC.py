@@ -17,12 +17,29 @@ from numpy.random import random,  multivariate_normal,  multinomial,  rand
 from multiprocessing import Pool,  Process
 from multiprocessing.managers import BaseManager
 import scipy.stats as st
-from scipy.stats import cov,  uniform, norm
+from scipy.stats import cov,  uniform, norm, scoreatpercentile
 import sys
 from random import sample
 import xmlrpclib
 #from BIP.Viz.realtime import rpc_plot
 from liveplots.xmlrpcserver import rpc_plot
+import time
+
+def timeit(method):
+    """
+    decorator to time methods
+    """
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+
+        print '%r  %2.2f sec' % \
+              (method.__name__ , te-ts)
+        return result
+
+    return timed
+
 
 
 class _Sampler(object): 
@@ -115,7 +132,7 @@ class _Sampler(object):
         """
         Decides whether to accept a proposal
         """
-        if last_lik == None: last_lik = -np.inf
+        if last_lik == None: last_lik = -inf
         # liks are logliks
         if lik == -inf:#0:
             return 0
@@ -551,23 +568,25 @@ class Dream(_Sampler):
         Determine which chains are outliers
         """
         means = self.omega[step//2:step,:].mean(axis=0)
-        q1 = st.scoreatpercentile(self.omega[step//2:step,:], 25)
-        q3 = st.scoreatpercentile(self.omega[step//2:step,:], 75)
+        q1 = scoreatpercentile(self.omega[step//2:step,:], 25)
+        q3 = scoreatpercentile(self.omega[step//2:step,:], 75)
         iqr = q3-q1
         outl = means<q1-2*iqr
         return outl
-
+#    @timeit
     def delayed_rejection(self, xi, zi, pxi, zprob):
         """
         Generates a second proposal based on rejected proposal xi
         """
-        k=1./3 #Deflation factor for the second proposal
+        k=.001 #Deflation factor for the second proposal
         cv = self.scaling_factor*cov(xi)+self.scaling_factor*self.e*identity(self.dimensions)
+        o=0
         while 1:
             zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
-            if sum ([int(greater(t, self.parlimits[i][0]) and less(t, self.parlimits[i][1])) for i, t in enumerate(zdr)]) == self.dimensions:
+            if sum ([int(t>= self.parlimits[i][0] and t <= self.parlimits[i][1]) for i, t in enumerate(zdr)]) == self.dimensions:
                 break
-
+            o+=1
+#        if o>10: print "Warning: DR: %s off"%o
         propphi_zdr = self._prop_phi([zdr])
 #        print propphi_zdr, zdr
         zdrprob,  zdrlik = self._get_post_prob([zdr],propphi_zdr)
@@ -601,6 +620,7 @@ class Dream(_Sampler):
             print "proposal's logP: ", p2
             alpha = 0
         return alpha
+        
 
     def update_CR_dist(self):
         t = 1
@@ -629,29 +649,29 @@ class Dream(_Sampler):
 
             thetalist.append(theta)
         return thetalist 
-
+#    @timeit
     def _prop_phi(self, thetalist, po=None):
         """
         Returns proposed Phi derived from theta
         """
         if po:
-            proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+            proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names))[:self.t] for t in thetalist]
         else:
-            proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
-        propl = [p[:self.t] for p in proplist]
-        return propl
-
+            proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names)[:self.t] for t in thetalist]
+#        propl = [p[:self.t] for p in proplist]
+        return proplist
+    @timeit
     def _chain_evolution(self, proptheta,  propphi, pps, liks):
         """
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
         CR = 1./self.nCR
-        b = [(l[1]-l[0])/30. for l in self.parlimits]
+        b = [(l[1]-l[0])/1000. for l in self.parlimits]
         delta = (self.nchains-1)//2
         gam = 2.38/sqrt(2*delta*self.dimensions)
         zis = []
-        o = 0
         for c in xrange(self.nchains):
+            o = 0
             while 1: #check limits
                 e = [uniform(-i, 2*i).rvs() for i in b]
                 eps = [norm(0, i).rvs() for i in b]
@@ -664,7 +684,7 @@ class Dream(_Sampler):
                 if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(zi)]) == self.dimensions:
                     break
                 o+=1
-            if o>30: print o,"off"
+#            if o>10: print o,"off"
             for i in xrange(len(zi)): #Cross over
                 zi[i] = proptheta[c][i] if rand() < 1-CR else zi[i]
             zis.append(zi)
@@ -702,7 +722,7 @@ class Dream(_Sampler):
                     pps_evo[i] = -inf
             i += 1
         return evolved, prop_evo, pps_evo, liks_evo, accepted
-
+#    @timeit
     def _get_post_prob(self, theta, prop, po = None):
         '''
         Calculates the posterior probability for the proposal of each chain
@@ -718,19 +738,19 @@ class Dream(_Sampler):
         '''
         pri = 1
         pris = []
-        for c in range(len(theta)):#iterate over chains
-            for i in range(len(theta[c])):
+        for c in xrange(len(theta)):#iterate over chains
+            for i in xrange(len(theta[c])):
                 try:
                     pri *= self.parpriors[self.parnames[i]].pdf(theta[c][i])
                 except AttributeError: #in case distribution is discrete
                     pri *= self.parpriors[self.parnames[i]].pmf(theta[c][i])
             pris.append(pri)
         if po:
-            listoliks = [po.apply_async(self.meld._output_loglike, (p, self.data, self.likfun, self.likvariance)) for p in prop]
-            listoliks = [l.get() for l in listoliks]
+            listoliks = [po.apply(self.meld._output_loglike, (p, self.data, self.likfun, self.likvariance)) for p in prop]
+#            listoliks = [l.get() for l in listoliks]
             self.term_pool()
         else:
-            listoliks = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance, self.po) for p in prop]
+            listoliks = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
 #        Multiply by prior values to obtain posterior probs
 #        Actually sum the logs
         posts = (log(array(pris))+array(listoliks)).tolist()
