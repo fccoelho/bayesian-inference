@@ -561,7 +561,7 @@ class Dream(_Sampler):
         """
         Generates a second proposal based on rejected proposal xi
         """
-        k=1./5 #Deflation factor for the second proposal
+        k=1./3 #Deflation factor for the second proposal
         cv = self.scaling_factor*cov(xi)+self.scaling_factor*self.e*identity(self.dimensions)
         while 1:
             zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
@@ -646,12 +646,12 @@ class Dream(_Sampler):
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
         CR = 1./self.nCR
-        b = [(l[1]-l[0])/3. for l in self.parlimits]
+        b = [(l[1]-l[0])/30. for l in self.parlimits]
         delta = (self.nchains-1)//2
         gam = 2.38/sqrt(2*delta*self.dimensions)
         zis = []
         o = 0
-        for c in range(self.nchains):
+        for c in xrange(self.nchains):
             while 1: #check limits
                 e = [uniform(-i, 2*i).rvs() for i in b]
                 eps = [norm(0, i).rvs() for i in b]
@@ -664,8 +664,8 @@ class Dream(_Sampler):
                 if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(zi)]) == self.dimensions:
                     break
                 o+=1
-#            print o,"off"
-            for i in range(len(zi)): #Cross over
+            if o>30: print o,"off"
+            for i in xrange(len(zi)): #Cross over
                 zi[i] = proptheta[c][i] if rand() < 1-CR else zi[i]
             zis.append(zi)
         #get the associated Phi's
@@ -778,7 +778,7 @@ class Dream(_Sampler):
                     ar = (i-rej)/float(i)
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        print "--> %s: Acc. ratio: %s"%(rej, ar)
+                        print "--> %s rejected. Acc. ratio: %s"%(rej, ar)
             # Store accepted values
 #            print "nchains:", self.nchains
             for c, t,pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
@@ -814,7 +814,7 @@ class Dream(_Sampler):
                 if self.trace_acceptance:
                     print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)
                     self._watch_chain(j)
-                if self.trace_convergence: print "++> %s: Likvar: %s\nML:%s"%(j, self.likvariance, np.max(self.liklist) )
+                if self.trace_convergence: print "++> Likvar: %s\nBest run Likelihood:%s"%(self.likvariance, np.max(self.liklist) )
 #            print "%s\r"%j
             last_pps = pps
             #last_liks = last_liks
