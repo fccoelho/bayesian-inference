@@ -27,6 +27,7 @@ import pdb
 import pylab as P
 import xmlrpclib
 from scipy.stats.kde import gaussian_kde
+from scipy.stats import nanmean,  nanmedian,  nanstd
 from scipy.linalg import LinAlgError
 from scipy import stats,  optimize as optim
 import numpy
@@ -36,7 +37,8 @@ from numpy.random import normal, randint,  random, seed
 import PlotMeld as PM
 from BIP.Bayes.Samplers import MCMC
 try:
-    from BIP.Viz.realtime import RTplot,  rpc_plot
+    from BIP.Viz.realtime import RTplot
+    from liveplots.xmlrpcserver import rpc_plot
     Viz=True
 except:
     Viz=False
@@ -81,7 +83,7 @@ class FitModel(object):
         self.L = .1*K if K>2000 else 200
         self.finits = inits #first initial values
         self.ftf = tf
-        self.full_len =  wl*nw
+        self.full_len =  wl*nw if wl !=None else tf
         self.inits = inits
         self.tf = tf
         self.ew = 0 #expanding windows?
@@ -125,11 +127,12 @@ class FitModel(object):
         self.model.func_globals['inits'] = self.finits; self.model.func_globals['tf'] = self.full_len
         simseries = self.model(list(pmap))
         self.model.func_globals['inits'] = self.inits; self.model.func_globals['tf'] = self.tf
-        if 'time' in data:data.pop('time')
+        if 'time' in data:
+            data.pop('time')
         for n,d in data.items():
-            p.plotlines(d,style='points', names=['Obs. %s'%n])
+            p.plotlines(nan_to_num(d).tolist(),range(len(d)),['Obs. %s'%n], '','points', 0)
             v=self.phinames.index(n)
-            p.plotlines(data=simseries.T[v], names=data.keys(), title="Simulation with MAP parameters %s=%s"%(self.thetanames,pmap))
+            p.plotlines(simseries.T[v].tolist(),range(len(d)), data.keys(), "Simulation with MAP parameters %s=%s"%(self.thetanames,pmap))
 
     def AIC_from_RSS(self,):
         """
@@ -202,16 +205,20 @@ class FitModel(object):
                     continue
                 ls1 = len(s1[k]) #handles the cases where data is slightly longer that simulated series.
 #                print s2[k]
-                e = sqrt(mean((s1[k]-s2[k][:ls1])**2))
-#                e = sum((s1[k]-s2[k][:ls1])**2./s2[k][:ls1]**2)
+#                try:
+                dif = s1[k]-s2[k][:ls1].astype(float)
+#                pdb.set_trace()
+                dif[isnan(dif)] = 0
+                e = sqrt(mean(dif**2))
+#                except TypeError:
+#                    print s1[k], s2[k]
+
                 err.append(e) 
         elif isinstance(s1, list):
             assert isinstance(s2, list) and len(s1) ==len(s2)
-            s1 = array(s1)
-            s2 = array(s2)
-            #Removind missing data
-            filtered = [(i, j) for i, j in zip(s1, s2) if not isnan(j)]
-            err = sqrt(mean([(s-t)**2 for s, t in filtered ]))
+            s1 = array(s1).astype(float)
+            s2 = array(s2).astype(float)
+            err = [sqrt(nanmean((s-t)**2)) for s, t in zip(s1, s2) ]
             #err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
         rmsd = nan_to_num(mean(err))
         return rmsd
