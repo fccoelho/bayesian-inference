@@ -536,7 +536,7 @@ class FitModel(object):
         self.hst.clearFig()
         self.fsp.clearFig()
     
-    def plot_results(self, names=[],  dbname="results"):
+    def plot_results(self, names=[],  dbname="results", savefigs=0):
         """
         Plot the final results of the inference
         """
@@ -555,6 +555,8 @@ class FitModel(object):
         priors = self.prior_sample()
         PM.plot_par_violin(tim[self.wl-1::self.wl],pt, priors)
         P.xlabel('windows')
+        if savefigs:
+            P.savefig(dbname+"_violin.svg")
         P.figure()
         PM.plot_series2(tim,obs,series,names=names, wl=self.wl)
         if self.nw > 1:
@@ -566,6 +568,8 @@ class FitModel(object):
             PM.plot_series2(tim,obs,predseries,names=names,
                             title='Predicted vs. Observed series',lag=True)
             P.xlabel('windows')
+            if savefigs:
+                P.savefig(dbname+"_series.svg")
         P.show()
 
     def _read_results(self, nam):
