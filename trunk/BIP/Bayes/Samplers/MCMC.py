@@ -583,7 +583,7 @@ class Dream(_Sampler):
         o=0
         while 1:
             zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
-            if sum ([int(t>= self.parlimits[i][0] and t <= self.parlimits[i][1]) for i, t in enumerate(zdr)]) == self.dimensions:
+            if sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
                 break
             o+=1
 #        if o>10: print "Warning: DR: %s off"%o
@@ -658,7 +658,6 @@ class Dream(_Sampler):
             proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names))[:self.t] for t in thetalist]
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names)[:self.t] for t in thetalist]
-#        propl = [p[:self.t] for p in proplist]
         return proplist
     @timeit
     def _chain_evolution(self, proptheta,  propphi, pps, liks):
@@ -681,7 +680,7 @@ class Dream(_Sampler):
                         d1, d2 = sample(others, 2)
                         dif+=array(d1)-array(d2)
                 zi = array(proptheta[c])+(ones(self.dimensions)+e)*gam*dif+eps
-                if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(zi)]) == self.dimensions:
+                if sum ([t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]) == self.dimensions:
                     break
                 o+=1
 #            if o>10: print o,"off"
@@ -691,12 +690,12 @@ class Dream(_Sampler):
         #get the associated Phi's
         propphi_z = self._prop_phi(zis, self.po)
         zprobs,  zliks = self._get_post_prob(zis, propphi_z)
-        prop_evo = [0]*len(proptheta)
-        liks_evo = [0]*len(proptheta)
+        prop_evo = [0]*self.dimensions
+        liks_evo = [0]*self.dimensions
         
-        evolved = [0]*len(proptheta) #evolved Theta
-        prop_evo = [0]*len(proptheta)
-        liks_evo = [0]*len(proptheta)
+        evolved = [0]*self.dimensions #evolved Theta
+        prop_evo = [0]*self.nchains
+        liks_evo = [0]*self.dimensions
         pps_evo = zeros(self.nchains) #posterior probabilities
         accepted = self._accept(self, pps, zprobs)#have to pass self because method is vectorized
         # Do Delayed rejection with the chains that got rejected
@@ -739,7 +738,7 @@ class Dream(_Sampler):
         pri = 1
         pris = []
         for c in xrange(len(theta)):#iterate over chains
-            for i in xrange(len(theta[c])):
+            for i in xrange(len(theta[c])): #iterate  over parameters
                 try:
                     pri *= self.parpriors[self.parnames[i]].pdf(theta[c][i])
                 except AttributeError: #in case distribution is discrete
@@ -793,12 +792,13 @@ class Dream(_Sampler):
                 continue
             i +=self.nchains
             if sum(accepted) < self.nchains:
+                ar = (i-rej)/float(i)
                 rej += self.nchains-sum(accepted) #adjust rejection counter
+                print "==> Acc. ratio: %2.2f"%ar
                 if i%100 == 0: 
-                    ar = (i-rej)/float(i)
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        print "--> %s rejected. Acc. ratio: %s"%(rej, ar)
+                        print "--> %s rejected. Acc. ratio: %2.2f"%(rej, ar)
             # Store accepted values
 #            print "nchains:", self.nchains
             for c, t,pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
@@ -832,7 +832,7 @@ class Dream(_Sampler):
                         liks[n] = liks[imax]
             if j%100 == 0 and j>0:
                 if self.trace_acceptance:
-                    print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)
+                    print "++>%s,%s: Acc. ratio: %1.3f"%(j,i, ar)
                     self._watch_chain(j)
                 if self.trace_convergence: print "++> Likvar: %s\nBest run Likelihood:%s"%(self.likvariance, np.max(self.liklist) )
 #            print "%s\r"%j
@@ -848,7 +848,7 @@ class Dream(_Sampler):
         self.meld.likmax = max(self.liklist)
         self.meld.DIC = self.DIC
         print "Total steps(i): ",i,"rej:",rej, "j:",j
-        print ">>> Acceptance rate: %s"%ar
+        print ">>> Acceptance rate: %1.3f"%ar
         self.term_pool()
         self.pserver.close_plot()
         return 1
