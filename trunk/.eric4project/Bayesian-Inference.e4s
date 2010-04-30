@@ -2,14 +2,14 @@
 <!DOCTYPE Session SYSTEM "Session-4.3.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-04-29, 11:10:02 -->
+<!-- Saved: 2010-04-29, 17:24:41 -->
 <Session version="4.3">
   <Filenames>
-    <Filename cline="523" cindex="27" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
-    <Filename cline="690" cindex="47" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="573" cindex="39" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
+    <Filename cline="737" cindex="15" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
     <Filename cline="0" cindex="16" folds="">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/__version__.py</Filename>
   </Filenames>
-  <ActiveWindow cline="523" cindex="27">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</ActiveWindow>
+  <ActiveWindow cline="573" cindex="39">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>
