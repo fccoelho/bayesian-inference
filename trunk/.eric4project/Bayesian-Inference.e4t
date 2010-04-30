@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
 <!-- eric4 tasks file for project Bayesian-Inference -->
-<!-- Saved: 2010-04-29, 11:10:03 -->
+<!-- Saved: 2010-04-29, 17:24:41 -->
 <Tasks version="4.2">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
@@ -510,7 +510,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
     <Description></Description>
-    <Created>2010-04-29, 08:52:43</Created>
+    <Created>2010-04-29, 12:37:49</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>235</Linenumber>
@@ -519,7 +519,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: finish implementing this</Summary>
     <Description></Description>
-    <Created>2010-04-29, 08:52:43</Created>
+    <Created>2010-04-29, 12:37:49</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>634</Linenumber>
@@ -528,7 +528,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: allow passing of fitfun</Summary>
     <Description></Description>
-    <Created>2010-04-29, 10:13:11</Created>
+    <Created>2010-04-29, 16:06:54</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>299</Linenumber>
@@ -537,7 +537,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out what to do by default with inits</Summary>
     <Description></Description>
-    <Created>2010-04-29, 10:13:11</Created>
+    <Created>2010-04-29, 16:06:54</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>303</Linenumber>
@@ -546,7 +546,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out how to balance the total pop</Summary>
     <Description></Description>
-    <Created>2010-04-29, 10:13:11</Created>
+    <Created>2010-04-29, 16:06:54</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>416</Linenumber>
@@ -555,7 +555,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Write tests for this</Summary>
     <Description></Description>
-    <Created>2010-04-29, 10:13:11</Created>
+    <Created>2010-04-29, 16:06:55</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>455</Linenumber>

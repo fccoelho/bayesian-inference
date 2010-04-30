@@ -529,7 +529,7 @@ class FitModel(object):
             self.ser.lines(i95.tolist(),None,  ['97.5%'],'Window %s'%(w+1))
             self.ser.lines(d2[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
             self.fsp.lines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
-        self.hst.histogram(array(prior['theta']).tolist(),'Window %s'%(w+1), self.thetanames, 1)
+        self.hst.histogram(array(prior['theta']).tolist(), self.thetanames,'Window %s'%(w+1),  1)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self._long_term_prediction_plot(initind,cpars,vindices, w)
         self.ser.clearFig()
@@ -559,6 +559,8 @@ class FitModel(object):
             P.savefig(dbname+"_violin.svg")
         P.figure()
         PM.plot_series2(tim,obs,series,names=names, wl=self.wl)
+        if savefigs:
+                P.savefig(dbname+"_series.svg")
         if self.nw > 1:
             P.figure()
             PM.pred_new_cases(obs,predseries,self.nw,names,self.wl)
@@ -569,7 +571,7 @@ class FitModel(object):
                             title='Predicted vs. Observed series',lag=True)
             P.xlabel('windows')
             if savefigs:
-                P.savefig(dbname+"_series.svg")
+                P.savefig(dbname+"_predseries.svg")
         P.show()
 
     def _read_results(self, nam):

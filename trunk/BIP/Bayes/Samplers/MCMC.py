@@ -578,14 +578,14 @@ class Dream(_Sampler):
         """
         Generates a second proposal based on rejected proposal xi
         """
-        k=.001 #Deflation factor for the second proposal
+        k=.01 #Deflation factor for the second proposal
         cv = self.scaling_factor*cov(xi)+self.scaling_factor*self.e*identity(self.dimensions)
-        o=0
-        while 1:
-            zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
-            if sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
-                break
-            o+=1
+#        o=0
+#        while 1:
+        zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
+#            if sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
+#                break
+#            o+=1
 #        if o>10: print "Warning: DR: %s off"%o
         propphi_zdr = self._prop_phi([zdr])
 #        print propphi_zdr, zdr
@@ -659,30 +659,32 @@ class Dream(_Sampler):
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names)[:self.t] for t in thetalist]
         return proplist
-    @timeit
+#    @timeit
     def _chain_evolution(self, proptheta,  propphi, pps, liks):
         """
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
         CR = 1./self.nCR
-        b = [(l[1]-l[0])/1000. for l in self.parlimits]
+        b = [(l[1]-l[0])/100. for l in self.parlimits]
         delta = (self.nchains-1)//2
         gam = 2.38/sqrt(2*delta*self.dimensions)
         zis = []
         for c in xrange(self.nchains):
-            o = 0
-            while 1: #check limits
-                e = [uniform(-i, 2*i).rvs() for i in b]
-                eps = [norm(0, i).rvs() for i in b]
-                others = [x for i, x in enumerate(proptheta) if i !=c]
-                dif = zeros(self.dimensions)
-                for d in range(delta):
-                        d1, d2 = sample(others, 2)
-                        dif+=array(d1)-array(d2)
-                zi = array(proptheta[c])+(ones(self.dimensions)+e)*gam*dif+eps
-                if sum ([t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]) == self.dimensions:
-                    break
-                o+=1
+#            o = 0
+#            while 1: #check limits
+            e = [uniform(-i, 2*i).rvs() for i in b]
+            eps = [norm(0, i).rvs() for i in b]
+            others = [x for i, x in enumerate(proptheta) if i !=c]
+            dif = zeros(self.dimensions)
+            for d in range(delta):
+                    d1, d2 = sample(others, 2)
+                    dif+=array(d1)-array(d2)
+            zi = array(proptheta[c])+(ones(self.dimensions)+e)*gam*dif+eps
+#                if sum ([t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]) == self.dimensions:
+#                    break
+                
+            offlimits = [t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]
+#                o+=1
 #            if o>10: print o,"off"
             for i in xrange(len(zi)): #Cross over
                 zi[i] = proptheta[c][i] if rand() < 1-CR else zi[i]
@@ -698,6 +700,7 @@ class Dream(_Sampler):
         liks_evo = [0]*self.dimensions
         pps_evo = zeros(self.nchains) #posterior probabilities
         accepted = self._accept(self, pps, zprobs)#have to pass self because method is vectorized
+        
         # Do Delayed rejection with the chains that got rejected
         # and store results.
         i = 0
@@ -754,7 +757,7 @@ class Dream(_Sampler):
 #        Actually sum the logs
         posts = (log(array(pris))+array(listoliks)).tolist()
         return posts, listoliks
-
+    
     def step(self):
         """
         Does the actual sampling loop.
@@ -762,6 +765,7 @@ class Dream(_Sampler):
         ptheta = recarray(self.samples+self.burnin,formats=['f8']*self.dimensions, names = self.parnames)
         i = 0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
         last_pps = None
+        t0=time.time()
         while j < self.samples+self.burnin:
 #            print rej, j
             #generate proposals
@@ -830,11 +834,13 @@ class Dream(_Sampler):
                         prop[n] = prop[imax]
                         pps [n] = pps[imax]
                         liks[n] = liks[imax]
-            if j%100 == 0 and j>0:
+            el =time.time()-t0
+            if int(el)%10 ==0 and el>1 and j>100:#j%100 == 0 and j>0:
                 if self.trace_acceptance:
                     print "++>%s,%s: Acc. ratio: %1.3f"%(j,i, ar)
                     self._watch_chain(j)
                 if self.trace_convergence: print "++> Likvar: %s\nBest run Likelihood:%s"%(self.likvariance, np.max(self.liklist) )
+                t0 = time.time()
 #            print "%s\r"%j
             last_pps = pps
             #last_liks = last_liks
