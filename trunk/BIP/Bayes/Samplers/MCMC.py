@@ -682,11 +682,12 @@ class Dream(_Sampler):
             zi = array(proptheta[c])+(ones(self.dimensions)+e)*gam*dif+eps
 #                if sum ([t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]) == self.dimensions:
 #                    break
-                
-            offlimits = [t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]
-#                o+=1
-#            if o>10: print o,"off"
-            for i in xrange(len(zi)): #Cross over
+            #revert offlimits proposals
+            for i in xrange(len(zi)):
+                if zi[i]<= self.parlimits[i][0] or zi[i]>= self.parlimits[i][1]:
+                    zi[i] = proptheta[c][i]
+            #Cross over
+            for i in xrange(len(zi)): 
                 zi[i] = proptheta[c][i] if rand() < 1-CR else zi[i]
             zis.append(zi)
         #get the associated Phi's
@@ -724,6 +725,7 @@ class Dream(_Sampler):
                     pps_evo[i] = -inf
             i += 1
         return evolved, prop_evo, pps_evo, liks_evo, accepted
+        
 #    @timeit
     def _get_post_prob(self, theta, prop, po = None):
         '''
