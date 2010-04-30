@@ -163,10 +163,11 @@ class _Sampler(object):
         if j<100:
             return
         self.gr_convergence(j, j-100)
+        print self._R
         self.pserver.clearFig()
         thin = j//500 if j//500 !=0 else 1 #history is thinned to show at most 500 points, equally spaced over the entire range
         data = self.history[:j:thin].T.tolist()
-        self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress. GR Convergence: %s"%self._R,'points' , 1)
+        self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress.",'points' , 1)
 
     def _tune_likvar(self, ar):
         try:
@@ -587,6 +588,8 @@ class Dream(_Sampler):
 #                break
 #            o+=1
 #        if o>10: print "Warning: DR: %s off"%o
+        if not sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
+            return xi, 0, 0, 0, 0
         propphi_zdr = self._prop_phi([zdr])
 #        print propphi_zdr, zdr
         zdrprob,  zdrlik = self._get_post_prob([zdr],propphi_zdr)
