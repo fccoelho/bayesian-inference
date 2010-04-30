@@ -578,7 +578,7 @@ class Dream(_Sampler):
         """
         Generates a second proposal based on rejected proposal xi
         """
-        k=.01 #Deflation factor for the second proposal
+        k=.1 #Deflation factor for the second proposal
         cv = self.scaling_factor*cov(xi)+self.scaling_factor*self.e*identity(self.dimensions)
 #        o=0
 #        while 1:
@@ -665,7 +665,7 @@ class Dream(_Sampler):
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
         CR = 1./self.nCR
-        b = [(l[1]-l[0])/100. for l in self.parlimits]
+        b = [(l[1]-l[0])/50. for l in self.parlimits]
         delta = (self.nchains-1)//2
         gam = 2.38/sqrt(2*delta*self.dimensions)
         zis = []
