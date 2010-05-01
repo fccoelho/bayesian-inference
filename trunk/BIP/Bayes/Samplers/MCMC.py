@@ -154,20 +154,27 @@ class _Sampler(object):
         """
         Sets up the server for real-time chain watch
         """
-        p=0
-        while p==0:
+        p=0;p2=0
+        while p==0 or p2 == 0:
             p = rpc_plot()
+            p2 = rpc_plot(hold=1)
         self.pserver = xmlrpclib.ServerProxy('http://localhost:%s'%p)
+        self.pserver2 = xmlrpclib.ServerProxy('http://localhost:%s'%p2)
 
     def _watch_chain(self, j):
         if j<100:
             return
         self.gr_convergence(j, j-100)
-        print self._R
+        print "Gelman-Rubin's R: ", self._R
         self.pserver.clearFig()
         thin = j//500 if j//500 !=0 else 1 #history is thinned to show at most 500 points, equally spaced over the entire range
         data = self.history[:j:thin].T.tolist()
         self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress.",'points' , 1)
+        self.pserver2.lines([nan_to_num(d).tolist() for d in self.data.values()],[],self.data.keys(), "Fit", 'points' )
+        series = [self.phi[k][j-100:j].mean(axis=0).tolist() for k in self.data.keys()]
+        self.pserver2.lines(series,[],self.data.keys(), "Fit", 'lines' )
+        self.pserver2.clearFig()
+        #TODO: Implement plot of best fit simulation against data
 
     def _tune_likvar(self, ar):
         try:
@@ -808,8 +815,9 @@ class Dream(_Sampler):
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
                         print "--> %s rejected. Acc. ratio: %2.2f"%(rej, ar)
+            
+            
             # Store accepted values
-#            print "nchains:", self.nchains
             for c, t,pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
                 #if not accepted repeat last value
                 if not a:
@@ -829,6 +837,7 @@ class Dream(_Sampler):
 
                 if j == self.samples+self.burnin:break
                 j += 1 #update accepted sample counter 
+            
             # Remove Outlier Chains
             if j>10 and j < self.burnin:
                 outl = self._det_outlier_chains(j)
@@ -839,6 +848,7 @@ class Dream(_Sampler):
                         prop[n] = prop[imax]
                         pps [n] = pps[imax]
                         liks[n] = liks[imax]
+            
             el =time.time()-t0
             if int(el)%10 ==0 and el>1 and j>100:#j%100 == 0 and j>0:
                 if self.trace_acceptance:
