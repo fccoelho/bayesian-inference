@@ -172,7 +172,7 @@ class _Sampler(object):
         self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress.",'points' , 1)
         self.pserver2.lines([nan_to_num(d).tolist() for d in self.data.values()],[],self.data.keys(), "Fit", 'points' )
         series = [self.phi[k][j-100:j].mean(axis=0).tolist() for k in self.data.keys()]
-        self.pserver2.lines(series,[],self.data.keys(), "Fit", 'lines' )
+        self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last 100 samples", 'lines' )
         self.pserver2.clearFig()
         #TODO: Implement plot of best fit simulation against data
 
@@ -586,15 +586,14 @@ class Dream(_Sampler):
         """
         Generates a second proposal based on rejected proposal xi
         """
-        k=.1 #Deflation factor for the second proposal
+        k=.3 #Deflation factor for the second proposal
         cv = self.scaling_factor*cov(xi)+self.scaling_factor*self.e*identity(self.dimensions)
-#        o=0
-#        while 1:
-        zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
-#            if sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
-#                break
-#            o+=1
-#        if o>10: print "Warning: DR: %s off"%o
+        o=0
+        while 0<10:
+            zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
+            if sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
+                break
+            o+=1
         if not sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
             return xi, 0, 0, 0, 0
         propphi_zdr = self._prop_phi([zdr])
@@ -675,7 +674,7 @@ class Dream(_Sampler):
         Chain evolution as describe in ter Braak's Dream algorithm.
         """
         CR = 1./self.nCR
-        b = [(l[1]-l[0])/50. for l in self.parlimits]
+        b = [(l[1]-l[0])/10. for l in self.parlimits]
         delta = (self.nchains-1)//2
         gam = 2.38/sqrt(2*delta*self.dimensions)
         zis = []
