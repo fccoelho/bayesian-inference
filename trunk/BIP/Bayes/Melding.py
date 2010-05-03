@@ -106,6 +106,7 @@ class FitModel(object):
         self.Me = Meld(K=self.K,L=self.L,model=self.model,ntheta=self.ntheta,nphi=self.nphi,verbose=self.verbose)
         self.AIC = 0
         self.BIC = 0
+        self.DIC = 0
         # To be defined by self.set.priors
         self.pdists = None
         self.ppars = None
@@ -419,6 +420,7 @@ class FitModel(object):
             pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
             self.AIC += 2. * (self.ntheta - self.Me.likmax) # 2k - 2 ln(L)
             self.BIC += self.ntheta * numpy.log(self.wl*len(d2)) - 2. * self.Me.likmax # k ln(n) - 2 ln(L)
+            self.DIC = self.Me.DIC
             # ===Saving results===
             f = open('%s_%s%s'%(dbname, w, ".pickle"),'w')
             #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
@@ -427,7 +429,7 @@ class FitModel(object):
             if dbname:
                 if os.path.exists(dbname+".sqlite") and w ==0:
                     os.remove(dbname+".sqlite")
-                self._format_db_tables(dbname, w, data, pt, series, predseries, self.AIC, self.BIC)
+                self._format_db_tables(dbname, w, data, pt, series, predseries, self.AIC, self.BIC, self.DIC)
             prior = {'theta':[],'phi':[]}
             for n in pt.dtype.names:
                 prior['theta'].append(pt[n])
@@ -448,12 +450,12 @@ class FitModel(object):
         
         self.done_running = True
     
-    def _format_db_tables(self, dbname, w, data, pt, series, predseries, AIC, BIC):
+    def _format_db_tables(self, dbname, w, data, pt, series, predseries, AIC, BIC, DIC):
         """
         Formats results for writing to database
         """
         #TODO: Write tests for this
-        #data table does not require formatting
+        # data table does not require formatting
         # Dates for this window
         if 'time' in data:
             if isinstance(data['time'],  numpy.ndarray):
@@ -477,7 +479,7 @@ class FitModel(object):
         for n in predseries.dtype.names:
             predseriesd[n] = predseries[n].ravel()
         # AIC and BIC table
-        gof = {'time':[dates[-1]], 'AIC':[AIC], 'BIC':[BIC]}
+        gof = {'time':[dates[-1]], 'AIC':[AIC], 'BIC':[BIC], 'DIC':[DIC]}
         self._save_to_db(dbname, {'post_theta':ptd, 
                                                                      'series':seriesd, 
                                                                      'data': data, 
@@ -631,6 +633,7 @@ class Meld(object):
         self.likmax = -numpy.inf
         self.AIC = None
         self.BIC = None
+        self.DIC = None
         self.proposal_variance = 0.0000001
         self.adaptscalefactor = 1 #adaptive variance. Used my metropolis hastings
         self.salt_band = 0.1
@@ -794,7 +797,7 @@ class Meld(object):
         i.e. the model itself.
         The model is run self.K times to obtain phi = M(theta).
         """
-        
+        #TODO: implement calculation of AIC,BIC and DIC for SIR
         for i in xrange(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = self.po.apply_async(self.model, theta)
@@ -1036,7 +1039,7 @@ class Meld(object):
         for k in xrange(self.nphi): #loop on series
             if self.q2phi.dtype.names[k] not in data:
                 continue#Only calculate liks of series for which we have data
-            obs = data[self.q2phi.dtype.names[k]]
+            obs = array(data[self.q2phi.dtype.names[k]]).T
             if po != None:# Parallel version
                 lik = sum([po.apply(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])])
                 #lik = sum([l.get() for l in lik])
