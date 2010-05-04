@@ -48,6 +48,7 @@ class Model:
         self.pvl = len(self.pv) #length of propensity vector
         self.pv0 = zeros(self.pvl,dtype=float)
         self.nvars = len(self.inits) #number of variables
+        self.evseries = None #dictionary with complete time-series for each event type.
         self.time = None
         self.tmax = None
         self.series = None
@@ -56,7 +57,7 @@ class Model:
         
     
     def getStats(self):
-        return self.time,self.series,self.steps
+        return self.time,self.series,self.steps, self.evseries
     
     def run(self, method='SSA', tmax=10, reps=1, viz=False, serial=False):
         '''
@@ -106,6 +107,7 @@ class Model:
         tm = self.tm
         pv = self.pv0 #actual propensity values for each time step
         tc = 0
+        evts = dict([(i, []) for i in xrange(len(self.pv))])
         self.steps = 0
         self.res[0,:]= ini
         for tim in xrange(1,tmax):
@@ -128,11 +130,13 @@ class Model:
                         print "Time Step: ",tim
                         raise ValueError()
                     ini += tm[:,event.nonzero()[0][0]]
+                    evts[event.nonzero()[0][0]].append(tc+tau)
                 #print tc, ini
                 tc += tau
                 self.steps +=1
                 if a0 == 0: break
             self.res[tim,:] = ini
+            self.evseries = evts
 #            if a0 == 0: break
         if self.viz:
             self.ser.clearFig()
