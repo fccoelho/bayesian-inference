@@ -68,7 +68,7 @@ t0 = time.time()
 M.run(tmax=80,reps=100,viz=0,serial=0)
 pt = time.time()-t0
 print 'Python total time: ',pt, ' seconds.'
-t,series,steps = M.getStats()
+t,series,steps, evts = M.getStats()
 print steps,'steps'
 # timing cython gillespie
 t0 = time.time()
@@ -80,6 +80,7 @@ print steps2,' steps'
 print "Cython speedup: %sx"%(pt/ct)
 from pylab import plot , show, legend, errorbar, title, figure
 #print series.var(axis=0)
+print evts
 plot(t,series.mean(axis=0),'-o')
 title('python curve')
 legend(vnames,loc=0)
