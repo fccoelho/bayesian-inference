@@ -171,8 +171,9 @@ class _Sampler(object):
         data = self.history[:j:thin].T.tolist()
         self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress.",'points' , 1)
         self.pserver2.lines([nan_to_num(d).tolist() for d in self.data.values()],[],self.data.keys(), "Fit", 'points' )
-        series = [self.phi[k][j-100:j].mean(axis=0).tolist() for k in self.data.keys()]
-        self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last 100 samples", 'lines' )
+        s = j-100 if j//2<100 else j//2
+        series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
+        self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last 50% samples", 'lines' )
         self.pserver2.clearFig()
         #TODO: Implement plot of best fit simulation against data
 
@@ -666,8 +667,8 @@ class Dream(_Sampler):
         Returns proposed Phi derived from theta
         """
         if po:
-            propl = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names))[:self.t] for t in thetalist]
-            proplist = [job.get() for job in propl]
+            propl = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+            proplist = [job.get()[:self.t]  for job in propl]
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names)[:self.t] for t in thetalist]
         return proplist
