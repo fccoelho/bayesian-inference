@@ -234,7 +234,8 @@ class _Sampler(object):
                         break
             thetalist.append(theta)
         if po:
-            proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+            proplis = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+            proplist = [job.get() for job in proplis]
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
         propl = [p[:self.t] for p in proplist]
@@ -332,7 +333,8 @@ class Metropolis(_Sampler):
 #                print "off:" , off
             thetalist.append(theta)
         if po:
-            proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+            proplis = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
+            proplist = [job.get for job in proplis]
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
         propl = [p[:self.t] for p in proplist]
@@ -664,7 +666,8 @@ class Dream(_Sampler):
         Returns proposed Phi derived from theta
         """
         if po:
-            proplist = [po.apply(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names))[:self.t] for t in thetalist]
+            propl = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names))[:self.t] for t in thetalist]
+            proplist = [job.get() for job in propl]
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names)[:self.t] for t in thetalist]
         return proplist
@@ -759,8 +762,8 @@ class Dream(_Sampler):
                     pri *= self.parpriors[self.parnames[i]].pmf(theta[c][i])
             pris.append(pri)
         if po:
-            listoliks = [po.apply(self.meld._output_loglike, (p, self.data, self.likfun, self.likvariance)) for p in prop]
-#            listoliks = [l.get() for l in listoliks]
+            listol = [po.apply_async(self.meld._output_loglike, (p, self.data, self.likfun, self.likvariance)) for p in prop]
+            listoliks = [l.get() for l in listol]
             self.term_pool()
         else:
             listoliks = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
@@ -809,7 +812,7 @@ class Dream(_Sampler):
             if sum(accepted) < self.nchains:
                 ar = (i-rej)/float(i)
                 rej += self.nchains-sum(accepted) #adjust rejection counter
-                print "==> Acc. ratio: %2.2f"%ar
+#                print "==> Acc. ratio: %2.2f"%ar
                 if i%100 == 0: 
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
@@ -851,7 +854,7 @@ class Dream(_Sampler):
             el =time.time()-t0
             if int(el)%10 ==0 and el>1 and j>100:#j%100 == 0 and j>0:
                 if self.trace_acceptance:
-                    print "++>%s,%s: Acc. ratio: %1.3f"%(j,i, ar)
+                    print "++>Acc. %s out of %s. Acc. ratio: %1.3f"%(j,i, ar)
                     self._watch_chain(j)
                 if self.trace_convergence: print "++> Likvar: %s\nBest run Likelihood:%s"%(self.likvariance, np.max(self.liklist) )
                 t0 = time.time()

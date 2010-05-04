@@ -1041,8 +1041,8 @@ class Meld(object):
                 continue#Only calculate liks of series for which we have data
             obs = array(data[self.q2phi.dtype.names[k]]).T
             if po != None:# Parallel version
-                lik = sum([po.apply(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])])
-                #lik = sum([l.get() for l in lik])
+                liks = sum([po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])])
+                lik = sum([l.get() for l in liks])
             else:
                 for p in xrange(t): #Loop on time
                     if not isnan(obs[p]): #nan == missing data
