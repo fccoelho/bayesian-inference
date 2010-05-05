@@ -158,7 +158,8 @@ def plot_par_violin(tim,ptlist, priors={}, bp=True):
     fig = P.figure()
     #P.title('Parameters temporal variation')
     sq = sqrt(len(ptlist[0].dtype.names))
-    r= floor(sq);c=ceil(sq)
+    ad = 1 if sq%1 >0.5 else 0
+    r= floor(sq)+ad;c=ceil(sq)
     if len(ptlist[0].dtype.names) == 3:
         r = 3; c = 1
     if priors:

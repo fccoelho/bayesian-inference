@@ -12,7 +12,7 @@ __date__ ="$09/12/2009 10:44:11$"
 __docformat__ = "restructuredtext en"
 
 import numpy as np
-from numpy import array,mean,nan_to_num,mean,var,sqrt,inf,exp,greater,less,identity,ones,zeros,floor,log, recarray
+from numpy import array,mean,median,nan_to_num,mean,var,sqrt,inf,exp,greater,less,identity,ones,zeros,floor,log, recarray
 from numpy.random import random,  multivariate_normal,  multinomial,  rand
 from multiprocessing import Pool,  Process
 from multiprocessing.managers import BaseManager
@@ -172,7 +172,8 @@ class _Sampler(object):
         self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress.",'points' , 1)
         self.pserver2.lines([nan_to_num(d).tolist() for d in self.data.values()],[],self.data.keys(), "Fit", 'points' )
         s = j-100 if j//2<100 else j//2
-        series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
+        #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
+        series = [median(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
         self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last 50% samples", 'lines' )
         self.pserver2.clearFig()
         #TODO: Implement plot of best fit simulation against data
