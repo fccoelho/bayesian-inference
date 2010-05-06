@@ -182,7 +182,7 @@ class _Sampler(object):
         self.pserver2.lines(obs,[],lbs, "Fit", 'points' )
         s = j-100 if j//2<100 else j//2
         #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
-        series = [median(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
+        series = [mean(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
         self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last 50% samples", 'lines' )
         self.pserver2.clearFig()
         #TODO: Implement plot of best fit simulation against data
