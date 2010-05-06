@@ -169,9 +169,17 @@ class _Sampler(object):
         print "Gelman-Rubin's R: ", self._R
         self.pserver.clearFig()
         thin = j//500 if j//500 !=0 else 1 #history is thinned to show at most 500 points, equally spaced over the entire range
-        data = self.history[:j:thin].T.tolist()
-        self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress.",'points' , 1)
-        self.pserver2.lines([nan_to_num(d).T.tolist() for d in self.data.values()],[],self.data.keys(), "Fit", 'points' )
+        chaindata = self.history[:j:thin].T.tolist()
+        obs = [];lbs = []
+        for k, d in self.data.items():
+            if len(d.shape)>1:
+                obs += [nan_to_num(i).tolist() for i in d.T]
+                lbs += [k+str(i) for i in range(d.shape[1])]
+            else:
+                obs += nan_to_num(d).tolist()
+                lbs += [k]
+        self.pserver.lines(chaindata,range(j-(len(chaindata[0])), j), self.parnames, "Chain Progress.",'points' , 1)
+        self.pserver2.lines(obs,[],lbs, "Fit", 'points' )
         s = j-100 if j//2<100 else j//2
         #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
         series = [median(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
