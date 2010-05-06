@@ -322,7 +322,7 @@ class FitModel(object):
         
         :Parameters:
             - `dbname`: name of the database file
-            - `data`: Data dictionary
+            - `data`: Data dictionary as created by `format_db_tables` method.
         '''
         def row_generator(var):
             '''
@@ -338,13 +338,20 @@ class FitModel(object):
                     else: #this is the case of parameters
                         yield tuple(repl)
             elif isinstance(var, dict):
-                try:
-                    for r in zip(*var.values()):
-                        if not isinstance(r, tuple):
-                            r = (r,)
-                        yield r
-                except:
-                    print var.keys(),  var.values()
+#                try:
+                for r in zip(*var.values()):
+                    if not isinstance(r, tuple):
+                        r = (r,)
+                    t = []
+                    for i in r:
+                        if isinstance(i, numpy.ndarray):
+                            t+=i.tolist()
+                        else:
+                            t += [i]
+                        r = tuple(t)
+                    yield r
+#                except:
+#                    print var.keys(),  var.values()
                     
         create = True
         if not dbname.endswith('.sqlite'):
@@ -355,8 +362,14 @@ class FitModel(object):
         #create tables
         for k, v in data.items():
             if isinstance(v, dict):
-                nv = len(v.keys())
-                tstr = k+'('+','.join(v.keys())+')'
+                labs = []
+                for k2, v2 in v.items():
+                    if isinstance(v2, numpy.ndarray) and len(v2.shape)>1:
+                        labs+=[k2+str(i) for i in range(v2.shape[1])]
+                    else:
+                        labs.append(k2)
+                nv = len(labs)
+                tstr = k+'('+','.join(labs)+')'
                 if create:
                     con.execute('create table '+tstr)
             elif isinstance(v, numpy.recarray):
@@ -413,7 +426,7 @@ class FitModel(object):
                     if n not in self.phinames:
                         continue
                     i = self.phinames.index(n)
-                    self.inits[i] = d2[n][0]
+                    self.inits[i] = d2[n][0] if  not isinstance(d2[n][0], numpy.ndarray ) else d2[n][0].mean()
                     #TODO: figure out how to balance the total pop
 #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
                     self.model.func_globals['inits'] = self.inits
@@ -519,7 +532,14 @@ class FitModel(object):
         """
         Plots real time data
         """
-        diff = array([abs(series[vn][:, -1]-d2[vn][-1]) for vn in d2.keys()]).sum(axis=0) #sum errors for all oserved variables
+        diff = 0
+        for vn in d2.keys():
+            #sum errors for all oserved variables
+            if isinstance(d2[vn], numpy.ndarray) and len(d2[vn].shape)>1:
+                diff+=abs(series[vn][:, -1]-d2[vn][-1].mean(axis=1))
+            else:
+                diff+=abs(series[vn][:, -1]-d2[vn][-1])
+        
         initind = diff.tolist().index(min(diff))
         vindices = [self.phinames.index(n) for n in vars]
         for n in vars:
@@ -530,7 +550,7 @@ class FitModel(object):
             self.ser.lines(i5.tolist(),None, ['2.5%'], 'Window %s'%(w+1))
             self.ser.lines(i95.tolist(),None,  ['97.5%'],'Window %s'%(w+1))
             self.ser.lines(d2[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
-            self.fsp.lines(data[n].tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
+            self.fsp.lines(data[n].T.tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
         self.hst.histogram(array(prior['theta']).tolist(), self.thetanames,'Window %s'%(w+1),  1)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self._long_term_prediction_plot(initind,cpars,vindices, w)
@@ -1039,7 +1059,9 @@ class Meld(object):
         for k in xrange(self.nphi): #loop on series
             if self.q2phi.dtype.names[k] not in data:
                 continue#Only calculate liks of series for which we have data
-            obs = array(data[self.q2phi.dtype.names[k]]).T
+            obs = array(data[self.q2phi.dtype.names[k]])
+            if len(obs.shape)>1:
+                obs = nanmean(data[self.q2phi.dtype.names[k]], axis=1) 
             if po != None:# Parallel version
                 liks = sum([po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])])
                 lik = sum([l.get() for l in liks])

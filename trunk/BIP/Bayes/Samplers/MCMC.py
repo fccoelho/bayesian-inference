@@ -24,6 +24,7 @@ import xmlrpclib
 #from BIP.Viz.realtime import rpc_plot
 from liveplots.xmlrpcserver import rpc_plot
 import time
+import pdb
 
 def timeit(method):
     """
@@ -170,7 +171,7 @@ class _Sampler(object):
         thin = j//500 if j//500 !=0 else 1 #history is thinned to show at most 500 points, equally spaced over the entire range
         data = self.history[:j:thin].T.tolist()
         self.pserver.lines(data,range(j-(len(data[0])), j), self.parnames, "Chain Progress.",'points' , 1)
-        self.pserver2.lines([nan_to_num(d).tolist() for d in self.data.values()],[],self.data.keys(), "Fit", 'points' )
+        self.pserver2.lines([nan_to_num(d).T.tolist() for d in self.data.values()],[],self.data.keys(), "Fit", 'points' )
         s = j-100 if j//2<100 else j//2
         #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
         series = [median(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
@@ -668,6 +669,7 @@ class Dream(_Sampler):
         Returns proposed Phi derived from theta
         """
         if po:
+#            pdb.set_trace()
             propl = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
             proplist = [job.get()[:self.t]  for job in propl]
         else:
