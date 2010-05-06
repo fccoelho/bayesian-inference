@@ -536,7 +536,7 @@ class FitModel(object):
         for vn in d2.keys():
             #sum errors for all oserved variables
             if isinstance(d2[vn], numpy.ndarray) and len(d2[vn].shape)>1:
-                diff+=abs(series[vn][:, -1]-d2[vn][-1].mean(axis=1))
+                diff+=abs(series[vn][:, -1]-d2[vn][-1].mean())
             else:
                 diff+=abs(series[vn][:, -1]-d2[vn][-1])
         
