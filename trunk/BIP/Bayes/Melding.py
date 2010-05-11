@@ -1075,6 +1075,7 @@ class Meld(object):
                     if not isnan(obs[p]): #nan == missing data
                         lik += likfun(obs[p],prop[p][k],1./likvar)
         return lik
+    
     def sir(self, data={}, t=1,variance=0.1, pool=False,savetemp=False):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
