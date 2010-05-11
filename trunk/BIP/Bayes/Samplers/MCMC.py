@@ -8,13 +8,14 @@ Module implementing MCMC samplers
 """
 import sys
 import time
+import pdb
 import xmlrpclib
 from multiprocessing import Pool
 from random import sample
 
 import numpy as np
 from liveplots.xmlrpcserver import rpc_plot
-from numpy import array, mean, nan_to_num, var, sqrt, inf, exp, greater, less, identity, ones, zeros, floor, log, recarray, nan
+from numpy import array, mean,isnan,  nan_to_num, var, sqrt, inf, exp, greater, less, identity, ones, zeros, floor, log, recarray, nan
 from numpy.random import random,  multivariate_normal,  multinomial,  rand
 from scipy.stats import cov,  uniform, norm, scoreatpercentile
 
@@ -344,7 +345,7 @@ class Metropolis(_Sampler):
             thetalist.append(theta)
         if po:
             proplis = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
-            proplist = [job.get for job in proplis]
+            proplist = [job.get() for job in proplis]
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names) for t in thetalist]
         propl = [p[:self.t] for p in proplist]
@@ -560,7 +561,7 @@ class Dream(_Sampler):
         self.likfun = likfun
         self.likvariance = likvariance
         self.burnin = burnin
-        self.nchains = len(parpriors)
+        self.nchains = len(parpriors) 
         self.phi = np.recarray((self.samples+self.burnin,t),formats=['f8']*self.meld.nphi, names = self.meld.phi.dtype.names)
         self.nCR = nCR
         self.DEpairs = DEpairs
@@ -689,7 +690,7 @@ class Dream(_Sampler):
         """
         CR = 1./self.nCR
         b = [(l[1]-l[0])/10. for l in self.parlimits]
-        delta = (self.nchains-1)//2
+        delta = (self.nchains-1)//2 if self.nchains >2 else 1
         gam = 2.38/sqrt(2*delta*self.dimensions)
         zis = []
         for c in xrange(self.nchains):
@@ -700,20 +701,22 @@ class Dream(_Sampler):
             others = [x for i, x in enumerate(proptheta) if i !=c]
             dif = zeros(self.dimensions)
             for d in range(delta):
-                    d1, d2 = sample(others, 2)
-                    dif+=array(d1)-array(d2)
+                d1, d2 = sample(others, 2)
+                dif+=array(d1)-array(d2)
             zi = array(proptheta[c])+(ones(self.dimensions)+e)*gam*dif+eps
 #                if sum ([t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]) == self.dimensions:
 #                    break
             #revert offlimits proposals
             for i in xrange(len(zi)):
-                if zi[i]<= self.parlimits[i][0] or zi[i]>= self.parlimits[i][1]:
+                if zi[i]<= self.parlimits[i][0] or zi[i]>= self.parlimits[i][1]:# or isnan(zi):
                     zi[i] = proptheta[c][i]
             #Cross over
             for i in xrange(len(zi)): 
                 zi[i] = proptheta[c][i] if rand() < 1-CR else zi[i]
             zis.append(zi)
         #get the associated Phi's
+        if isnan(zis).any():
+            pdb.set_trace()
         propphi_z = self._prop_phi(zis, self.po)
         zprobs,  zliks = self._get_post_prob(zis, propphi_z)
         prop_evo = [0]*self.dimensions
@@ -781,8 +784,9 @@ class Dream(_Sampler):
 #        Multiply by prior values to obtain posterior probs
 #        Actually sum the logs
         posts = (log(array(pris))+array(listoliks)).tolist()
-        if isnan(sum(posts)):
-            print posts, listoliks
+        if isnan(posts).any():
+            print pris, listoliks,theta
+            pdb.set_trace()
         return posts, listoliks
     
     def step(self):
