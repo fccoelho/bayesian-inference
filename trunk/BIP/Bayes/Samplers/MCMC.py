@@ -6,25 +6,24 @@ Module implementing MCMC samplers
     - Metropolis: Adaptive Metropolis Hastings sampler
     - Dream: DiffeRential Evolution Adaptive Markov chain sampler
 """
+import sys
+import time
+import xmlrpclib
+from multiprocessing import Pool
+from random import sample
+
+import numpy as np
+from liveplots.xmlrpcserver import rpc_plot
+from numpy import array, mean, nan_to_num, var, sqrt, inf, exp, greater, less, identity, ones, zeros, floor, log, recarray, nan
+from numpy.random import random,  multivariate_normal,  multinomial,  rand
+from scipy.stats import cov,  uniform, norm, scoreatpercentile
+
 
 __author__="fccoelho"
 __date__ ="$09/12/2009 10:44:11$"
 __docformat__ = "restructuredtext en"
 
-import numpy as np
-from numpy import array,mean,median,nan_to_num,mean,var,sqrt,inf,exp,greater,less,identity,ones,zeros,floor,log, recarray
-from numpy.random import random,  multivariate_normal,  multinomial,  rand
-from multiprocessing import Pool,  Process
-from multiprocessing.managers import BaseManager
-import scipy.stats as st
-from scipy.stats import cov,  uniform, norm, scoreatpercentile
-import sys
-from random import sample
-import xmlrpclib
 #from BIP.Viz.realtime import rpc_plot
-from liveplots.xmlrpcserver import rpc_plot
-import time
-import pdb
 
 def timeit(method):
     """
@@ -782,6 +781,8 @@ class Dream(_Sampler):
 #        Multiply by prior values to obtain posterior probs
 #        Actually sum the logs
         posts = (log(array(pris))+array(listoliks)).tolist()
+        if isnan(sum(posts)):
+            print posts, listoliks
         return posts, listoliks
     
     def step(self):

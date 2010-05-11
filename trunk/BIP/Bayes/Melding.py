@@ -10,32 +10,36 @@
 # Copyright:   (c) 2003-2009 by the Author
 # Licence:     GPL v3
 #-----------------------------------------------------------------------------
+import cPickle as CP
+import copy
+import os
+import sqlite3
+import sys
+import xmlrpclib
+from multiprocessing import Pool
+from time import time
+
+import numpy
+import pylab as P
+from numpy import array, nan_to_num, zeros, ones, mean, var, sqrt, floor, isnan
 from numpy.core.records import recarray
+from numpy.random import randint, random, seed
+from scipy import stats,  optimize as optim
+from scipy.stats import nanmean
+from scipy.stats.kde import gaussian_kde
+
+import PlotMeld as PM
+import lhs
+import like
+from BIP.Bayes.Samplers import MCMC
+import pdb
+
+
 #try:
 #    import psyco
 #    psyco.full()
 #except:
 #    pass
-import sys
-import os
-import copy
-import cPickle as CP
-import sqlite3
-import glob
-import like
-import pdb
-import pylab as P
-import xmlrpclib
-from scipy.stats.kde import gaussian_kde
-from scipy.stats import nanmean,  nanmedian,  nanstd
-from scipy.linalg import LinAlgError
-from scipy import stats,  optimize as optim
-import numpy
-from numpy import array, nan_to_num, zeros, product, exp, ones,mean, var,sqrt,floor,  nan,  inf,  isnan
-from time import time
-from numpy.random import normal, randint,  random, seed
-import PlotMeld as PM
-from BIP.Bayes.Samplers import MCMC
 try:
     from BIP.Viz.realtime import RTplot
     from liveplots.xmlrpcserver import rpc_plot
@@ -45,9 +49,7 @@ except:
     print r"""Please install Gnuplot-py to enable realtime visualization.
     http://gnuplot-py.sourceforge.net/
     """
-import lhs
 
-from multiprocessing import Pool, Process
 if Viz:
     dtplot = RTplot();phiplot = RTplot();thplot = RTplot()
 
@@ -207,8 +209,11 @@ class FitModel(object):
                 ls1 = len(s1[k]) #handles the cases where data is slightly longer that simulated series.
 #                print s2[k]
 #                try:
-                dif = s1[k]-s2[k][:ls1].astype(float)
 #                pdb.set_trace()
+                if len(s2[k].shape) >1:
+                    s2[k] = s2[k].mean(axis=1)
+                dif = s1[k]-s2[k][:ls1].astype(float)
+                
                 dif[isnan(dif)] = 0
                 e = sqrt(mean(dif**2))
 #                except TypeError:
@@ -532,14 +537,14 @@ class FitModel(object):
         """
         Plots real time data
         """
-        diff = 0
+#        diff = 0
         for vn in d2.keys():
             #sum errors for all oserved variables
             if isinstance(d2[vn], numpy.ndarray) and len(d2[vn].shape)>1:
-                diff+=abs(series[vn][:, -1]-d2[vn][-1].mean())
+                diff = abs(series[vn][:, -1]-d2[vn][-1].mean())
             else:
-                diff+=abs(series[vn][:, -1]-d2[vn][-1])
-        
+                diff = abs(series[vn][:, -1]-d2[vn][-1])
+        print diff, min(diff)
         initind = diff.tolist().index(min(diff))
         vindices = [self.phinames.index(n) for n in vars]
         for n in vars:
