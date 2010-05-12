@@ -331,30 +331,30 @@ class FitModel(object):
         '''
         def row_generator(var):
             '''
-            var is record array or a dictionary.
+            var is a dictionary.
             '''
-            if isinstance(var, numpy.recarray):
-                for repl in var:
-                    if isinstance(repl, numpy.recarray): # this is the case of variables, where each replicate is a time series
-                        for t in repl:
-                            if not isinstance(t, numpy.core.records.record):
-                                t=(t,)
-                            yield tuple(t) #variable tuple at time t in replicate repl
-                    else: #this is the case of parameters
-                        yield tuple(repl)
-            elif isinstance(var, dict):
+#            if isinstance(var, numpy.recarray):
+#                for repl in var:
+#                    if isinstance(repl, numpy.recarray): # this is the case of variables, where each replicate is a time series
+#                        for t in repl:
+#                            if not isinstance(t, numpy.core.records.record):
+#                                t=(t,)
+#                            yield tuple(t) #variable tuple at time t in replicate repl
+#                    else: #this is the case of parameters
+#                        yield tuple(repl)
+#            elif isinstance(var, dict):
 #                try:
-                for r in zip(*var.values()):
-                    if not isinstance(r, tuple):
-                        r = (r,)
-                    t = []
-                    for i in r:
-                        if isinstance(i, numpy.ndarray):
-                            t+=i.tolist()
-                        else:
-                            t += [i]
-                        r = tuple(t)
-                    yield r
+            for rn, r in enumerate(zip(*var.values())):
+                if not isinstance(r, tuple):
+                    r = (r,)
+                t = [rn]
+                for i in r:
+                    if isinstance(i, numpy.ndarray):
+                        t+=i.tolist()
+                    else:
+                        t += [i]
+                    r = tuple(t)
+                yield r
 #                except:
 #                    print var.keys(),  var.values()
                     
@@ -373,15 +373,16 @@ class FitModel(object):
                         labs+=[k2+str(i) for i in range(v2.shape[1])]
                     else:
                         labs.append(k2)
-                nv = len(labs)
-                tstr = k+'('+','.join(labs)+')'
+                nv = len(labs)+1 #variables plus primary key
+                tstrc = k+'(pk integer primary key,'+','.join(labs)+')'
+                tstr = k+'(pk,'+','.join(labs)+')'
                 if create:
-                    con.execute('create table '+tstr)
+                    con.execute('create table '+tstrc)
             elif isinstance(v, numpy.recarray):
-                nv = len(v.dtype.names)
+                nv = len(v.dtype.names) +1 #variables plus primary key
                 tstr = k+"("+','.join(v.dtype.names)+')'
                 if create:
-                    con.execute("create table "+ tstr)
+                    con.execute("create table "+ tstrc)
             else:
                 raise TypeError("Non-valid data structure.")
             #print "insert into "+tstr+" values("+",".join(['?']*nv)+")"
@@ -541,10 +542,10 @@ class FitModel(object):
         for vn in d2.keys():
             #sum errors for all oserved variables
             if isinstance(d2[vn], numpy.ndarray) and len(d2[vn].shape)>1:
-                diff = abs(series[vn][:, -1]-d2[vn][-1].mean())
+                diff = abs(series[vn][:, -1]-nanmean(d2[vn][-1]))
             else:
                 diff = abs(series[vn][:, -1]-d2[vn][-1])
-        print diff, min(diff)
+#        print diff, min(diff)
         initind = diff.tolist().index(min(diff))
         vindices = [self.phinames.index(n) for n in vars]
         for n in vars:
@@ -1068,7 +1069,7 @@ class Meld(object):
             if len(obs.shape)>1:
                 obs = nanmean(data[self.q2phi.dtype.names[k]], axis=1) 
             if po != None:# Parallel version
-                liks = sum([po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])])
+                liks = [po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])]
                 lik = sum([l.get() for l in liks])
             else:
                 for p in xrange(t): #Loop on time
