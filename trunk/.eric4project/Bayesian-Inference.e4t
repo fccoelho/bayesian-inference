@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
 <!-- eric4 tasks file for project Bayesian-Inference -->
-<!-- Saved: 2010-05-12, 09:18:44 -->
+<!-- Saved: 2010-05-12, 14:05:49 -->
 <Tasks version="4.2">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
@@ -510,7 +510,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Implement plot of best fit simulation against data</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:14:58</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>188</Linenumber>
@@ -519,7 +519,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:14:58</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>255</Linenumber>
@@ -528,7 +528,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: finish implementing this</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:14:58</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>656</Linenumber>
@@ -537,7 +537,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: allow passing of fitfun</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:50:29</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>305</Linenumber>
@@ -546,7 +546,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out what to do by default with inits</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:50:29</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>309</Linenumber>
@@ -555,28 +555,28 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out how to balance the total pop</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:50:29</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
-      <Linenumber>435</Linenumber>
+      <Linenumber>436</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Write tests for this</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:50:29</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
-      <Linenumber>475</Linenumber>
+      <Linenumber>476</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: implement calculation of AIC,BIC and DIC for SIR</Summary>
     <Description></Description>
-    <Created>2010-05-12, 08:37:45</Created>
+    <Created>2010-05-12, 13:50:29</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
-      <Linenumber>825</Linenumber>
+      <Linenumber>826</Linenumber>
     </Resource>
   </Task>
 </Tasks>
