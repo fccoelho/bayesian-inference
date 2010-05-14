@@ -117,10 +117,10 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
             ax.xaxis_date()
         co = c.next()
         if n in obs:
-            ax.plot(tim,obs[n][:len(tim)],'o', label="Observed %s"%n)
+            ax.plot(tim,obs[n][:len(tim)],'o', label=r"$Observed\; %s$"%n)
             #print len(tim),  ls
-        ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-', label="median "+n)
-        ax.plot(array(tim)+lag,mean(ser2[n],axis=0),'k--', label="mean "+n)
+        ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-', label=r"$median\; %s$"%n)
+        ax.plot(array(tim)+lag,mean(ser2[n],axis=0),'k--', label=r"$mean\; %s$"%n)
         lower = [stats.scoreatpercentile(t,2.5) for t in ser2[n].T]
         upper =[stats.scoreatpercentile(t,97.5) for t in ser2[n].T]
         if len(series)>1: #in the case of iterative simulations
