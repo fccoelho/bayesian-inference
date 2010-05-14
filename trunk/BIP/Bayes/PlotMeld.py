@@ -112,11 +112,12 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
         lag = int(lag)*wl
     for i, n in enumerate(names):
         ax = fig.add_subplot(len(names), 1, i+1)
+        ax.grid(True)
         if isinstance(tim[0], datetime.date):
             ax.xaxis_date()
         co = c.next()
         if n in obs:
-            ax.plot(tim,obs[n][:len(tim)],'ko', label="Observed %s"%n)
+            ax.plot(tim,obs[n][:len(tim)],'o', label="Observed %s"%n)
             #print len(tim),  ls
         ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-', label="median "+n)
         ax.plot(array(tim)+lag,mean(ser2[n],axis=0),'k--', label="mean "+n)
@@ -173,6 +174,7 @@ def plot_par_violin(tim,ptlist, priors={}, bp=True):
                 tim = [tim[0]-(tim[1]-tim[0])]+tim
     for i,n in enumerate(ptlist[0].dtype.names):
         ax = fig.add_subplot(r,c,i+1)
+        ax.grid(True)
         violin_plot(ax,[priors[n]]+[s[n] for s in ptlist],tim,bp, True)
         P.ylabel(n)
     #P.xlabel('Windows')
