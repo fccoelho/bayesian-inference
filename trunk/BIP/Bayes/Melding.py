@@ -348,7 +348,7 @@ class FitModel(object):
             for rn, r in enumerate(zip(*var.values())):
                 if not isinstance(r, tuple):
                     r = (r,)
-                t = [rn]
+                t = []#[rn]
                 for i in r:
                     if isinstance(i, numpy.ndarray):
                         t+=i.tolist()
@@ -374,16 +374,16 @@ class FitModel(object):
                         labs+=[k2+str(i) for i in range(v2.shape[1])]
                     else:
                         labs.append(k2)
-                nv = len(labs)+1 #variables plus primary key
-                tstrc = k+'(pk integer primary key,'+','.join(labs)+')'
-                tstr = k+'(pk,'+','.join(labs)+')'
+                nv = len(labs)#+1 #variables plus primary key
+                tstrc = k+'(pk integer primary key asc autoincrement,'+','.join(labs)+')'
+                tstr = k+'('+','.join(labs)+')'
                 if create:
                     con.execute('create table '+tstrc)
-            elif isinstance(v, numpy.recarray):
-                nv = len(v.dtype.names) +1 #variables plus primary key
-                tstr = k+"("+','.join(v.dtype.names)+')'
-                if create:
-                    con.execute("create table "+ tstrc)
+#            elif isinstance(v, numpy.recarray):
+#                nv = len(v.dtype.names) +1 #variables plus primary key
+#                tstr = k+"("+','.join(v.dtype.names)+')'
+#                if create:
+#                    con.execute("create table "+ tstrc)
             else:
                 raise TypeError("Non-valid data structure.")
             #print "insert into "+tstr+" values("+",".join(['?']*nv)+")"
@@ -663,7 +663,7 @@ class Meld(object):
         self.DIC = None
         self.proposal_variance = 0.0000001
         self.adaptscalefactor = 1 #adaptive variance. Used my metropolis hastings
-        self.salt_band = 0.1
+        self.salt_band = 0.1 #relaxation factor of the prior limits
         if Viz: #Gnuplot installed
             self.viz = viz
         else:
