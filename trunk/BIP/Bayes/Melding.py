@@ -265,6 +265,7 @@ class FitModel(object):
             
     def _init_priors(self, prior=None):
         """
+        Initialize priors either from distributions or previous posteriors
         """
         if prior!=None and prior['theta'] and prior['phi']:
             self.Me.setThetaFromData(self.thetanames,prior['theta'],self.tlims)
@@ -762,6 +763,16 @@ class Meld(object):
                 smp = -numpy.inf
                 while not (smp>=tlimits[self.name][0] and smp<=tlimits[self.name][1]):
                     smp = self.dist.resample(1)[0][0]
+                return smp
+            def rvs(self, *args, **kwds):
+                if 'size' in kwds:
+                    sz = kwds['size']
+                else:
+                    sz = 1
+                    #TODO implement return of multiple samples here if necessary
+                smp = -numpy.inf
+                while not (smp>=tlimits[self.name][0] and smp<=tlimits[self.name][1]):
+                    smp = self.dist.resample(sz)[0][0]
                 return smp
                 
         if os.path.exists('q1theta'):
