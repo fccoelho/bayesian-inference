@@ -664,10 +664,10 @@ class Dream(_Sampler):
         for c in range(self.nchains):
             #sample from the priors
             while 1:
-                try:
-                    theta = [self.parpriors[par].rvs() for par in self.parnames]
-                except:
-                    pdb.set_trace()
+#                try:
+                theta = [self.parpriors[par].rvs() for par in self.parnames]
+#                except:
+#                    pdb.set_trace()
                 if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
                     break
             self.lastcv = initcov #assume no covariance at the beginning

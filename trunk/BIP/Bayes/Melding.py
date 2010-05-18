@@ -756,6 +756,7 @@ class Meld(object):
         self.tlimits = limits
         tlimits = dict(zip(names,limits))
         class Proposal:
+            "class wrapping a kde adding similar interface to stats dists"
             def __init__(self,name, dist):
                 self.name = name
                 self.dist = dist
@@ -774,6 +775,10 @@ class Meld(object):
                 while not (smp>=tlimits[self.name][0] and smp<=tlimits[self.name][1]):
                     smp = self.dist.resample(sz)[0][0]
                 return smp
+            def pdf(self, x):
+                return self.dist.evaluate(x)[0]
+            def pmf(self, x):
+                return self.dist.evaluate(x)[0]
                 
         if os.path.exists('q1theta'):
             self.q1theta = CP.load(open('q1theta','r'))
