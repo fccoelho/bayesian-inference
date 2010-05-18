@@ -345,10 +345,10 @@ class FitModel(object):
 #                        yield tuple(repl)
 #            elif isinstance(var, dict):
 #                try:
-            for rn, r in enumerate(zip(*var.values())):
+            for r in zip(*var.values()):
                 if not isinstance(r, tuple):
                     r = (r,)
-                t = []#[rn]
+                t = []
                 for i in r:
                     if isinstance(i, numpy.ndarray):
                         t+=i.tolist()

@@ -894,6 +894,7 @@ class Dream(_Sampler):
         print ">>> Acceptance rate: %1.3f"%ar
         self.term_pool()
         self.pserver.close_plot()
+        self.pserver2.close_plot()
         return 1
 
 if __name__ == "__main__":
