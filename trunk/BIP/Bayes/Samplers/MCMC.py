@@ -415,6 +415,7 @@ class Metropolis(_Sampler):
         print ">>> Acceptance rate: %s"%ar
         self.term_pool()
         self.pserver.close_plot()
+        self.pserver2.close_plot()
         return 1
 
 
