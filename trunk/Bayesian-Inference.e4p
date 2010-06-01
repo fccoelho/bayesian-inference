@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Bayesian-Inference -->
-<!-- Saved: 2010-03-31, 12:38:39 -->
+<!-- Saved: 2010-05-18, 17:23:37 -->
 <!-- Copyright (C) 2010 Flávio Codeço Coelho, fccoelho@gmail.com -->
 <Project version="4.6">
   <Language></Language>
@@ -15,27 +15,6 @@
     <Source>distribute_setup.py</Source>
     <Source>setup.py</Source>
     <Source>ez_setup.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/SDE/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/SDE/gillespie.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/SDE/example.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/general/bvariables.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/general/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/conjugate_priors.py.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/like.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/PlotMeld.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/Samplers/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/Samplers/MCMC.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/lhs.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/conjugate/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Bayes/Melding.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Viz/realtime.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Viz/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Viz/ascii.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/Viz/asciihist.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/SMC/__init__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/SMC/condensation.py</Source>
     <Source>BIP/Docs/source/conf.py</Source>
     <Source>BIP/SDE/__init__.py</Source>
     <Source>BIP/SDE/gillespie.py</Source>
@@ -75,7 +54,6 @@
     <Source>BIP/Docs/source/sde.rst</Source>
     <Source>BIP/examples/Bayes/deterministic.py</Source>
     <Source>BIP/__version__.py</Source>
-    <Source>build/lib.linux-i686-2.6/BIP/__version__.py</Source>
     <Source>BIP/Docs/build/html/_downloads/deterministic.py</Source>
     <Source>BIP/Docs/build/html/_downloads/flu_stochastic.py</Source>
   </Sources>
