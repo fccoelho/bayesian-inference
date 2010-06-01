@@ -119,8 +119,7 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
         co = c.next()
         if n in obs:
             ax.plot(tim,obs[n][:len(tim)],'o', label=r"$Observed\; %s$"%n)
-            #print len(tim),  ls
-        pdb.set_trace()
+        #pdb.set_trace()
         ax.plot(array(tim)+lag,median(ser2[n],axis=0),'k-', label=r"$median\; %s$"%n)
         ax.plot(array(tim)+lag,mean(ser2[n],axis=0),'k--', label=r"$mean\; %s$"%n)
         lower = [stats.scoreatpercentile(t,2.5) for t in ser2[n].T]
