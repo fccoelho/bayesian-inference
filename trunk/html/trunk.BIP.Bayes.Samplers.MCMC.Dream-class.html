@@ -89,18 +89,24 @@ DiffeRential Evolution Adaptive Markov chain sampler
     </table>
   </td>
 </tr>
-<tr class="private">
+<tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="__init"></a><span class="summary-sig-name">__init</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">samples</span>=<span class="summary-sig-default">1000</span>,
-        <span class="summary-sig-arg">sampmax</span>=<span class="summary-sig-default">20000</span>,
-        <span class="summary-sig-arg">parpriors</span>=<span class="summary-sig-default">[]</span>,
-        <span class="summary-sig-arg">parnames</span>=<span class="summary-sig-default">[]</span>,
-        <span class="summary-sig-arg">burnIn</span>=<span class="summary-sig-default">100</span>,
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Dream-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">meldobj</span>,
+        <span class="summary-sig-arg">samples</span>,
+        <span class="summary-sig-arg">sampmax</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">parpriors</span>,
+        <span class="summary-sig-arg">parnames</span>,
+        <span class="summary-sig-arg">parlimits</span>,
+        <span class="summary-sig-arg">likfun</span>,
+        <span class="summary-sig-arg">likvariance</span>,
+        <span class="summary-sig-arg">burnin</span>,
         <span class="summary-sig-arg">thin</span>=<span class="summary-sig-default">5</span>,
         <span class="summary-sig-arg">convergenceCriteria</span>=<span class="summary-sig-default">1.1</span>,
         <span class="summary-sig-arg">nCR</span>=<span class="summary-sig-default">3</span>,
@@ -108,9 +114,11 @@ DiffeRential Evolution Adaptive Markov chain sampler
         <span class="summary-sig-arg">adaptationRate</span>=<span class="summary-sig-default">.65</span>,
         <span class="summary-sig-arg">eps</span>=<span class="summary-sig-default">5e-6</span>,
         <span class="summary-sig-arg">mConvergence</span>=<span class="summary-sig-default">False</span>,
-        <span class="summary-sig-arg">mAccept</span>=<span class="summary-sig-default">False</span>)</span></td>
+        <span class="summary-sig-arg">mAccept</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      x.__init__(...) initializes x; see x.__class__.__doc__ for signature</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.__init">source&nbsp;code</a></span>
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.__init__">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -124,29 +132,11 @@ DiffeRential Evolution Adaptive Markov chain sampler
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Dream-class.html#_propose" class="summary-sig-name" onclick="show_private();">_propose</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">step</span>=<span class="summary-sig-default">0</span>)</span><br />
-      Generates proposals</td>
+          <td><span class="summary-sig"><a name="_det_outlier_chains"></a><span class="summary-sig-name">_det_outlier_chains</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">step</span>)</span><br />
+      Determine which chains are outliers</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._propose">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_get_likelihoods"></a><span class="summary-sig-name">_get_likelihoods</span>(<span class="summary-sig-arg">prop</span>,
-        <span class="summary-sig-arg">po</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Calculate the likelihoods for each chain</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._get_likelihoods">source&nbsp;code</a></span>
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._det_outlier_chains">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -160,7 +150,143 @@ DiffeRential Evolution Adaptive Markov chain sampler
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="step"></a><span class="summary-sig-name">step</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a name="delayed_rejection"></a><span class="summary-sig-name">delayed_rejection</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">xi</span>,
+        <span class="summary-sig-arg">zi</span>,
+        <span class="summary-sig-arg">pxi</span>,
+        <span class="summary-sig-arg">zprob</span>)</span><br />
+      Generates a second proposal based on rejected proposal xi</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.delayed_rejection">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Dream-class.html#_alpha1" class="summary-sig-name" onclick="show_private();">_alpha1</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">p1</span>,
+        <span class="summary-sig-arg">p2</span>)</span><br />
+      Returns the Metropolis acceptance probability:
+alpha1(p1,p1) = min(1,p1/p2) if p2 &gt;-np.inf else 1</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._alpha1">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="update_CR_dist"></a><span class="summary-sig-name">update_CR_dist</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.update_CR_dist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_prop_initial_theta"></a><span class="summary-sig-name">_prop_initial_theta</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">step</span>)</span><br />
+      Generate Theta proposals from priors</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._prop_initial_theta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_prop_phi"></a><span class="summary-sig-name">_prop_phi</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">thetalist</span>,
+        <span class="summary-sig-arg">po</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Returns proposed Phi derived from theta</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._prop_phi">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_chain_evolution"></a><span class="summary-sig-name">_chain_evolution</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">proptheta</span>,
+        <span class="summary-sig-arg">propphi</span>,
+        <span class="summary-sig-arg">pps</span>,
+        <span class="summary-sig-arg">liks</span>)</span><br />
+      Chain evolution as describe in ter Braak's Dream algorithm.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._chain_evolution">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Dream-class.html#_get_post_prob" class="summary-sig-name" onclick="show_private();">_get_post_prob</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">theta</span>,
+        <span class="summary-sig-arg">prop</span>,
+        <span class="summary-sig-arg">po</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Calculates the posterior probability for the proposal of each chain</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._get_post_prob">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step"></a><span class="summary-sig-name">step</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Does the actual sampling loop.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.step">source&nbsp;code</a></span>
             
@@ -173,13 +299,20 @@ DiffeRential Evolution Adaptive Markov chain sampler
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
-      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#__init__">__init__</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#DIC">DIC</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions">dimensions</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_R">gr_R</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_convergence">gr_convergence</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#po">po</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#setup_xmlrpc_plotserver">setup_xmlrpc_plotserver</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#term_pool">term_pool</a></code>
       </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b> (private):
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_accept" onclick="show_private();">_accept</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_propose" onclick="show_private();">_propose</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_tune_likvar" onclick="show_private();">_tune_likvar</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_watch_chain" onclick="show_private();">_watch_chain</a></code>
+      </p></div>
     <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
       <code>__delattr__</code>,
       <code>__format__</code>,
@@ -217,12 +350,16 @@ DiffeRential Evolution Adaptive Markov chain sampler
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#e">e</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#liklist">liklist</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#seqhist">seqhist</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_acceptance">trace_acceptance</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_convergence">trace_convergence</a></code>
       </p>
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b> (private):
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_R" onclick="show_private();">_R</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_dimensions" onclick="show_private();">_dimensions</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_j" onclick="show_private();">_j</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_po" onclick="show_private();">_po</a></code>
       </p></div>
     </td>
@@ -271,27 +408,111 @@ DiffeRential Evolution Adaptive Markov chain sampler
   </td>
 </tr>
 </table>
-<a name="_propose"></a>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">meldobj</span>,
+        <span class="sig-arg">samples</span>,
+        <span class="sig-arg">sampmax</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">parpriors</span>,
+        <span class="sig-arg">parnames</span>,
+        <span class="sig-arg">parlimits</span>,
+        <span class="sig-arg">likfun</span>,
+        <span class="sig-arg">likvariance</span>,
+        <span class="sig-arg">burnin</span>,
+        <span class="sig-arg">thin</span>=<span class="sig-default">5</span>,
+        <span class="sig-arg">convergenceCriteria</span>=<span class="sig-default">1.1</span>,
+        <span class="sig-arg">nCR</span>=<span class="sig-default">3</span>,
+        <span class="sig-arg">DEpairs</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">adaptationRate</span>=<span class="sig-default">.65</span>,
+        <span class="sig-arg">eps</span>=<span class="sig-default">5e-6</span>,
+        <span class="sig-arg">mConvergence</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">mAccept</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>x.__init__(...) initializes x; see x.__class__.__doc__ for 
+  signature</p>
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_alpha1"></a>
 <div class="private">
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">_propose</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">step</span>=<span class="sig-default">0</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_alpha1</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">p1</span>,
+        <span class="sig-arg">p2</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._propose">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._alpha1">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  Generates proposals
+  Returns the Metropolis acceptance probability:
+alpha1(p1,p1) = min(1,p1/p2) if p2 &gt;-np.inf else 1
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>p1</code></strong> - : log probability</li>
+        <li><strong class="pname"><code>p2</code></strong> - : log probability</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@np.vectorize</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_get_post_prob"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_get_post_prob</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">theta</span>,
+        <span class="sig-arg">prop</span>,
+        <span class="sig-arg">po</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Dream._get_post_prob">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Calculates the posterior probability for the proposal of each chain
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>theta</code></strong> - : list of nchains thetas</li>
+        <li><strong class="pname"><code>prop</code></strong> - : list of nchains phis</li>
+        <li><strong class="pname"><code>po</code></strong> - : Pool of processes</li>
+    </ul></dd>
     <dt>Returns:</dt>
         <dd><ul class="rst-simple">
-<li>theta: list of parameters vectors of length <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions" class="link">self.dimensions</a></li>
-<li>prop: list of output arrays of length <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions" class="link">self.dimensions</a></li>
+<li><code class="link">posts</code>: list of log posterior probabilities of length self.nchains</li>
+<li><code class="link">listoliks</code>: list of log-likelihoods of length self.nchains</li>
 </ul></dd>
   </dl>
 </td></tr></table>
@@ -328,7 +549,7 @@ DiffeRential Evolution Adaptive Markov chain sampler
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

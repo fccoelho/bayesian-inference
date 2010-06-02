@@ -10,8 +10,8 @@
 
 
 \title{BIP - Bayesian Inference with Python Documentation}
-\date{2010-04-13}
-\release{0.4.0}
+\date{2010-06-02}
+\release{0.4.10}
 \author{Flávio Codeço Coelho}
 \newcommand{\sphinxlogo}{\includegraphics{BIP_large.png}\par}
 \renewcommand{\releasename}{Release}
@@ -90,6 +90,12 @@
 \def\PYG@tok@se{\let\PYG@bf=\textbf\def\PYG@tc##1{\textcolor[rgb]{0.25,0.44,0.63}{##1}}}
 \def\PYG@tok@sd{\let\PYG@it=\textit\def\PYG@tc##1{\textcolor[rgb]{0.25,0.44,0.63}{##1}}}
 
+\def\PYGZbs{\char`\\}
+\def\PYGZus{\char`\_}
+\def\PYGZob{\char`\{}
+\def\PYGZcb{\char`\}}
+\def\PYGZca{\char`\^}
+% for compatibility with earlier versions
 \def\PYGZat{@}
 \def\PYGZlb{[}
 \def\PYGZrb{]}
@@ -102,7 +108,7 @@
 \hypertarget{--doc-index}{}
 
 
-This documentation corresponds to version 0.4.0.
+This documentation corresponds to version 0.4.10.
 
 
 \chapter{Contents}
@@ -141,55 +147,55 @@ Frequently, we have a complete time series corresponding to one or more state va
 
 This first example includes a simple ODE (an SIR epidemic model) model which is fitted against simulated data to which noise is added:
 
-\begin{Verbatim}[commandchars=@\[\]]
-@PYG[c][@#-*- coding: utf-8 -*-]
-@PYG[l+s+sd]["""]
-@PYG[l+s+sd][Parameter estimation and series forcasting based on simulated data with moving window.]
-@PYG[l+s+sd][Deterministic model]
-@PYG[l+s+sd]["""]
-@PYG[c][@#]
-@PYG[c][@# Copyright 2009- by Flávio Codeço Coelho]
-@PYG[c][@# License gpl v3]
-@PYG[c][@#]
-@PYG[k+kn][from] @PYG[n+nn][BIP.Bayes.Melding] @PYG[k+kn][import] @PYG[n][FitModel]
-@PYG[k+kn][from] @PYG[n+nn][scipy.integrate] @PYG[k+kn][import] @PYG[n][odeint]
-@PYG[k+kn][import] @PYG[n+nn][scipy.stats] @PYG[k+kn][as] @PYG[n+nn][st]
-@PYG[k+kn][import] @PYG[n+nn][numpy] @PYG[k+kn][as] @PYG[n+nn][np]
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\#-*- coding: utf-8 -*-}
+\PYG{l+s+sd}{"""}
+\PYG{l+s+sd}{Parameter estimation and series forcasting based on simulated data with moving window.}
+\PYG{l+s+sd}{Deterministic model}
+\PYG{l+s+sd}{"""}
+\PYG{c}{\#}
+\PYG{c}{\# Copyright 2009- by Flávio Codeço Coelho}
+\PYG{c}{\# License gpl v3}
+\PYG{c}{\#}
+\PYG{k+kn}{from} \PYG{n+nn}{BIP.Bayes.Melding} \PYG{k+kn}{import} \PYG{n}{FitModel}
+\PYG{k+kn}{from} \PYG{n+nn}{scipy.integrate} \PYG{k+kn}{import} \PYG{n}{odeint}
+\PYG{k+kn}{import} \PYG{n+nn}{scipy.stats} \PYG{k+kn}{as} \PYG{n+nn}{st}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
 
-@PYG[n][beta] @PYG[o][=] @PYG[l+m+mi][1] @PYG[c][@#Transmission coefficient]
-@PYG[n][tau] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][2] @PYG[c][@#infectious period. FIXED]
-@PYG[n][tf] @PYG[o][=] @PYG[l+m+mi][36]
-@PYG[n][y0] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[o][.]@PYG[l+m+mi][999]@PYG[p][,]@PYG[l+m+mf][0.001]@PYG[p][,]@PYG[l+m+mf][0.0]@PYG[p][@PYGZrb[]]
-@PYG[k][def] @PYG[n+nf][model]@PYG[p][(]@PYG[n][theta]@PYG[p][)]@PYG[p][:]
-    @PYG[n][beta] @PYG[o][=] @PYG[n][theta]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]
-    @PYG[k][def] @PYG[n+nf][sir]@PYG[p][(]@PYG[n][y]@PYG[p][,]@PYG[n][t]@PYG[p][)]@PYG[p][:]
-        @PYG[l+s+sd]['''ODE model''']
-        @PYG[n][S]@PYG[p][,]@PYG[n][I]@PYG[p][,]@PYG[n][R] @PYG[o][=] @PYG[n][y]
-        @PYG[k][return]  @PYG[p][@PYGZlb[]]@PYG[o][-]@PYG[n][beta]@PYG[o][*]@PYG[n][I]@PYG[o][*]@PYG[n][S]@PYG[p][,] @PYG[c][@#dS/dt]
-                @PYG[n][beta]@PYG[o][*]@PYG[n][I]@PYG[o][*]@PYG[n][S] @PYG[o][-] @PYG[n][tau]@PYG[o][*]@PYG[n][I]@PYG[p][,] @PYG[c][@#dI/dt]
-                @PYG[n][tau]@PYG[o][*]@PYG[n][I]@PYG[p][@PYGZrb[]] @PYG[c][@#dR/dt]
-    @PYG[n][y] @PYG[o][=] @PYG[n][odeint]@PYG[p][(]@PYG[n][sir]@PYG[p][,]@PYG[n][inits]@PYG[p][,]@PYG[n][np]@PYG[o][.]@PYG[n][arange]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][)]@PYG[c][@#np.arange(t0,tf,step))]
-    @PYG[k][return] @PYG[n][y]
+\PYG{n}{beta} \PYG{o}{=} \PYG{l+m+mi}{1} \PYG{c}{\#Transmission coefficient}
+\PYG{n}{tau} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{2} \PYG{c}{\#infectious period. FIXED}
+\PYG{n}{tf} \PYG{o}{=} \PYG{l+m+mi}{36}
+\PYG{n}{y0} \PYG{o}{=} \PYG{p}{[}\PYG{o}{.}\PYG{l+m+mi}{999}\PYG{p}{,}\PYG{l+m+mf}{0.001}\PYG{p}{,}\PYG{l+m+mf}{0.0}\PYG{p}{]}
+\PYG{k}{def} \PYG{n+nf}{model}\PYG{p}{(}\PYG{n}{theta}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{beta} \PYG{o}{=} \PYG{n}{theta}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+    \PYG{k}{def} \PYG{n+nf}{sir}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{n}{t}\PYG{p}{)}\PYG{p}{:}
+        \PYG{l+s+sd}{'''ODE model'''}
+        \PYG{n}{S}\PYG{p}{,}\PYG{n}{I}\PYG{p}{,}\PYG{n}{R} \PYG{o}{=} \PYG{n}{y}
+        \PYG{k}{return}  \PYG{p}{[}\PYG{o}{-}\PYG{n}{beta}\PYG{o}{*}\PYG{n}{I}\PYG{o}{*}\PYG{n}{S}\PYG{p}{,} \PYG{c}{\#dS/dt}
+                \PYG{n}{beta}\PYG{o}{*}\PYG{n}{I}\PYG{o}{*}\PYG{n}{S} \PYG{o}{-} \PYG{n}{tau}\PYG{o}{*}\PYG{n}{I}\PYG{p}{,} \PYG{c}{\#dI/dt}
+                \PYG{n}{tau}\PYG{o}{*}\PYG{n}{I}\PYG{p}{]} \PYG{c}{\#dR/dt}
+    \PYG{n}{y} \PYG{o}{=} \PYG{n}{odeint}\PYG{p}{(}\PYG{n}{sir}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{,}\PYG{n}{np}\PYG{o}{.}\PYG{n}{arange}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{tf}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{c}{\#np.arange(t0,tf,step))}
+    \PYG{k}{return} \PYG{n}{y}
     
-@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][300]@PYG[p][,] @PYG[n][model]@PYG[p][,]@PYG[n][y0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
-            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
-@PYG[n][F]@PYG[o][.]@PYG[n][set@_priors]@PYG[p][(]@PYG[n][tdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tpars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][1.1]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tlims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][0.5]@PYG[p][,]@PYG[l+m+mf][1.5]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]
-    @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mi][8]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][)]
-@PYG[n][d] @PYG[o][=] @PYG[n][model]@PYG[p][(]@PYG[p][@PYGZlb[]]@PYG[l+m+mf][1.0]@PYG[p][@PYGZrb[]]@PYG[p][)] @PYG[c][@#simulate some data]
-@PYG[n][noise] @PYG[o][=] @PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mf][0.01]@PYG[p][)]@PYG[o][.]@PYG[n][rvs]@PYG[p][(]@PYG[l+m+mi][36]@PYG[p][)]
-@PYG[n][dt] @PYG[o][=] @PYG[p][{]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[o][+]@PYG[n][noise]@PYG[p][}] @PYG[c][@# add noise]
-@PYG[n][F]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][dt]@PYG[p][,]@PYG[l+s][']@PYG[l+s][MCMC]@PYG[l+s][']@PYG[p][,]@PYG[n][likvar]@PYG[o][=]@PYG[l+m+mf][1e-4]@PYG[p][,]@PYG[n][pool]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][monitor]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZrb[]]@PYG[p][)]
-@PYG[c][@#==Uncomment the line below to see plots of the results]
-@PYG[n][F]@PYG[o][.]@PYG[n][plot@_results]@PYG[p][(]@PYG[p][)]
+\PYG{n}{F} \PYG{o}{=} \PYG{n}{FitModel}\PYG{p}{(}\PYG{l+m+mi}{300}\PYG{p}{,} \PYG{n}{model}\PYG{p}{,}\PYG{n}{y0}\PYG{p}{,}\PYG{n}{tf}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{beta}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{S}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{R}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}
+            \PYG{n}{wl}\PYG{o}{=}\PYG{l+m+mi}{36}\PYG{p}{,}\PYG{n}{nw}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{verbose}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{burnin}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+\PYG{n}{F}\PYG{o}{.}\PYG{n}{set\PYGZus{}priors}\PYG{p}{(}\PYG{n}{tdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{]}\PYG{p}{,}\PYG{n}{tpars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{1.1}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}\PYG{n}{tlims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{,}\PYG{l+m+mf}{1.5}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}
+    \PYG{n}{pdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{n}{ppars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{o}{.}\PYG{l+m+mi}{8}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}\PYG{n}{plims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{3}\PYG{p}{)}
+\PYG{n}{d} \PYG{o}{=} \PYG{n}{model}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{)} \PYG{c}{\#simulate some data}
+\PYG{n}{noise} \PYG{o}{=} \PYG{n}{st}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mf}{0.01}\PYG{p}{)}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{l+m+mi}{36}\PYG{p}{)}
+\PYG{n}{dt} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{+}\PYG{n}{noise}\PYG{p}{\PYGZcb{}} \PYG{c}{\# add noise}
+\PYG{n}{F}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{dt}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{MCMC}\PYG{l+s}{'}\PYG{p}{,}\PYG{n}{likvar}\PYG{o}{=}\PYG{l+m+mf}{1e-4}\PYG{p}{,}\PYG{n}{pool}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{,}\PYG{n}{monitor}\PYG{o}{=}\PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+\PYG{c}{\#==Uncomment the line below to see plots of the results}
+\PYG{n}{F}\PYG{o}{.}\PYG{n}{plot\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
 The code above starts by defining the models parameters and initial conditions, and a function which takes in the parameters runs the model and returns the output.
 
 After that, we Instantiate our fitting Object:
 
-\begin{Verbatim}[commandchars=@\[\]]
-@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][300]@PYG[p][,]@PYG[n][model]@PYG[p][,]@PYG[n][y0]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
-            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][36]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{F} \PYG{o}{=} \PYG{n}{FitModel}\PYG{p}{(}\PYG{l+m+mi}{300}\PYG{p}{,}\PYG{n}{model}\PYG{p}{,}\PYG{n}{y0}\PYG{p}{,}\PYG{n}{tf}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{beta}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{S}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{R}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}
+            \PYG{n}{wl}\PYG{o}{=}\PYG{l+m+mi}{36}\PYG{p}{,}\PYG{n}{nw}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{verbose}\PYG{o}{=}\PYG{n+nb+bp}{False}\PYG{p}{,}\PYG{n}{burnin}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
 \end{Verbatim}
 
 Here we have to pass a few arguments: the first (\code{K=300}) is the number of samples we will take from the joint prior distribution of the parameters to run the inference. The second one (\code{model}) is the callable(function) which corresponds to the model you want to fit to data. Then you have the initial condition vector(\code{inits=y0}), the list of parameter names (\code{thetanames = {[}'beta'{]}}), the list of variable names (\code{phinames={[}'S','I','R'{]}}), inference window length (\code{wl=36}), number of juxtaposed windows (\code{nw=1}), verbosity flag (\code{verbose=False}) and finally the number of burnin samples (\code{burnin=1000}), which is only needed for if the inference method chosen is \code{MCMC}.
@@ -198,9 +204,9 @@ One should always have \code{verbose=True} on a first fitting run of a model or 
 
 The next line of code also carries a lot of relevant information about the inference: the specification of the prior distributions. By now you must have noticed that not all parameters included in the model need to be included in the analysis. any number of them except for one can be set constant, which is what happens with the parameter \code{tau} in this example:
 
-\begin{Verbatim}[commandchars=@\[\]]
-@PYG[n][F]@PYG[o][.]@PYG[n][set@_priors]@PYG[p][(]@PYG[n][tdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][norm]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tpars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][1.1]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tlims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][0.5]@PYG[p][,]@PYG[l+m+mf][1.5]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]
-    @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mi][8]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][2]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][)]
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{F}\PYG{o}{.}\PYG{n}{set\PYGZus{}priors}\PYG{p}{(}\PYG{n}{tdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{]}\PYG{p}{,}\PYG{n}{tpars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{1.1}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}\PYG{n}{tlims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{,}\PYG{l+m+mf}{1.5}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}
+    \PYG{n}{pdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{n}{ppars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{o}{.}\PYG{l+m+mi}{8}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}\PYG{n}{plims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{3}\PYG{p}{)}
 \end{Verbatim}
 
 here we set the prior distributions for the theta (the model's parameters) and phi (the model's variables). \code{tdists}, \code{tpars} and \code{tlims} are theta's distributions, parameters, and ranges. For example here we use a Normal distribution (\code{st.norm}) for \code{beta}, with mean and standard deviation equal to 1.1 and .2, respectively. we also set the range of \code{beta} to be from 0.5 to 1.5. We do the same for phi.
@@ -226,80 +232,80 @@ The code for the above example can be found in the examples directory of the BIP
 
 This example fits a stochastic model to simulated data. It uses the \hyperlink{sde}{\emph{SDE}} package of BIP:
 
-\begin{Verbatim}[commandchars=@\[\]]
-@PYG[c][@#-*- coding:utf-8 -*-]
-@PYG[l+s+sd]["""]
-@PYG[l+s+sd][Parameter estimation and series forcasting based on simulated data with moving window.]
-@PYG[l+s+sd][Stochastic model]
-@PYG[l+s+sd]["""]
-@PYG[c][@#]
-@PYG[c][@# Copyright 2009- by Flávio Codeço Coelho]
-@PYG[c][@# License gpl v3]
-@PYG[c][@#]
-@PYG[k+kn][from] @PYG[n+nn][BIP.SDE.gillespie] @PYG[k+kn][import] @PYG[n][Model]
-@PYG[k+kn][from] @PYG[n+nn][BIP.Bayes.Melding] @PYG[k+kn][import] @PYG[n][FitModel]
-@PYG[k+kn][import] @PYG[n+nn][numpy] @PYG[k+kn][as] @PYG[n+nn][np]
-@PYG[k+kn][from] @PYG[n+nn][scipy] @PYG[k+kn][import] @PYG[n][stats] @PYG[k][as] @PYG[n][st]
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\#-*- coding:utf-8 -*-}
+\PYG{l+s+sd}{"""}
+\PYG{l+s+sd}{Parameter estimation and series forcasting based on simulated data with moving window.}
+\PYG{l+s+sd}{Stochastic model}
+\PYG{l+s+sd}{"""}
+\PYG{c}{\#}
+\PYG{c}{\# Copyright 2009- by Flávio Codeço Coelho}
+\PYG{c}{\# License gpl v3}
+\PYG{c}{\#}
+\PYG{k+kn}{from} \PYG{n+nn}{BIP.SDE.gillespie} \PYG{k+kn}{import} \PYG{n}{Model}
+\PYG{k+kn}{from} \PYG{n+nn}{BIP.Bayes.Melding} \PYG{k+kn}{import} \PYG{n}{FitModel}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{from} \PYG{n+nn}{scipy} \PYG{k+kn}{import} \PYG{n}{stats} \PYG{k}{as} \PYG{n}{st}
 
-@PYG[n][mu] @PYG[o][=] @PYG[l+m+mf][0.0] @PYG[c][@#birth and death rate.FIXED]
-@PYG[n][beta] @PYG[o][=] @PYG[l+m+mf][0.00058] @PYG[c][@#Transmission rate]
-@PYG[n][eta] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][5] @PYG[c][@#infectivity of asymptomatic infections relative to clinical ones. FIXED]
-@PYG[n][epsilon] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][1] @PYG[c][@#latency period ]
-@PYG[n][alpha] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][2] @PYG[c][@#Probability of developing clinical influenza symptoms]
-@PYG[n][sigma] @PYG[o][=] @PYG[o][.]@PYG[l+m+mi][5] @PYG[c][@#reduced risk of re-infection after recovery]
-@PYG[n][tau] @PYG[o][=] @PYG[o][.]@PYG[l+m+mo][01] @PYG[c][@#infectious period. FIXED]
-@PYG[c][@# Initial conditions]
-@PYG[k][global] @PYG[n][inits]@PYG[p][,]@PYG[n][tf]
-@PYG[n][tf]@PYG[o][=] @PYG[l+m+mi][140]
-@PYG[n][inits] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[l+m+mi][490]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][10]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]
-@PYG[n][pars] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[n][beta]@PYG[p][,]@PYG[n][alpha]@PYG[p][,]@PYG[n][sigma]@PYG[p][@PYGZrb[]]
+\PYG{n}{mu} \PYG{o}{=} \PYG{l+m+mf}{0.0} \PYG{c}{\#birth and death rate.FIXED}
+\PYG{n}{beta} \PYG{o}{=} \PYG{l+m+mf}{0.00058} \PYG{c}{\#Transmission rate}
+\PYG{n}{eta} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{5} \PYG{c}{\#infectivity of asymptomatic infections relative to clinical ones. FIXED}
+\PYG{n}{epsilon} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{1} \PYG{c}{\#latency period }
+\PYG{n}{alpha} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{2} \PYG{c}{\#Probability of developing clinical influenza symptoms}
+\PYG{n}{sigma} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{5} \PYG{c}{\#reduced risk of re-infection after recovery}
+\PYG{n}{tau} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mo}{01} \PYG{c}{\#infectious period. FIXED}
+\PYG{c}{\# Initial conditions}
+\PYG{k}{global} \PYG{n}{inits}\PYG{p}{,}\PYG{n}{tf}
+\PYG{n}{tf}\PYG{o}{=} \PYG{l+m+mi}{140}
+\PYG{n}{inits} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mi}{490}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}
+\PYG{n}{pars} \PYG{o}{=} \PYG{p}{[}\PYG{n}{beta}\PYG{p}{,}\PYG{n}{alpha}\PYG{p}{,}\PYG{n}{sigma}\PYG{p}{]}
 
 
-@PYG[c][@# propensity functions]
-@PYG[k][def] @PYG[n+nf][f1]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[p][(]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[o][+]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[p][)]@PYG[c][@#S-@textgreater[]E]
-@PYG[k][def] @PYG[n+nf][f2]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[c][@#E-@textgreater[]I]
-@PYG[k][def] @PYG[n+nf][f3]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[c][@#I-@textgreater[]R]
-@PYG[k][def] @PYG[n+nf][f4]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[c][@#E-@textgreater[]A]
-@PYG[k][def] @PYG[n+nf][f5]@PYG[p][(]@PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[p][)]@PYG[p][:]@PYG[k][return] @PYG[n][r]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][4]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[n][inits]@PYG[p][@PYGZlb[]]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[c][@#A-@textgreater[]R]
+\PYG{c}{\# propensity functions}
+\PYG{k}{def} \PYG{n+nf}{f1}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{*}\PYG{p}{(}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{o}{+}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{p}{)}\PYG{c}{\#S-\textgreater{}E}
+\PYG{k}{def} \PYG{n+nf}{f2}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{c}{\#E-\textgreater{}I}
+\PYG{k}{def} \PYG{n+nf}{f3}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{c}{\#I-\textgreater{}R}
+\PYG{k}{def} \PYG{n+nf}{f4}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{c}{\#E-\textgreater{}A}
+\PYG{k}{def} \PYG{n+nf}{f5}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{4}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{c}{\#A-\textgreater{}R}
 
-@PYG[k][def] @PYG[n+nf][runModel]@PYG[p][(]@PYG[n][theta]@PYG[p][)]@PYG[p][:]
-    @PYG[k][global] @PYG[n][tf]@PYG[p][,]@PYG[n][inits]
-    @PYG[n][step] @PYG[o][=] @PYG[l+m+mi][1]
-    @PYG[c][@#setting parameters]
-    @PYG[n][beta]@PYG[p][,]@PYG[n][alpha]@PYG[p][,]@PYG[n][sigma] @PYG[o][=] @PYG[n][theta]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]
-    @PYG[n][vnames] @PYG[o][=] @PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][E]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][A]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]
-    @PYG[c][@#rates: b,ki,ka,ri,ra]
-    @PYG[c][@#r = (0.001, 0.1, 0.1, 0.01, 0.01)]
-    @PYG[n][r] @PYG[o][=] @PYG[p][(]@PYG[n][beta]@PYG[p][,] @PYG[p][(]@PYG[n][alpha]@PYG[p][)]@PYG[o][*]@PYG[n][epsilon]@PYG[p][,] @PYG[p][(]@PYG[l+m+mi][1]@PYG[o][-]@PYG[n][alpha]@PYG[p][)]@PYG[o][*]@PYG[n][epsilon]@PYG[p][,] @PYG[n][tau]@PYG[p][,] @PYG[n][tau]@PYG[p][)]
-    @PYG[c][@#print r,inits]
-    @PYG[c][@# propensity functions]
-    @PYG[n][propf] @PYG[o][=] @PYG[p][(]@PYG[n][f1]@PYG[p][,]@PYG[n][f2]@PYG[p][,]@PYG[n][f3]@PYG[p][,]@PYG[n][f4]@PYG[p][,]@PYG[n][f5]@PYG[p][)]
+\PYG{k}{def} \PYG{n+nf}{runModel}\PYG{p}{(}\PYG{n}{theta}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{global} \PYG{n}{tf}\PYG{p}{,}\PYG{n}{inits}
+    \PYG{n}{step} \PYG{o}{=} \PYG{l+m+mi}{1}
+    \PYG{c}{\#setting parameters}
+    \PYG{n}{beta}\PYG{p}{,}\PYG{n}{alpha}\PYG{p}{,}\PYG{n}{sigma} \PYG{o}{=} \PYG{n}{theta}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{3}\PYG{p}{]}
+    \PYG{n}{vnames} \PYG{o}{=} \PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{S}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{E}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{A}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{R}\PYG{l+s}{'}\PYG{p}{]}
+    \PYG{c}{\#rates: b,ki,ka,ri,ra}
+    \PYG{c}{\#r = (0.001, 0.1, 0.1, 0.01, 0.01)}
+    \PYG{n}{r} \PYG{o}{=} \PYG{p}{(}\PYG{n}{beta}\PYG{p}{,} \PYG{p}{(}\PYG{n}{alpha}\PYG{p}{)}\PYG{o}{*}\PYG{n}{epsilon}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{-}\PYG{n}{alpha}\PYG{p}{)}\PYG{o}{*}\PYG{n}{epsilon}\PYG{p}{,} \PYG{n}{tau}\PYG{p}{,} \PYG{n}{tau}\PYG{p}{)}
+    \PYG{c}{\#print r,inits}
+    \PYG{c}{\# propensity functions}
+    \PYG{n}{propf} \PYG{o}{=} \PYG{p}{(}\PYG{n}{f1}\PYG{p}{,}\PYG{n}{f2}\PYG{p}{,}\PYG{n}{f3}\PYG{p}{,}\PYG{n}{f4}\PYG{p}{,}\PYG{n}{f5}\PYG{p}{)}
 
-    @PYG[n][tmat] @PYG[o][=] @PYG[n][np]@PYG[o][.]@PYG[n][array]@PYG[p][(]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZlb[]]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]
-                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][1]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]
-                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]
-                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][,]@PYG[o][-]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[p][,]
-                  @PYG[p][@PYGZlb[]] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][,] @PYG[l+m+mi][0]@PYG[p][,] @PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]
-                @PYG[p][@PYGZrb[]]@PYG[p][)]
-    @PYG[n][M]@PYG[o][=]@PYG[n][Model]@PYG[p][(]@PYG[n][vnames]@PYG[o][=]@PYG[n][vnames]@PYG[p][,]@PYG[n][rates] @PYG[o][=] @PYG[n][r]@PYG[p][,]@PYG[n][inits]@PYG[o][=]@PYG[n][inits]@PYG[p][,]@PYG[n][tmat]@PYG[o][=]@PYG[n][tmat]@PYG[p][,]@PYG[n][propensity]@PYG[o][=]@PYG[n][propf]@PYG[p][)]
-    @PYG[c][@#t0 = time.time()]
-    @PYG[n][M]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][tmax]@PYG[o][=]@PYG[n][tf]@PYG[p][,]@PYG[n][reps]@PYG[o][=]@PYG[l+m+mi][1]@PYG[p][,]@PYG[n][viz]@PYG[o][=]@PYG[n+nb+bp][False]@PYG[p][,]@PYG[n][serial]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][)]
-    @PYG[n][t]@PYG[p][,]@PYG[n][series]@PYG[p][,]@PYG[n][steps] @PYG[o][=] @PYG[n][M]@PYG[o][.]@PYG[n][getStats]@PYG[p][(]@PYG[p][)]
-    @PYG[n][ser] @PYG[o][=] @PYG[n][series]@PYG[o][.]@PYG[n][mean]@PYG[p][(]@PYG[n][axis]@PYG[o][=]@PYG[l+m+mi][0]@PYG[p][)]
-    @PYG[c][@#print series.shape]
-    @PYG[k][return] @PYG[n][ser]
+    \PYG{n}{tmat} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{p}{[}\PYG{o}{-}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                  \PYG{p}{[} \PYG{l+m+mi}{1}\PYG{p}{,}\PYG{o}{-}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,}\PYG{o}{-}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                  \PYG{p}{[} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,}\PYG{o}{-}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+                  \PYG{p}{[} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,}\PYG{o}{-}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}
+                  \PYG{p}{[} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}
+                \PYG{p}{]}\PYG{p}{)}
+    \PYG{n}{M}\PYG{o}{=}\PYG{n}{Model}\PYG{p}{(}\PYG{n}{vnames}\PYG{o}{=}\PYG{n}{vnames}\PYG{p}{,}\PYG{n}{rates} \PYG{o}{=} \PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{o}{=}\PYG{n}{inits}\PYG{p}{,}\PYG{n}{tmat}\PYG{o}{=}\PYG{n}{tmat}\PYG{p}{,}\PYG{n}{propensity}\PYG{o}{=}\PYG{n}{propf}\PYG{p}{)}
+    \PYG{c}{\#t0 = time.time()}
+    \PYG{n}{M}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{tmax}\PYG{o}{=}\PYG{n}{tf}\PYG{p}{,}\PYG{n}{reps}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{viz}\PYG{o}{=}\PYG{n+nb+bp}{False}\PYG{p}{,}\PYG{n}{serial}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{)}
+    \PYG{n}{t}\PYG{p}{,}\PYG{n}{series}\PYG{p}{,}\PYG{n}{steps} \PYG{o}{=} \PYG{n}{M}\PYG{o}{.}\PYG{n}{getStats}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{ser} \PYG{o}{=} \PYG{n}{series}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+    \PYG{c}{\#print series.shape}
+    \PYG{k}{return} \PYG{n}{ser}
 
-@PYG[n][d] @PYG[o][=] @PYG[n][runModel]@PYG[p][(]@PYG[p][@PYGZlb[]]@PYG[n][beta]@PYG[p][,]@PYG[n][alpha]@PYG[p][,]@PYG[n][sigma]@PYG[p][@PYGZrb[]]@PYG[p][)]
-@PYG[n][dt] @PYG[o][=] @PYG[p][{]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][0]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][E]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][2]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][A]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][3]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][:]@PYG[n][d]@PYG[p][@PYGZlb[]]@PYG[p][:]@PYG[p][,]@PYG[l+m+mi][4]@PYG[p][@PYGZrb[]]@PYG[p][}]
-@PYG[n][F] @PYG[o][=] @PYG[n][FitModel]@PYG[p][(]@PYG[l+m+mi][300]@PYG[p][,] @PYG[n][runModel]@PYG[p][,]@PYG[n][inits]@PYG[p][,]@PYG[n][tf]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][beta]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][alpha]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][sigma]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[p][@PYGZlb[]]@PYG[l+s][']@PYG[l+s][S]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][E]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][I]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][A]@PYG[l+s][']@PYG[p][,]@PYG[l+s][']@PYG[l+s][R]@PYG[l+s][']@PYG[p][@PYGZrb[]]@PYG[p][,]
-            @PYG[n][wl]@PYG[o][=]@PYG[l+m+mi][7]@PYG[p][,]@PYG[n][nw]@PYG[o][=]@PYG[l+m+mi][20]@PYG[p][,]@PYG[n][verbose]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][burnin]@PYG[o][=]@PYG[l+m+mi][100]@PYG[p][)]
-@PYG[n][F]@PYG[o][.]@PYG[n][set@_priors]@PYG[p][(]@PYG[n][tdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][3]@PYG[p][,]@PYG[n][tpars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mf][0.00001]@PYG[p][,]@PYG[o][.]@PYG[l+m+mo][0006]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mo][01]@PYG[p][,]@PYG[o][.]@PYG[l+m+mi][5]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]@PYG[n][tlims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[o][.]@PYG[l+m+mo][001]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][,]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][1]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[p][,]
-    @PYG[n][pdists]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[n][st]@PYG[o][.]@PYG[n][uniform]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][5]@PYG[p][,]@PYG[n][ppars]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][500]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][5]@PYG[p][,]@PYG[n][plims]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][(]@PYG[l+m+mi][0]@PYG[p][,]@PYG[l+m+mi][500]@PYG[p][)]@PYG[p][@PYGZrb[]]@PYG[o][*]@PYG[l+m+mi][5]@PYG[p][)]
+\PYG{n}{d} \PYG{o}{=} \PYG{n}{runModel}\PYG{p}{(}\PYG{p}{[}\PYG{n}{beta}\PYG{p}{,}\PYG{n}{alpha}\PYG{p}{,}\PYG{n}{sigma}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{dt} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s}{'}\PYG{l+s}{S}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{E}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{A}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{R}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{]}\PYG{p}{\PYGZcb{}}
+\PYG{n}{F} \PYG{o}{=} \PYG{n}{FitModel}\PYG{p}{(}\PYG{l+m+mi}{300}\PYG{p}{,} \PYG{n}{runModel}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{,}\PYG{n}{tf}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{beta}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{alpha}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{sigma}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{S}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{E}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{A}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{R}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}
+            \PYG{n}{wl}\PYG{o}{=}\PYG{l+m+mi}{7}\PYG{p}{,}\PYG{n}{nw}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{,}\PYG{n}{verbose}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{,}\PYG{n}{burnin}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+\PYG{n}{F}\PYG{o}{.}\PYG{n}{set\PYGZus{}priors}\PYG{p}{(}\PYG{n}{tdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{n}{tpars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{0.00001}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mo}{0006}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{o}{.}\PYG{l+m+mo}{01}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}\PYG{n}{tlims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{o}{.}\PYG{l+m+mo}{001}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}
+    \PYG{n}{pdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{n}{ppars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{500}\PYG{p}{)}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{n}{plims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{500}\PYG{p}{)}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{5}\PYG{p}{)}
 
-@PYG[n][F]@PYG[o][.]@PYG[n][run]@PYG[p][(]@PYG[n][dt]@PYG[p][,]@PYG[l+s][']@PYG[l+s][MCMC]@PYG[l+s][']@PYG[p][,]@PYG[n][likvar]@PYG[o][=]@PYG[l+m+mf][2e2]@PYG[p][,]@PYG[n][pool]@PYG[o][=]@PYG[n+nb+bp][True]@PYG[p][,]@PYG[n][monitor]@PYG[o][=]@PYG[p][@PYGZlb[]]@PYG[p][@PYGZrb[]]@PYG[p][)]
-@PYG[c][@#print F.optimize(data=dt,p0=@PYGZlb[]0.1,.5,.1@PYGZrb[], optimizer='scipy',tol=1e-5, verbose=1, plot=1)]
-@PYG[c][@#==Uncomment the line below to see plots of the results]
-@PYG[c][@#F.plot@_results()]
+\PYG{n}{F}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{dt}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{MCMC}\PYG{l+s}{'}\PYG{p}{,}\PYG{n}{likvar}\PYG{o}{=}\PYG{l+m+mf}{2e2}\PYG{p}{,}\PYG{n}{pool}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{,}\PYG{n}{monitor}\PYG{o}{=}\PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+\PYG{c}{\#print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='scipy',tol=1e-5, verbose=1, plot=1)}
+\PYG{c}{\#==Uncomment the line below to see plots of the results}
+\PYG{c}{\#F.plot\PYGZus{}results()}
 \end{Verbatim}
 
 This example can be found in the examples folder of BIP under the name of \textbf{flu\_stochastic.py}.

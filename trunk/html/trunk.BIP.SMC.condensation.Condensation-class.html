@@ -108,9 +108,14 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="trunk.BIP.SMC.condensation.Condensation-class.html#pickBaseSample" class="summary-sig-name">pickBaseSample</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a name="pickBaseSample"></a><span class="summary-sig-name">pickBaseSample</span>(<span class="summary-sig-arg">self</span>)</span><br />
       This is binary search using cumulative probabilities to pick a base
-sample.</td>
+sample. The use of this routine makes Condensation O(NlogN) where N
+is the number of samples. It is probably better to pick base
+samples deterministically, since then the algorithm is O(N) and
+probably marginally more efficient, but this routine is kept here
+for conceptual simplicity and because it maps better to the
+published literature.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.SMC.condensation-pysrc.html#Condensation.pickBaseSample">source&nbsp;code</a></span>
             
@@ -126,9 +131,13 @@ sample.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="trunk.BIP.SMC.condensation.Condensation-class.html#predictNewBases" class="summary-sig-name">predictNewBases</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a name="predictNewBases"></a><span class="summary-sig-name">predictNewBases</span>(<span class="summary-sig-arg">self</span>)</span><br />
       This method computes all of the new (unweighted) sample
-positions.</td>
+positions. For each sample, first a base is chosen, then the new
+sample position is computed by sampling from the prediction density
+p(x_t|x_t-1 = base). predict_sample_position is obviously
+model-dependent and is found in Model, but it can be
+replaced by any process model required.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.SMC.condensation-pysrc.html#Condensation.predictNewBases">source&nbsp;code</a></span>
             
@@ -160,10 +169,15 @@ positions.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="trunk.BIP.SMC.condensation.Condensation-class.html#calculateBaseWeights" class="summary-sig-name">calculateBaseWeights</a>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a name="calculateBaseWeights"></a><span class="summary-sig-name">calculateBaseWeights</span>(<span class="summary-sig-arg">self</span>)</span><br />
       Once all the unweighted sample positions have been computed using
 predict_new_bases, this routine computes the weights by evaluating
-the observation density at each of the positions.</td>
+the observation density at each of the positions. Cumulative
+probabilities are also computed at the same time, to permit an
+efficient implementation of pick_base_sample using binary
+search. evaluate_observation_density is obviously model-dependent
+and is found in the Model class, but it can be replaced by any
+observation model required.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.SMC.condensation-pysrc.html#Condensation.calculateBaseWeights">source&nbsp;code</a></span>
             
@@ -281,81 +295,6 @@ over the arrays ready for the next iteration.</td>
   </dl>
 </td></tr></table>
 </div>
-<a name="pickBaseSample"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">pickBaseSample</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="trunk.BIP.SMC.condensation-pysrc.html#Condensation.pickBaseSample">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  This is binary search using cumulative probabilities to pick a base
-sample. The use of this routine makes Condensation O(NlogN) where N
-is the number of samples. It is probably better to pick base
-samples deterministically, since then the algorithm is O(N) and
-probably marginally more efficient, but this routine is kept here
-for conceptual simplicity and because it maps better to the
-published literature.
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="predictNewBases"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">predictNewBases</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="trunk.BIP.SMC.condensation-pysrc.html#Condensation.predictNewBases">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  This method computes all of the new (unweighted) sample
-positions. For each sample, first a base is chosen, then the new
-sample position is computed by sampling from the prediction density
-p(x_t|x_t-1 = base). predict_sample_position is obviously
-model-dependent and is found in Model, but it can be
-replaced by any process model required.
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
-<a name="calculateBaseWeights"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">calculateBaseWeights</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="trunk.BIP.SMC.condensation-pysrc.html#Condensation.calculateBaseWeights">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Once all the unweighted sample positions have been computed using
-predict_new_bases, this routine computes the weights by evaluating
-the observation density at each of the positions. Cumulative
-probabilities are also computed at the same time, to permit an
-efficient implementation of pick_base_sample using binary
-search. evaluate_observation_density is obviously model-dependent
-and is found in the Model class, but it can be replaced by any
-observation model required.
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -388,7 +327,7 @@ observation model required.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

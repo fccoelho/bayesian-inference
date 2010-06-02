@@ -113,6 +113,23 @@ Holds common logic and
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#DIC" class="summary-sig-name">DIC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Calculates  the deviance information criterion</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.DIC">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions" class="summary-sig-name">dimensions</a>(<span class="summary-sig-arg">self</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.dimensions">source&nbsp;code</a></span>
@@ -131,7 +148,7 @@ Holds common logic and
         <tr>
           <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#po" class="summary-sig-name">po</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Pool of processes for parallel execution of tasks
-Remember to call self.po.close() and self.po.join() when done.</td>
+Remember to call self.term_pool() when done.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.po">source&nbsp;code</a></span>
             
@@ -163,7 +180,9 @@ Remember to call self.po.close() and self.po.join() when done.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="gr_R"></a><span class="summary-sig-name">gr_R</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a name="gr_R"></a><span class="summary-sig-name">gr_R</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">end</span>,
+        <span class="summary-sig-arg">start</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.gr_R">source&nbsp;code</a></span>
             
@@ -180,11 +199,101 @@ Remember to call self.po.close() and self.po.join() when done.</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="gr_convergence"></a><span class="summary-sig-name">gr_convergence</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">sequences</span>,
         <span class="summary-sig-arg">relevantHistoryEnd</span>,
-        <span class="summary-sig-arg">relevantHistoryStart</span>)</span></td>
+        <span class="summary-sig-arg">relevantHistoryStart</span>)</span><br />
+      Gelman-Rubin Convergence</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.gr_convergence">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_accept" class="summary-sig-name" onclick="show_private();">_accept</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">last_lik</span>,
+        <span class="summary-sig-arg">lik</span>)</span><br />
+      Decides whether to accept a proposal</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler._accept">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setup_xmlrpc_plotserver"></a><span class="summary-sig-name">setup_xmlrpc_plotserver</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Sets up the server for real-time chain watch</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.setup_xmlrpc_plotserver">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_watch_chain"></a><span class="summary-sig-name">_watch_chain</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">j</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler._watch_chain">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_tune_likvar"></a><span class="summary-sig-name">_tune_likvar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ar</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler._tune_likvar">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_propose" class="summary-sig-name" onclick="show_private();">_propose</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">step</span>,
+        <span class="summary-sig-arg">po</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Generates proposals.
+returns two lists</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler._propose">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -254,6 +363,34 @@ Remember to call self.po.close() and self.po.join() when done.</td>
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a name="trace_convergence"></a><span class="summary-name">trace_convergence</span> = <code title="False">False</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="seqhist"></a><span class="summary-name">seqhist</span> = <code title="None">None</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="liklist"></a><span class="summary-name">liklist</span> = <code title="[]">[]</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="e"></a><span class="summary-name">e</span> = <code title="1e-20">1e-20</code>
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_j"></a><span class="summary-name">_j</span> = <code title="-1">-1</code>
     </td>
   </tr>
 <tr class="private">
@@ -334,6 +471,29 @@ Remember to call self.po.close() and self.po.join() when done.</td>
   </dl>
 </td></tr></table>
 </div>
+<a name="DIC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">DIC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.DIC">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Calculates  the deviance information criterion
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="dimensions"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -372,12 +532,69 @@ Remember to call self.po.close() and self.po.join() when done.</td>
   </tr></table>
   
   Pool of processes for parallel execution of tasks
-Remember to call self.po.close() and self.po.join() when done.
+Remember to call self.term_pool() when done.
   <dl class="fields">
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@property</code></li>
     </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_accept"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_accept</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">last_lik</span>,
+        <span class="sig-arg">lik</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler._accept">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Decides whether to accept a proposal
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@np.vectorize</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_propose"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_propose</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">step</span>,
+        <span class="sig-arg">po</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler._propose">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generates proposals.
+returns two lists
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>step</code></strong> - : Position in the markov chain history.</li>
+        <li><strong class="pname"><code>po</code></strong> - : Process pool for parallel proposal generation</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><ul class="rst-simple">
+<li><code class="link">theta</code>: List of proposed self.dimensional points in parameter space</li>
+<li><code class="link">prop</code>: List of self.nchains proposed phis.</li>
+</ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -413,7 +630,7 @@ Remember to call self.po.close() and self.po.join() when done.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

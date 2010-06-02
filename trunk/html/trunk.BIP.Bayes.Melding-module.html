@@ -121,7 +121,8 @@ outputs of the model.
           <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding-module.html#basicfit" class="summary-sig-name">basicfit</a>(<span class="summary-sig-arg">s1</span>,
         <span class="summary-sig-arg">s2</span>)</span><br />
       Calculates a basic fitness calculation between a model-
-generated time series and a observed time series.</td>
+generated time series and a observed time series.
+it uses a Mean square error.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#basicfit">source&nbsp;code</a></span>
             
@@ -156,12 +157,33 @@ generated time series and a observed time series.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding-module.html#model" class="summary-sig-name">model</a>(<span class="summary-sig-arg">r</span>,
+          <td><span class="summary-sig"><a name="model_as_ra"></a><span class="summary-sig-name">model_as_ra</span>(<span class="summary-sig-arg">theta</span>,
+        <span class="summary-sig-arg">model</span>,
+        <span class="summary-sig-arg">phinames</span>)</span><br />
+      Does a single run of self.model and returns the results as a record array</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#model_as_ra">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="model"></a><span class="summary-sig-name">model</span>(<span class="summary-sig-arg">r</span>,
         <span class="summary-sig-arg">p0</span>,
         <span class="summary-sig-arg">n</span>=<span class="summary-sig-default">1</span>)</span><br />
       Model (r,p0, n=1)
 Simulates the Population dynamic Model (PDM) Pt = rP0
-for n time steps.</td>
+for n time steps.
+P0 is the initial population size.
+Example model for testing purposes.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#model">source&nbsp;code</a></span>
             
@@ -307,8 +329,8 @@ it uses a Mean square error.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>s1</code></strong> - model-generated time series. record array.</li>
-        <li><strong class="pname"><code>s2</code></strong> - observed time series. dictionary with keys matching names of s1</li>
+        <li><strong class="pname"><code>s1</code></strong> - : model-generated time series. record array.</li>
+        <li><strong class="pname"><code>s2</code></strong> - : observed time series. dictionary with keys matching names of s1</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>Root mean square deviation between &#180;s1&#180; and &#180;s2&#180;.</dd>
@@ -335,40 +357,15 @@ it uses a Mean square error.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>model</code></strong> - model callable</li>
-        <li><strong class="pname"><code>theta</code></strong> - model input list</li>
-        <li><strong class="pname"><code>k</code></strong> - run number</li>
+        <li><strong class="pname"><code>model</code></strong> - : model callable</li>
+        <li><strong class="pname"><code>theta</code></strong> - : model input list</li>
+        <li><strong class="pname"><code>k</code></strong> - : run number</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd><ul class="rst-simple">
 <li>res: result list</li>
 <li><code class="link">k</code>: run number</li>
 </ul></dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="model"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">model</span>(<span class="sig-arg">r</span>,
-        <span class="sig-arg">p0</span>,
-        <span class="sig-arg">n</span>=<span class="sig-default">1</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#model">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Model (r,p0, n=1)
-Simulates the Population dynamic Model (PDM) Pt = rP0
-for n time steps.
-P0 is the initial population size.
-Example model for testing purposes.
-  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -404,7 +401,7 @@ Example model for testing purposes.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -96,10 +96,7 @@ outputs of the model.
         <tr>
           <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">K</span>,
-        <span class="summary-sig-arg">L</span>,
         <span class="summary-sig-arg">model</span>,
-        <span class="summary-sig-arg">ntheta</span>,
-        <span class="summary-sig-arg">nphi</span>,
         <span class="summary-sig-arg">inits</span>,
         <span class="summary-sig-arg">tf</span>,
         <span class="summary-sig-arg">thetanames</span>,
@@ -118,15 +115,57 @@ outputs of the model.
       
     </td>
   </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_plot_MAP" class="summary-sig-name" onclick="show_private();">_plot_MAP</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">pmap</span>)</span><br />
+      Generates a plot of a full run of the model parameterized with the maximum a posteriori
+estimates of the parameters.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._plot_MAP">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="optimize"></a><span class="summary-sig-name">optimize</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a name="AIC_from_RSS"></a><span class="summary-sig-name">AIC_from_RSS</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Calculates the Akaike information criterion from the residual sum of squares
+of the best fitting run.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.AIC_from_RSS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#optimize" class="summary-sig-name">optimize</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>,
-        <span class="summary-sig-arg">p0</span>)</span><br />
+        <span class="summary-sig-arg">p0</span>,
+        <span class="summary-sig-arg">optimizer</span>=<span class="summary-sig-default">'scipy'</span>,
+        <span class="summary-sig-arg">tol</span>=<span class="summary-sig-default">0.0001</span>,
+        <span class="summary-sig-arg">verbose</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">plot</span>=<span class="summary-sig-default">0</span>)</span><br />
       Finds best parameters using an optimization approach</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.optimize">source&nbsp;code</a></span>
@@ -147,7 +186,8 @@ outputs of the model.
         <span class="summary-sig-arg">s1</span>,
         <span class="summary-sig-arg">s2</span>)</span><br />
       Calculates a the error between a model-
-generated time series and a observed time series.</td>
+generated time series and a observed time series.
+It uses a normalized RMS deviation.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._rms_error">source&nbsp;code</a></span>
             
@@ -205,7 +245,8 @@ for reporting purposes.</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="_init_priors"></a><span class="summary-sig-name">_init_priors</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">prior</span>=<span class="summary-sig-default">None</span>)</span></td>
+        <span class="summary-sig-arg">prior</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Initialize priors either from distributions or previous posteriors</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._init_priors">source&nbsp;code</a></span>
             
@@ -236,6 +277,25 @@ for reporting purposes.</td>
       
     </td>
   </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_save_to_db" class="summary-sig-name" onclick="show_private();">_save_to_db</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dbname</span>,
+        <span class="summary-sig-arg">data</span>)</span><br />
+      Saves data to a sqlite3 db.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._save_to_db">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -248,10 +308,38 @@ for reporting purposes.</td>
         <span class="summary-sig-arg">likvar</span>,
         <span class="summary-sig-arg">pool</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">adjinits</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">ew</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">dbname</span>=<span class="summary-sig-default">'results'</span>,
         <span class="summary-sig-arg">monitor</span>=<span class="summary-sig-default">False</span>)</span><br />
       Fit the model against data</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.run">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_format_db_tables"></a><span class="summary-sig-name">_format_db_tables</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dbname</span>,
+        <span class="summary-sig-arg">w</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">pt</span>,
+        <span class="summary-sig-arg">series</span>,
+        <span class="summary-sig-arg">predseries</span>,
+        <span class="summary-sig-arg">AIC</span>,
+        <span class="summary-sig-arg">BIC</span>,
+        <span class="summary-sig-arg">DIC</span>)</span><br />
+      Formats results for writing to database</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._format_db_tables">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -300,6 +388,27 @@ for reporting purposes.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a name="_long_term_prediction_plot"></a><span class="summary-sig-name">_long_term_prediction_plot</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">initind</span>,
+        <span class="summary-sig-arg">cpars</span>,
+        <span class="summary-sig-arg">vind</span>,
+        <span class="summary-sig-arg">w</span>)</span><br />
+      Plots the simulated trajectory predicted from best fit parameters.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._long_term_prediction_plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a name="_monitor_plot"></a><span class="summary-sig-name">_monitor_plot</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">series</span>,
         <span class="summary-sig-arg">prior</span>,
@@ -324,7 +433,9 @@ for reporting purposes.</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="plot_results"></a><span class="summary-sig-name">plot_results</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">names</span>=<span class="summary-sig-default">[]</span>)</span><br />
+        <span class="summary-sig-arg">names</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">dbname</span>=<span class="summary-sig-default">&quot;results&quot;</span>,
+        <span class="summary-sig-arg">savefigs</span>=<span class="summary-sig-default">0</span>)</span><br />
       Plot the final results of the inference</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.plot_results">source&nbsp;code</a></span>
@@ -341,7 +452,8 @@ for reporting purposes.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_read_results"></a><span class="summary-sig-name">_read_results</span>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a name="_read_results"></a><span class="summary-sig-name">_read_results</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">nam</span>)</span><br />
       read results from disk</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._read_results">source&nbsp;code</a></span>
@@ -423,10 +535,7 @@ for reporting purposes.</td>
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">K</span>,
-        <span class="sig-arg">L</span>,
         <span class="sig-arg">model</span>,
-        <span class="sig-arg">ntheta</span>,
-        <span class="sig-arg">nphi</span>,
         <span class="sig-arg">inits</span>,
         <span class="sig-arg">tf</span>,
         <span class="sig-arg">thetanames</span>,
@@ -446,23 +555,81 @@ for reporting purposes.</td>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>K</code></strong> - Number of samples from the priors. On MCMC also the number of samples of the posterior.</li>
-        <li><strong class="pname"><code>L</code></strong> - Number of samples of the posteriors. Only used on SIR and ABC methods.</li>
-        <li><strong class="pname"><code>model</code></strong> - Callable (function) returning the output of the model, from a set of parameter values received as argument.</li>
-        <li><strong class="pname"><code>ntheta</code></strong> - Number of parameters included in the inference.</li>
-        <li><strong class="pname"><code>nphi</code></strong> - Number of outputs of the model.</li>
-        <li><strong class="pname"><code>inits</code></strong> - inits initial values for the model's variables.</li>
-        <li><strong class="pname"><code>tf</code></strong> - Length of the simulation, in units of time.</li>
-        <li><strong class="pname"><code>phinames</code></strong> - List of names (strings) with names of the model's variables</li>
-        <li><strong class="pname"><code>thetanames</code></strong> - List of names (strings) with names of parameters included on the inference.</li>
-        <li><strong class="pname"><code>wl</code></strong> - window lenght length of the inference window.</li>
-        <li><strong class="pname"><code>nw</code></strong> - Number of windows to analyze on iterative inference mode</li>
-        <li><strong class="pname"><code>verbose</code></strong> - Verbose output if True.</li>
-        <li><strong class="pname"><code>burnin</code></strong> - number of burnin samples, used in the case on mcmc method.</li>
+        <li><strong class="pname"><code>K</code></strong> - : Number of samples from the priors. On MCMC also the number of samples of the posterior.</li>
+        <li><strong class="pname"><code>model</code></strong> - : Callable (function) returning the output of the model, from a set of parameter values received as argument.</li>
+        <li><strong class="pname"><code>inits</code></strong> - : inits initial values for the model's variables.</li>
+        <li><strong class="pname"><code>tf</code></strong> - : Length of the simulation, in units of time.</li>
+        <li><strong class="pname"><code>phinames</code></strong> - : List of names (strings) with names of the model's variables</li>
+        <li><strong class="pname"><code>thetanames</code></strong> - : List of names (strings) with names of parameters included on the inference.</li>
+        <li><strong class="pname"><code>wl</code></strong> - : window lenght length of the inference window.</li>
+        <li><strong class="pname"><code>nw</code></strong> - : Number of windows to analyze on iterative inference mode</li>
+        <li><strong class="pname"><code>verbose</code></strong> - : Verbose output if True.</li>
+        <li><strong class="pname"><code>burnin</code></strong> - : number of burnin samples, used in the case on mcmc method.</li>
     </ul></dd>
     <dt>Overrides:
         object.__init__
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_plot_MAP"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_plot_MAP</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">pmap</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._plot_MAP">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generates a plot of a full run of the model parameterized with the maximum a posteriori
+estimates of the parameters.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - : data dictionary as passed to optimize</li>
+        <li><strong class="pname"><code>pmap</code></strong> - : MAP parameter values</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="optimize"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">optimize</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">p0</span>,
+        <span class="sig-arg">optimizer</span>=<span class="sig-default">'scipy'</span>,
+        <span class="sig-arg">tol</span>=<span class="sig-default">0.0001</span>,
+        <span class="sig-arg">verbose</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">plot</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.optimize">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Finds best parameters using an optimization approach
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - : Dictionary of observed series</li>
+        <li><strong class="pname"><code>p0</code></strong> - : Sequence (list or tuple) of initial values for the parameters</li>
+        <li><strong class="pname"><code>optimizer</code></strong> - : Optimization library to use: 'scipy': fmin (Nelder-Mead) or 'oo':OpenOpt.NLP</li>
+        <li><strong class="pname"><code>tol</code></strong> - : Tolerance of the error</li>
+        <li><strong class="pname"><code>verbose</code></strong> - : If true show stats of the optimization run at the end</li>
+        <li><strong class="pname"><code>plot</code></strong> - : If true plots a run based on the optimized parameters.</li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -489,8 +656,8 @@ It uses a normalized RMS deviation.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>s1</code></strong> (Record array or list.) - model-generated time series.</li>
-        <li><strong class="pname"><code>s2</code></strong> (Dictionary or list) - observed time series. dictionary with keys matching names of s1</li>
+        <li><strong class="pname"><code>s1</code></strong> (: Record array or list.) - : model-generated time series.</li>
+        <li><strong class="pname"><code>s2</code></strong> (: Dictionary or list; must be a dictionary if s1 is a RA) - : observed time series. dictionary with keys matching names of s1</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>The Root mean square deviation between <code class="link">s1</code> and <code class="link">s2</code>.</dd>
@@ -521,12 +688,12 @@ It uses a normalized RMS deviation.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>pdists</code></strong> - distributions for the output variables. For example: [scipy.stats.uniform,scipy.stats.norm]</li>
-        <li><strong class="pname"><code>ppars</code></strong> - paramenters for the distributions in pdists. For example: [(0,1),(0,1)]</li>
-        <li><strong class="pname"><code>plims</code></strong> - Limits of the range of each phi. List of (min,max) tuples.</li>
-        <li><strong class="pname"><code>tdists</code></strong> - same as pdists, but for input parameters (Theta).</li>
-        <li><strong class="pname"><code>tpars</code></strong> - same as ppars, but for tdists.</li>
-        <li><strong class="pname"><code>tlims</code></strong> - Limits of the range of each theta. List of (min,max) tuples.</li>
+        <li><strong class="pname"><code>pdists</code></strong> - : distributions for the output variables. For example: [scipy.stats.uniform,scipy.stats.norm]</li>
+        <li><strong class="pname"><code>ppars</code></strong> - : paramenters for the distributions in pdists. For example: [(0,1),(0,1)]</li>
+        <li><strong class="pname"><code>plims</code></strong> - : Limits of the range of each phi. List of (min,max) tuples.</li>
+        <li><strong class="pname"><code>tdists</code></strong> - : same as pdists, but for input parameters (Theta).</li>
+        <li><strong class="pname"><code>tpars</code></strong> - : same as ppars, but for tdists.</li>
+        <li><strong class="pname"><code>tlims</code></strong> - : Limits of the range of each theta. List of (min,max) tuples.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -553,6 +720,32 @@ for reporting purposes.
   </dl>
 </td></tr></table>
 </div>
+<a name="_save_to_db"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_save_to_db</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dbname</span>,
+        <span class="sig-arg">data</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._save_to_db">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Saves data to a sqlite3 db.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>dbname</code></strong> - : name of the database file</li>
+        <li><strong class="pname"><code>data</code></strong> - : Data dictionary as created by <code class="link">format_db_tables</code> method.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="run"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -566,6 +759,8 @@ for reporting purposes.
         <span class="sig-arg">likvar</span>,
         <span class="sig-arg">pool</span>=<span class="sig-default">False</span>,
         <span class="sig-arg">adjinits</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">ew</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">dbname</span>=<span class="sig-default">'results'</span>,
         <span class="sig-arg">monitor</span>=<span class="sig-default">False</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -577,12 +772,14 @@ for reporting purposes.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>data</code></strong> - dictionary with variable names and observed series, as Key and value respectively.</li>
-        <li><strong class="pname"><code>method</code></strong> - Inference method: &quot;ABC&quot;, &quot;SIR&quot; or &quot;MCMC&quot;</li>
-        <li><strong class="pname"><code>likvar</code></strong> - Variance of the likelihood function in the SIR and MCMC method</li>
-        <li><strong class="pname"><code>pool</code></strong> - Pool priors on model's outputs.</li>
-        <li><strong class="pname"><code>adjinits</code></strong> - whether to adjust inits to data</li>
-        <li><strong class="pname"><code>monitor</code></strong> - Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.</li>
+        <li><strong class="pname"><code>data</code></strong> - : dictionary with variable names and observed series, as Key and value respectively.</li>
+        <li><strong class="pname"><code>method</code></strong> - : Inference method: &quot;ABC&quot;, &quot;SIR&quot; or &quot;MCMC&quot;</li>
+        <li><strong class="pname"><code>likvar</code></strong> - : Variance of the likelihood function in the SIR and MCMC method</li>
+        <li><strong class="pname"><code>pool</code></strong> - : Pool priors on model's outputs.</li>
+        <li><strong class="pname"><code>adjinits</code></strong> - : whether to adjust inits to data</li>
+        <li><strong class="pname"><code>ew</code></strong> - : Whether to use expanding windows instead of moving ones.</li>
+        <li><strong class="pname"><code>dbname</code></strong> - : name of the sqlite3 database</li>
+        <li><strong class="pname"><code>monitor</code></strong> - : Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -619,7 +816,7 @@ for reporting purposes.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
