@@ -124,9 +124,11 @@ Standard random-walk Metropolis Hastings sampler class
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_propose"></a><span class="summary-sig-name">_propose</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">step</span>=<span class="summary-sig-default">0</span>)</span><br />
-      Generates proposals</td>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Metropolis-class.html#_propose" class="summary-sig-name" onclick="show_private();">_propose</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">step</span>,
+        <span class="summary-sig-arg">po</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Generates proposals.
+returns two lists</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._propose">source&nbsp;code</a></span>
             
@@ -142,7 +144,8 @@ Standard random-walk Metropolis Hastings sampler class
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="step"></a><span class="summary-sig-name">step</span>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a name="step"></a><span class="summary-sig-name">step</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">nchains</span>=<span class="summary-sig-default">1</span>)</span><br />
       Does the actual sampling loop.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis.step">source&nbsp;code</a></span>
@@ -163,7 +166,8 @@ Standard random-walk Metropolis Hastings sampler class
         <span class="summary-sig-arg">s1</span>,
         <span class="summary-sig-arg">s2</span>)</span><br />
       Calculates a basic fitness calculation between a model-
-generated time series and a observed time series.</td>
+generated time series and a observed time series.
+It uses a normalized RMS variation.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._rms_fit">source&nbsp;code</a></span>
             
@@ -179,7 +183,7 @@ generated time series and a observed time series.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_accept"></a><span class="summary-sig-name">_accept</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Metropolis-class.html#_accept" class="summary-sig-name" onclick="show_private();">_accept</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">last_lik</span>,
         <span class="summary-sig-arg">lik</span>)</span><br />
       Decides whether to accept a proposal</td>
@@ -212,22 +216,6 @@ generated time series and a observed time series.</td>
       
     </td>
   </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="watch_chain"></a><span class="summary-sig-name">watch_chain</span>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis.watch_chain">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -238,7 +226,8 @@ generated time series and a observed time series.</td>
         <span class="summary-sig-arg">dataset</span>,
         <span class="summary-sig-arg">band</span>)</span><br />
       Adds a few extra uniformly distributed data
-points beyond the dataset range.</td>
+points beyond the dataset range.
+This is done by adding from a uniform dist.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._add_salt">source&nbsp;code</a></span>
             
@@ -251,12 +240,18 @@ points beyond the dataset range.</td>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#DIC">DIC</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions">dimensions</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_R">gr_R</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_convergence">gr_convergence</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#po">po</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#setup_xmlrpc_plotserver">setup_xmlrpc_plotserver</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#term_pool">term_pool</a></code>
       </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b> (private):
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_tune_likvar" onclick="show_private();">_tune_likvar</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_watch_chain" onclick="show_private();">_watch_chain</a></code>
+      </p></div>
     <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
       <code>__delattr__</code>,
       <code>__format__</code>,
@@ -294,12 +289,16 @@ points beyond the dataset range.</td>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#e">e</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#liklist">liklist</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#seqhist">seqhist</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_acceptance">trace_acceptance</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_convergence">trace_convergence</a></code>
       </p>
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b> (private):
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_R" onclick="show_private();">_R</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_dimensions" onclick="show_private();">_dimensions</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_j" onclick="show_private();">_j</a></code>,
       <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_po" onclick="show_private();">_po</a></code>
       </p></div>
     </td>
@@ -379,16 +378,54 @@ points beyond the dataset range.</td>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>samples</code></strong> - Number of samples to obtain</li>
-        <li><strong class="pname"><code>sampmax</code></strong> - Maximum number of samples drawn.</li>
-        <li><strong class="pname"><code>data</code></strong> - observed time series on the model's output</li>
-        <li><strong class="pname"><code>t</code></strong> - length of the observed time series</li>
-        <li><strong class="pname"><code>likfun</code></strong> - Likelihood function</li>
-        <li><strong class="pname"><code>likvariance</code></strong> - variance of the Normal likelihood function</li>
-        <li><strong class="pname"><code>burnin</code></strong> - Number of burnin samples</li>
+        <li><strong class="pname"><code>samples</code></strong> - : Number of samples to obtain</li>
+        <li><strong class="pname"><code>sampmax</code></strong> - : Maximum number of samples drawn.</li>
+        <li><strong class="pname"><code>data</code></strong> - : observed time series on the model's output</li>
+        <li><strong class="pname"><code>t</code></strong> - : length of the observed time series</li>
+        <li><strong class="pname"><code>parpriors</code></strong> - : Dictionary with frozen distributions objects as values and parnames as keys</li>
+        <li><strong class="pname"><code>parnames</code></strong> - : List of parameter names</li>
+        <li><strong class="pname"><code>parlimits</code></strong> - : list of tuples with (min,max) for every parameter.</li>
+        <li><strong class="pname"><code>likfun</code></strong> - : Likelihood function</li>
+        <li><strong class="pname"><code>likvariance</code></strong> - : variance of the Normal likelihood function</li>
+        <li><strong class="pname"><code>burnin</code></strong> - : Number of burnin samples</li>
     </ul></dd>
     <dt>Overrides:
         object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_propose"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_propose</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">step</span>,
+        <span class="sig-arg">po</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._propose">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generates proposals.
+returns two lists
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>step</code></strong> - : Position in the markov chain history.</li>
+        <li><strong class="pname"><code>po</code></strong> - : Process pool for parallel proposal generation</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><ul class="rst-simple">
+<li><code class="link">theta</code>: List of proposed self.dimensional points in parameter space</li>
+<li><code class="link">prop</code>: List of self.nchains proposed phis.</li>
+</ul></dd>
+    <dt>Overrides:
+        <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_propose" onclick="show_private();">_Sampler._propose</a>
     </dt>
   </dl>
 </td></tr></table>
@@ -416,11 +453,39 @@ It uses a normalized RMS variation.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>s1</code></strong> (Record array or list.) - model-generated time series.</li>
-        <li><strong class="pname"><code>s2</code></strong> (Dictionary or list) - observed time series. dictionary with keys matching names of s1</li>
+        <li><strong class="pname"><code>s1</code></strong> (: Record array or list.) - : model-generated time series.</li>
+        <li><strong class="pname"><code>s2</code></strong> (: Dictionary or list) - : observed time series. dictionary with keys matching names of s1</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>Inverse of the Root mean square deviation between <code class="link">s1</code> and <code class="link">s2</code>.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_accept"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_accept</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">last_lik</span>,
+        <span class="sig-arg">lik</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._accept">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Decides whether to accept a proposal
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@np.vectorize</code></li>
+    </ul></dd>
+    <dt>Overrides:
+        <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_accept" onclick="show_private();">_Sampler._accept</a>
+    </dt>
   </dl>
 </td></tr></table>
 </div>
@@ -445,9 +510,9 @@ It uses a normalized RMS variation.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>n</code></strong> - Number of samples to return</li>
-        <li><strong class="pname"><code>data</code></strong> - record array (containing on or more vectors of data) to be resampled</li>
-        <li><strong class="pname"><code>w</code></strong> - Weight vector</li>
+        <li><strong class="pname"><code>n</code></strong> - : Number of samples to return</li>
+        <li><strong class="pname"><code>data</code></strong> - : record array (containing on or more vectors of data) to be resampled</li>
+        <li><strong class="pname"><code>w</code></strong> - : Weight vector</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>returns a sample of size n</dd>
@@ -476,8 +541,8 @@ This is done by adding from a uniform dist.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>dataset</code></strong> - vector of data</li>
-        <li><strong class="pname"><code>band</code></strong> - Fraction of range to extend: [0,1[</li>
+        <li><strong class="pname"><code>dataset</code></strong> - : vector of data</li>
+        <li><strong class="pname"><code>band</code></strong> - : Fraction of range to extend: [0,1[</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>Salted dataset.</dd>
@@ -516,7 +581,7 @@ This is done by adding from a uniform dist.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

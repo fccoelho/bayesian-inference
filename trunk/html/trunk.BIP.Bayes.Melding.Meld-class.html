@@ -165,7 +165,8 @@ needed for the dists the melding replicates.</td>
         <span class="summary-sig-arg">dataset</span>,
         <span class="summary-sig-arg">band</span>)</span><br />
       Adds a few extra uniformly distributed data
-points beyond the dataset range.</td>
+points beyond the dataset range.
+This is done by adding from a uniform dist.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.add_salt">source&nbsp;code</a></span>
             
@@ -186,7 +187,12 @@ points beyond the dataset range.</td>
         <span class="summary-sig-arg">data</span>,
         <span class="summary-sig-arg">limits</span>)</span><br />
       Setup the model inputs and set the prior distributions from the vectors
-in data.</td>
+in data.
+This method is to be used when the prior distributions are available in
+the form of a sample from an empirical distribution such as a bayesian
+posterior.
+In order to expand the samples provided, K samples are generated from a
+kernel density estimate of the original sample.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.setThetaFromData">source&nbsp;code</a></span>
             
@@ -207,7 +213,12 @@ in data.</td>
         <span class="summary-sig-arg">data</span>,
         <span class="summary-sig-arg">limits</span>)</span><br />
       Setup the model outputs and set their prior distributions from the
-vectors in data.</td>
+vectors in data.
+This method is to be used when the prior distributions are available in
+the form of a sample from an empirical distribution such as a bayesian
+posterior.
+In order to expand the samples provided, K samples are generated from a
+kernel density estimate of the original sample.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.setPhiFromData">source&nbsp;code</a></span>
             
@@ -223,11 +234,12 @@ vectors in data.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.Meld-class.html#run" class="summary-sig-name">run</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a name="run"></a><span class="summary-sig-name">run</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">*args</span>)</span><br />
       Runs the model through the Melding inference.model
 model is a callable which return the output of the deterministic model,
-i.e.</td>
+i.e. the model itself.
+The model is run self.K times to obtain phi = M(theta).</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.run">source&nbsp;code</a></span>
             
@@ -245,7 +257,10 @@ i.e.</td>
         <tr>
           <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.Meld-class.html#getPosteriors" class="summary-sig-name">getPosteriors</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">t</span>)</span><br />
-      Updates the posteriors of the model's output for the last t time steps.</td>
+      Updates the posteriors of the model's output for the last t time steps.
+Returns two record arrays:
+- The posteriors of the Theta
+- the posterior of Phi last t values of time-series. self.L by <code class="link">t</code> arrays.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.getPosteriors">source&nbsp;code</a></span>
             
@@ -265,7 +280,10 @@ i.e.</td>
         <span class="summary-sig-arg">cond</span>,
         <span class="summary-sig-arg">x</span>,
         <span class="summary-sig-arg">limits</span>)</span><br />
-      Multiple condition filtering.</td>
+      Multiple condition filtering.
+Remove values in x[i], if corresponding values in
+cond[i] are less than limits[i][0] or greater than
+limits[i][1].</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.filtM">source&nbsp;code</a></span>
             
@@ -307,7 +325,7 @@ on the pooled pdf of phi and q2phi.</td>
         <span class="summary-sig-arg">pool</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">savetemp</span>=<span class="summary-sig-default">False</span>)</span><br />
       Runs the model for inference through Approximate Bayes Computation
-techniques.</td>
+techniques. This method should be used as an alternative to the sir.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.abcRun">source&nbsp;code</a></span>
             
@@ -394,27 +412,10 @@ techniques.</td>
         <span class="summary-sig-arg">variance</span>=<span class="summary-sig-default">0.1</span>,
         <span class="summary-sig-arg">pool</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">savetemp</span>=<span class="summary-sig-default">False</span>)</span><br />
-      Run the model output through the Sampling-Importance-Resampling algorithm.</td>
+      Run the model output through the Sampling-Importance-Resampling algorithm.
+Returns 1 if successful or 0 if not.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.sir">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="model_as_ra"></a><span class="summary-sig-name">model_as_ra</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">theta</span>)</span><br />
-      Does a single run of self.model and returns the results as a record array</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.model_as_ra">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -532,13 +533,13 @@ resuming calculation in case of interruption.</td>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>K</code></strong> - Number of replicates of the model run. Also determines the prior sample size.</li>
-        <li><strong class="pname"><code>L</code></strong> - Number of samples from the Posterior distributions. Usually 10% of K.</li>
-        <li><strong class="pname"><code>model</code></strong> - Callable taking theta as argument and returning phi = M(theta).</li>
-        <li><strong class="pname"><code>ntheta</code></strong> - Number of inputs to the model (parameters).</li>
-        <li><strong class="pname"><code>nphi</code></strong> - Number of outputs of the model (State-variables)</li>
-        <li><strong class="pname"><code>verbose</code></strong> - Boolean: whether to show more information about the computations</li>
-        <li><strong class="pname"><code>viz</code></strong> - Boolean. Wether to show graphical outputs of the fitting process</li>
+        <li><strong class="pname"><code>K</code></strong> - : Number of replicates of the model run. Also determines the prior sample size.</li>
+        <li><strong class="pname"><code>L</code></strong> - : Number of samples from the Posterior distributions. Usually 10% of K.</li>
+        <li><strong class="pname"><code>model</code></strong> - : Callable taking theta as argument and returning phi = M(theta).</li>
+        <li><strong class="pname"><code>ntheta</code></strong> - : Number of inputs to the model (parameters).</li>
+        <li><strong class="pname"><code>nphi</code></strong> - : Number of outputs of the model (State-variables)</li>
+        <li><strong class="pname"><code>verbose</code></strong> - : Boolean: whether to show more information about the computations</li>
+        <li><strong class="pname"><code>viz</code></strong> - : Boolean. Wether to show graphical outputs of the fitting process</li>
     </ul></dd>
     <dt>Overrides:
         object.__init__
@@ -569,10 +570,10 @@ needed for the melding replicates.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the variables.</li>
-        <li><strong class="pname"><code>dists</code></strong> - is a list of RNG from scipy.stats</li>
-        <li><strong class="pname"><code>pars</code></strong> - is a list of tuples of variables for each prior distribution, respectively.</li>
-        <li><strong class="pname"><code>limits</code></strong> - lower and upper limits on the support of variables.</li>
+        <li><strong class="pname"><code>names</code></strong> - : list of string with the names of the variables.</li>
+        <li><strong class="pname"><code>dists</code></strong> - : is a list of RNG from scipy.stats</li>
+        <li><strong class="pname"><code>pars</code></strong> - : is a list of tuples of variables for each prior distribution, respectively.</li>
+        <li><strong class="pname"><code>limits</code></strong> - : lower and upper limits on the support of variables.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -600,9 +601,9 @@ needed for the dists the melding replicates.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the parameters.</li>
-        <li><strong class="pname"><code>dists</code></strong> - is a list of RNG from scipy.stats</li>
-        <li><strong class="pname"><code>pars</code></strong> - is a list of tuples of parameters for each prior distribution, respectivelydists</li>
+        <li><strong class="pname"><code>names</code></strong> - : list of string with the names of the parameters.</li>
+        <li><strong class="pname"><code>dists</code></strong> - : is a list of RNG from scipy.stats</li>
+        <li><strong class="pname"><code>pars</code></strong> - : is a list of tuples of parameters for each prior distribution, respectivelydists</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -629,8 +630,8 @@ This is done by adding from a uniform dist.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>dataset</code></strong> - vector of data</li>
-        <li><strong class="pname"><code>band</code></strong> - Fraction of range to extend [0,1[</li>
+        <li><strong class="pname"><code>dataset</code></strong> - : vector of data</li>
+        <li><strong class="pname"><code>band</code></strong> - : Fraction of range to extend [0,1[</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd>Salted dataset.</dd>
@@ -664,9 +665,9 @@ kernel density estimate of the original sample.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the parameters.</li>
-        <li><strong class="pname"><code>data</code></strong> - list of vectors. Samples of a proposed distribution</li>
-        <li><strong class="pname"><code>limits</code></strong> - List of (min,max) tuples for each theta to make sure samples are not generated outside these limits.</li>
+        <li><strong class="pname"><code>names</code></strong> - : list of string with the names of the parameters.</li>
+        <li><strong class="pname"><code>data</code></strong> - : list of vectors. Samples of a proposed distribution</li>
+        <li><strong class="pname"><code>limits</code></strong> - : List of (min,max) tuples for each theta to make sure samples are not generated outside these limits.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -698,33 +699,10 @@ kernel density estimate of the original sample.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>names</code></strong> - list of string with the names of the variables.</li>
-        <li><strong class="pname"><code>data</code></strong> - list of vectors. Samples of the proposed distribution.</li>
-        <li><strong class="pname"><code>limits</code></strong> - list of tuples (ll,ul),lower and upper limits on the support of variables.</li>
+        <li><strong class="pname"><code>names</code></strong> - : list of string with the names of the variables.</li>
+        <li><strong class="pname"><code>data</code></strong> - : list of vectors. Samples of the proposed distribution.</li>
+        <li><strong class="pname"><code>limits</code></strong> - : list of tuples (ll,ul),lower and upper limits on the support of variables.</li>
     </ul></dd>
-  </dl>
-</td></tr></table>
-</div>
-<a name="run"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">run</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">*args</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.run">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Runs the model through the Melding inference.model
-model is a callable which return the output of the deterministic model,
-i.e. the model itself.
-The model is run self.K times to obtain phi = M(theta).
-  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -750,7 +728,7 @@ Returns two record arrays:
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>t</code></strong> - length of the posterior time-series to return.</li>
+        <li><strong class="pname"><code>t</code></strong> - : length of the posterior time-series to return.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -779,9 +757,9 @@ limits[i][1].
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>cond</code></strong> - is an array of conditions.</li>
-        <li><strong class="pname"><code>limits</code></strong> - is a list of tuples (ll,ul) with length equal to number of lines in <code class="link">cond</code> and <code class="link">x</code>.</li>
-        <li><strong class="pname"><code>x</code></strong> - array to be filtered.</li>
+        <li><strong class="pname"><code>cond</code></strong> - : is an array of conditions.</li>
+        <li><strong class="pname"><code>limits</code></strong> - : is a list of tuples (ll,ul) with length equal to number of lines in <code class="link">cond</code> and <code class="link">x</code>.</li>
+        <li><strong class="pname"><code>x</code></strong> - : array to be filtered.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -806,7 +784,7 @@ on the pooled pdf of phi and q2phi.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>phi</code></strong> - prior of Phi induced by the model and q1theta.</li>
+        <li><strong class="pname"><code>phi</code></strong> - : prior of Phi induced by the model and q1theta.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -835,11 +813,11 @@ techniques. This method should be used as an alternative to the sir.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>fitfun</code></strong> - Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit</li>
-        <li><strong class="pname"><code>t</code></strong> - number of time steps to retain at the end of the of the model run for fitting purposes.</li>
-        <li><strong class="pname"><code>data</code></strong> - dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.</li>
-        <li><strong class="pname"><code>pool</code></strong> - if True, Pools the user provided priors on the model's outputs, with the model induced priors.</li>
-        <li><strong class="pname"><code>savetemp</code></strong> - Should temp results be saved. Useful for long runs. Alows for resuming the simulation from last sa</li>
+        <li><strong class="pname"><code>fitfun</code></strong> - : Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit</li>
+        <li><strong class="pname"><code>t</code></strong> - : number of time steps to retain at the end of the of the model run for fitting purposes.</li>
+        <li><strong class="pname"><code>data</code></strong> - : dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.</li>
+        <li><strong class="pname"><code>pool</code></strong> - : if True, Pools the user provided priors on the model's outputs, with the model induced priors.</li>
+        <li><strong class="pname"><code>savetemp</code></strong> - : Should temp results be saved. Useful for long runs. Alows for resuming the simulation from last sa</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -892,11 +870,11 @@ techniques. This method should be used as an alternative to the sir.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>data</code></strong> - observed time series on the model's output</li>
-        <li><strong class="pname"><code>t</code></strong> - length of the observed time series</li>
-        <li><strong class="pname"><code>likvariance</code></strong> - variance of the Normal likelihood function</li>
-        <li><strong class="pname"><code>nopool</code></strong> - True if no priors on the outputs are available. Leads to faster calculations</li>
-        <li><strong class="pname"><code>method</code></strong> - Step method. defaults to Metropolis hastings</li>
+        <li><strong class="pname"><code>data</code></strong> - : observed time series on the model's output</li>
+        <li><strong class="pname"><code>t</code></strong> - : length of the observed time series</li>
+        <li><strong class="pname"><code>likvariance</code></strong> - : variance of the Normal likelihood function</li>
+        <li><strong class="pname"><code>nopool</code></strong> - : True if no priors on the outputs are available. Leads to faster calculations</li>
+        <li><strong class="pname"><code>method</code></strong> - : Step method. defaults to Metropolis hastings</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -924,11 +902,11 @@ techniques. This method should be used as an alternative to the sir.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>prop</code></strong> (array of shape (t,nphi) with series as columns.) - Proposed output</li>
-        <li><strong class="pname"><code>data</code></strong> (Dictionary with keys being the names (as in phinames) of observed variables) - Data against which proposal will be measured</li>
-        <li><strong class="pname"><code>likfun</code></strong> (Log likelihood function object) - Likelihood function</li>
-        <li><strong class="pname"><code>likvar</code></strong> - Variance of the likelihood function</li>
-        <li><strong class="pname"><code>po</code></strong> - Pool of processes for parallel execution</li>
+        <li><strong class="pname"><code>prop</code></strong> (: array of shape (t,nphi) with series as columns.) - : Proposed output</li>
+        <li><strong class="pname"><code>data</code></strong> (: Dictionary with keys being the names (as in phinames) of observed variables) - : Data against which proposal will be measured</li>
+        <li><strong class="pname"><code>likfun</code></strong> (: Log likelihood function object) - : Likelihood function</li>
+        <li><strong class="pname"><code>likvar</code></strong> - : Variance of the likelihood function</li>
+        <li><strong class="pname"><code>po</code></strong> - : Pool of processes for parallel execution</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -957,11 +935,11 @@ Returns 1 if successful or 0 if not.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>data</code></strong> - observed time series on the model's output</li>
-        <li><strong class="pname"><code>t</code></strong> - length of the observed time series</li>
-        <li><strong class="pname"><code>variance</code></strong> - variance of the Normal likelihood function</li>
-        <li><strong class="pname"><code>pool</code></strong> - False if no priors on the outputs are available. Leads to faster calculations</li>
-        <li><strong class="pname"><code>savetemp</code></strong> - Boolean. create a temp file?</li>
+        <li><strong class="pname"><code>data</code></strong> - : observed time series on the model's output</li>
+        <li><strong class="pname"><code>t</code></strong> - : length of the observed time series</li>
+        <li><strong class="pname"><code>variance</code></strong> - : variance of the Normal likelihood function</li>
+        <li><strong class="pname"><code>pool</code></strong> - : False if no priors on the outputs are available. Leads to faster calculations</li>
+        <li><strong class="pname"><code>savetemp</code></strong> - : Boolean. create a temp file?</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -988,8 +966,8 @@ resuming calculation in case of interruption.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>savetemp</code></strong> - Boolean. create a temp file?</li>
-        <li><strong class="pname"><code>t</code></strong> - number of time steps</li>
+        <li><strong class="pname"><code>savetemp</code></strong> - : Boolean. create a temp file?</li>
+        <li><strong class="pname"><code>t</code></strong> - : number of time steps</li>
     </ul></dd>
     <dt>Returns:</dt>
         <dd><ul class="rst-simple">
@@ -1030,7 +1008,7 @@ resuming calculation in case of interruption.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

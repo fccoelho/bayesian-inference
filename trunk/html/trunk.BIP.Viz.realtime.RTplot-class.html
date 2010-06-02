@@ -86,7 +86,7 @@ Real time plotting class based on Gnuplot
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">persist</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">persist</span>=<span class="summary-sig-default">0</span>,
         <span class="summary-sig-arg">debug</span>=<span class="summary-sig-default">0</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.__init__">source&nbsp;code</a></span>
@@ -120,13 +120,31 @@ Real time plotting class based on Gnuplot
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="trunk.BIP.Viz.realtime.RTplot-class.html#scatter" class="summary-sig-name">scatter</a>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a name="close_plot"></a><span class="summary-sig-name">close_plot</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.close_plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="scatter"></a><span class="summary-sig-name">scatter</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">x</span>,
         <span class="summary-sig-arg">y</span>,
         <span class="summary-sig-arg">names</span>=<span class="summary-sig-default">[]</span>,
         <span class="summary-sig-arg">title</span>=<span class="summary-sig-default">''</span>,
-        <span class="summary-sig-arg">style</span>=<span class="summary-sig-default">'points'</span>)</span><br />
-      Makes scatter plots from numpy arrays.</td>
+        <span class="summary-sig-arg">style</span>=<span class="summary-sig-default">'points'</span>,
+        <span class="summary-sig-arg">jitter</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Makes scatter plots from numpy arrays.
+if arrays are multidimensional, multiple scatter plots will be generated, pairing rows.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.scatter">source&nbsp;code</a></span>
             
@@ -144,10 +162,12 @@ Real time plotting class based on Gnuplot
         <tr>
           <td><span class="summary-sig"><a href="trunk.BIP.Viz.realtime.RTplot-class.html#plotlines" class="summary-sig-name">plotlines</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">x</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">names</span>=<span class="summary-sig-default">[]</span>,
         <span class="summary-sig-arg">title</span>=<span class="summary-sig-default">''</span>,
-        <span class="summary-sig-arg">style</span>=<span class="summary-sig-default">'lines'</span>)</span><br />
-      Create a sinlge/multiple line plot from a numpy array or record array.</td>
+        <span class="summary-sig-arg">style</span>=<span class="summary-sig-default">'lines'</span>,
+        <span class="summary-sig-arg">multiplot</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Create a single/multiple line plot from a numpy array or record array.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.plotlines">source&nbsp;code</a></span>
             
@@ -165,6 +185,7 @@ Real time plotting class based on Gnuplot
         <tr>
           <td><span class="summary-sig"><a name="_linesFromRA"></a><span class="summary-sig-name">_linesFromRA</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">x</span>,
         <span class="summary-sig-arg">style</span>)</span><br />
       Record-array specific code</td>
           <td align="right" valign="top">
@@ -185,7 +206,8 @@ Real time plotting class based on Gnuplot
           <td><span class="summary-sig"><a href="trunk.BIP.Viz.realtime.RTplot-class.html#plothist" class="summary-sig-name">plothist</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>,
         <span class="summary-sig-arg">title</span>=<span class="summary-sig-default">''</span>,
-        <span class="summary-sig-arg">names</span>=<span class="summary-sig-default">[]</span>)</span><br />
+        <span class="summary-sig-arg">names</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">multiplot</span>=<span class="summary-sig-default">0</span>)</span><br />
       Create a sinlge/multiple Histogram plot from a numpy array or record array.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.plothist">source&nbsp;code</a></span>
@@ -233,31 +255,6 @@ Real time plotting class based on Gnuplot
   </td>
 </tr>
 </table>
-<a name="scatter"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">scatter</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">x</span>,
-        <span class="sig-arg">y</span>,
-        <span class="sig-arg">names</span>=<span class="sig-default">[]</span>,
-        <span class="sig-arg">title</span>=<span class="sig-default">''</span>,
-        <span class="sig-arg">style</span>=<span class="sig-default">'points'</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.scatter">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  Makes scatter plots from numpy arrays.
-if arrays are multidimensional, multiple scatter plots will be generated, pairing rows.
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <a name="plotlines"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -267,22 +264,27 @@ if arrays are multidimensional, multiple scatter plots will be generated, pairin
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">plotlines</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">data</span>,
+        <span class="sig-arg">x</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">names</span>=<span class="sig-default">[]</span>,
         <span class="sig-arg">title</span>=<span class="sig-default">''</span>,
-        <span class="sig-arg">style</span>=<span class="sig-default">'lines'</span>)</span>
+        <span class="sig-arg">style</span>=<span class="sig-default">'lines'</span>,
+        <span class="sig-arg">multiplot</span>=<span class="sig-default">0</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.plotlines">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  Create a sinlge/multiple line plot from a numpy array or record array.
+  Create a single/multiple line plot from a numpy array or record array.
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>data</code></strong> - must be a numpy array or record array, with series as rows</li>
-        <li><strong class="pname"><code>names</code></strong> - is a list of strings to serve as legend labels</li>
-        <li><strong class="pname"><code>style</code></strong> - plot styles from gnuplot: lines, boxes, points, linespoints, etc.</li>
+        <li><strong class="pname"><code>data</code></strong> - : must be a numpy array or a list of lists,or record array, with series as rows</li>
+        <li><strong class="pname"><code>x</code></strong> - : x values for the series: numpy array</li>
+        <li><strong class="pname"><code>names</code></strong> - : is a list of strings to serve as legend labels</li>
+        <li><strong class="pname"><code>title</code></strong> - : Figure Title.</li>
+        <li><strong class="pname"><code>style</code></strong> - : plot styles from gnuplot: lines, boxes, points, linespoints, etc.</li>
+        <li><strong class="pname"><code>multiplot</code></strong> - : Whether to make multiple subplots</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -297,7 +299,8 @@ if arrays are multidimensional, multiple scatter plots will be generated, pairin
   <h3 class="epydoc"><span class="sig"><span class="sig-name">plothist</span>(<span class="sig-arg">self</span>,
         <span class="sig-arg">data</span>,
         <span class="sig-arg">title</span>=<span class="sig-default">''</span>,
-        <span class="sig-arg">names</span>=<span class="sig-default">[]</span>)</span>
+        <span class="sig-arg">names</span>=<span class="sig-default">[]</span>,
+        <span class="sig-arg">multiplot</span>=<span class="sig-default">0</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="trunk.BIP.Viz.realtime-pysrc.html#RTplot.plothist">source&nbsp;code</a></span>&nbsp;
@@ -308,8 +311,8 @@ if arrays are multidimensional, multiple scatter plots will be generated, pairin
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>data</code></strong> - must be a numpy array or record array, with series as rows</li>
-        <li><strong class="pname"><code>names</code></strong> - is a list of strings to serve as legend labels</li>
+        <li><strong class="pname"><code>data</code></strong> - : must be a numpy array or record array, with series as rows</li>
+        <li><strong class="pname"><code>names</code></strong> - : is a list of strings to serve as legend labels</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -346,7 +349,7 @@ if arrays are multidimensional, multiple scatter plots will be generated, pairin
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Sat Jan 30 12:17:15 2010
+    Generated by Epydoc 3.0.1 on Wed Jun  2 12:28:54 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
