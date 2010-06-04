@@ -92,11 +92,19 @@ class Model:
                 pool = Pool()
                 res = pool.map(dispatch,[self]*reps, chunksize=10)
                 self.res = array([i[0] for i in res])
-                self.evseries = res[0][1]
+                if reps == 0:
+                    self.evseries = res[0][1]
+                else:
+                    self.evseries = [i[1] for i in res]
                 pool.close()
                 pool.join()
             else:# Serial
-                self.res= array(map(dispatch,[self]*reps))
+                res= map(dispatch,[self]*reps)
+                self.res = array([i[0] for i in res])
+                if reps == 0:
+                    self.evseries = res[0][1]
+                else:
+                    self.evseries = [i[1] for i in res]
             
         elif method == 'SSAct':
             pass
@@ -169,7 +177,7 @@ def main():
     print 'total time: ',time.time()-t0
     t,series,steps, evts = M.getStats()
     ser = series.mean(axis=0)
-    print evts
+    #print len(evts), len(evts[0])
     from pylab import plot , show, legend
     plot(t,ser,'-.')
     legend(M.vn,loc=0)
