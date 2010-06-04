@@ -34,12 +34,19 @@ def dispatch(model):
 class Model:
     def __init__(self,vnames,rates,inits, tmat,propensity):
         '''
-         * vnames: list of strings
-         * rates: list of fixed rate parameters
-         * inits: list of initial values of variables
-         * propensity: list of lambda functions of the form: 
-            lambda r,ini: some function of rates ans inits.
+        Class representing a Stochastic Differential equation
+        :Parameters:
+            - `vnames`: list of strings
+            - `rates`: list of fixed rate parameters
+            - `inits`: list of initial values of variables. Must be integers
+            - `tmat`: Transition matrix; numpy array with shape=(len(inits),len(propensity))
+            - `propensity`: list of lambda functions of the form: lambda r,ini: some function of rates ans inits.
         '''
+        #check types
+        for i in inits:
+            assert isinstance(i, int)
+        for i in tmat.ravel():
+            assert isinstance(i, int)
         self.vn = vnames
         self.rates = rates
         self.inits = inits
@@ -48,7 +55,7 @@ class Model:
         self.pvl = len(self.pv) #length of propensity vector
         self.pv0 = zeros(self.pvl,dtype=float)
         self.nvars = len(self.inits) #number of variables
-        self.evseries = None #dictionary with complete time-series for each event type.
+        self.evseries = {} #dictionary with complete time-series for each event type.
         self.time = None
         self.tmax = None
         self.series = None
@@ -83,11 +90,13 @@ class Model:
         if method =='SSA':
             if not serial:# Parallel version
                 pool = Pool()
-                self.res = array(pool.map(dispatch,[self]*reps, chunksize=10))
+                res = pool.map(dispatch,[self]*reps, chunksize=10)
+                self.res = array([i[0] for i in res])
+                self.evseries = res[0][1]
                 pool.close()
                 pool.join()
             else:# Serial
-                self.res = array(map(dispatch,[self]*reps))
+                self.res= array(map(dispatch,[self]*reps))
             
         elif method == 'SSAct':
             pass
@@ -101,7 +110,8 @@ class Model:
         Gillespie Direct algorithm
         '''
         tmax = self.tmax
-        ini = copy.deepcopy(self.inits)
+        ini = self.inits
+        #ini = copy.deepcopy(self.inits)
         r = self.rates
         pvi = self.pv #propensity functions
         tm = self.tm
@@ -136,12 +146,12 @@ class Model:
                 self.steps +=1
                 if a0 == 0: break
             self.res[tim,:] = ini
-            self.evseries = evts
+            #self.evseries = evts
 #            if a0 == 0: break
         if self.viz:
             self.ser.clearFig()
             self.ser.plotlines(self.res.T,names=self.vn)
-        return self.res
+        return self.res,  evts
 
 
 def p1(r,ini): return r[0]*ini[0]*ini[1]
@@ -157,9 +167,9 @@ def main():
     t0=time.time()
     M.run(tmax=80,reps=100,viz=False,serial=False)
     print 'total time: ',time.time()-t0
-    #print res
-    t,series,steps = M.getStats()
+    t,series,steps, evts = M.getStats()
     ser = series.mean(axis=0)
+    print evts
     from pylab import plot , show, legend
     plot(t,ser,'-.')
     legend(M.vn,loc=0)
