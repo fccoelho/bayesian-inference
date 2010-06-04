@@ -13,11 +13,11 @@
 __docformat__ = "restructuredtext en"
 """
 Example of an SEIR model with two Infectious classes: subclinical(Is) and clinical(Ic)
-        Is
-       /  \
+          Is
+         /  \
 S -> E     R
-       \  /
-        Ic
+         \  /
+          Ic
         
 States:
 S: Susceptible
@@ -45,7 +45,7 @@ vnames = ['S','E','Is','Ic','R']
 #rates: b,ks,kc,rs,rc
 
 r = (0.001, 0.1, 0.1, 0.01, .01)
-ini = array((490,0,0,10,0))
+ini = array((490,0,0,10,0)) #must be integers
 # propensity functions
 def f1(r,ini):return r[0]*ini[0]*(ini[2]+ini[3])
 def f2(r,ini):return r[1]*ini[1]
@@ -54,7 +54,8 @@ def f4(r,ini):return r[3]*ini[2]
 def f5(r,ini):return r[4]*ini[3]
 
 propf = (f1,f2,f3,f4,f5)
-
+# Transition matrix. Must be composed of integers
+# Column are the events described by propensity functions, and lines are state variables
 tmat = array([[-1, 0, 0, 0, 0],#S
               [ 1,-1,-1, 0, 0],#E
               [ 0, 1, 0,-1, 0],#Is
@@ -69,6 +70,7 @@ M.run(tmax=80,reps=100,viz=0,serial=0)
 pt = time.time()-t0
 print 'Python total time: ',pt, ' seconds.'
 t,series,steps, evts = M.getStats()
+print evts
 print steps,'steps'
 # timing cython gillespie
 t0 = time.time()
