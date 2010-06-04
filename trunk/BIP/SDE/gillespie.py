@@ -34,7 +34,8 @@ def dispatch(model):
 class Model:
     def __init__(self,vnames,rates,inits, tmat,propensity):
         '''
-        Class representing a Stochastic Differential equation
+        Class representing a Stochastic Differential equation.
+        
         :Parameters:
             - `vnames`: list of strings
             - `rates`: list of fixed rate parameters
