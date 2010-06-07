@@ -985,9 +985,9 @@ class Meld(object):
         w /=sum(w)
         w = 1-w
         
-        w = nan_to_num(w)
+#        w = nan_to_num(w)
         w = array(w)*qtilphi
-        w /=sum(w)
+#        w /=sum(w)
         w = nan_to_num(w)
         print 'max(w): %s\nmean(w): %s\nvar(w): %s'%(max(w), mean(w), var(w))
         if sum(w) == 0.0:
@@ -1256,14 +1256,35 @@ def basicfit(s1,s2):
     :Return:
         Root mean square deviation between ´s1´ and ´s2´.
     '''
-    mse = []
-    for k in s2.keys():
-        if s2[k] == [] or (not s2[k].any()):
-            continue #no observations for this variable
-        e = mean((s1[k]-s2[k])**2.)
-        mse.append(e) #min to guarantee error is bounded to (0,1)
-    #print mean(mse),  
-    return mean(mse) #mean r-squared
+    if isinstance(s1, recarray):
+        assert isinstance(s2, dict)
+        err = []
+        for k in s2.keys():
+            if k not in s1.dtype.names:
+                continue
+            ls1 = len(s1[k]) #handles the cases where data is slightly longer that simulated series.
+#                print s2[k]
+#                try:
+#                pdb.set_trace()
+            if len(s2[k].shape) >1:
+                s2[k] = s2[k].mean(axis=1)
+            dif = s1[k]-s2[k][:ls1].astype(float)
+            
+            dif[isnan(dif)] = 0
+            e = sqrt(mean(dif**2))
+#                except TypeError:
+#                    print s1[k], s2[k]
+
+            err.append(e) 
+    elif isinstance(s1, list):
+        assert isinstance(s2, list) and len(s1) ==len(s2)
+        s1 = array(s1).astype(float)
+        s2 = array(s2).astype(float)
+        err = [sqrt(nanmean((s-t)**2)) for s, t in zip(s1, s2) ]
+        #err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
+    rmsd = nan_to_num(mean(err))
+    return rmsd
+
 def enumRun(model,theta,k):
     """
     Returns model results plus run number.

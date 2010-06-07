@@ -453,29 +453,6 @@ class Metropolis(_Sampler):
             sys.exit()
         return fit #mean r-squared
 
-    @np.vectorize
-    def _accept(self, last_lik, lik):
-        """
-        Decides whether to accept a proposal
-        """
-        if last_lik == None: last_lik = -np.inf
-        # liks are logliks
-        if lik == -np.inf:#0:
-            return 0
-        if last_lik >-np.inf:#0:
-            alpha = min( np.exp(lik-last_lik), 1)
-            #alpha = min(lik-last_lik, 1)
-        elif last_lik == -np.inf:#0:
-            alpha = 1
-        else:
-            return 0
-            raise ValueError("Negative likelihood!?!")
-#        print "last_lik, lik, alpha: ",  last_lik, lik, alpha
-        if np.random.random() < alpha:
-            return 1
-        else:
-            return 0
-
     def _imp_sample(self,n,data, w):
         """
         Importance sampling
