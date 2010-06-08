@@ -766,7 +766,7 @@ class Dream(_Sampler):
 #        Actually sum the logs
         posts = (log(array(pris))+array(listoliks)).tolist()
         if isnan(posts).any():
-            print pris, listoliks,theta
+            print "\nLikelihoods returned some NaNs. Dropping to debug mode:\n"
             pdb.set_trace()
         return posts, listoliks
     
