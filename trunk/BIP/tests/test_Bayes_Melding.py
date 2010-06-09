@@ -183,6 +183,11 @@ class TestMeld:
         # self.assertEqual(expected, meld.sir(data, t, variance, nopool, savetemp))
         assert_almost_equal(pp.P.mean(),7.5,1)
 
+    def test_clearNaN(self):
+        # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
+        # assert_equal(expected, meld.clearNaN())
+        raise SkipTest # TODO: implement your test here
+
 class TestEnumRun:
     def test_enum_run(self):
         # self.assertEqual(expected, enumRun(model, theta, k))
@@ -213,4 +218,14 @@ class TestBasicfit:
         # assert_equal(expected, basicfit(s1, s2))
         raise SkipTest # TODO: implement your test here
 
+
+class TestModel:
+    def test_model(self):
+        # assert_equal(expected, model(r, p0, n))
+        raise SkipTest # TODO: implement your test here
+
+class TestMhTest:
+    def test_mh_test(self):
+        # assert_equal(expected, mh_test())
+        raise SkipTest # TODO: implement your test here
 
