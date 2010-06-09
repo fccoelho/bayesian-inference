@@ -21,7 +21,7 @@ from time import time
 
 import numpy
 import pylab as P
-from numpy import array, nan_to_num, zeros, ones, mean, var, sqrt, floor, isnan
+from numpy import array, nan_to_num, zeros, ones, mean, var, sqrt, floor, isnan,  nansum
 from numpy.core.records import recarray
 from numpy.random import randint, random, seed
 from scipy import stats,  optimize as optim
@@ -1058,30 +1058,6 @@ class Meld(object):
         self.done_running = 1
         return 1
         
-    def clearNaN(obs):
-        """
-        Loops through an array with data series as rows, and 
-        Replaces NaNs with the mean of the other series.
-        
-        :Parameters:
-            -`obs`: 2-dimensional numpy array
-            
-        :Returns:
-            array of the same shape as obs
-        """
-        rows = obs.tolist()
-        for i, r in enumerate(rows):
-            a = array(r)
-            if not isnan(a).any():
-                continue
-            else:
-                m = array([s for s in rows if s !=r]).mean(axis=1)
-                for j, e in enumerate(r):
-                    r[j] = m[j] if isnan(e) else e
-                    
-        return array(rows)
-        
-
     def _output_loglike(self, prop, data, likfun=like.Normal,likvar=1e-1, po=None):
         """
         Returns the log-likelihood of a simulated series
@@ -1107,14 +1083,13 @@ class Meld(object):
                 continue#Only calculate liks of series for which we have data
             obs = array(data[self.q2phi.dtype.names[k]])
             if len(obs.shape)>1:#in case of more than one dataset
-                obs = nanmean(data[self.q2phi.dtype.names[k]], axis=1) 
+                obs = clearNaN(obs).mean(axis=1)
             if po != None:# Parallel version
                 liks = [po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])]
-                lik = sum([l.get() for l in liks])
+                lik = nansum([l.get() for l in liks])
             else:
-                for p in xrange(t): #Loop on time
-                    if not isnan(obs[p]): #nan == missing data
-                        lik += likfun(obs[p],prop[p][k],1./likvar)
+                liks = [likfun(obs[p],prop[p][k],1./likvar) for p in xrange(t)if not isnan(obs[p]) ]
+                lik = nansum(liks)
         return lik
     
     def sir(self, data={}, t=1,variance=0.1, pool=False,savetemp=False):
@@ -1308,6 +1283,32 @@ def basicfit(s1,s2):
         #err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
     rmsd = nan_to_num(mean(err))
     return rmsd
+
+def clearNaN(obs):
+    """
+    Loops through an array with data series as columns, and 
+    Replaces NaNs with the mean of the other series.
+    
+    :Parameters:
+        -`obs`: 2-dimensional numpy array
+        
+    :Returns:
+        array of the same shape as obs
+    """
+    rows = obs.T.tolist() #tranpose to facilitate processing
+    for i, r in enumerate(rows):
+        a = array(r)
+        if not isnan(a).any():
+            continue
+        else:
+            for j, e in enumerate(r):
+                if isnan(e):
+                    c = obs.T[:, j].tolist()
+                    c.pop(i)
+                    r[j] = nanmean(c)
+                    r = nan_to_num(r)
+                
+    return array(rows).T
 
 def enumRun(model,theta,k):
     """
