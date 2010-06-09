@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
 <!-- eric4 tasks file for project Bayesian-Inference -->
-<!-- Saved: 2010-06-08, 09:44:09 -->
+<!-- Saved: 2010-06-08, 19:17:47 -->
 <Tasks version="4.2">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
@@ -508,36 +508,9 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: Implement plot of best fit simulation against data</Summary>
-    <Description></Description>
-    <Created>2010-06-07, 12:16:12</Created>
-    <Resource>
-      <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
-      <Linenumber>188</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: remove dependency on the meld object</Summary>
-    <Description></Description>
-    <Created>2010-06-07, 12:16:12</Created>
-    <Resource>
-      <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
-      <Linenumber>255</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: finish implementing this</Summary>
-    <Description></Description>
-    <Created>2010-06-07, 12:16:12</Created>
-    <Resource>
-      <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
-      <Linenumber>634</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: allow passing of fitfun</Summary>
     <Description></Description>
-    <Created>2010-06-07, 12:32:12</Created>
+    <Created>2010-06-08, 12:59:47</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>306</Linenumber>
@@ -546,7 +519,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out what to do by default with inits</Summary>
     <Description></Description>
-    <Created>2010-06-07, 12:32:12</Created>
+    <Created>2010-06-08, 12:59:47</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>310</Linenumber>
@@ -555,7 +528,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out how to balance the total pop</Summary>
     <Description></Description>
-    <Created>2010-06-07, 12:32:12</Created>
+    <Created>2010-06-08, 12:59:47</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>437</Linenumber>
@@ -564,7 +537,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Write tests for this</Summary>
     <Description></Description>
-    <Created>2010-06-07, 12:32:12</Created>
+    <Created>2010-06-08, 12:59:47</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>477</Linenumber>
@@ -573,10 +546,37 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: implement calculation of AIC,BIC and DIC for SIR</Summary>
     <Description></Description>
-    <Created>2010-06-07, 12:32:12</Created>
+    <Created>2010-06-08, 12:59:47</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>842</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: Implement plot of best fit simulation against data</Summary>
+    <Description></Description>
+    <Created>2010-06-08, 13:38:28</Created>
+    <Resource>
+      <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
+      <Linenumber>188</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: remove dependency on the meld object</Summary>
+    <Description></Description>
+    <Created>2010-06-08, 13:38:28</Created>
+    <Resource>
+      <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
+      <Linenumber>255</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: finish implementing this</Summary>
+    <Description></Description>
+    <Created>2010-06-08, 13:38:28</Created>
+    <Resource>
+      <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
+      <Linenumber>634</Linenumber>
     </Resource>
   </Task>
 </Tasks>
