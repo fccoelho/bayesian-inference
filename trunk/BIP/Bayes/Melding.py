@@ -1057,6 +1057,30 @@ class Meld(object):
             sys.exit("Invalid MCMC method!\nTry 'MH'.")
         self.done_running = 1
         return 1
+        
+    def clearNaN(obs):
+        """
+        Loops through an array with data series as rows, and 
+        Replaces NaNs with the mean of the other series.
+        
+        :Parameters:
+            -`obs`: 2-dimensional numpy array
+            
+        :Returns:
+            array of the same shape as obs
+        """
+        rows = obs.tolist()
+        for i, r in enumerate(rows):
+            a = array(r)
+            if not isnan(a).any():
+                continue
+            else:
+                m = array([s for s in rows if s !=r]).mean(axis=1)
+                for j, e in enumerate(r):
+                    r[j] = m[j] if isnan(e) else e
+                    
+        return array(rows)
+        
 
     def _output_loglike(self, prop, data, likfun=like.Normal,likvar=1e-1, po=None):
         """
@@ -1082,7 +1106,7 @@ class Meld(object):
             if self.q2phi.dtype.names[k] not in data:
                 continue#Only calculate liks of series for which we have data
             obs = array(data[self.q2phi.dtype.names[k]])
-            if len(obs.shape)>1:
+            if len(obs.shape)>1:#in case of more than one dataset
                 obs = nanmean(data[self.q2phi.dtype.names[k]], axis=1) 
             if po != None:# Parallel version
                 liks = [po.apply_async(likfun,(obs[p],prop[p][k],1./likvar)) for p in xrange(t) if not isnan(obs[p])]
