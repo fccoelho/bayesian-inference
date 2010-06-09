@@ -433,7 +433,7 @@ class FitModel(object):
                     if n not in self.phinames:
                         continue
                     i = self.phinames.index(n)
-                    self.inits[i] = d2[n][0] if  not isinstance(d2[n][0], numpy.ndarray ) else d2[n][0].mean()
+                    self.inits[i] = nan_to_num(d2[n][0]) if  not isinstance(d2[n][0], numpy.ndarray ) else nan_to_num(nanmean(d2[n][0]))
                     #TODO: figure out how to balance the total pop
 #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
                     self.model.func_globals['inits'] = self.inits
@@ -1090,6 +1090,8 @@ class Meld(object):
             else:
                 liks = [likfun(obs[p],prop[p][k],1./likvar) for p in xrange(t)if not isnan(obs[p]) ]
                 lik = nansum(liks)
+#                if isnan(lik):
+#                    pdb.set_trace()
         return lik
     
     def sir(self, data={}, t=1,variance=0.1, pool=False,savetemp=False):
@@ -1296,6 +1298,7 @@ def clearNaN(obs):
         array of the same shape as obs
     """
     rows = obs.T.tolist() #tranpose to facilitate processing
+    res  = zeros(obs.T.shape)
     for i, r in enumerate(rows):
         a = array(r)
         if not isnan(a).any():
@@ -1307,8 +1310,9 @@ def clearNaN(obs):
                     c.pop(i)
                     r[j] = nanmean(c)
                     r = nan_to_num(r)
+            res[i, :] = r
                 
-    return array(rows).T
+    return res.T
 
 def enumRun(model,theta,k):
     """
