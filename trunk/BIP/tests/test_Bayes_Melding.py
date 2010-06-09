@@ -1,9 +1,11 @@
 from BIP.Bayes import Melding
 from numpy.testing import *
 import scipy.stats as st
+import numpy as np
 from nose.tools import assert_equal
 from nose import SkipTest
 from scipy.integrate import odeint
+import pdb
 
 K=50
 inits = [.999,0.001,0]
@@ -183,11 +185,6 @@ class TestMeld:
         # self.assertEqual(expected, meld.sir(data, t, variance, nopool, savetemp))
         assert_almost_equal(pp.P.mean(),7.5,1)
 
-    def test_clearNaN(self):
-        # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
-        # assert_equal(expected, meld.clearNaN())
-        raise SkipTest # TODO: implement your test here
-
 class TestEnumRun:
     def test_enum_run(self):
         # self.assertEqual(expected, enumRun(model, theta, k))
@@ -228,4 +225,14 @@ class TestMhTest:
     def test_mh_test(self):
         # assert_equal(expected, mh_test())
         raise SkipTest # TODO: implement your test here
+
+class TestClearNaN:
+    def test_clear_na_n(self):
+        obs  = np.arange(9,  dtype=float)
+        obs.shape = (3, 3)
+        obs[0, 2] = np.nan
+        res = Melding.clearNaN(obs)
+        print res,  obs
+        assert_equal(res[0, 2],  np.mean([obs[0, 0], obs[0, 1]]) )
+        
 
