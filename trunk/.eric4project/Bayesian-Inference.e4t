@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Tasks SYSTEM "Tasks-4.2.dtd">
 <!-- eric4 tasks file for project Bayesian-Inference -->
-<!-- Saved: 2010-06-09, 13:12:03 -->
+<!-- Saved: 2010-06-09, 17:04:19 -->
 <Tasks version="4.2">
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
@@ -64,276 +64,6 @@
     <Resource>
       <Filename>BIP/tests/test_Bayes_lhs.py</Filename>
       <Linenumber>20</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>41</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>46</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>51</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>56</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>72</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>83</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>88</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>93</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>98</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>108</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>113</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>118</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>123</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:28</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>128</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>133</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>138</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>143</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>148</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>153</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>158</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>163</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>168</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>173</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>178</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>189</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>194</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>199</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>204</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>209</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: implement your test here</Summary>
-    <Description></Description>
-    <Created>2010-04-27, 10:06:29</Created>
-    <Resource>
-      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
-      <Linenumber>214</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
@@ -510,7 +240,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Implement plot of best fit simulation against data</Summary>
     <Description></Description>
-    <Created>2010-06-09, 11:55:34</Created>
+    <Created>2010-06-09, 13:24:05</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>188</Linenumber>
@@ -519,7 +249,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
     <Description></Description>
-    <Created>2010-06-09, 11:55:34</Created>
+    <Created>2010-06-09, 13:24:05</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>255</Linenumber>
@@ -528,16 +258,304 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: finish implementing this</Summary>
     <Description></Description>
-    <Created>2010-06-09, 11:55:34</Created>
+    <Created>2010-06-09, 13:24:05</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
       <Linenumber>634</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>43</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>48</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>53</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>58</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>74</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>85</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>90</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>95</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>100</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>110</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>115</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>120</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>125</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>130</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>135</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>140</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>145</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>150</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>155</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>160</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>165</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>170</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>175</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>180</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>191</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>196</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>201</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>206</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>211</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>216</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>222</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: implement your test here</Summary>
+    <Description></Description>
+    <Created>2010-06-09, 14:35:06</Created>
+    <Resource>
+      <Filename>BIP/tests/test_Bayes_Melding.py</Filename>
+      <Linenumber>227</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: allow passing of fitfun</Summary>
     <Description></Description>
-    <Created>2010-06-09, 13:01:58</Created>
+    <Created>2010-06-09, 15:08:59</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>306</Linenumber>
@@ -546,7 +564,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out what to do by default with inits</Summary>
     <Description></Description>
-    <Created>2010-06-09, 13:01:58</Created>
+    <Created>2010-06-09, 15:08:59</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>310</Linenumber>
@@ -555,7 +573,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out how to balance the total pop</Summary>
     <Description></Description>
-    <Created>2010-06-09, 13:01:58</Created>
+    <Created>2010-06-09, 15:08:59</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>437</Linenumber>
@@ -564,7 +582,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Write tests for this</Summary>
     <Description></Description>
-    <Created>2010-06-09, 13:01:58</Created>
+    <Created>2010-06-09, 15:08:59</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>477</Linenumber>
@@ -573,7 +591,7 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: implement calculation of AIC,BIC and DIC for SIR</Summary>
     <Description></Description>
-    <Created>2010-06-09, 13:01:58</Created>
+    <Created>2010-06-09, 15:08:59</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>842</Linenumber>
