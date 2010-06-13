@@ -18,5 +18,5 @@ cdef class Dream:
     @cython.locals(means=np.ndarray, q1=cython.double, q3=cython.double, iqr=cython.double)
     cpdef _det_outlier_chains(self, int step)
     
-    @cython.locals()
-    cpdef _get_post_prob(self, theta, prop)
+    @cython.locals(c=cython.int,i=cython.int)
+    cpdef _get_post_prob(self, theta, prop, po = None)

@@ -9,6 +9,7 @@ Module implementing MCMC samplers
 import sys
 import time
 import pdb
+import cython
 import xmlrpclib
 from multiprocessing import Pool
 from random import sample
@@ -180,10 +181,10 @@ class _Sampler(object):
                 lbs += [k]
         self.pserver.lines(chaindata,range(j-(len(chaindata[0])), j), self.parnames, "Chain Progress.",'points' , 1)
         self.pserver2.lines(obs,[],lbs, "Fit", 'points' )
-        s = j-100 if j//2<100 else j//2
+        s = j-50 if 3*j//4<50 else 3*j//4
         #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
         series = [mean(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
-        self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last 50% samples", 'lines' )
+        self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last %s samples"%(j-s), 'lines' )
         self.pserver2.clearFig()
         #TODO: Implement plot of best fit simulation against data
 
@@ -580,7 +581,7 @@ class Dream(_Sampler):
         k=.3 #Deflation factor for the second proposal
         cv = self.scaling_factor*cov(xi)+self.scaling_factor*self.e*identity(self.dimensions)
         o=0
-        while 0<10:
+        while o<50:
             zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
             if sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
                 break
@@ -641,13 +642,10 @@ class Dream(_Sampler):
         initcov = identity(self.dimensions)
         for c in range(self.nchains):
             #sample from the priors
-            while 1:
-#                try:
-                theta = [self.parpriors[par].rvs() for par in self.parnames]
-#                except:
-#                    pdb.set_trace()
-                if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
-                    break
+#            while 1:
+            theta = [self.parpriors[par].moment(1) for par in self.parnames]
+#                if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
+#                    break
             self.lastcv = initcov #assume no covariance at the beginning
 
             thetalist.append(theta)
