@@ -775,6 +775,8 @@ class Meld(object):
                 while not (smp>=tlimits[self.name][0] and smp<=tlimits[self.name][1]):
                     smp = self.dist.resample(sz)[0][0]
                 return smp
+            def moment(self, m):
+                return self.dist.moment(m)
             def pdf(self, x):
                 return self.dist.evaluate(x)[0]
             def pmf(self, x):

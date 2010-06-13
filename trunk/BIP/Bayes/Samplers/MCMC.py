@@ -184,7 +184,11 @@ class _Sampler(object):
         s = j-50 if 3*j//4<50 else 3*j//4
         #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
         series = [mean(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
+        bi = self.liklist.index(max(self.liklist[s:j])) #index of the best fit
+        series = [mean(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
+        best = [self.phi[k][bi].tolist() for k in self.data.keys()]
         self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last %s samples"%(j-s), 'lines' )
+        self.pserver2.lines(best,[],self.data.keys(), "mean and best fit of last %s samples"%(j-s), 'lines' )
         self.pserver2.clearFig()
         #TODO: Implement plot of best fit simulation against data
 
@@ -643,12 +647,12 @@ class Dream(_Sampler):
         for c in range(self.nchains):
             #sample from the priors
 #            while 1:
-            theta = [self.parpriors[par].moment(1) for par in self.parnames]
+            theta = array([self.parpriors[par].stats(moments='m') for par in self.parnames])
 #                if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
 #                    break
             self.lastcv = initcov #assume no covariance at the beginning
 
-            thetalist.append(theta)
+            thetalist.append(theta.tolist())
         return thetalist 
 #    @timeit
     def _prop_phi(self, thetalist, po=None):
@@ -763,6 +767,7 @@ class Dream(_Sampler):
 #        Multiply by prior values to obtain posterior probs
 #        Actually sum the logs
         posts = (log(array(pris))+array(listoliks)).tolist()
+        
         if isnan(posts).any():
             print "\nLikelihoods returned some NaNs. Dropping to debug mode:\n"
             pdb.set_trace()
