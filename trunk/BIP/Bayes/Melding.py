@@ -985,11 +985,11 @@ class Meld(object):
         w /=sum(w)
         w = 1-w
         
-#        w = nan_to_num(w)
-        w = array(w)*qtilphi
-#        w /=sum(w)
         w = nan_to_num(w)
-        print 'max(w): %s\nmean(w): %s\nvar(w): %s'%(max(w), mean(w), var(w))
+        w = array(w)*qtilphi
+        w /=sum(w)
+        w = nan_to_num(w)
+        print 'max(w): %s\nmin:%s\nmean(w): %s\nvar(w): %s'%(max(w), min(w), mean(w), var(w))
         if sum(w) == 0.0:
             print 'Resampling weights are all zero, please check your model or data.'
             return 0
@@ -1122,21 +1122,24 @@ class Meld(object):
                 return 0
 
 #       Calculating the likelihood of each phi[i] considering the observed data
+#        lik =self._output_loglike()
         lik = zeros(self.K)
         t0=time()
         po = Pool()
         for i in xrange(self.K):
-            l=1
-            for n in data.keys():
-                if isinstance(data[n],list) and data[n] == []: 
-                    continue #no observations for this variable
-                elif isinstance(data[n],numpy.ndarray) and (not data[n].any()):
-                    continue #no observations for this variable
-                p = phi[n]
-                liklist=[po.apply_async(like.Normal,(data[n][m], j, 1./variance)) for m,j in enumerate(p[i])]
-                l=sum([p.get() for p in liklist])
-                #l *= product([exp(like.Normal(data[n][m], j,1./2*j)) for m,j in enumerate(p[i])])
-                #l += sum([like.Normal(data[n][m], j,1./(tau*j+.0001)) for m,j in enumerate(p[i])])
+            p = phi[i]
+            l =self._output_loglike(p,data,  likvar=variance)
+#            for n in data.keys():
+#                if isinstance(data[n],list) and data[n] == []: 
+#                    continue #no observations for this variable
+#                elif isinstance(data[n],numpy.ndarray) and (not data[n].any()):
+#                    continue #no observations for this variable
+#                p = phi[n]
+#                lik =self._output_loglike()
+#                liklist=[po.apply_async(like.Normal,(data[n][m], j, 1./variance)) for m,j in enumerate(p[i])]
+#                l=sum([p.get() for p in liklist])
+            if i%self.K/10. ==0:
+                print "Likelihood calculation progress: %s of %s done."%(i, self.K)
             lik[i]=l
         po.close()
         po.join()
@@ -1258,6 +1261,7 @@ def basicfit(s1,s2):
         Root mean square deviation between ´s1´ and ´s2´.
     '''
     if isinstance(s1, recarray):
+#        print "==> is recarray!"
         assert isinstance(s2, dict)
         err = []
         for k in s2.keys():
@@ -1267,24 +1271,29 @@ def basicfit(s1,s2):
 #                print s2[k]
 #                try:
 #                pdb.set_trace()
+
             if len(s2[k].shape) >1:
-                s2[k] = s2[k].mean(axis=1)
+                s2[k] = clearNaN(s2[k]).mean(axis=1)#nanmean(s2[k], axis=1)
             dif = s1[k]-s2[k][:ls1].astype(float)
             
             dif[isnan(dif)] = 0
-            e = sqrt(mean(dif**2))
+            e = nanmean(dif**2)
 #                except TypeError:
 #                    print s1[k], s2[k]
 
             err.append(e) 
     elif isinstance(s1, list):
+#        print "==> is List!"
         assert isinstance(s2, list) and len(s1) ==len(s2)
         s1 = array(s1).astype(float)
         s2 = array(s2).astype(float)
-        err = [sqrt(nanmean((s-t)**2)) for s, t in zip(s1, s2) ]
+        if len(s2.shape) >1:
+            s2 = clearNaN(s2).mean(axis=1)
+        
+        err = [nanmean((s-t)**2) for s, t in zip(s1, s2) ]
         #err = [sum((s-t)**2./t**2) for s, t in zip(s1, s2)]
-    rmsd = nan_to_num(mean(err))
-    return rmsd
+    mse = nan_to_num(mean(err))
+    return mse
 
 def clearNaN(obs):
     """
