@@ -61,7 +61,7 @@ class FitModel(object):
     Bayesian posterior distributions of input and
     outputs of the model.
     """
-    def __init__(self, K,model, inits,tf,thetanames,phinames,wl=None ,nw=1,verbose=False,  burnin=1000):
+    def __init__(self, K,model, inits,tf,thetanames,phinames,wl=None ,nw=1,verbose=False,burnin=1000, constraints=[]):
         """
         Initialize the model fitter.
 
@@ -81,6 +81,7 @@ class FitModel(object):
             assert wl<=tf
         except AssertionError:
            sys.exit("Window Length cannot be larger that Length of the simulation(tf)" )
+        assert isinstance(constraints, list)
         self.K = K
         self.L = .1*K if K>2000 else K
         self.finits = inits #first initial values
@@ -104,6 +105,7 @@ class FitModel(object):
         self.prior_set = False
         self.burnin = burnin
         self.verbose = verbose
+        self.constraints = constraints
         self.pool = False #this will be updated by the run method.
         self.Me = Meld(K=self.K,L=self.L,model=self.model,ntheta=self.ntheta,nphi=self.nphi,verbose=self.verbose)
         self.AIC = 0
@@ -299,7 +301,7 @@ class FitModel(object):
         elif method == "DREAM":
             while not succ: #run sir Until is able to get a fitd == "mcmc":
                 print 'attempt #',att
-                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin,  method='dream')
+                succ = self.Me.mcmc_run(data,t=self.tf,likvariance=likvar,burnin=self.burnin,  method='dream', constraints=self.constraints)
             pt = self.Me.post_theta
             series = self.Me.post_phi
         elif method == "ABC":

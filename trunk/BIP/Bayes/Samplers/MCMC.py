@@ -213,6 +213,22 @@ class _Sampler(object):
         elif improv > 0.01:
             self.tstep *= 0.97 #reduce step if approacching sweet spot
 
+    @vectorize
+    def check_constraints(self, theta):
+        """
+        Check if given theta vector complies with all constraints
+        
+        :Parameters:
+            - theta: parameter vector
+            
+        :Returns:
+            True if theta passes all constraints, False otherwise
+        """
+        if not self.constraints:
+            return True
+        r = array([c(theta) for c in self.constraints])
+        return r.all()
+    
     def _propose(self, step, po=None):
         """
         Generates proposals.
@@ -234,6 +250,8 @@ class _Sampler(object):
                 #sample from the priors
                 while 1:
                     theta = [self.parpriors[dist]() for dist in self.parnames]
+                    if not self.check_constraints(theta):
+                        continue
                     if sum ([int(greater(t, self.parlimits[i][0]) and less(t, self.parlimits[i][1])) for i, t in enumerate(theta)]) == self.dimensions:
                         break
                 self.lastcv = initcov #assume no covariance at the beginning
@@ -587,6 +605,7 @@ class Dream(_Sampler):
         o=0
         while o<50:
             zdr = multivariate_normal(xi,k*cv,1).tolist()[0]
+            if not self.check_constraints(zdr): continue
             if sum ([t>= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in enumerate(zdr)]) == self.dimensions:
                 break
             o+=1
