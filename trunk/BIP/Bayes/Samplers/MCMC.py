@@ -213,7 +213,7 @@ class _Sampler(object):
         elif improv > 0.01:
             self.tstep *= 0.97 #reduce step if approacching sweet spot
 
-    @vectorize
+#    @np.vectorize
     def check_constraints(self, theta):
         """
         Check if given theta vector complies with all constraints
@@ -346,6 +346,8 @@ class Metropolis(_Sampler):
                 #sample from the priors
                 while 1:
                     theta = [self.parpriors[par].rvs() for par in self.parnames]
+                    if not self.check_constraints(theta):
+                        continue
                     if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
                         break
                     off+=1
@@ -696,26 +698,29 @@ class Dream(_Sampler):
         gam = 2.38/sqrt(2*delta*self.dimensions)
         zis = []
         for c in xrange(self.nchains):
-#            o = 0
-#            while 1: #check limits
-            e = [uniform(-i, 2*i).rvs() for i in b]
-            eps = [norm(0, i).rvs() for i in b]
-            others = [x for i, x in enumerate(proptheta) if i !=c]
-            dif = zeros(self.dimensions)
-            for d in range(delta):
-                d1, d2 = sample(others, 2)
-                dif+=array(d1)-array(d2)
-            zi = array(proptheta[c])+(ones(self.dimensions)+e)*gam*dif+eps
-#                if sum ([t>= self.parlimits[i][0] and t<= self.parlimits[i][1] for i, t in enumerate(zi)]) == self.dimensions:
-#                    break
-            #revert offlimits proposals
-            for i in xrange(len(zi)):
-                if zi[i]<= self.parlimits[i][0] or zi[i]>= self.parlimits[i][1]:# or isnan(zi):
-                    zi[i] = proptheta[c][i]
-            #Cross over
-            for i in xrange(len(zi)): 
-                zi[i] = proptheta[c][i] if rand() < 1-CR else zi[i]
-            zis.append(zi)
+            o = 0
+            while 1: #check limits
+                e = [uniform(-i, 2*i).rvs() for i in b]
+                eps = [norm(0, i).rvs() for i in b]
+                others = [x for i, x in enumerate(proptheta) if i !=c]
+                dif = zeros(self.dimensions)
+                for d in range(delta):
+                    d1, d2 = sample(others, 2)
+                    dif+=array(d1)-array(d2)
+                zi = array(proptheta[c])+(ones(self.dimensions)+e)*gam*dif+eps
+                #revert offlimits proposals
+                for i in xrange(len(zi)):
+                    if zi[i]<= self.parlimits[i][0] or zi[i]>= self.parlimits[i][1]:# or isnan(zi):
+                        zi[i] = proptheta[c][i]
+                #Cross over
+                for i in xrange(len(zi)): 
+                    zi[i] = proptheta[c][i] if rand() < 1-CR else zi[i]
+                zis.append(zi)
+                if self.check_constraints(zi): 
+                    break
+
+            
+            
         #get the associated Phi's
         if isnan(zis).any():
             pdb.set_trace()
