@@ -89,8 +89,8 @@ def pred_new_cases(obs,series,weeks,names=[], title='Total new cases per window:
             co = c.next()
             print len(x),  len([mean(sum(s[n],axis=1)) for s in series]),  type(x)
             ax.plot([x[7]]+x.tolist(), [mean(sum(s[n],axis=1)) for s in series],'%s^'%co, label="Mean pred. %s"%n)
-            ax.plot(x,[sum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'%s-o'%co, label="obs. Prev")
-            ax.boxplot([sum(s[n],axis=1) for s in series] ,positions = x, widths=W,notch=1,vert=1)
+            ax.plot(x,[nansum(obs[n][(w+1)*ws:(w+1)*ws+ws]) for w in range(weeks-1)],'%s-o'%co, label="obs. Prev")
+            ax.boxplot([nansum(s[n],axis=1) for s in series] ,positions = x, widths=W,notch=1,vert=1)
     #P.xlabel('windows')
     #ax.legend(loc=0)
     if 'time' in obs: 
