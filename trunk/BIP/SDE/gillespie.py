@@ -49,8 +49,8 @@ class Model:
         for i in tmat.ravel():
             assert isinstance(i, int)
         self.vn = vnames
-        self.rates = rates
-        self.inits = inits
+        self.rates = tuple(rates)
+        self.inits = tuple(inits)
         self.tm = tmat
         self.pv = propensity#[compile(eq,'errmsg','eval') for eq in propensity]
         self.pvl = len(self.pv) #length of propensity vector
@@ -119,9 +119,9 @@ class Model:
         Gillespie Direct algorithm
         '''
         tmax = self.tmax
-        ini = self.inits
+        ini = list(self.inits)
         #ini = copy.deepcopy(self.inits)
-        r = self.rates
+        r = list(self.rates)
         pvi = self.pv #propensity functions
         tm = self.tm
         pv = self.pv0 #actual propensity values for each time step
@@ -174,7 +174,7 @@ def main():
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
-    M.run(tmax=80,reps=100,viz=False,serial=False)
+    M.run(tmax=80,reps=100,viz=0,serial=False)
     print 'total time: ',time.time()-t0
     t,series,steps, evts = M.getStats()
     ser = series.mean(axis=0)

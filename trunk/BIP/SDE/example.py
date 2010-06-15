@@ -66,12 +66,13 @@ CM = CModel(vnames=vnames,rates = r,inits=ini,tmat=tmat,propensity=propf)
 
 # timing python gillespie
 t0 = time.time()
-M.run(tmax=80,reps=100,viz=0,serial=0)
+M.run(tmax=80,reps=100,viz=0,serial=1)
 pt = time.time()-t0
 print 'Python total time: ',pt, ' seconds.'
-t,series,steps, evts = M.getStats()
-print evts
+t,series,steps,evts = M.getStats()
+#print evts
 print steps,'steps'
+
 # timing cython gillespie
 t0 = time.time()
 CM.run(tmax=80,reps=100)
@@ -81,13 +82,13 @@ t2,series2,steps2 = CM.getStats()
 print steps2,' steps'
 print "Cython speedup: %sx"%(pt/ct)
 from pylab import plot , show, legend, errorbar, title, figure
-#print series.var(axis=0)
-print evts
+print series.shape
+#print cevts
 plot(t,series.mean(axis=0),'-o')
-title('python curve')
+title('Python curve')
 legend(vnames,loc=0)
 figure()
 plot(t2,series2.mean(axis=2),'-o')
-title('cython curve')
+title('Cython curve')
 legend(vnames,loc=0)
 show()
