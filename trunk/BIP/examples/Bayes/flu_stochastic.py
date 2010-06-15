@@ -55,7 +55,7 @@ def runModel(theta):
     M=Model(vnames=vnames,rates = r,inits=inits,tmat=tmat,propensity=propf)
     #t0 = time.time()
     M.run(tmax=tf,reps=1,viz=False,serial=True)
-    t,series,steps = M.getStats()
+    t,series,steps,events = M.getStats()
     ser = series.mean(axis=0)
     #print series.shape
     return ser
@@ -68,6 +68,6 @@ F.set_priors(tdists=[st.uniform]*3,tpars=[(0.00001,.0006),(.01,.5),(0,1)],tlims=
     pdists=[st.uniform]*5,ppars=[(0,500)]*5,plims=[(0,500)]*5)
 
 F.run(dt,'MCMC',likvar=2e2,pool=True,monitor=[])
-#print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='scipy',tol=1e-5, verbose=1, plot=1)
+#print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='oo',tol=1e-5, verbose=1, plot=1)
 #==Uncomment the line below to see plots of the results
 #F.plot_results()
