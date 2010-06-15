@@ -1034,7 +1034,7 @@ class Meld(object):
         print "Done imp samp."
         return smp
     
-    def mcmc_run(self, data, t=1, likvariance=10,burnin=1000, nopool=False, method="MH" ):
+    def mcmc_run(self, data, t=1, likvariance=10,burnin=1000, nopool=False, method="MH" , constraints=[]):
         """
         MCMC based fitting
 
@@ -1049,12 +1049,12 @@ class Meld(object):
         ta = True if self.verbose else False
         tc = True if self.verbose else False
         if method == "MH":
-            sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta)
+            sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta, constraints=[])
             sampler.step()
             self.phi = sampler.phi
             #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
         elif method == 'dream':
-            sampler = MCMC.Dream(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta)
+            sampler = MCMC.Dream(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta, constraints=[])
             sampler.step()
             self.phi = sampler.phi
         else:
