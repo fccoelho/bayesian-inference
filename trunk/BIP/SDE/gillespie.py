@@ -12,15 +12,19 @@
 #-----------------------------------------------------------------------------
 __docformat__ = "restructuredtext en"
 from numpy.random import uniform, multinomial, exponential,random
-from numpy import arange, array, empty,zeros,log, isnan, nanmax
+from numpy import arange, array, empty,zeros,log, isnan, nanmax, nan_to_num
 import time
+import xmlrpclib
 import copy
 from multiprocessing import Pool
 try:
-    from BIP.Viz.realtime import RTplot
-    ser = RTplot()
+    from liveplots import xmlrpcserver as xmlrpc
+    port = xmlrpc.rpc_plot(persist=0)
+    server = xmlrpclib.ServerProxy('http://localhost:%s'%port, allow_none=True)
+    viz = True
 except:
-    ser = None
+    print "faio"
+    viz = False
 try:
     import psyco
     psyco.full()
@@ -28,7 +32,7 @@ except:
     pass
 def dispatch(model):
     '''this function is necessary for paralelization'''
-    model.ser = ser
+    model.server = server
     return model.GSSA()
 
 class Model:
@@ -81,7 +85,7 @@ class Model:
         :Return:
             a numpy array of shape (reps,tmax,nvars)
         '''
-        if ser: #only if Gnuplot.py is installed
+        if viz: #only if Gnuplot.py is installed
             self.viz = viz
         self.tmax = tmax
         #self.res = zeros((tmax,self.nvars,reps),dtype=float)
@@ -100,7 +104,7 @@ class Model:
                 pool.close()
                 pool.join()
             else:# Serial
-                res= map(dispatch,[self]*reps)
+                res = map(dispatch,[self]*reps)
                 self.res = array([i[0] for i in res])
                 if reps == 0:
                     self.evseries = res[0][1]
@@ -119,7 +123,7 @@ class Model:
         Gillespie Direct algorithm
         '''
         tmax = self.tmax
-        ini = list(self.inits)
+        ini = array(self.inits)
         #ini = copy.deepcopy(self.inits)
         r = list(self.rates)
         pvi = self.pv #propensity functions
@@ -154,12 +158,12 @@ class Model:
                 tc += tau
                 self.steps +=1
                 if a0 == 0: break
-            self.res[tim,:] = ini
+            self.res[tim,:] = nan_to_num(ini)
             #self.evseries = evts
 #            if a0 == 0: break
         if self.viz:
-            self.ser.clearFig()
-            self.ser.plotlines(self.res.T,names=self.vn)
+            #self.ser.clearFig()
+            self.server.lines(self.res.T.tolist(),[],self.vn,"Single replica")
         return self.res,  evts
 
 
@@ -174,7 +178,7 @@ def main():
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
-    M.run(tmax=80,reps=100,viz=0,serial=False)
+    M.run(tmax=80,reps=100,viz=1,serial=1)
     print 'total time: ',time.time()-t0
     t,series,steps, evts = M.getStats()
     ser = series.mean(axis=0)

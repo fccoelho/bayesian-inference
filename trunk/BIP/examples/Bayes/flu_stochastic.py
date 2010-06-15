@@ -41,7 +41,7 @@ def runModel(theta):
     vnames = ['S','E','I','A','R']
     #rates: b,ki,ka,ri,ra
     #r = (0.001, 0.1, 0.1, 0.01, 0.01)
-    r = (beta, (alpha)*epsilon, (1-alpha)*epsilon, tau, tau)
+    r = (beta, alpha*epsilon, (1-alpha)*epsilon, tau, tau)
     #print r,inits
     # propensity functions
     propf = (f1,f2,f3,f4,f5)
@@ -54,20 +54,21 @@ def runModel(theta):
                 ])
     M=Model(vnames=vnames,rates = r,inits=inits,tmat=tmat,propensity=propf)
     #t0 = time.time()
-    M.run(tmax=tf,reps=1,viz=False,serial=True)
+    M.run(tmax=tf,reps=1,viz=0,serial=True)
     t,series,steps,events = M.getStats()
-    ser = series.mean(axis=0)
+    ser = st.nanmean(series,axis=0)
     #print series.shape
     return ser
 
 d = runModel([beta,alpha,sigma])
+
 dt = {'S':d[:,0],'E':d[:,1],'I':d[:,2],'A':d[:,3],'R':d[:,4]}
 F = FitModel(300, runModel,inits,tf,['beta','alpha','sigma'],['S','E','I','A','R'],
             wl=7,nw=20,verbose=True,burnin=100)
-F.set_priors(tdists=[st.uniform]*3,tpars=[(0.00001,.0006),(.01,.5),(0,1)],tlims=[(0,1),(.001,1),(0,1)],
+F.set_priors(tdists=[st.uniform]*3,tpars=[(0.00001,.0006),(.01,.5),(0.001,1)],tlims=[(0,1),(.001,1),(0,1)],
     pdists=[st.uniform]*5,ppars=[(0,500)]*5,plims=[(0,500)]*5)
 
-F.run(dt,'MCMC',likvar=2e2,pool=True,monitor=[])
+F.run(dt,'ABC',likvar=2e2,pool=0,monitor=[])
 #print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='oo',tol=1e-5, verbose=1, plot=1)
 #==Uncomment the line below to see plots of the results
-#F.plot_results()
+F.plot_results()
