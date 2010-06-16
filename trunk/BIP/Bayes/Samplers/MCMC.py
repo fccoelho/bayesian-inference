@@ -339,7 +339,7 @@ class Metropolis(_Sampler):
         thetalist = []
         proplist = []
         initcov = identity(self.dimensions)
-        
+#        po=None
         for c in range(self.nchains):
             off = 0
             if step <= 1 or self.seqhist[c] ==[]: 

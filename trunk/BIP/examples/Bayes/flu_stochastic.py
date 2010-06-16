@@ -65,10 +65,10 @@ d = runModel([beta,alpha,sigma])
 dt = {'S':d[:,0],'E':d[:,1],'I':d[:,2],'A':d[:,3],'R':d[:,4]}
 F = FitModel(300, runModel,inits,tf,['beta','alpha','sigma'],['S','E','I','A','R'],
             wl=7,nw=20,verbose=True,burnin=100)
-F.set_priors(tdists=[st.uniform]*3,tpars=[(0.00001,.0006),(.01,.5),(0.001,1)],tlims=[(0,1),(.001,1),(0,1)],
+F.set_priors(tdists=[st.uniform]*3,tpars=[(0.00001,.0006),(.1,.5),(0.001,1)],tlims=[(0,1),(.001,1),(0,1)],
     pdists=[st.uniform]*5,ppars=[(0,500)]*5,plims=[(0,500)]*5)
 
-F.run(dt,'ABC',likvar=2e2,pool=0,monitor=[])
-#print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='oo',tol=1e-5, verbose=1, plot=1)
+F.run(dt,'MCMC',likvar=1e0,pool=0,monitor=[])
+#~ print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='oo',tol=1e-55, verbose=1, plot=1)
 #==Uncomment the line below to see plots of the results
 F.plot_results()
