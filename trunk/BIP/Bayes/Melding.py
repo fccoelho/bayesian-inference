@@ -779,6 +779,8 @@ class Meld(object):
                 return smp
             def moment(self, m):
                 return self.dist.moment(m)
+            def stats(self, *args, **kwds):
+                return self.dist.stats(*args, **kwds)
             def pdf(self, x):
                 return self.dist.evaluate(x)[0]
             def pmf(self, x):
