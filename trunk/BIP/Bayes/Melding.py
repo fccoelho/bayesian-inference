@@ -1353,7 +1353,7 @@ def model_as_ra(theta, model, phinames):
     res = recarray(r.shape[0],formats=['f8']*nphi, names = phinames)
     for i, n in enumerate(res.dtype.names):
         res[n] = r[:, i]
-    return nan_to_num(res)
+    return res
 
 def model(r, p0, n=1):
     """

@@ -15,6 +15,7 @@ from numpy.random import uniform, multinomial, exponential,random
 from numpy import arange, array, empty,zeros,log, isnan, nanmax, nan_to_num
 import time
 import xmlrpclib
+import pdb
 import copy
 from multiprocessing import Pool
 try:
@@ -49,7 +50,8 @@ class Model:
         '''
         #check types
         for i in inits:
-            assert isinstance(i, int)
+            if not isinstance(i, int):
+                i = int(i)
         for i in tmat.ravel():
             assert isinstance(i, int)
         self.vn = vnames
@@ -125,7 +127,10 @@ class Model:
         tmax = self.tmax
         ini = array(self.inits)
         #ini = copy.deepcopy(self.inits)
-        r = list(self.rates)
+        r = array(self.rates)
+        for i in r:
+            if i<0:
+                i=0
         pvi = self.pv #propensity functions
         tm = self.tm
         pv = self.pv0 #actual propensity values for each time step
@@ -143,15 +148,16 @@ class Model:
                     i+=1
                 tau = (-1/a0)*log(random())
                 if pv.any():#no change in state is pv is all zeros
-                    try:
-                        event = multinomial(1,pv/a0) # event which will happen on this iteration
-                    except ValueError:# as inst:#2.6 syntax
-                        #print inst
-                        print "pv: ",pv
-                        print "Rates: ", r
-                        print "State: ", ini
-                        print "Time Step: ",tim
-                        raise ValueError()
+                    #~ try:
+                    event = multinomial(1,pv/a0) # event which will happen on this iteration
+                    #~ except ValueError:# as inst:#2.6 syntax
+                        #~ #print inst
+                        #~ print "pv: ",pv
+                        #~ print "Rates: ", r
+                        #~ print "State: ", ini
+                        #~ print "Time Step: ",tim
+                        #~ pdb.set_trace()
+                        #~ #raise ValueError()
                     ini += tm[:,event.nonzero()[0][0]]
                     evts[event.nonzero()[0][0]].append(tc+tau)
                 #print tc, ini
