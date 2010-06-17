@@ -24,7 +24,7 @@ import pylab as P
 from numpy import array, nan_to_num, zeros, ones, mean, var, sqrt, floor, isnan,  nansum
 from numpy.core.records import recarray
 from numpy.random import randint, random, seed
-from scipy import stats,  optimize as optim
+from scipy import stats, optimize as optim
 from scipy.stats import nanmean
 from scipy.stats.kde import gaussian_kde
 
@@ -777,10 +777,11 @@ class Meld(object):
                 while not (smp>=tlimits[self.name][0] and smp<=tlimits[self.name][1]):
                     smp = self.dist.resample(sz)[0][0]
                 return smp
-            def moment(self, m):
-                return self.dist.moment(m)
-            def stats(self, *args, **kwds):
-                return self.dist.stats(*args, **kwds)
+            def stats(self, moments):
+                if isinstance(self.dist, (stats.rv_continuous, stats.rv_discrete)):
+                    return self.dist.stats(moments='m')
+                else:
+                    return self.dist.dataset.mean()
             def pdf(self, x):
                 return self.dist.evaluate(x)[0]
             def pmf(self, x):
