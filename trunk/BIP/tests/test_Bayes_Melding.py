@@ -15,10 +15,6 @@ phinames = ['S','I','R']
 verbose = False
 
 def model(*theta):
-    try:#for standalone runs
-        inits = y0
-    except NameError:#for runing within a FitModel object
-        inits = self.inits
     step = .1
     beta,tau = theta
     def sir(y,t):
@@ -30,12 +26,13 @@ def model(*theta):
                 ]
     y = odeint(sir,inits,np.arange(t0,tf,step))
     return y
-    
+
+fit_model = Melding.FitModel(K, model, inits, tf, thetanames, phinames, verbose=verbose)
+
 class TestFitModel:
+    
     def test___init__(self):
-        self.model = model
-        self.fit_model = Melding.FitModel(K, model, inits, tf, thetanames, phinames, verbose=verbose)
-        assert isinstance(self.fit_model,Melding.FitModel)
+        assert isinstance(fit_model,Melding.FitModel)
 
     def test_do_inference(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
@@ -61,12 +58,12 @@ class TestFitModel:
         self.test_set_priors()
         wl = None
         nw = 1
-        d = self.model(*[1.4,0.5])
+        d = model(*[1.4,0.5])
         data = {'S':d[:,0],'I':d[:,1],'R':d[:,2]}
         method = 'SIR'
         monitor = False
-        self.fit_model.run(wl, nw, data, method, monitor)
-        assert self.fit_model.done_running 
+        fit_model.run(wl, nw, data, method, monitor)
+        assert fit_model.done_running 
 
     def test_plot_results(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, wl, nw, verbose)
@@ -101,7 +98,7 @@ class TestFitModel:
 
 class TestMeld:
     def test___init__(self):
-        self.meld = Meld(2000, 100, Melding.model, 2, 1, alpha=0.5, verbose=False, viz=False)
+        self.meld = Melding.Meld(2000, 100, Melding.model, 2, 1, alpha=0.5, verbose=False, viz=False)
         assert isinstance(self.meld, Melding.Meld) 
 
     def test_abcRun(self):
@@ -177,7 +174,7 @@ class TestMeld:
     def test_setThetaFromData(self):
         # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
         # self.assertEqual(expected, meld.setThetaFromData(names, data, limits))
-        assert False # TODO: implement your test here
+        raise SkipTest # TODO: implement your test here
 
     def test_sir(self):
         self.meld.sir(data ={'p':[7.5]} )

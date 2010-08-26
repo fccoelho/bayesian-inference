@@ -1,4 +1,6 @@
 import unittest
+from nose import SkipTest
+from nose.tools import assert_equal
 from numpy import arange,  sqrt
 from numpy.testing import *
 from numpy.random import lognormal
@@ -7,7 +9,7 @@ from BIP.Bayes.like import Normal, Lognormal, Poisson, Negbin, Binomial, Gamma, 
 
 class TestCategor(unittest.TestCase):
     def test_categor(self):
-        assert False # TODO: implement your test here
+        raise SkipTest # TODO: implement your test here
 
 class TestNormal(unittest.TestCase):
     def test_normal(self):
@@ -87,7 +89,7 @@ class TestBeta(unittest.TestCase):
 
 class TestSimple(unittest.TestCase):
     def test_simple(self):
-        assert False # TODO: implement your test here
+        raise SkipTest # TODO: implement your test here
 
 if __name__ == '__main__':
     unittest.main()

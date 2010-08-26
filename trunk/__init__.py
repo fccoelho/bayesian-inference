@@ -1,2 +1,2 @@
-from cython import pyximport
+import pyximport
 pyximport.install(pyimport = True) 
