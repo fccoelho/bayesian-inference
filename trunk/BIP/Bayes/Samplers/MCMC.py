@@ -219,7 +219,7 @@ class _Sampler(object):
         Check if given theta vector complies with all constraints
         
         :Parameters:
-            - theta: parameter vector
+            - `theta`: parameter vector
             
         :Returns:
             True if theta passes all constraints, False otherwise

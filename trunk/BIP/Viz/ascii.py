@@ -19,20 +19,11 @@ class Histogram(object):
     def __init__(self, data, bins=10, rnge=None):
         """
         Class constructor
-        
+
         :Parameters:
             - `data`: array like object
-            - `bins`: int or sequence of scalars, optional
-                        If `bins` is an int, it defines the number of equal-width
-                        bins in the given range (10, by default). If `bins` is a sequence,
-                        it defines the bin edges, including the rightmost edge, allowing
-                        for non-uniform bin widths.
-            - `rnge`: (float, float), optional
-                        The lower and upper range of the bins.  If not provided, range
-                        is simply ``(a.min(), a.max())``.  Values outside the range are
-                        ignored. Note that with `new` set to False, values below
-                        the range are ignored, while those above the range are tallied
-                        in the rightmost bin.
+            - `bins`: int or sequence of scalars, optional. If `bins` is an int, it defines the number of equal-width bins in the given range (10, by default). If `bins` is a sequence, it defines the bin edges, including the rightmost edge, allowing for non-uniform bin widths.
+            - `rnge`: (float, float), optional. The lower and upper range of the bins.  If not provided, range is simply ``(a.min(), a.max())``.  Values outside the range are ignored. Note that with `new` set to False, values below the range are ignored, while those above the range are tallied in the rightmost bin.
         """
         self.data = data
         self.bins = bins
@@ -107,7 +98,7 @@ class Histogram(object):
             his += line
         return his
 
-            
+
 
 if __name__ == "__main__":
     from numpy.random import normal,  seed

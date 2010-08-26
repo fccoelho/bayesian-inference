@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -5,21 +7,22 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.4.10 documentation</title>
+    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.5.1 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
-        VERSION:     '0.4.10',
-        COLLAPSE_MODINDEX: false,
+        URL_ROOT:    '',
+        VERSION:     '0.5.1',
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="BIP - Bayesian Inference with Python v0.4.10 documentation" href="index.html" />
+    <link rel="top" title="BIP - Bayesian Inference with Python v0.5.1 documentation" href="index.html" />
     <link rel="next" title="Stochastic Differential Equations" href="sde.html" />
     <link rel="prev" title="Overview" href="overview.html" /> 
   </head>
@@ -44,44 +47,44 @@
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/BIP.png" alt="Logo"/>
             </a></p>
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Parameter Estimation in Dynamic Models</a><ul>
-<li><a class="reference external" href="#single-session-retrospective-estimation">Single Session Retrospective estimation</a><ul>
-<li><a class="reference external" href="#example-usage">Example Usage</a></li>
-<li><a class="reference external" href="#stochastic-model-example">Stochastic Model Example</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Parameter Estimation in Dynamic Models</a><ul>
+<li><a class="reference internal" href="#single-session-retrospective-estimation">Single Session Retrospective estimation</a><ul>
+<li><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li><a class="reference internal" href="#stochastic-model-example">Stochastic Model Example</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#iterative-estimation-and-forecast">Iterative Estimation and Forecast</a></li>
-<li><a class="reference external" href="#references">References</a></li>
+<li><a class="reference internal" href="#iterative-estimation-and-forecast">Iterative Estimation and Forecast</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="overview.html"
-                                  title="previous chapter">Overview</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="sde.html"
-                                  title="next chapter">Stochastic Differential Equations</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/paramest.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">Overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="sde.html"
+                        title="next chapter">Stochastic Differential Equations</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/paramest.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
 
@@ -165,11 +168,11 @@
 <img alt="_images/fit_par.png" src="_images/fit_par.png" style="width: 15cm;" />
 </div>
 <p>One important argument in the run call, is the likvar, Which is the initial value for the likelihood variance. Try to increase its value if the acceptance ratio of the markov chain is too llow. Ideal levels for the acceptance ratio should be between 0.3 and 0.5.</p>
-<p>The code for the above example can be found in the examples directory of the BIP distribution as <a href="_downloads/deterministic.py"><strong class="xref">deterministic.py</strong></a></p>
+<p>The code for the above example can be found in the examples directory of the BIP distribution as <a class="reference download internal" href="_downloads/deterministic.py"><tt class="xref download docutils literal"><span class="pre">deterministic.py</span></tt></a></p>
 </div>
 <div class="section" id="stochastic-model-example">
 <h3>Stochastic Model Example<a class="headerlink" href="#stochastic-model-example" title="Permalink to this headline">¶</a></h3>
-<p>This example fits a stochastic model to simulated data. It uses the <a class="reference external" href="sde.html#sde"><em>SDE</em></a> package of BIP:</p>
+<p>This example fits a stochastic model to simulated data. It uses the <a class="reference internal" href="sde.html#sde"><em>SDE</em></a> package of BIP:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c">#-*- coding:utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Parameter estimation and series forcasting based on simulated data with moving window.</span>
@@ -213,7 +216,7 @@
     <span class="n">vnames</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;S&#39;</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;I&#39;</span><span class="p">,</span><span class="s">&#39;A&#39;</span><span class="p">,</span><span class="s">&#39;R&#39;</span><span class="p">]</span>
     <span class="c">#rates: b,ki,ka,ri,ra</span>
     <span class="c">#r = (0.001, 0.1, 0.1, 0.01, 0.01)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="p">(</span><span class="n">alpha</span><span class="p">)</span><span class="o">*</span><span class="n">epsilon</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span><span class="o">*</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">alpha</span><span class="o">*</span><span class="n">epsilon</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span><span class="o">*</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">tau</span><span class="p">)</span>
     <span class="c">#print r,inits</span>
     <span class="c"># propensity functions</span>
     <span class="n">propf</span> <span class="o">=</span> <span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">,</span><span class="n">f3</span><span class="p">,</span><span class="n">f4</span><span class="p">,</span><span class="n">f5</span><span class="p">)</span>
@@ -226,26 +229,27 @@
                 <span class="p">])</span>
     <span class="n">M</span><span class="o">=</span><span class="n">Model</span><span class="p">(</span><span class="n">vnames</span><span class="o">=</span><span class="n">vnames</span><span class="p">,</span><span class="n">rates</span> <span class="o">=</span> <span class="n">r</span><span class="p">,</span><span class="n">inits</span><span class="o">=</span><span class="n">inits</span><span class="p">,</span><span class="n">tmat</span><span class="o">=</span><span class="n">tmat</span><span class="p">,</span><span class="n">propensity</span><span class="o">=</span><span class="n">propf</span><span class="p">)</span>
     <span class="c">#t0 = time.time()</span>
-    <span class="n">M</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tmax</span><span class="o">=</span><span class="n">tf</span><span class="p">,</span><span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">viz</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">serial</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">t</span><span class="p">,</span><span class="n">series</span><span class="p">,</span><span class="n">steps</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">getStats</span><span class="p">()</span>
-    <span class="n">ser</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">M</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tmax</span><span class="o">=</span><span class="n">tf</span><span class="p">,</span><span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">viz</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">serial</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">t</span><span class="p">,</span><span class="n">series</span><span class="p">,</span><span class="n">steps</span><span class="p">,</span><span class="n">events</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">getStats</span><span class="p">()</span>
+    <span class="n">ser</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">series</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="c">#print series.shape</span>
     <span class="k">return</span> <span class="n">ser</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">runModel</span><span class="p">([</span><span class="n">beta</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">sigma</span><span class="p">])</span>
+
 <span class="n">dt</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;S&#39;</span><span class="p">:</span><span class="n">d</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="s">&#39;E&#39;</span><span class="p">:</span><span class="n">d</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="s">&#39;I&#39;</span><span class="p">:</span><span class="n">d</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="s">&#39;A&#39;</span><span class="p">:</span><span class="n">d</span><span class="p">[:,</span><span class="mi">3</span><span class="p">],</span><span class="s">&#39;R&#39;</span><span class="p">:</span><span class="n">d</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]}</span>
 <span class="n">F</span> <span class="o">=</span> <span class="n">FitModel</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="n">runModel</span><span class="p">,</span><span class="n">inits</span><span class="p">,</span><span class="n">tf</span><span class="p">,[</span><span class="s">&#39;beta&#39;</span><span class="p">,</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span><span class="s">&#39;sigma&#39;</span><span class="p">],[</span><span class="s">&#39;S&#39;</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;I&#39;</span><span class="p">,</span><span class="s">&#39;A&#39;</span><span class="p">,</span><span class="s">&#39;R&#39;</span><span class="p">],</span>
             <span class="n">wl</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span><span class="n">nw</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">burnin</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">F</span><span class="o">.</span><span class="n">set_priors</span><span class="p">(</span><span class="n">tdists</span><span class="o">=</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">uniform</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span><span class="n">tpars</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.00001</span><span class="p">,</span><span class="o">.</span><span class="mo">0006</span><span class="p">),(</span><span class="o">.</span><span class="mo">01</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span><span class="n">tlims</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),(</span><span class="o">.</span><span class="mo">001</span><span class="p">,</span><span class="mi">1</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
+<span class="n">F</span><span class="o">.</span><span class="n">set_priors</span><span class="p">(</span><span class="n">tdists</span><span class="o">=</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">uniform</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span><span class="n">tpars</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.00001</span><span class="p">,</span><span class="o">.</span><span class="mo">0006</span><span class="p">),(</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">),(</span><span class="mf">0.0006</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span><span class="n">tlims</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="o">.</span><span class="mo">001</span><span class="p">),(</span><span class="o">.</span><span class="mo">001</span><span class="p">,</span><span class="mi">1</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span>
     <span class="n">pdists</span><span class="o">=</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">uniform</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span><span class="n">ppars</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">500</span><span class="p">)]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span><span class="n">plims</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">500</span><span class="p">)]</span><span class="o">*</span><span class="mi">5</span><span class="p">)</span>
 
-<span class="n">F</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span><span class="s">&#39;MCMC&#39;</span><span class="p">,</span><span class="n">likvar</span><span class="o">=</span><span class="mf">2e2</span><span class="p">,</span><span class="n">pool</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">monitor</span><span class="o">=</span><span class="p">[])</span>
-<span class="c">#print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer=&#39;scipy&#39;,tol=1e-5, verbose=1, plot=1)</span>
+<span class="n">F</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span><span class="s">&#39;MCMC&#39;</span><span class="p">,</span><span class="n">likvar</span><span class="o">=</span><span class="mf">1e1</span><span class="p">,</span><span class="n">pool</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">monitor</span><span class="o">=</span><span class="p">[])</span>
+<span class="c">#~ print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer=&#39;oo&#39;,tol=1e-55, verbose=1, plot=1)</span>
 <span class="c">#==Uncomment the line below to see plots of the results</span>
-<span class="c">#F.plot_results()</span>
+<span class="n">F</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>This example can be found in the examples folder of BIP under the name of <a href="_downloads/flu_stochastic.py"><strong class="xref">flu_stochastic.py</strong></a>.</p>
+<p>This example can be found in the examples folder of BIP under the name of <a class="reference download internal" href="_downloads/flu_stochastic.py"><tt class="xref download docutils literal"><span class="pre">flu_stochastic.py</span></tt></a>.</p>
 </div>
 </div>
 <div class="section" id="iterative-estimation-and-forecast">
@@ -290,9 +294,9 @@
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Flávio Codeço Coelho.
-      Last updated on Jun 04, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2010, Flávio Codeço Coelho.
+      Last updated on Aug 26, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>
 </html>

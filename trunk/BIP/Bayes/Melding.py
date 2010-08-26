@@ -1308,7 +1308,7 @@ def clearNaN(obs):
     Replaces NaNs with the mean of the other series.
     
     :Parameters:
-        -`obs`: 2-dimensional numpy array
+        - `obs`: 2-dimensional numpy array
         
     :Returns:
         array of the same shape as obs
