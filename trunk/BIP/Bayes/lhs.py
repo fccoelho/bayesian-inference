@@ -71,6 +71,8 @@ def lhs(dist, parms, siz=100, noCorrRestr=False, corrmat=None):
         - `dist`: random number generator from scipy.stats module or a list of them.
         - `parms`: tuple of parameters as required for dist, or a list of them.
         - `siz` :number or shape tuple for the output sample
+        - `noCorrRestr`: if true, does not enforce correlation structure on the sample.
+        - `corrmat`: Correlation matrix
     '''
     if not isinstance(dist,(list,tuple)):
         dists = [dist]
