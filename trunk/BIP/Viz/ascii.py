@@ -110,7 +110,8 @@ class Histogram(object):
             
 
 if __name__ == "__main__":
-    from numpy.random import normal
+    from numpy.random import normal,  seed
+    seed(1)
     d = normal(size=1000)
     h = Histogram(d,bins=10, rnge=(0, 1))
     print h.vertical(15)

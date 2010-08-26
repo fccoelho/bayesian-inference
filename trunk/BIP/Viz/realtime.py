@@ -36,7 +36,7 @@ class RTplot:
         if arrays are multidimensional, multiple scatter plots will be generated, pairing rows.
         """
         if jitter:
-            jt = numpy.random.normalvariate(1, 1e-4)
+            jt = numpy.random.normal(1, 1e-4,  1)[0]
         else:
             jt = 1
         if isinstance(x, numpy.ndarray):
