@@ -6,6 +6,8 @@ from nose.tools import assert_equal
 from nose import SkipTest
 from scipy.integrate import odeint
 import pdb
+import unittest
+
 
 K=50
 inits = [.999,0.001,0]
@@ -233,3 +235,5 @@ class TestClearNaN:
         assert_equal(res[0, 2],  np.mean([obs[0, 0], obs[0, 1]]) )
         
 
+if __name__ == '__main__':
+    unittest.main()
