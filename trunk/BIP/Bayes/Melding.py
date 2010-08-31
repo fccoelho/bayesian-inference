@@ -74,7 +74,7 @@ class FitModel(object):
             - `thetanames`: List of names (strings) with names of parameters included on the inference.
             - `wl`: window lenght length of the inference window.
             - `nw`: Number of windows to analyze on iterative inference mode
-            - `verbose`: Verbose output if True.
+            - `verbose`: Verbosity level: 0, 1 or 2.
             - `burnin`: number of burnin samples, used in the case on mcmc method.
         """
         try:
@@ -118,6 +118,8 @@ class FitModel(object):
         self.tdists = None
         self.tpars = None
         self.tlims = None
+        if self.verbose == 2:
+            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)
 
     def _plot_MAP(self,data,pmap):
         """
@@ -437,7 +439,7 @@ class FitModel(object):
                     i = self.phinames.index(n)
                     self.inits[i] = nan_to_num(d2[n][0]) if  not isinstance(d2[n][0], numpy.ndarray ) else nan_to_num(nanmean(d2[n][0]))
                     #TODO: figure out how to balance the total pop
-#                    self.inits[0] += self.totpop-sum(self.inits) #adjusting sunceptibles
+#                    self.inits[0] += self.totpop-sum(self.inits) #adjusting susceptibles
                     self.model.func_globals['inits'] = self.inits
             pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
             self.AIC += 2. * (self.ntheta - self.Me.likmax) # 2k - 2 ln(L)
@@ -511,19 +513,35 @@ class FitModel(object):
     
     def _monitor_setup(self):
         """
-        Sets up realtime plotting of inference
+        Sets up realtime plotting for inference
         """
-        self.hst = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot() #theta histograms
-        self.fsp = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot()#full data and simulated series
-        self.ser = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot()# phi time series
+        #theta histograms (for current window)
+        self.hst = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot() 
+        #full data and simulated series
+        self.fsp = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot()
+        # phi time series (model output for the current window)
+        self.ser = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)#RTplot()
 
     def _get95_bands(self,series,vname):
+        '''
+        Returns 95% bands for series of all variables in vname
+        
+        :Parameters:
+            - `series`: record array containing the series
+            - `vname`: list of strings of variables in series for which we want to get the bands
+        '''
         i5 = array([stats.scoreatpercentile(t,2.5) for t in series[vname].T])
         i95 = array([stats.scoreatpercentile(t,97.5) for t in series[vname].T])
         return i5,i95
-    def _long_term_prediction_plot(self, initind,cpars,vind,  w):
+        
+    def _long_term_prediction_plot(self, cpars,vind,  w):
         """
         Plots the simulated trajectory predicted from best fit parameters.
+        
+        :Parameters:
+            - `cpars`: best fit  parameter set
+            - `vind`: List with indices(in self.phinames) to variables to be plotted 
+            - `w`: current window number.
         """
         if self.full_len-(self.wl*(w+1)) == 0:
             return
@@ -562,7 +580,7 @@ class FitModel(object):
             self.fsp.lines(data[n].T.tolist(),None, ['Obs. %s'%n], 'Window %s'%(w+1), 'points')
         self.hst.histogram(array(prior['theta']).tolist(), self.thetanames,'Window %s'%(w+1),  1)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
-        self._long_term_prediction_plot(initind,cpars,vindices, w)
+        self._long_term_prediction_plot(cpars,vindices, w)
         self.ser.clearFig()
         self.hst.clearFig()
         self.fsp.clearFig()

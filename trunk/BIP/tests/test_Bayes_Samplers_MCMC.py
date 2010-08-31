@@ -1,7 +1,8 @@
 from nose import SkipTest
 from nose.tools import assert_equal
 from numpy.testing import *
-from BIP.Bayes.Samplers.MCMC import * 
+from BIP.Bayes.Samplers.MCMC import *import unittest
+ 
 
 class TestMetropolis:
     def test___init__(self):
