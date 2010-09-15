@@ -663,6 +663,10 @@ class Dream(_Sampler):
         """
         Generate Theta proposals from priors
         """
+        if self.meld.initheta:
+            #start from user-defined point in parameter space.
+            return self.meld.initheta * self.nchains
+            
         thetalist = []
         initcov = identity(self.dimensions)
         for c in range(self.nchains):

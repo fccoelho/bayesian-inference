@@ -394,23 +394,25 @@ class FitModel(object):
             con.executemany("insert into "+tstr+" values("+",".join(['?']*nv)+")", row_generator(v))
         con.commit()
         con.close()
-    def run(self, data,method,likvar,pool=False,adjinits=True,ew=0, dbname='results', monitor=False):
+    def run(self, data,method,likvar,pool=False,adjinits=True,ew=0, dbname='results', monitor=False, initheta=None):
         """
         Fit the model against data
 
         :Parameters:
             - `data`: dictionary with variable names and observed series, as Key and value respectively.
-            - `method`: Inference method: "ABC", "SIR" or "MCMC"
+            - `method`: Inference method: "ABC", "SIR", "MCMC" or "DREAM"
             - `likvar`: Variance of the likelihood function in the SIR and MCMC method
             - `pool`: Pool priors on model's outputs.
             - `adjinits`: whether to adjust inits to data
             - `ew`: Whether to use expanding windows instead of moving ones.
             - `dbname`: name of the sqlite3 database
             - `monitor`: Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.
+            - `initheta`: starting position in parameter space for the sampling to start. (only used by MCMC and DREAM) 
         """
         self.ew = ew
         self.adjinits = adjinits
         self.pool = pool
+        self.Me.initheta = initheta
         if not self.prior_set: return
         if monitor:
             self._monitor_setup()
