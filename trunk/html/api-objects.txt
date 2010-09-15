@@ -81,6 +81,8 @@ trunk.BIP.SMC.condensation.evaluate_gaussian	trunk.BIP.SMC.condensation-module.h
 trunk.BIP.Viz	trunk.BIP.Viz-module.html
 trunk.BIP.Viz.ascii	trunk.BIP.Viz.ascii-module.html
 trunk.BIP.Viz.ascii.__licence__	trunk.BIP.Viz.ascii-module.html#__licence__
+trunk.BIP.Viz.asciihist	trunk.BIP.Viz.asciihist-module.html
+trunk.BIP.Viz.asciihist.__licence__	trunk.BIP.Viz.asciihist-module.html#__licence__
 trunk.BIP.Viz.realtime	trunk.BIP.Viz.realtime-module.html
 trunk.BIP.Viz.realtime.rpc_plot	trunk.BIP.Viz.realtime-module.html#rpc_plot
 trunk.BIP.Viz.realtime.__ports_used	trunk.BIP.Viz.realtime-module.html#__ports_used
@@ -266,6 +268,10 @@ trunk.BIP.Viz.ascii.Histogram	trunk.BIP.Viz.ascii.Histogram-class.html
 trunk.BIP.Viz.ascii.Histogram.vertical	trunk.BIP.Viz.ascii.Histogram-class.html#vertical
 trunk.BIP.Viz.ascii.Histogram.horizontal	trunk.BIP.Viz.ascii.Histogram-class.html#horizontal
 trunk.BIP.Viz.ascii.Histogram.__init__	trunk.BIP.Viz.ascii.Histogram-class.html#__init__
+trunk.BIP.Viz.asciihist.Histogram	trunk.BIP.Viz.asciihist.Histogram-class.html
+trunk.BIP.Viz.asciihist.Histogram.vertical	trunk.BIP.Viz.asciihist.Histogram-class.html#vertical
+trunk.BIP.Viz.asciihist.Histogram.horizontal	trunk.BIP.Viz.asciihist.Histogram-class.html#horizontal
+trunk.BIP.Viz.asciihist.Histogram.__init__	trunk.BIP.Viz.asciihist.Histogram-class.html#__init__
 trunk.BIP.Viz.realtime.RTplot	trunk.BIP.Viz.realtime.RTplot-class.html
 trunk.BIP.Viz.realtime.RTplot.close_plot	trunk.BIP.Viz.realtime.RTplot-class.html#close_plot
 trunk.BIP.Viz.realtime.RTplot.plothist	trunk.BIP.Viz.realtime.RTplot-class.html#plothist

@@ -355,7 +355,7 @@ for reporting purposes.</td>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="_monitor_setup"></a><span class="summary-sig-name">_monitor_setup</span>(<span class="summary-sig-arg">self</span>)</span><br />
-      Sets up realtime plotting of inference</td>
+      Sets up realtime plotting for inference</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._monitor_setup">source&nbsp;code</a></span>
             
@@ -371,9 +371,10 @@ for reporting purposes.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_get95_bands"></a><span class="summary-sig-name">_get95_bands</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_get95_bands" class="summary-sig-name" onclick="show_private();">_get95_bands</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">series</span>,
-        <span class="summary-sig-arg">vname</span>)</span></td>
+        <span class="summary-sig-arg">vname</span>)</span><br />
+      Returns 95% bands for series of all variables in vname</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._get95_bands">source&nbsp;code</a></span>
             
@@ -389,8 +390,7 @@ for reporting purposes.</td>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="_long_term_prediction_plot"></a><span class="summary-sig-name">_long_term_prediction_plot</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">initind</span>,
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_long_term_prediction_plot" class="summary-sig-name" onclick="show_private();">_long_term_prediction_plot</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">cpars</span>,
         <span class="summary-sig-arg">vind</span>,
         <span class="summary-sig-arg">w</span>)</span><br />
@@ -565,7 +565,7 @@ for reporting purposes.</td>
         <li><strong class="pname"><code>thetanames</code></strong> - : List of names (strings) with names of parameters included on the inference.</li>
         <li><strong class="pname"><code>wl</code></strong> - : window lenght length of the inference window.</li>
         <li><strong class="pname"><code>nw</code></strong> - : Number of windows to analyze on iterative inference mode</li>
-        <li><strong class="pname"><code>verbose</code></strong> - : Verbose output if True.</li>
+        <li><strong class="pname"><code>verbose</code></strong> - : Verbosity level: 0, 1 or 2.</li>
         <li><strong class="pname"><code>burnin</code></strong> - : number of burnin samples, used in the case on mcmc method.</li>
     </ul></dd>
     <dt>Overrides:
@@ -786,6 +786,60 @@ for reporting purposes.
   </dl>
 </td></tr></table>
 </div>
+<a name="_get95_bands"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_get95_bands</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">series</span>,
+        <span class="sig-arg">vname</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._get95_bands">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Returns 95% bands for series of all variables in vname
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>series</code></strong> - : record array containing the series</li>
+        <li><strong class="pname"><code>vname</code></strong> - : list of strings of variables in series for which we want to get the bands</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_long_term_prediction_plot"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_long_term_prediction_plot</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cpars</span>,
+        <span class="sig-arg">vind</span>,
+        <span class="sig-arg">w</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._long_term_prediction_plot">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Plots the simulated trajectory predicted from best fit parameters.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>cpars</code></strong> - : best fit  parameter set</li>
+        <li><strong class="pname"><code>vind</code></strong> - : List with indices(in self.phinames) to variables to be plotted</li>
+        <li><strong class="pname"><code>w</code></strong> - : current window number.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -818,7 +872,7 @@ for reporting purposes.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Aug 26 17:36:59 2010
+    Generated by Epydoc 3.0.1 on Tue Aug 31 09:35:13 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
