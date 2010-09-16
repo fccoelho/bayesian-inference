@@ -569,9 +569,11 @@ class FitModel(object):
             - `data`: Dictionary with the full dataset.
             - `vars`: List with variable names to be plotted.
         """
-        median_series = [median(series[k], axis=0).tolist() for k in self.data.keys()]
-        self.every_run_plot.lines(median_series,[],data.keys(), "", 'lines' )
-        self.every_run_plot.lines(data.values(),[],data.keys(), "Current Median fit and data", 'boxes' )
+        median_series = [median(series[k], axis=0).tolist() for k in data.keys()]
+        d = [data[k].tolist() for k in data.keys()]
+        self.every_run_plot.lines(d,[],data.keys(), "Current Median fit and data", 'points' )
+        self.every_run_plot.lines(median_series,[],data.keys(), "Current Median fit and data", 'lines' )
+        
     
     def _monitor_plot(self, series, prior, d2,w,data, vars):
         """
