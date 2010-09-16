@@ -2,22 +2,18 @@
 <!DOCTYPE Session SYSTEM "Session-4.4.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-09-14, 05:49:00 -->
+<!-- Saved: 2010-09-16, 07:38:17 -->
 <Session version="4.4">
   <Filenames>
     <Filename cline="1" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
     <Filename cline="139" cindex="9" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/gillespie.py</Filename>
-    <Filename cline="68" cindex="20" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/example.py</Filename>
-    <Filename cline="120" cindex="45" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/PlotMeld.py</Filename>
-    <Filename cline="221" cindex="23" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
-    <Filename cline="121" cindex="12" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
+    <Filename cline="374" cindex="119" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="1373" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
     <Filename cline="104" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/lhs.py</Filename>
-    <Filename cline="25" cindex="294" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/ascii.py</Filename>
-    <Filename cline="24" cindex="25" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/tests/test_Viz_ascii.py</Filename>
-    <Filename cline="38" cindex="36" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Viz/realtime.py</Filename>
-    <Filename cline="33" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/tests/test_Bayes_Melding.py</Filename>
+    <Filename cline="107" cindex="20" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/tests/test_Bayes_Melding.py</Filename>
+    <Filename cline="0" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/__version__.py</Filename>
   </Filenames>
-  <ActiveWindow cline="121" cindex="12">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</ActiveWindow>
+  <ActiveWindow cline="1373" cindex="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>

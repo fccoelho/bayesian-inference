@@ -339,35 +339,38 @@ class Metropolis(_Sampler):
         thetalist = []
         proplist = []
         initcov = identity(self.dimensions)
-#        po=None
-        for c in range(self.nchains):
-            off = 0
-            if step <= 1 or self.seqhist[c] ==[]: 
-                #sample from the priors
-                while 1:
-                    theta = [self.parpriors[par].rvs() for par in self.parnames]
-                    if not self.check_constraints(theta):
-                        continue
-                    if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
-                        break
-                    off+=1
-#                print "off:" , off
-                self.lastcv = initcov #assume no covariance at the beginning
-            else:
-                #use gaussian proposal
-                if step%10==0 and len(self.seqhist[c]) >=10: #recalculate covariance matrix only every ten steps
-                    cv = self.scaling_factor*cov(array(self.seqhist[c][-10:]))+self.scaling_factor*self.e*identity(self.dimensions)
-                    self.lastcv = cv
+        if self.meld.initheta and step <= 1:
+            #start from user-defined point in parameter space.
+            thetalist = self.meld.initheta * self.nchains
+        else:
+            for c in range(self.nchains):
+                off = 0
+                if step <= 1 or self.seqhist[c] ==[]: 
+                    #sample from the priors
+                    while 1:
+                        theta = [self.parpriors[par].rvs() for par in self.parnames]
+                        if not self.check_constraints(theta):
+                            continue
+                        if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
+                            break
+                        off+=1
+    #                print "off:" , off
+                    self.lastcv = initcov #assume no covariance at the beginning
                 else:
-                    cv = self.lastcv
-                while 1:
-                    theta = multivariate_normal(self.seqhist[c][-1],cv, size=1).tolist()[0]
-                    if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
-                        break
-                    off+=1
-#                    print off
-#                print "off:" , off
-            thetalist.append(theta)
+                    #use gaussian proposal
+                    if step%10==0 and len(self.seqhist[c]) >=10: #recalculate covariance matrix only every ten steps
+                        cv = self.scaling_factor*cov(array(self.seqhist[c][-10:]))+self.scaling_factor*self.e*identity(self.dimensions)
+                        self.lastcv = cv
+                    else:
+                        cv = self.lastcv
+                    while 1:
+                        theta = multivariate_normal(self.seqhist[c][-1],cv, size=1).tolist()[0]
+                        if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
+                            break
+                        off+=1
+    #                    print off
+    #                print "off:" , off
+                thetalist.append(theta)
         if po:
             proplis = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
             proplist = [job.get() for job in proplis]

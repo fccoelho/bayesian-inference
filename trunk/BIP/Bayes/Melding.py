@@ -394,7 +394,7 @@ class FitModel(object):
             con.executemany("insert into "+tstr+" values("+",".join(['?']*nv)+")", row_generator(v))
         con.commit()
         con.close()
-    def run(self, data,method,likvar,pool=False,adjinits=True,ew=0, dbname='results', monitor=False, initheta=None):
+    def run(self, data,method,likvar,pool=False,adjinits=True,ew=0, dbname='results', monitor=False, initheta=[]):
         """
         Fit the model against data
 
@@ -412,6 +412,7 @@ class FitModel(object):
         self.ew = ew
         self.adjinits = adjinits
         self.pool = pool
+        assert isinstance(initheta, list) #type checking
         self.Me.initheta = initheta
         if not self.prior_set: return
         if monitor:
@@ -483,6 +484,7 @@ class FitModel(object):
         #TODO: Write tests for this
         # data table does not require formatting
         # Dates for this window
+        self.wl=int(self.wl)
         if 'time' in data:
             if isinstance(data['time'],  numpy.ndarray):
                 ts = data['time'].tolist()
@@ -680,6 +682,7 @@ class Meld(object):
         self.theta_dists = {}#parameterized rngs for each parameter
         self.phi_dists = {}#parameterized rngs for each variable
         self.likmax = -numpy.inf
+        self.initheta = []
         self.AIC = None
         self.BIC = None
         self.DIC = None
@@ -690,7 +693,7 @@ class Meld(object):
             self.viz = viz
         else:
             self.viz = False
-#        self.po = Pool() #pool of processes for parallel processing
+        self.po = Pool() #pool of processes for parallel processing
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
         """
@@ -870,7 +873,8 @@ class Meld(object):
         for i in xrange(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = self.po.apply_async(self.model, theta)
-            self.phi[i]= r.get()[-1]#self.model(*theta)[-1] #phi is the last point in the simulation
+            res = r.get()
+            self.phi[i]= res[-1]#self.model(*theta)[-1] #phi is the last point in the simulation
 
         self.done_running = True
         
@@ -885,6 +889,7 @@ class Meld(object):
             - `t`: length of the posterior time-series to return.
         """
         if not self.done_running:
+            print "Estimation has not yet been run"
             return
         if t > 1:
             self.post_phi = recarray((self.L,t),formats=['f8']*self.nphi)
@@ -1378,7 +1383,7 @@ def model_as_ra(theta, model, phinames):
         res[n] = r[:, i]
     return res
 
-def model(r, p0, n=1):
+def model(theta, n=1):
     """
     Model (r,p0, n=1)
     Simulates the Population dynamic Model (PDM) Pt = rP0
@@ -1386,6 +1391,7 @@ def model(r, p0, n=1):
     P0 is the initial population size. 
     Example model for testing purposes.
     """
+    r, p0 = theta
 #    print "oi"
     Pt = zeros(n, float) # initialize the output vector
     P = p0
@@ -1442,7 +1448,7 @@ def mh_test():
 
 if __name__ == '__main__':
     Me = Meld(K=5000,L=1000,model=model, ntheta=2,nphi=1,verbose=True,viz=False)
-    mh_test()
-    #main2()
+    #mh_test()
+    main2()
      
 

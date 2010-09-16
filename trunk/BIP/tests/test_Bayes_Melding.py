@@ -2,11 +2,11 @@ from BIP.Bayes import Melding
 from numpy.testing import *
 import scipy.stats as st
 import numpy as np
-from nose.tools import assert_equal
+from nose.tools import assert_equal,  set_trace
 from nose import SkipTest
 from scipy.integrate import odeint
-import pdb
 import unittest
+import os,  glob
 
 
 K=50
@@ -26,13 +26,19 @@ def model(*theta):
                 beta*I*S - tau*I, #dI/dt
                 tau*I, #dR/dt
                 ]
-    y = odeint(sir,inits,np.arange(t0,tf,step))
+    y = odeint(sir,inits,np.arange(0,tf,step))
     return y
 
 fit_model = Melding.FitModel(K, model, inits, tf, thetanames, phinames, verbose=verbose)
 
 class TestFitModel:
-    
+    def setUp(self):
+        pass
+    def tearDown(self):
+        files = glob.glob('*.pickle')+glob.glob('*.sqlite')
+        for f in files:
+            os.unlink(f)
+        
     def test___init__(self):
         assert isinstance(fit_model,Melding.FitModel)
 
@@ -62,9 +68,9 @@ class TestFitModel:
         nw = 1
         d = model(*[1.4,0.5])
         data = {'S':d[:,0],'I':d[:,1],'R':d[:,2]}
+        likvar = 1e-1
         method = 'SIR'
-        monitor = False
-        fit_model.run(wl, nw, data, method, monitor)
+        fit_model.run(data, method,likvar, monitor=False)
         assert fit_model.done_running 
 
     def test_plot_results(self):
@@ -79,7 +85,7 @@ class TestFitModel:
         pdists = [st.uniform]*3
         ppars = [(0,1)]*3
         plims = [(0,1)]*3
-        self.fit_model.set_priors(tdists, tpars, tlims, pdists, ppars, plims)
+        fit_model.set_priors(tdists, tpars, tlims, pdists, ppars, plims)
         # self.assertEqual(expected, fit_model.set_priors(tdists, tpars, tlims, pdists, ppars, plims))
         assert True # TODO: implement your test here
 
@@ -99,8 +105,12 @@ class TestFitModel:
         raise SkipTest # TODO: implement your test here
 
 class TestMeld:
+    def setUp(self):
+        self.meld = Melding.Meld(3000, 1000, Melding.model, 2, 1, alpha=0.5, verbose=False, viz=False)
+        self.meld.setTheta(['r','p0'],[st.uniform,st.uniform],[(2,4),(0,5)], [(0, 10), (0, 10)])
+        self.meld.setPhi(['p'],[st.uniform],[(6,9)],[(0,10)])
+        
     def test___init__(self):
-        self.meld = Melding.Meld(2000, 100, Melding.model, 2, 1, alpha=0.5, verbose=False, viz=False)
         assert isinstance(self.meld, Melding.Meld) 
 
     def test_abcRun(self):
@@ -144,9 +154,11 @@ class TestMeld:
         raise SkipTest # TODO: implement your test here
 
     def test_mh(self):
-        # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
-        # self.assertEqual(expected, meld.mh(n, t, data, likfun, variance, burnin))
-        raise SkipTest # TODO: implement your test here
+        self.meld.setTheta(['r','p0'],[st.uniform,st.uniform],[(2,4),(0,5)], [(0, 10), (0, 10)])
+        self.meld.setPhi(['p'],[st.uniform],[(6,9)],[(0,10)])
+        self.meld.mcmc_run(data ={'p':[7.5]}, burnin=500)
+        pt,pp = self.meld.getPosteriors(1)
+        assert_almost_equal(pp.p.mean(),20,1)
 
     def test_run(self):
         # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
@@ -179,10 +191,11 @@ class TestMeld:
         raise SkipTest # TODO: implement your test here
 
     def test_sir(self):
-        self.meld.sir(data ={'p':[7.5]} )
+        self.meld.sir(data ={'p':[7.5]}, pool=True )
+        #self.meld.run()
         pt,pp = self.meld.getPosteriors(1)
         # self.assertEqual(expected, meld.sir(data, t, variance, nopool, savetemp))
-        assert_almost_equal(pp.P.mean(),7.5,1)
+        assert_almost_equal(pp.p.mean(),7.5,1)
 
 class TestEnumRun:
     def test_enum_run(self):
@@ -210,9 +223,11 @@ class TestMhTes:
         raise SkipTest # TODO: implement your test here
 
 class TestBasicfit:
+    def setUp(self):
+        self.s1 = np.recarray(3, formats=['f8'], names=['p'])
+        self.s2 = {'p':np.array([1, 2, 3])}
     def test_basicfit(self):
-        # assert_equal(expected, basicfit(s1, s2))
-        raise SkipTest # TODO: implement your test here
+        assert_almost_equal(4.6666, Melding.basicfit(self.s1, self.s2), 1)
 
 
 class TestModel:
