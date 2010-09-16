@@ -169,7 +169,7 @@ class TestMeld:
         self.meld.setPhi(['p'],[st.uniform],[(6,9)],[(0,10)])
         self.meld.mcmc_run(data ={'p':[7.5]}, burnin=500)
         pt,pp = self.meld.getPosteriors(1)
-        assert_almost_equal(pp.p.mean(),20,1)
+        assert_almost_equal(pp.p.mean(),7.5,1)
 
     def test_run(self):
         # meld = Meld(K, L, model, ntheta, nphi, alpha, verbose, viz)
