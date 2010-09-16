@@ -344,6 +344,7 @@ class Metropolis(_Sampler):
             #start from user-defined point in parameter space.
             for i in range(self.nchains):
                 thetalist.append(self.meld.initheta)
+            self.lastcv = initcov #assume no covariance at the beginning
         else:
             for c in range(self.nchains):
                 off = 0
