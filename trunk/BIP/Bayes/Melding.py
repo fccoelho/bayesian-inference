@@ -21,7 +21,7 @@ from time import time
 
 import numpy
 import pylab as P
-from numpy import array, nan_to_num, zeros, ones, mean, var, sqrt, floor, isnan,  nansum
+from numpy import array, nan_to_num, zeros, ones, mean, var, sqrt, floor, isnan,  nansum, median
 from numpy.core.records import recarray
 from numpy.random import randint, random, seed
 from scipy import stats, optimize as optim
@@ -559,9 +559,31 @@ class FitModel(object):
 #        print xinit, xinit+len(simseries[0])
         self.fsp.lines(simseries,range(xinit,xinit+len(simseries[0])), snames, "Best fit simulation after window %s"%(w+1))
     
+    def current_plot(self, series, data, w, vars=[]):
+        """
+        Plots the current median simulated series.append
+        
+         :Parameters:
+            - `series`: Record array with the simulated series.
+            - `w`: Integer id of the current fitting window.
+            - `data`: Dictionary with the full dataset.
+            - `vars`: List with variable names to be plotted.
+        """
+        median_series = [median(series[k], axis=0).tolist() for k in self.data.keys()]
+        self.every_run_plot.lines(median_series,[],data.keys(), "", 'lines' )
+        self.every_run_plot.lines(data.values(),[],data.keys(), "Current Median fit and data", 'boxes' )
+    
     def _monitor_plot(self, series, prior, d2,w,data, vars):
         """
         Plots real time data
+        
+        :Parameters:
+            - `series`: Record array with the simulated series.
+            - `prior`: Dctionary with the prior sample of Theta
+            - `d2`: Dictionary with data for the current fitting window.
+            - `w`: Integer id of the current fitting window.
+            - `data`: Dictionary with the full dataset.
+            - `vars`: List with variable names to be plotted.
         """
 #        diff = 0
         for vn in d2.keys():

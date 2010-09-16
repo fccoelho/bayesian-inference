@@ -33,7 +33,9 @@ fit_model = Melding.FitModel(K, model, inits, tf, thetanames, phinames, verbose=
 
 class TestFitModel:
     def setUp(self):
-        pass
+        nt = len(thetanames)
+        np= len(phinames)
+        fit_model.setpriors(tdists=nt*[st.uniform], tpars=[(0, 4), (0, 2)], tlims=[(0, 4), (0, 2)], pdists= np*[st.uniform], ppars=np*[(0, 1)], plims=np*[(0, 1)])      
     def tearDown(self):
         files = glob.glob('*.pickle')+glob.glob('*.sqlite')
         for f in files:
@@ -102,6 +104,11 @@ class TestFitModel:
     def test_prior_sample(self):
         # fit_model = FitModel(K, model, inits, tf, thetanames, phinames, wl, nw, verbose, burnin)
         # assert_equal(expected, fit_model.prior_sample())
+        raise SkipTest # TODO: implement your test here
+
+    def test_current_plot(self):
+        fit_model.setpriors()
+        # assert_equal(expected, fit_model.current_plot(series, data, w, vars))
         raise SkipTest # TODO: implement your test here
 
 class TestMeld:
