@@ -7,7 +7,7 @@
 # Author:      Flávio Codeço Coelho
 #
 # Created:     2003/08/10
-# Copyright:   (c) 2003-2009 by the Author
+# Copyright:   (c) 2003-2010 by the Author
 # Licence:     GPL v3
 #-----------------------------------------------------------------------------
 import cPickle as CP
