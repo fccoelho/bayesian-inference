@@ -341,7 +341,8 @@ class Metropolis(_Sampler):
         initcov = identity(self.dimensions)
         if self.meld.initheta and step <= 1:
             #start from user-defined point in parameter space.
-            thetalist = self.meld.initheta * self.nchains
+            for i in range(self.nchains):
+                thetalist.append(self.meld.initheta)
         else:
             for c in range(self.nchains):
                 off = 0
@@ -372,6 +373,7 @@ class Metropolis(_Sampler):
     #                print "off:" , off
                 thetalist.append(theta)
         if po:
+            print thetalist
             proplis = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
             proplist = [job.get() for job in proplis]
         else:
@@ -668,7 +670,7 @@ class Dream(_Sampler):
         """
         if self.meld.initheta:
             #start from user-defined point in parameter space.
-            return self.meld.initheta * self.nchains
+            return [self.meld.initheta for i in range(self.nchains)]
             
         thetalist = []
         initcov = identity(self.dimensions)
