@@ -95,6 +95,7 @@ trunk.BIP.Bayes.Melding.FitModel.AIC_from_RSS	trunk.BIP.Bayes.Melding.FitModel-c
 trunk.BIP.Bayes.Melding.FitModel._save_to_db	trunk.BIP.Bayes.Melding.FitModel-class.html#_save_to_db
 trunk.BIP.Bayes.Melding.FitModel.prior_sample	trunk.BIP.Bayes.Melding.FitModel-class.html#prior_sample
 trunk.BIP.Bayes.Melding.FitModel.__init__	trunk.BIP.Bayes.Melding.FitModel-class.html#__init__
+trunk.BIP.Bayes.Melding.FitModel.current_plot	trunk.BIP.Bayes.Melding.FitModel-class.html#current_plot
 trunk.BIP.Bayes.Melding.FitModel._long_term_prediction_plot	trunk.BIP.Bayes.Melding.FitModel-class.html#_long_term_prediction_plot
 trunk.BIP.Bayes.Melding.FitModel._plot_MAP	trunk.BIP.Bayes.Melding.FitModel-class.html#_plot_MAP
 trunk.BIP.Bayes.Melding.FitModel.plot_results	trunk.BIP.Bayes.Melding.FitModel-class.html#plot_results

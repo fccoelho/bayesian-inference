@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2010.5.9)  31 AUG 2010 09:35
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2010.9.16)  16 SEP 2010 10:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -917,7 +917,7 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 (./BIP-BayesianInferencewithPython.aux) ) 
 Here is how much of TeX's memory you used:
  7925 strings out of 495061
- 107425 string characters out of 1182622
+ 107425 string characters out of 1182621
  193275 words of memory out of 3000000
  10871 multiletter control sequences out of 15000+50000
  66853 words of font info for 79 fonts, out of 3000000 for 9000
@@ -931,7 +931,7 @@ xlive/fonts/type1/urw/courier/ucrro8a.pfb></usr/share/texmf-texlive/fonts/type1
 bo8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share
 /texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts
 /type1/urw/times/utmri8a.pfb>
-Output written on BIP-BayesianInferencewithPython.pdf (13 pages, 930672 bytes).
+Output written on BIP-BayesianInferencewithPython.pdf (13 pages, 930459 bytes).
 
 PDF statistics:
  145 PDF objects out of 1000 (max. 8388607)

@@ -29,7 +29,7 @@ __docformat__ = "restructuredtext en"
 
 def timeit(method):
     """
-    decorator to time methods
+    Decorator to time methods
     """
     def timed(*args, **kw):
         ts = time.time()
