@@ -14,7 +14,7 @@ inits = [.999,0.001,0]
 tf = 25
 thetanames = ['beta','tau']
 phinames = ['S','I','R']
-verbose = False
+verbose = 2
 
 def model(*theta):
     step = .1
@@ -35,7 +35,7 @@ class TestFitModel:
     def setUp(self):
         nt = len(thetanames)
         np= len(phinames)
-        fit_model.setpriors(tdists=nt*[st.uniform], tpars=[(0, 4), (0, 2)], tlims=[(0, 4), (0, 2)], pdists= np*[st.uniform], ppars=np*[(0, 1)], plims=np*[(0, 1)])      
+        fit_model.set_priors(tdists=nt*[st.uniform], tpars=[(0, 4), (0, 2)], tlims=[(0, 4), (0, 2)], pdists= np*[st.uniform], ppars=np*[(0, 1)], plims=np*[(0, 1)])      
     def tearDown(self):
         files = glob.glob('*.pickle')+glob.glob('*.sqlite')
         for f in files:
@@ -107,9 +107,13 @@ class TestFitModel:
         raise SkipTest # TODO: implement your test here
 
     def test_current_plot(self):
-        fit_model.setpriors()
-        # assert_equal(expected, fit_model.current_plot(series, data, w, vars))
-        raise SkipTest # TODO: implement your test here
+        d = np.sin(np.arange(100))
+        series  = np.recarray((1, 100), formats=['f8'], names=['sine'])
+        series.sine[0, :] = d
+        data = {'sine':d}
+        fit_model.current_plot(series, data, 1)
+        fit_model.every_run_plot.close_plot()
+        
 
 class TestMeld:
     def setUp(self):
