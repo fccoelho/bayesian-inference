@@ -1417,7 +1417,7 @@ def model(theta, n=1):
     """
     r, p0 = theta
 #    print "oi"
-    Pt = zeros(n, float) # initialize the output vector
+    Pt = zeros((n, 1), float) # initialize the output vector
     P = p0
     for i in xrange(n):
         Pt[i] = r*P

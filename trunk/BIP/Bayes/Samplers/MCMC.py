@@ -336,6 +336,7 @@ class Metropolis(_Sampler):
             - `theta`: List of proposed self.dimensional points in parameter space
             - `prop`: List of self.nchains proposed phis.
         """
+        po=None
         thetalist = []
         proplist = []
         initcov = identity(self.dimensions)
@@ -684,18 +685,19 @@ class Dream(_Sampler):
 
             thetalist.append(theta.tolist())
         return thetalist 
+        
 #    @timeit
     def _prop_phi(self, thetalist, po=None):
         """
         Returns proposed Phi derived from theta
         """
         if po:
-#            pdb.set_trace()
             propl = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
             proplist = [job.get()[:self.t]  for job in propl]
         else:
             proplist = [model_as_ra(t, self.meld.model, self.meld.phi.dtype.names)[:self.t] for t in thetalist]
         return proplist
+        
 #    @timeit
     def _chain_evolution(self, proptheta,  propphi, pps, liks):
         """
