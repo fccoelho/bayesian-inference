@@ -118,8 +118,6 @@ class FitModel(object):
         self.tdists = None
         self.tpars = None
         self.tlims = None
-        if self.verbose == 2:
-            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)
 
     def _plot_MAP(self,data,pmap):
         """
@@ -559,20 +557,6 @@ class FitModel(object):
 #        print xinit, xinit+len(simseries[0])
         self.fsp.lines(simseries,range(xinit,xinit+len(simseries[0])), snames, "Best fit simulation after window %s"%(w+1))
     
-    def current_plot(self, series, data, w, vars=[]):
-        """
-        Plots the current median simulated series.append
-        
-         :Parameters:
-            - `series`: Record array with the simulated series.
-            - `w`: Integer id of the current fitting window.
-            - `data`: Dictionary with the full dataset.
-            - `vars`: List with variable names to be plotted.
-        """
-        median_series = [median(series[k], axis=0).tolist() for k in data.keys()]
-        d = [data[k].tolist() for k in data.keys()]
-        self.every_run_plot.lines(d,[],data.keys(), "Current Median fit and data", 'points' )
-        self.every_run_plot.lines(median_series,[],data.keys(), "Current Median fit and data", 'lines' )
         
     
     def _monitor_plot(self, series, prior, d2,w,data, vars):
@@ -673,7 +657,7 @@ class Meld(object):
     """
     Bayesian Melding class
     """
-    def __init__(self,  K,  L, model, ntheta, nphi, alpha = 0.5, verbose = False, viz=False ):
+    def __init__(self,  K,  L, model, ntheta, nphi, alpha = 0.5, verbose = 0, viz=False ):
         """
         Initializes the Melding class.
         
@@ -683,7 +667,7 @@ class Meld(object):
             - `model`: Callable taking theta as argument and returning phi = M(theta).
             - `ntheta`: Number of inputs to the model (parameters).
             - `nphi`: Number of outputs of the model (State-variables)
-            - `verbose`: Boolean: whether to show more information about the computations
+            - `verbose`: 0,1, 2: whether to show more information about the computations
             - `viz`: Boolean. Wether to show graphical outputs of the fitting process
         """
         self.K = K
@@ -717,7 +701,24 @@ class Meld(object):
             self.viz = viz
         else:
             self.viz = False
+        if self.verbose == 2:
+            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)
         self.po = Pool() #pool of processes for parallel processing
+    
+    def current_plot(self, series, data, w, vars=[]):
+        """
+        Plots the last simulated series
+        
+         :Parameters:
+            - `series`: Record array with the simulated series.
+            - `w`: Integer id of the current fitting window.
+            - `data`: Dictionary with the full dataset.
+            - `vars`: List with variable names to be plotted.
+        """
+        last_series = [series[k][-1].tolist() for k in data.keys()]
+        d = [data[k].tolist() for k in data.keys()]
+        self.every_run_plot.lines(d,[],data.keys(), "Last simulation and data", 'points' )
+        self.every_run_plot.lines(last_series,[],data.keys(), "Last simuation and data", 'lines' )
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
         """

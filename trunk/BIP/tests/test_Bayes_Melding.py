@@ -105,14 +105,6 @@ class TestFitModel:
         # fit_model = FitModel(K, model, inits, tf, thetanames, phinames, wl, nw, verbose, burnin)
         # assert_equal(expected, fit_model.prior_sample())
         raise SkipTest # TODO: implement your test here
-
-    def test_current_plot(self):
-        d = np.sin(np.arange(100))
-        series  = np.recarray((1, 100), formats=['f8'], names=['sine'])
-        series.sine[0, :] = d
-        data = {'sine':d}
-        fit_model.current_plot(series, data, 1)
-        fit_model.every_run_plot.close_plot()
         
 
 class TestMeld:
@@ -207,6 +199,14 @@ class TestMeld:
         pt,pp = self.meld.getPosteriors(1)
         # self.assertEqual(expected, meld.sir(data, t, variance, nopool, savetemp))
         assert_almost_equal(pp.p.mean(),7.5,1)
+
+    def test_current_plot(self):
+        d = np.sin(np.arange(100))
+        series  = np.recarray((1, 100), formats=['f8'], names=['sine'])
+        series.sine[0, :] = d
+        data = {'sine':d}
+        fit_model.current_plot(series, data, 1)
+        fit_model.every_run_plot.close_plot()
 
 class TestEnumRun:
     def test_enum_run(self):
