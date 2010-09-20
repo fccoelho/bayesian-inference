@@ -63,6 +63,16 @@ class _Sampler(object):
         self.parnames = parnames
 
     @property
+    def best_prop_index(self):
+        '''
+        Returns the index of the best fitting proposal, i.e.,
+        the one which with max Likelihood
+        '''
+        if not self.liklist:
+            return 0
+        return self.liklist.index(max(self.liklist))
+
+    @property
     def DIC(self):
         """
         Calculates  the deviance information criterion
@@ -162,6 +172,18 @@ class _Sampler(object):
             p2 = rpc_plot(hold=1)
         self.pserver = xmlrpclib.ServerProxy('http://localhost:%s'%p)
         self.pserver2 = xmlrpclib.ServerProxy('http://localhost:%s'%p2)
+        
+    def shutdown_xmlrpc_plotserver(self):
+        self.pserver.flush_queue()
+        self.pserver.shutdown()
+        self.pserver2.flush_queue()
+        self.pserver2.shutdown()
+        
+    def _every_plot(self):
+        """
+        plotting function for generating a plot at every step
+        """
+        pass
 
     def _watch_chain(self, j):
         if j<100:
@@ -187,8 +209,10 @@ class _Sampler(object):
         bi = self.liklist.index(max(self.liklist[s:j])) #index of the best fit
         series = [mean(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
         best = [self.phi[k][bi].tolist() for k in self.data.keys()]
-        self.pserver2.lines(series,[],self.data.keys(), "Mean fit of last %s samples"%(j-s), 'lines' )
-        self.pserver2.lines(best,[],self.data.keys(), "mean and best fit of last %s samples"%(j-s), 'lines' )
+        mlabels = ['Mean '+l for l in self.data.keys()]
+        blabels = ['Best '+l for l in self.data.keys()]
+        self.pserver2.lines(series,[],mlabels, "Mean fit of last %s samples"%(j-s), 'lines' )
+        self.pserver2.lines(best,[],blabels, "mean and best fit of last %s samples"%(j-s), 'lines' )
         self.pserver2.clearFig()
         #TODO: Implement plot of best fit simulation against data
 
@@ -318,7 +342,7 @@ class Metropolis(_Sampler):
         self.nchains = 1 
         # Combined history of accepted samples
         self.history = np.zeros((self.nchains*(samples+self.burnin), self.dimensions)) 
-        #complete history of all chains
+        #complete history of all chains as a dictionary with keys as integer ids of the chains
         self.seqhist = dict([(i, [])for i in range(self.nchains)])
         #self.seqhist = np.zeros((self.nchains, self.dimensions, samples+self.burnin))
         self.setup_xmlrpc_plotserver()
@@ -350,13 +374,15 @@ class Metropolis(_Sampler):
                 off = 0
                 if step <= 1 or self.seqhist[c] ==[]: 
                     #sample from the priors
-                    while 1:
+                    while off<50:
                         theta = [self.parpriors[par].rvs() for par in self.parnames]
                         if not self.check_constraints(theta):
                             continue
                         if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
                             break
                         off+=1
+                    if off ==50:#try a compromising proposal
+                        theta = self.seqhist[c][-1] #last accepted proposal for this chain
     #                print "off:" , off
                     self.lastcv = initcov #assume no covariance at the beginning
                 else:
@@ -366,16 +392,17 @@ class Metropolis(_Sampler):
                         self.lastcv = cv
                     else:
                         cv = self.lastcv
-                    while 1:
+                    #print self.parlimits
+                    while off<50:
                         theta = multivariate_normal(self.seqhist[c][-1],cv, size=1).tolist()[0]
                         if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
                             break
                         off+=1
-    #                    print off
-    #                print "off:" , off
+                    if off ==50: #try a compromising proposal
+                        theta = self.seqhist[c][-1] #last accepted proposal for this chain
+                    #print "off:" , off
                 thetalist.append(theta)
         if po:
-            print thetalist
             proplis = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
             proplist = [job.get() for job in proplis]
         else:
@@ -414,7 +441,7 @@ class Metropolis(_Sampler):
                         print "--> %s: Acc. ratio: %s"%(rej, ar)
             # Store accepted values
 #            print "nchains:", self.nchains
-            for c, t,pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
+            for c, t, pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
                 #if not accepted repeat last value
                 if not a:
                     continue
@@ -437,6 +464,9 @@ class Metropolis(_Sampler):
             last_prop = prop
             last_theta = theta
             ar = (i-rej)/float(i)
+            if self.meld.verbose ==2 and j>10:
+                print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)
+                self.meld.current_plot(self.phi, self.data, self.best_prop_index, step=j)
         self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]
@@ -711,7 +741,7 @@ class Dream(_Sampler):
         zis = []
         for c in xrange(self.nchains):
             o = 0
-            while 1: #check limits
+            while 1: #check constraints
                 e = [uniform(-i, 2*i).rvs() for i in b]
                 eps = [norm(0, i).rvs() for i in b]
                 others = [x for i, x in enumerate(proptheta) if i !=c]
@@ -901,6 +931,9 @@ class Dream(_Sampler):
             last_prop = prop
             last_theta = theta
             ar = (i-rej)/float(i)
+            if self.meld.verbose ==2 and j>10:
+                print "++>Acc. %s out of %s. Acc. ratio: %1.3f"%(j,i, ar)
+                self.meld.current_plot(self.phi, self.data, self.best_prop_index, step=j)
         self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]

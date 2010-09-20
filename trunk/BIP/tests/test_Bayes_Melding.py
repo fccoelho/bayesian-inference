@@ -109,7 +109,7 @@ class TestFitModel:
 
 class TestMeld:
     def setUp(self):
-        self.meld = Melding.Meld(3000, 1000, Melding.model, 2, 1, alpha=0.5, verbose=False, viz=False)
+        self.meld = Melding.Meld(3000, 1000, Melding.model, 2, 1, alpha=0.5, verbose=0, viz=False)
         self.meld.setTheta(['r','p0'],[st.uniform,st.uniform],[(2,4),(0,5)], [(0, 10), (0, 10)])
         self.meld.setPhi(['p'],[st.uniform],[(6,9)],[(0,10)])
         
@@ -159,7 +159,7 @@ class TestMeld:
     def test_mh(self):
         self.meld.setTheta(['r','p0'],[st.uniform,st.uniform],[(2,4),(0,5)], [(0, 10), (0, 10)])
         self.meld.setPhi(['p'],[st.uniform],[(6,9)],[(0,10)])
-        self.meld.mcmc_run(data ={'p':[7.5]}, burnin=500)
+        self.meld.mcmc_run(data ={'p':np.array([7.5])}, burnin=500)
         pt,pp = self.meld.getPosteriors(1)
         assert_almost_equal(pp.p.mean(),7.5,1)
 
@@ -205,8 +205,8 @@ class TestMeld:
         series  = np.recarray((1, 100), formats=['f8'], names=['sine'])
         series.sine[0, :] = d
         data = {'sine':d}
-        fit_model.current_plot(series, data, 1)
-        fit_model.every_run_plot.close_plot()
+        fit_model.Me.current_plot(series, data, 1)
+        fit_model.Me.every_run_plot.close_plot()
 
 class TestEnumRun:
     def test_enum_run(self):
