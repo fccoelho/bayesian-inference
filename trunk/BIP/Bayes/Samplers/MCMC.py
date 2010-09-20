@@ -465,7 +465,6 @@ class Metropolis(_Sampler):
             last_theta = theta
             ar = (i-rej)/float(i)
             if self.meld.verbose ==2 and j>10:
-                print "++>%s,%s: Acc. ratio: %s"%(j,i, ar)
                 self.meld.current_plot(self.phi, self.data, self.best_prop_index, step=j)
         self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
@@ -654,7 +653,7 @@ class Dream(_Sampler):
 #        print propphi_zdr, zdr
         zdrprob,  zdrlik = self._get_post_prob([zdr],propphi_zdr)
         alpha2 = min(zdrprob[0]*(1-self._alpha1(self,zdrprob[0],zprob))/pxi*(1-self._alpha1(self, pxi, zprob)), 1)
-        acc = 0;lik = 0;pr = 0; prop = 0
+        acc = 0; lik = 0; pr = 0; prop = 0
         if random()< alpha2:
             xi = zdr
             acc = 1
@@ -760,8 +759,6 @@ class Dream(_Sampler):
                 zis.append(zi)
                 if self.check_constraints(zi): 
                     break
-
-            
             
         #get the associated Phi's
         if isnan(zis).any():
@@ -786,14 +783,15 @@ class Dream(_Sampler):
                 prop_evo[i] = propphi_z[i]
                 pps_evo[i] = zprobs[i]
                 liks_evo[i] = zliks[i]
-                self.liklist.append(zliks[i])
+                #self.liklist.append(zliks[i])
             else:
                 th2,acc,lk,pr,prop = self.delayed_rejection(x,z,pps[i],zprobs[i])
-                if acc: accepted[i] = 1
+                if acc:
+                    accepted[i] = 1
+                    #self.liklist.append(lk)
                 evolved[i] = th2
                 prop_evo[i] = prop if acc else propphi[i]
                 liks_evo[i] = lk if acc else liks[i]
-                self.liklist.append(liks_evo[i])
                 try:
                     pps_evo[i] = pr if acc else pps[i]
                 except TypeError: #when pps == None
@@ -853,7 +851,7 @@ class Dream(_Sampler):
             if j == 0:
                 theta = self._prop_initial_theta(j)
                 prop = self._prop_phi(theta, self.po)
-                pps,  liks = self._get_post_prob(theta, prop)
+                pps, liks = self._get_post_prob(theta, prop)
             else:
                 theta = [self.seqhist[c][-1] for c in range(self.nchains)]
                 prop = self._prop_phi(theta, self.po)
@@ -887,28 +885,28 @@ class Dream(_Sampler):
             
             
             # Store accepted values
-            for c, t,pr,  a in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
+            for c, t,pr, acc in zip(range(self.nchains), theta, prop, accepted): #Iterates over the results of each chain
                 #if not accepted repeat last value
-                if not a:
+                if not acc:
                     #Add something to the seqhist so that they all have the same length
                     if self.seqhist[c] == []:
                         self.seqhist[c].append(t)
                     else:
                         self.seqhist[c].append(self.seqhist[c][-1])
-                    continue
-                self.history[j, :] = t 
-                self.seqhist[c].append(t)
-                try:
-                    self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
-                    ptheta[j] = tuple(t)
-                except IndexError:
-                    print "index error",  j,  self.phi.shape
-
-                if j == self.samples+self.burnin:break
-                j += 1 #update accepted sample counter 
+                else:
+                    self.history[j, :] = t
+                    self.seqhist[c].append(t)
+                    try:
+                        self.phi[j] = pr[0] if self.t==1 else [tuple(point) for point in pr]
+                        ptheta[j] = tuple(t)
+                    except IndexError:
+                        print "index error",  j,  self.phi.shape
+                    self.liklist.append(liks[c])
+                    if j == self.samples+self.burnin:break
+                    j += 1 #update accepted samples counter
             
             # Remove Outlier Chains
-            if j>10 and j < self.burnin:
+            if j>0 and j < self.burnin:
                 outl = self._det_outlier_chains(j)
                 imax = pps.tolist().index(pps.max())
                 for n, c in enumerate(outl):
@@ -923,7 +921,8 @@ class Dream(_Sampler):
                 if self.trace_acceptance:
                     print "++>Acc. %s out of %s. Acc. ratio: %1.3f"%(j,i, ar)
                     self._watch_chain(j)
-                if self.trace_convergence: print "++> Likvar: %s\nBest run Likelihood:%s"%(self.likvariance, np.max(self.liklist) )
+                if self.trace_convergence:
+                    print "++> Likvar: %s\nBest run Likelihood:%s"%(self.likvariance, np.max(self.liklist) )
                 t0 = time.time()
 #            print "%s\r"%j
             last_pps = pps
@@ -931,8 +930,8 @@ class Dream(_Sampler):
             last_prop = prop
             last_theta = theta
             ar = (i-rej)/float(i)
-            if self.meld.verbose ==2 and j>10:
-                print "++>Acc. %s out of %s. Acc. ratio: %1.3f"%(j,i, ar)
+            if self.meld.verbose ==2 and j > 10:
+                #print len(self.liklist),j
                 self.meld.current_plot(self.phi, self.data, self.best_prop_index, step=j)
         self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
