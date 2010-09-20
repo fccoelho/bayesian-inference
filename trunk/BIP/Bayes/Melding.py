@@ -702,7 +702,7 @@ class Meld(object):
         else:
             self.viz = False
         if self.verbose == 2:
-            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=0), allow_none=1)
+            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)
         self.po = Pool() #pool of processes for parallel processing
     
     def current_plot(self, series, data, idx, vars=[], step=0):
@@ -721,15 +721,12 @@ class Meld(object):
                 return
         except AttributeError:
             pass
-        
+        #print series.shape, idx
         best_series = [series[k][idx].tolist() for k in data.keys()]
-        #if not sum(best_series):
-        print best_series
         d = [data[k].tolist() for k in data.keys()]
         self.every_run_plot.lines(d,[],data.keys(), "Best fit. Last updated on %s"%step, 'points' )
-        self.every_run_plot.set_hold(1)
         self.every_run_plot.lines(best_series,[],data.keys(), "Best fit. Last updated on %s"%step, 'lines' )
-        self.every_run_plot.set_hold(0)
+        self.every_run_plot.clearFig()
         self.lastidx = idx
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
