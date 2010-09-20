@@ -702,23 +702,35 @@ class Meld(object):
         else:
             self.viz = False
         if self.verbose == 2:
-            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=1), allow_none=1)
+            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s'%rpc_plot(hold=0), allow_none=1)
         self.po = Pool() #pool of processes for parallel processing
     
-    def current_plot(self, series, data, w, vars=[]):
+    def current_plot(self, series, data, idx, vars=[], step=0):
         """
         Plots the last simulated series
         
          :Parameters:
             - `series`: Record array with the simulated series.
-            - `w`: Integer id of the current fitting window.
+            - `idx`: Integer index of the curve to plot .
             - `data`: Dictionary with the full dataset.
             - `vars`: List with variable names to be plotted.
+            - `step`: Step of the chain
         """
-        last_series = [series[k][-1].tolist() for k in data.keys()]
+        try:
+            if self.lastidx == idx:
+                return
+        except AttributeError:
+            pass
+        
+        best_series = [series[k][idx].tolist() for k in data.keys()]
+        #if not sum(best_series):
+        print best_series
         d = [data[k].tolist() for k in data.keys()]
-        self.every_run_plot.lines(d,[],data.keys(), "Last simulation and data", 'points' )
-        self.every_run_plot.lines(last_series,[],data.keys(), "Last simuation and data", 'lines' )
+        self.every_run_plot.lines(d,[],data.keys(), "Best fit. Last updated on %s"%step, 'points' )
+        self.every_run_plot.set_hold(1)
+        self.every_run_plot.lines(best_series,[],data.keys(), "Best fit. Last updated on %s"%step, 'lines' )
+        self.every_run_plot.set_hold(0)
+        self.lastidx = idx
     
     def setPhi(self, names, dists=[stats.norm], pars=[(0, 1)], limits=[(-5,5)]):
         """
@@ -1099,8 +1111,8 @@ class Meld(object):
             - `method`: Step method. defaults to Metropolis hastings
         """
         #self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
-        ta = True if self.verbose else False
-        tc = True if self.verbose else False
+        ta = True if self.verbose==1 else False
+        tc = True if self.verbose==1 else False
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K,self.K*10, data, t, self.theta_dists, self.q1theta.dtype.names, self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,  trace_convergence=tc, nchains=self.ntheta, constraints=[])
             sampler.step()
