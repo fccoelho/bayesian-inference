@@ -27,3 +27,10 @@ setup(name='BIP',
         #ext_modules=[Extension('BIP/SDE/gillespie', ['BIP/SDE/gillespie.c'])],
         
       )
+
+import os
+#This to avoid creating the log file with super-user privileges during instalation.
+try:
+    os.unlink('/tmp/BIP.log')
+except:
+    pass
