@@ -11,6 +11,7 @@ import time
 import pdb
 import cython
 import xmlrpclib
+import logging
 from multiprocessing import Pool
 from random import sample
 
@@ -25,7 +26,7 @@ __author__="fccoelho"
 __date__ ="$09/12/2009 10:44:11$"
 __docformat__ = "restructuredtext en"
 
-#from BIP.Viz.realtime import rpc_plot
+logger = logging.getLogger('BIP.MCMC')
 
 def timeit(method):
     """
@@ -102,6 +103,20 @@ class _Sampler(object):
             if self._po._state:
                 self._po = Pool() #Pool has been terminated
         return self._po
+
+    def shut_down(self,reason=''):
+        '''
+        Finalizes the sampler, nicely closing the resources allocated
+
+        :Parameters:
+            - `reason`: comment stating why the sampling is being shutdown.
+        '''
+        self.term_pool()
+        self.pserver.close_plot()
+        self.pserver2.close_plot()
+        if reason:
+            logger.info(reason)
+
 
     def term_pool(self):
         if self._po == None:
@@ -418,7 +433,8 @@ class Metropolis(_Sampler):
         i=0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
         last_lik = None
         while j < self.samples+self.burnin:
-#            print rej, j
+            if self.meld.stop_now:
+                return self.shut_down('user interrupted')
             #generate proposals
             theta,prop = self._propose(j, self.po)
             #calculate likelihoods
@@ -474,9 +490,7 @@ class Metropolis(_Sampler):
         self.meld.DIC = self.DIC
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %s"%ar
-        self.term_pool()
-        self.pserver.close_plot()
-        self.pserver2.close_plot()
+        self.shut_down('Finished normally')
         return 1
 
 
@@ -846,7 +860,8 @@ class Dream(_Sampler):
         last_pps = None
         t0=time.time()
         while j < self.samples+self.burnin:
-#            print rej, j
+            if self.meld.stop_now:
+                return self.shut_down('user interrupted')
             #generate proposals
             if j == 0:
                 theta = self._prop_initial_theta(j)
@@ -941,9 +956,7 @@ class Dream(_Sampler):
         self.meld.DIC = self.DIC
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %1.3f"%ar
-        self.term_pool()
-        self.pserver.close_plot()
-        self.pserver2.close_plot()
+        self.shut_down('Finished normally.')
         return 1
 
 if __name__ == "__main__":

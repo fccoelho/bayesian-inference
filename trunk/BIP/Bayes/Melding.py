@@ -694,6 +694,7 @@ class Meld(object):
         self.AIC = None
         self.BIC = None
         self.DIC = None
+        self.stop_now = False #Flag to interrupt fitting loop. inner loop checks this flag and exit when it is true.
         self.proposal_variance = 0.0000001
         self.adaptscalefactor = 1 #adaptive variance. Used my metropolis hastings
         self.salt_band = 0.1 #relaxation factor of the prior limits

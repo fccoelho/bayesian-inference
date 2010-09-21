@@ -205,7 +205,7 @@ class TestMeld:
         series  = np.recarray((1, 100), formats=['f8'], names=['sine'])
         series.sine[0, :] = d
         data = {'sine':d}
-        fit_model.Me.current_plot(series, data, 1)
+        fit_model.Me.current_plot(series, data, 0)
         fit_model.Me.every_run_plot.close_plot()
 
 class TestEnumRun:
