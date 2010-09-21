@@ -308,6 +308,9 @@ class FitModel(object):
             #TODO: allow passing of fitfun
             self.Me.abcRun(data=data,fitfun=None,pool=self.pool, t=self.tf)
             pt,series = self.Me.getPosteriors(t=self.tf)
+        if self.Me.stop_now:
+            # if fitting has been prematurely interrupted by user
+            return None,None,None, None, None
         pp = series[:,-1]
         # TODO: figure out what to do by default with inits
         if self.nw >1 and self.adjinits and not self.ew:
@@ -443,6 +446,8 @@ class FitModel(object):
 #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting susceptibles
                     self.model.func_globals['inits'] = self.inits
             pt,pp, series,predseries,att = self.do_inference(data=d2, prior=prior,predlen=wl, method=method,likvar=likvar)
+            if self.Me.stop_now:
+                return
             self.AIC += 2. * (self.ntheta - self.Me.likmax) # 2k - 2 ln(L)
             self.BIC += self.ntheta * numpy.log(self.wl*len(d2)) - 2. * self.Me.likmax # k ln(n) - 2 ln(L)
             self.DIC = self.Me.DIC
