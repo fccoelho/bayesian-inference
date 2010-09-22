@@ -2,20 +2,21 @@
 <!DOCTYPE Session SYSTEM "Session-4.4.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-09-20, 13:38:58 -->
+<!-- Saved: 2010-09-22, 11:06:40 -->
 <Session version="4.4">
   <Filenames>
     <Filename cline="1" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
     <Filename cline="139" cindex="9" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/gillespie.py</Filename>
-    <Filename cline="372" cindex="12" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="373" cindex="11" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
     <Filename cline="1004" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
     <Filename cline="104" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/lhs.py</Filename>
     <Filename cline="0" cindex="16" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/__version__.py</Filename>
     <Filename cline="0" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/conjugate_priors.py.py</Filename>
     <Filename cline="0" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/like.py</Filename>
     <Filename cline="111" cindex="86" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/tests/test_Bayes_Melding.py</Filename>
+    <Filename cline="20" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/__init__.py</Filename>
   </Filenames>
-  <ActiveWindow cline="372" cindex="12">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</ActiveWindow>
+  <ActiveWindow cline="20" cindex="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/__init__.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>
