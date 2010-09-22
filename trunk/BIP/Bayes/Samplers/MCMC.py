@@ -111,7 +111,10 @@ class _Sampler(object):
         :Parameters:
             - `reason`: comment stating why the sampling is being shutdown.
         '''
-        self.term_pool()
+        try:
+            self.term_pool()
+        except OSError:
+            pass
         self.pserver.close_plot()
         self.pserver2.close_plot()
         if reason:
@@ -433,6 +436,8 @@ class Metropolis(_Sampler):
         i=0;j=0;rej=0;ar=0 #total samples,accepted samples, rejected proposals, acceptance rate
         last_lik = None
         while j < self.samples+self.burnin:
+            print j
+            self.meld.current_step = j
             if self.meld.stop_now:
                 return self.shut_down('user interrupted')
             #generate proposals
@@ -860,6 +865,7 @@ class Dream(_Sampler):
         last_pps = None
         t0=time.time()
         while j < self.samples+self.burnin:
+            self.meld.current_step = j
             if self.meld.stop_now:
                 return self.shut_down('user interrupted')
             #generate proposals
