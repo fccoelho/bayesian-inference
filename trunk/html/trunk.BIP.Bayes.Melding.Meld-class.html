@@ -99,11 +99,33 @@ Bayesian Melding class
         <span class="summary-sig-arg">ntheta</span>,
         <span class="summary-sig-arg">nphi</span>,
         <span class="summary-sig-arg">alpha</span>=<span class="summary-sig-default">0.5</span>,
-        <span class="summary-sig-arg">verbose</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">verbose</span>=<span class="summary-sig-default">0</span>,
         <span class="summary-sig-arg">viz</span>=<span class="summary-sig-default">False</span>)</span><br />
       Initializes the Melding class.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.Meld-class.html#current_plot" class="summary-sig-name">current_plot</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">series</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">idx</span>,
+        <span class="summary-sig-arg">vars</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">step</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Plots the last simulated series</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.current_plot">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -521,7 +543,7 @@ resuming calculation in case of interruption.</td>
         <span class="sig-arg">ntheta</span>,
         <span class="sig-arg">nphi</span>,
         <span class="sig-arg">alpha</span>=<span class="sig-default">0.5</span>,
-        <span class="sig-arg">verbose</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">verbose</span>=<span class="sig-default">0</span>,
         <span class="sig-arg">viz</span>=<span class="sig-default">False</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
@@ -539,12 +561,46 @@ resuming calculation in case of interruption.</td>
         <li><strong class="pname"><code>model</code></strong> - : Callable taking theta as argument and returning phi = M(theta).</li>
         <li><strong class="pname"><code>ntheta</code></strong> - : Number of inputs to the model (parameters).</li>
         <li><strong class="pname"><code>nphi</code></strong> - : Number of outputs of the model (State-variables)</li>
-        <li><strong class="pname"><code>verbose</code></strong> - : Boolean: whether to show more information about the computations</li>
+        <li><strong class="pname"><code>verbose</code></strong> - : 0,1, 2: whether to show more information about the computations</li>
         <li><strong class="pname"><code>viz</code></strong> - : Boolean. Wether to show graphical outputs of the fitting process</li>
     </ul></dd>
     <dt>Overrides:
         object.__init__
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="current_plot"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">current_plot</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">series</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">idx</span>,
+        <span class="sig-arg">vars</span>=<span class="sig-default">[]</span>,
+        <span class="sig-arg">step</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#Meld.current_plot">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Plots the last simulated series</p>
+<blockquote>
+</blockquote>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>series</code></strong> - : Record array with the simulated series.</li>
+        <li><strong class="pname"><code>idx</code></strong> - : Integer index of the curve to plot .</li>
+        <li><strong class="pname"><code>data</code></strong> - : Dictionary with the full dataset.</li>
+        <li><strong class="pname"><code>vars</code></strong> - : List with variable names to be plotted.</li>
+        <li><strong class="pname"><code>step</code></strong> - : Step of the chain</li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1010,7 +1066,7 @@ resuming calculation in case of interruption.
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Sep 16 10:46:58 2010
+    Generated by Epydoc 3.0.1 on Wed Nov  3 17:09:32 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
