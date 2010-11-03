@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.5.1 documentation</title>
+    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.5.2 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.5.1',
+        VERSION:     '0.5.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="BIP - Bayesian Inference with Python v0.5.1 documentation" href="index.html" />
+    <link rel="top" title="BIP - Bayesian Inference with Python v0.5.2 documentation" href="index.html" />
     <link rel="next" title="Stochastic Differential Equations" href="sde.html" />
     <link rel="prev" title="Overview" href="overview.html" /> 
   </head>
@@ -140,7 +140,7 @@
 <span class="n">d</span> <span class="o">=</span> <span class="n">model</span><span class="p">([</span><span class="mf">1.0</span><span class="p">])</span> <span class="c">#simulate some data</span>
 <span class="n">noise</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">36</span><span class="p">)</span>
 <span class="n">dt</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;I&#39;</span><span class="p">:</span><span class="n">d</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">noise</span><span class="p">}</span> <span class="c"># add noise</span>
-<span class="n">F</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span><span class="s">&#39;MCMC&#39;</span><span class="p">,</span><span class="n">likvar</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span><span class="n">pool</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">monitor</span><span class="o">=</span><span class="p">[])</span>
+<span class="n">F</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span><span class="s">&#39;MCMC&#39;</span><span class="p">,</span><span class="n">likvar</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span><span class="n">pool</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">monitor</span><span class="o">=</span><span class="p">[])</span>
 <span class="c">#==Uncomment the line below to see plots of the results</span>
 <span class="n">F</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
@@ -295,7 +295,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, Flávio Codeço Coelho.
-      Last updated on Sep 16, 2010.
+      Last updated on Nov 03, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.3.
     </div>
   </body>

@@ -12,8 +12,8 @@
 
 
 \title{BIP - Bayesian Inference with Python Documentation}
-\date{2010-09-16}
-\release{0.5.1}
+\date{2010-11-03}
+\release{0.5.2}
 \author{Flávio Codeço Coelho}
 \newcommand{\sphinxlogo}{\includegraphics{BIP_large.png}\par}
 \renewcommand{\releasename}{Release}
@@ -109,7 +109,7 @@
 \phantomsection\label{index::doc}
 
 
-This documentation corresponds to version 0.5.1.
+This documentation corresponds to version 0.5.2.
 
 
 \chapter{Contents}
@@ -181,7 +181,7 @@ This first example includes a simple ODE (an SIR epidemic model) model which is 
 \PYG{n}{d} \PYG{o}{=} \PYG{n}{model}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{)} \PYG{c}{\#simulate some data}
 \PYG{n}{noise} \PYG{o}{=} \PYG{n}{st}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mf}{0.01}\PYG{p}{)}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{l+m+mi}{36}\PYG{p}{)}
 \PYG{n}{dt} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{+}\PYG{n}{noise}\PYG{p}{\PYGZcb{}} \PYG{c}{\# add noise}
-\PYG{n}{F}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{dt}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{MCMC}\PYG{l+s}{'}\PYG{p}{,}\PYG{n}{likvar}\PYG{o}{=}\PYG{l+m+mf}{1e-4}\PYG{p}{,}\PYG{n}{pool}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{,}\PYG{n}{monitor}\PYG{o}{=}\PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{F}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{dt}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{MCMC}\PYG{l+s}{'}\PYG{p}{,}\PYG{n}{likvar}\PYG{o}{=}\PYG{l+m+mf}{1e-5}\PYG{p}{,}\PYG{n}{pool}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{,}\PYG{n}{monitor}\PYG{o}{=}\PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
 \PYG{c}{\#==Uncomment the line below to see plots of the results}
 \PYG{n}{F}\PYG{o}{.}\PYG{n}{plot\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}

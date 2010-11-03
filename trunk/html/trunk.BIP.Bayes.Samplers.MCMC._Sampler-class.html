@@ -113,6 +113,24 @@ Holds common logic and
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#best_prop_index" class="summary-sig-name">best_prop_index</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the index of the best fitting proposal, i.e.,
+the one which with max Likelihood</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.best_prop_index">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#DIC" class="summary-sig-name">DIC</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Calculates  the deviance information criterion</td>
           <td align="right" valign="top">
@@ -151,6 +169,24 @@ Holds common logic and
 Remember to call self.term_pool() when done.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.po">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#shut_down" class="summary-sig-name">shut_down</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">reason</span>=<span class="summary-sig-default">''</span>)</span><br />
+      Finalizes the sampler, nicely closing the resources allocated</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.shut_down">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -240,6 +276,39 @@ Remember to call self.term_pool() when done.</td>
       Sets up the server for real-time chain watch</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.setup_xmlrpc_plotserver">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="shutdown_xmlrpc_plotserver"></a><span class="summary-sig-name">shutdown_xmlrpc_plotserver</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.shutdown_xmlrpc_plotserver">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_every_plot"></a><span class="summary-sig-name">_every_plot</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      plotting function for generating a plot at every step</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler._every_plot">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -489,6 +558,30 @@ returns two lists</td>
   </dl>
 </td></tr></table>
 </div>
+<a name="best_prop_index"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">best_prop_index</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.best_prop_index">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Returns the index of the best fitting proposal, i.e.,
+the one which with max Likelihood
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="DIC"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -555,6 +648,30 @@ Remember to call self.term_pool() when done.
     <dt>Decorators:</dt>
     <dd><ul class="nomargin-top">
         <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="shut_down"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">shut_down</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">reason</span>=<span class="sig-default">''</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#_Sampler.shut_down">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Finalizes the sampler, nicely closing the resources allocated
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>reason</code></strong> - : comment stating why the sampling is being shutdown.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -674,7 +791,7 @@ returns two lists
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Sep 16 10:46:58 2010
+    Generated by Epydoc 3.0.1 on Wed Nov  3 17:09:32 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
