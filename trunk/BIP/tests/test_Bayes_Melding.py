@@ -241,11 +241,6 @@ class TestBasicfit:
         assert_almost_equal(4.6666, Melding.basicfit(self.s1, self.s2), 1)
 
 
-class TestModel:
-    def test_model(self):
-        # assert_equal(expected, model(r, p0, n))
-        raise SkipTest # TODO: implement your test here
-
 class TestMhTest:
     def test_mh_test(self):
         # assert_equal(expected, mh_test())

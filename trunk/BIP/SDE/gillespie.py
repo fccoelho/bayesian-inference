@@ -134,7 +134,7 @@ class Model:
         pvi = self.pv #propensity functions
         tm = self.tm
         pv = self.pv0 #actual propensity values for each time step
-        tc = 0
+        tc = 0 #current time
         evts = dict([(i, []) for i in xrange(len(self.pv))])
         self.steps = 0
         self.res[0,:]= ini
@@ -184,11 +184,11 @@ def main():
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
-    M.run(tmax=80,reps=100,viz=1,serial=1)
+    M.run(tmax=80,reps=100,viz=0,serial=1)
     print 'total time: ',time.time()-t0
     t,series,steps, evts = M.getStats()
     ser = series.mean(axis=0)
-    #print len(evts), len(evts[0])
+    #print evts, len(evts[0])
     from pylab import plot , show, legend
     plot(t,ser,'-.')
     legend(M.vn,loc=0)
