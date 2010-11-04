@@ -55,17 +55,6 @@ class TestModel:
                 elif e == 1:
                     assert_equal(-evs, series[0, n, 2]-series[0, n+1, 2])
             ecv += abs(evs * self.tm[:, e]) #expected change in variables
-            #assert_equal(ecv, sum)
-            #print ecv, abs(series[0, n, :]-series[0, n+1, :])
-            #assert_array_equal(ecv, abs(series[0, n, :]-series[0, n+1, :]))
-                
-#    def test_series_match_events(self):
-#        model = self.M
-#        model.run(tmax=80,reps=1,viz=0,serial=1)
-#        t,series,steps, evts = model.getStats()
-#        t = t.tolist()
-#        for te in evts[0][0]:
-#            assert_equal(-1, series[t.index(te)]-series[t.index(te)]-1)
         
         
     def test_model(self):
