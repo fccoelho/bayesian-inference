@@ -1,7 +1,8 @@
 import nose
 from nose import SkipTest
 from nose.tools import assert_equal
-from numpy import array
+from numpy import array,  zeros
+from numpy.testing import assert_array_equal
 from BIP.SDE.gillespie import Model
 
 class TestDispatch:
@@ -31,7 +32,7 @@ class TestModel:
         model = self.M
         model.run(tmax=80,reps=10,viz=0,serial=1)
         t,series,steps, evts = model.getStats()
-        assert_equal((10, 80, 3), series.shape)
+        assert_equal((10, 80, 3), series.shape) #(reps,t,vars)
     
     def test_events_match_series(self):
         '''
@@ -43,10 +44,20 @@ class TestModel:
         events = evts[0] #first replicate
         for n, ti in enumerate(t[1:]):
             print ti
+            nev = 0
+            ecv = zeros(3)
             for e, s in events.items():
-                nev = sum((s<=ti) & (s>t[n])) #number events of type e happening up until ti and after previous time-step
-                print "n:", n,"t:", ti,  "nev:", nev, "evtype:", e,  series[0, n, e], series[0, n+1, e],  "evtimes:", s[:nev+1]
-                assert_equal(nev, abs(series[0, n, e]-series[0, n+1, e]))
+                evs = sum((s<=ti) & (s>t[n])) 
+                nev += evs#number events of type e happening up until ti and after previous time-step
+                print "n:", n,"t:", ti,  "nev:", evs, "evtype:", e,  series[0, n, :], series[0, n+1, :],  "evtimes:", s[:nev+1]
+                if e ==0: #these events reduce by one the first variable
+                    assert_equal(evs, series[0, n, 0]-series[0, n+1, 0])
+                elif e == 1:
+                    assert_equal(-evs, series[0, n, 2]-series[0, n+1, 2])
+            ecv += abs(evs * self.tm[:, e]) #expected change in variables
+            #assert_equal(ecv, sum)
+            #print ecv, abs(series[0, n, :]-series[0, n+1, :])
+            #assert_array_equal(ecv, abs(series[0, n, :]-series[0, n+1, :]))
                 
 #    def test_series_match_events(self):
 #        model = self.M

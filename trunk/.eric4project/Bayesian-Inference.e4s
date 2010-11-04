@@ -2,18 +2,18 @@
 <!DOCTYPE Session SYSTEM "Session-4.4.dtd">
 <!-- eric4 session file for project Bayesian-Inference -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2010-11-03, 16:46:13 -->
+<!-- Saved: 2010-11-03, 17:53:47 -->
 <Session version="4.4">
   <Filenames>
     <Filename cline="1" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/setup.py</Filename>
-    <Filename cline="14" cindex="20" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/gillespie.py</Filename>
+    <Filename cline="142" cindex="16" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/gillespie.py</Filename>
     <Filename cline="114" cindex="28" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
     <Filename cline="1004" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
     <Filename cline="241" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/tests/test_Bayes_Melding.py</Filename>
     <Filename cline="0" cindex="0" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/example.py</Filename>
     <Filename cline="47" cindex="40" folds="" zoom="0">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/tests/test_SDE_gillespie.py</Filename>
   </Filenames>
-  <ActiveWindow cline="14" cindex="20">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/gillespie.py</ActiveWindow>
+  <ActiveWindow cline="142" cindex="16">/home/fccoelho/Documents/Projects_software/bayesian-inference/trunk/BIP/SDE/gillespie.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchexpressions>
