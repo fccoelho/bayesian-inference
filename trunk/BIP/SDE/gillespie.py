@@ -12,7 +12,7 @@
 #-----------------------------------------------------------------------------
 __docformat__ = "restructuredtext en"
 from numpy.random import uniform, multinomial, exponential,random
-from numpy import arange, array, empty,zeros,log, isnan, nanmax, nan_to_num
+from numpy import arange, array, empty,zeros,log, isnan, nanmax, nan_to_num,  ceil
 import time
 import xmlrpclib
 import pdb
@@ -135,38 +135,45 @@ class Model:
         tm = self.tm
         pv = self.pv0 #actual propensity values for each time step
         tc = 0 #current time
+        last_tim = 0 # first time step of results
         evts = dict([(i, []) for i in xrange(len(self.pv))])
         self.steps = 0
         self.res[0,:]= ini
-        for tim in xrange(1,tmax):
-            while tc < tim:
-                i=0
-                a0=0.0
-                for p in pvi:
-                    pv[i] = p(r,ini)
-                    a0+=pv[i]
-                    i+=1
+#        for tim in xrange(1,tmax):
+        while tc <= tmax:
+            i=0
+            a0=0.0
+            for p in pvi:
+                pv[i] = p(r,ini)
+                a0+=pv[i]
+                i+=1
+            
+            if pv.any():#no change in state is pv is all zeros
                 tau = (-1/a0)*log(random())
-                if pv.any():#no change in state is pv is all zeros
-                    #~ try:
-                    event = multinomial(1,pv/a0) # event which will happen on this iteration
-                    #~ except ValueError:# as inst:#2.6 syntax
-                        #~ #print inst
-                        #~ print "pv: ",pv
-                        #~ print "Rates: ", r
-                        #~ print "State: ", ini
-                        #~ print "Time Step: ",tim
-                        #~ pdb.set_trace()
-                        #~ #raise ValueError()
-                    ini += tm[:,event.nonzero()[0][0]]
-                    evts[event.nonzero()[0][0]].append(tc+tau)
-                #print tc, ini
                 tc += tau
+                tim = int(ceil(tc))
+
+                event = multinomial(1,pv/a0) # event which will happen on this iteration
+                
+                e = event.nonzero()[0][0]
+                ini += tm[:,e]
+                if tc <= tmax:
+                    evts[e].append(tc)
+            #print tc, ini
+            if tim <= tmax -1:
                 self.steps +=1
-                if a0 == 0: break
-            self.res[tim,:] = nan_to_num(ini)
-            #self.evseries = evts
-#            if a0 == 0: break
+#                if a0 == 0: break
+                if tim - last_tim >1:
+                    for j in range(last_tim, tim):
+                        self.res[j,:] = self.res[last_tim, :]
+                self.res[tim,:] = ini
+            else:
+                for j in range(last_tim, tmax):
+                    self.res[j,:] = self.res[last_tim, :]
+                break
+            last_tim = tim
+        #self.evseries = evts
+            if a0 == 0: break #breaks when no event has prob above 0
         if self.viz:
             #self.ser.clearFig()
             self.server.lines(self.res.T.tolist(),[],self.vn,"Single replica")
@@ -184,7 +191,7 @@ def main():
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
-    M.run(tmax=80,reps=100,viz=0,serial=1)
+    M.run(tmax=80,reps=100,viz=1,serial=1)
     print 'total time: ',time.time()-t0
     t,series,steps, evts = M.getStats()
     ser = series.mean(axis=0)
