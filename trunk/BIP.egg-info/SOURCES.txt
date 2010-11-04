@@ -6,6 +6,7 @@ setup.py
 BIP/__init__.py
 BIP/__init__.pyc
 BIP/__version__.py
+BIP/logsetup.py
 BIP.egg-info/PKG-INFO
 BIP.egg-info/PKG-INFO.before_restore_2010-04-21_14.39.58.289369
 BIP.egg-info/SOURCES.txt
