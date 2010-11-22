@@ -18,6 +18,7 @@ cdef extern from "stdlib.h":
     double RAND_MAX
     double c_libc_random "random"()
     void c_libc_srandom "srandom"(unsigned int seed)
+    
 cdef crandom():
     cdef double rm = RAND_MAX
     return c_libc_random()/rm
