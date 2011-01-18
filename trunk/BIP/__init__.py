@@ -18,7 +18,7 @@ a solution which may not be available on standard statistical packages.
 
 __docformat__ = "restructuredtext en"
 
-
+import logging
 from logging.handlers import RotatingFileHandler
 
 

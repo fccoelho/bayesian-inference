@@ -90,9 +90,12 @@ def lhs(dist, parms, siz=100, noCorrRestr=False, corrmat=None):
             n=numpy.product(siz)
         #force type to float for sage compatibility
         pars = tuple([float(k) for k in parms[j]])
-        perc = numpy.arange(1.,n+1)/(n+1)
-        v = d(*pars).ppf(perc)
-        #print numpy.isinf(indices[j].sum())
+        #perc = numpy.arange(1.,n+1)/(n+1)
+        step = 1./(n)
+        perc = numpy.arange(0, 1, step) #class boundaries
+        s_pos = [i+ step/2. for i in perc[:]]
+        v = d(*pars).ppf(s_pos)
+        print len(v), step, perc
         index=map(int,indices[j]-1)
         v = v[index]
         if isinstance(siz,(tuple,list)):
@@ -122,7 +125,7 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
             s1.append(s.copy())
         return s1
     if noCorrRestr or nvars ==1:
-        x = [stats.randint.rvs(1,smp+1,size=smp) for i in xrange(nvars)]
+        x = [stats.randint.rvs(0,smp+0,size=smp) for i in xrange(nvars)]
     else:
         if Corrmat == None:
             C=numpy.core.numeric.identity(nvars)
@@ -142,11 +145,15 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
     return x
 
 if __name__=='__main__':
+    dist = stats.uniform,stats.uniform
+    parms = (0,1.),(0,1.)
+    print lhs(dist,parms,siz=4)
+    
     import pylab as P
-    dist = stats.norm
-    #dist = stats.beta
-    pars = (50,1)
-    #pars = (1,5) #beta
+    #dist = stats.norm
+    dist = stats.beta
+    #pars = (50,2)
+    pars = (1,5) #beta
     b = lhs(dist,pars,1000)
     cm = numpy.array([[1,.8],[.8,1]])
     c=lhs([dist,dist], [pars,pars],2000,False, cm)
@@ -160,8 +167,9 @@ if __name__=='__main__':
     #plot(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1),dist(*pars).pdf(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1)),label='PDF')
     #legend()
     #savefig('lhs.png',dpi=400)
-    lhs([stats.norm]*19,[(0,1)]*19,17,False,numpy.identity(19))
+#    lhs([stats.norm]*19,[(0,1)]*19,17,False,numpy.identity(19))
     P.show()
+    
     
 
 #TODO: Extend lhsFromSample to allow multivariate correlated sampling
