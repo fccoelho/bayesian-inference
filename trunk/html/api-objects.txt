@@ -94,6 +94,11 @@ trunk.BIP.Viz.realtime.__ports_used	trunk.BIP.Viz.realtime-module.html#__ports_u
 trunk.BIP.Viz.realtime.start_server	trunk.BIP.Viz.realtime-module.html#start_server
 trunk.BIP.__version__	trunk.BIP.__version__-module.html
 trunk.BIP.__version__.version	trunk.BIP.__version__-module.html#version
+trunk.BIP.logsetup	trunk.BIP.logsetup-module.html
+trunk.BIP.logsetup.ch	trunk.BIP.logsetup-module.html#ch
+trunk.BIP.logsetup.fh	trunk.BIP.logsetup-module.html#fh
+trunk.BIP.logsetup.logger	trunk.BIP.logsetup-module.html#logger
+trunk.BIP.logsetup.formatter	trunk.BIP.logsetup-module.html#formatter
 trunk.BIP.Bayes.Melding.FitModel	trunk.BIP.Bayes.Melding.FitModel-class.html
 trunk.BIP.Bayes.Melding.FitModel._rms_error	trunk.BIP.Bayes.Melding.FitModel-class.html#_rms_error
 trunk.BIP.Bayes.Melding.FitModel.AIC_from_RSS	trunk.BIP.Bayes.Melding.FitModel-class.html#AIC_from_RSS

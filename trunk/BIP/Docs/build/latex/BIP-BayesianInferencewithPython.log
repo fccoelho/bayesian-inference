@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2010.10.14)  4 NOV 2010 08:46
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2010.11.19)  26 JAN 2011 15:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -565,6 +565,9 @@ Package: framed 2007/10/04 v 0.95: framed or shaded text with page breaks
 \FrameRule=\dimen128
 \FrameSep=\dimen129
 )
+(/usr/share/texmf-texlive/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
 (/usr/share/texmf-texlive/tex/latex/graphics/color.sty
 Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
 
@@ -631,10 +634,9 @@ Package graphics Info: Driver file: pdftex.def on input line 91.
 )
 (/usr/share/texmf-texlive/tex/plain/misc/pdfcolor.tex)
 \distancetoright=\skip70
-\leftsidespace=\skip71
-\py@argswidth=\skip72
-\py@noticelength=\skip73
-\lineblockindentation=\skip74
+\py@argswidth=\skip71
+\py@noticelength=\skip72
+\lineblockindentation=\skip73
 \image@box=\box39
 \image@width=\dimen135
 
@@ -756,7 +758,9 @@ File: hpdftex.def 2009/10/09 v6.79a Hyperref driver for pdfTeX
 )
 (/usr/share/texmf-texlive/tex/latex/oberdiek/hypcap.sty
 Package: hypcap 2008/09/08 v1.10 Adjusting anchors of captions (HO)
-))
+)
+\DUlineblockindent=\skip74
+)
 \@indexfile=\write5
 \openout5 = `BIP-BayesianInferencewithPython.idx'.
 
@@ -916,10 +920,10 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 ]
 (./BIP-BayesianInferencewithPython.aux) ) 
 Here is how much of TeX's memory you used:
- 7928 strings out of 495061
- 107478 string characters out of 1182620
- 193544 words of memory out of 3000000
- 10874 multiletter control sequences out of 15000+50000
+ 7972 strings out of 495061
+ 107978 string characters out of 1182620
+ 194337 words of memory out of 3000000
+ 10915 multiletter control sequences out of 15000+50000
  66853 words of font info for 79 fonts, out of 3000000 for 9000
  29 hyphenation exceptions out of 8191
  45i,12n,45p,805b,381s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -931,7 +935,7 @@ xlive/fonts/type1/urw/courier/ucrro8a.pfb></usr/share/texmf-texlive/fonts/type1
 bo8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share
 /texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts
 /type1/urw/times/utmri8a.pfb>
-Output written on BIP-BayesianInferencewithPython.pdf (13 pages, 930527 bytes).
+Output written on BIP-BayesianInferencewithPython.pdf (13 pages, 930487 bytes).
 
 PDF statistics:
  145 PDF objects out of 1000 (max. 8388607)
