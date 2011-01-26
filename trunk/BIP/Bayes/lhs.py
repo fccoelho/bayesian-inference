@@ -16,6 +16,7 @@ __docformat__ = "restructuredtext en"
 import scipy.stats as stats
 import numpy
 from numpy.linalg import cholesky,inv
+from numpy.random import uniform
 
 def lhsFromSample(sample,siz=100):
     """
@@ -93,9 +94,9 @@ def lhs(dist, parms, siz=100, noCorrRestr=False, corrmat=None):
         #perc = numpy.arange(1.,n+1)/(n+1)
         step = 1./(n)
         perc = numpy.arange(0, 1, step) #class boundaries
-        s_pos = [i+ step/2. for i in perc[:]]
+        s_pos = [uniform(i, i+ step) for i in perc[:]]#[i+ step/2. for i in perc[:]]
         v = d(*pars).ppf(s_pos)
-        print len(v), step, perc
+        #print len(v), step, perc
         index=map(int,indices[j]-1)
         v = v[index]
         if isinstance(siz,(tuple,list)):
@@ -157,11 +158,11 @@ if __name__=='__main__':
     b = lhs(dist,pars,1000)
     cm = numpy.array([[1,.8],[.8,1]])
     c=lhs([dist,dist], [pars,pars],2000,False, cm)
-    print stats.pearsonr(c[0],c[1]), stats.spearmanr(c[0],c[1])
+    #print stats.pearsonr(c[0],c[1]), stats.spearmanr(c[0],c[1])
     #P.hist(c[0],normed=1)#, label='c0 sample')
     P.scatter(c[0],c[1])
     #P.hist(c[1],normed=1)#, label='c1 sample')
-    print c[0].shape,c[1].shape
+    #print c[0].shape,c[1].shape
     n = dist(*pars).rvs(size=20)
     #hist(n.ravel(),facecolor='r',alpha =0.3,normed=1, label='Regular sample')
     #plot(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1),dist(*pars).pdf(numpy.arange(min(min(c),min(n)),max(max(c),max(n)),.1)),label='PDF')
