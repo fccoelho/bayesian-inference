@@ -1,3 +1,4 @@
+README
 ez_setup.py
 setup.py
 .ropeproject/config.py
