@@ -15,6 +15,7 @@ import datetime
 from numpy import *
 import matplotlib.pyplot as P
 from matplotlib.dates import date2num
+from matplotlib.ticker import FormatStrFormatter
 from scipy.stats import gaussian_kde
 import pdb
 
@@ -45,6 +46,7 @@ def plot_pred(tim,series,y, fig,names=[],title='series'):
         names = series.dtype.names
     l = len(names)
     ax = fig.add_subplot(111)
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%g'))
     for i,n in enumerate(names):
         co = c.next()
         for b in [2.5,25,50,75,97.5]:
@@ -114,6 +116,9 @@ def plot_series2(tim,obs,series,names=[],title='Simulated vs Observed series',wl
     for i, n in enumerate(names):
         ax = fig.add_subplot(len(names), 1, i+1)
         ax.grid(True)
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%g'))
+        P.setp(ax.get_yticklabels(),fontsize=8)
+        P.setp(ax.get_xticklabels(),fontsize=8)
         if isinstance(tim[0], datetime.date):
             ax.xaxis_date()
         co = c.next()
@@ -176,6 +181,10 @@ def plot_par_violin(tim,ptlist, priors={}, bp=True):
     for i,n in enumerate(ptlist[0].dtype.names):
         ax = fig.add_subplot(r,c,i+1)
         ax.grid(True)
+        ax.xaxis.set_major_formatter(FormatStrFormatter('%g'))
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%g'))
+        P.setp(ax.get_yticklabels(),fontsize=8)
+        P.setp(ax.get_xticklabels(),fontsize=8)
         violin_plot(ax,[priors[n]]+[s[n] for s in ptlist],tim,bp, True)
         P.ylabel(n)
     #P.xlabel('Windows')
