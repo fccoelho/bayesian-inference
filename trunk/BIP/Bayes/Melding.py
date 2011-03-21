@@ -452,10 +452,9 @@ class FitModel(object):
             self.BIC += self.ntheta * numpy.log(self.wl*len(d2)) - 2. * self.Me.likmax # k ln(n) - 2 ln(L)
             self.DIC = self.Me.DIC
             # ===Saving results===
-            f = open('%s_%s%s'%(dbname, w, ".pickle"),'w')
-            #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
-            CP.dump((pt,series,d,predseries, att*self.K),f)
-            f.close()
+            with open('%s_%s%s'%(dbname, w, ".pickle"),'w') as f:
+                #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
+                CP.dump((pt,series,d,predseries, att*self.K),f)
             if dbname:
                 if os.path.exists(dbname+".sqlite") and w ==0:
                     os.remove(dbname+".sqlite")
