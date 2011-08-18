@@ -495,6 +495,7 @@ class Metropolis(_Sampler):
         self.meld.DIC = self.DIC
         print "Total steps(i): ",i,"rej:",rej, "j:",j
         print ">>> Acceptance rate: %s"%ar
+        print "MLE of parameters: %s"%ptheta[self.best_prop_index]
         self.shut_down('Finished normally')
         return 1
 

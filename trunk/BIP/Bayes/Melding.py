@@ -18,6 +18,7 @@ import sys
 import xmlrpclib
 from multiprocessing import Pool
 from time import time
+from sqlite3 import InterfaceError
 
 import numpy
 import pylab as P
@@ -40,6 +41,10 @@ import pdb
 #    psyco.full()
 #except:
 #    pass
+
+sqlite3.register_adapter(numpy.int32, int)
+sqlite3.register_adapter(numpy.int64, int)
+
 try:
     from BIP.Viz.realtime import RTplot
     from liveplots.xmlrpcserver import rpc_plot
@@ -339,17 +344,6 @@ class FitModel(object):
             '''
             var is a dictionary.
             '''
-#            if isinstance(var, numpy.recarray):
-#                for repl in var:
-#                    if isinstance(repl, numpy.recarray): # this is the case of variables, where each replicate is a time series
-#                        for t in repl:
-#                            if not isinstance(t, numpy.core.records.record):
-#                                t=(t,)
-#                            yield tuple(t) #variable tuple at time t in replicate repl
-#                    else: #this is the case of parameters
-#                        yield tuple(repl)
-#            elif isinstance(var, dict):
-#                try:
             for r in zip(*var.values()):
                 if not isinstance(r, tuple):
                     r = (r,)
@@ -359,10 +353,10 @@ class FitModel(object):
                         t+=i.tolist()
                     else:
                         t += [i]
-                    r = tuple(t)
-                yield r
-#                except:
-#                    print var.keys(),  var.values()
+                    l = tuple(t)
+
+                yield l
+
                     
         create = True
         if not dbname.endswith('.sqlite'):
@@ -380,6 +374,7 @@ class FitModel(object):
                     else:
                         labs.append(k2)
                 nv = len(labs)#+1 #variables plus primary key
+                #labs_typed = [i+' text' for i in labs] #labels with type for table creation
                 tstrc = k+'(pk integer primary key asc autoincrement,'+','.join(labs)+')'
                 tstr = k+'('+','.join(labs)+')'
                 if create:
@@ -391,8 +386,16 @@ class FitModel(object):
 #                    con.execute("create table "+ tstrc)
             else:
                 raise TypeError("Non-valid data structure.")
-            #print "insert into "+tstr+" values("+",".join(['?']*nv)+")"
-            con.executemany("insert into "+tstr+" values("+",".join(['?']*nv)+")", row_generator(v))
+#            print "insert into "+tstr+" values("+",".join(['?']*nv)+")"
+#            print "===", k, "===", tstr,  nv
+            try: 
+#                for r in row_generator(v):
+#                    print r,  [type(i) for i in r]
+#                    con.execute("insert into "+tstr+" values("+",".join(['?']*nv)+")", r)
+                con.executemany("insert into "+tstr+" values("+",".join(['?']*nv)+")", row_generator(v))
+            except InterfaceError as err:
+                print err
+                raise InterfaceError
         con.commit()
         con.close()
     def run(self, data,method,likvar,pool=False,adjinits=True,ew=0, dbname='results', monitor=False, initheta=[]):
