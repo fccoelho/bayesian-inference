@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>BIP</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;BIP
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="BIP-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PACKAGE DESCRIPTION ==================== -->
+<h1 class="epydoc">Package BIP</h1><p class="nomargin-top"><span class="codelink"><a href="BIP-pysrc.html">source&nbsp;code</a></span></p>
+<p>Bayesian Inference Package containing usefull classes and functions
+for doing inference in various applications.</p>
+<p>This is not a &quot;Bayesian Statistics&quot; package, i.e., it was not conceived
+to provide data analysis methods such as the one you can find
+on a statistical package such as R (for example).</p>
+<p>Here, you will find some the basic building blocks those
+sophisticated Bayesian regression methods are built from, such as
+likelihood functions, MCMC samplers, SMC samplers, etc..</p>
+<p>This package exists because such basic tools are not readily accessible
+in Task-oriented statistical software. From these tools, as this package matures,
+you will be able to easily build a solution for your own inferential inquiries,
+a solution which may not be available on standard statistical packages.</p>
+
+<!-- ==================== SUBMODULES ==================== -->
+<a name="section-Submodules"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Submodules</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Submodules"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr><td class="summary">
+  <ul class="nomargin">
+    <li> <strong class="uidlink"><a href="BIP.Bayes-module.html">BIP.Bayes</a></strong>: <em class="summary">Basic Likelihood tools such as functions for computing likelihoods,
+        Latin Hypercube sampling (efficient random sampling) and other 
+        tools which don't belong on other packages, or apply to multiple 
+        packages.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.Melding-module.html">BIP.Bayes.Melding</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.PlotMeld-module.html">BIP.Bayes.PlotMeld</a></strong>: <em class="summary">Module with specialized plotting functions for the Melding results</em>    </li>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.Samplers-module.html">BIP.Bayes.Samplers</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.Samplers.MCMC-module.html">BIP.Bayes.Samplers.MCMC</a></strong>: <em class="summary">Module implementing MCMC samplers</em>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.general-module.html">BIP.Bayes.general</a></strong>: <em class="summary">This package contain classes the deal with Bayesian inference based
+        on numerical representation of a variable distribution.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.general.bvariables-module.html">BIP.Bayes.general.bvariables</a></strong>: <em class="summary">This module implements classes to represent an arbitrary Bayesian random variable.</em>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.lhs-module.html">BIP.Bayes.lhs</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="BIP.Bayes.like-module.html">BIP.Bayes.like</a></strong>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="BIP.SDE-module.html">BIP.SDE</a></strong>: <em class="summary">Package with tools for the simulation of Stochastic differential 
+        equations.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="BIP.SDE.example-module.html">BIP.SDE.example</a></strong>    </li>
+    <li> <strong class="uidlink"><a href="BIP.SDE.gillespie-module.html">BIP.SDE.gillespie</a></strong>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="BIP.SMC-module.html">BIP.SMC</a></strong>: <em class="summary">Package with Sequential Monte Carlo routines.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="BIP.SMC.condensation-module.html">BIP.SMC.condensation</a></strong>    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="BIP.Viz-module.html">BIP.Viz</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="BIP.Viz.ascii-module.html">BIP.Viz.ascii</a></strong>: <em class="summary">This module contains code to generate ascii representations
+of statistical objects</em>    </li>
+    <li> <strong class="uidlink"><a href="BIP.Viz.asciihist-module.html">BIP.Viz.asciihist</a></strong>: <em class="summary">This module contains code to generate ascii representations
+of statistical objects</em>    </li>
+    <li> <strong class="uidlink"><a href="BIP.Viz.realtime-module.html">BIP.Viz.realtime</a></strong>    </li>
+    </ul>
+    </li>
+  </ul></td></tr>
+</table>
+
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan  7 10:45:33 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

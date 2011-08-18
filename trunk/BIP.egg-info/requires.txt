@@ -1,0 +1,5 @@
+numpy >= 1.2
+scipy >= 0.7
+openopt
+liveplots
+cython

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Session SYSTEM "Session-4.4.dtd">
+<!-- eric4 session file for project Bayesian-Inference -->
+<!-- This file was generated automatically, do not edit. -->
+<Session version="4.4">
+  <Filenames>
+  </Filenames>
+  <Breakpoints>
+  </Breakpoints>
+  <Watchexpressions>
+  </Watchexpressions>
+  <DebugInfo>
+    <CommandLine></CommandLine>
+    <WorkingDirectory></WorkingDirectory>
+    <Environment></Environment>
+    <ReportExceptions value="True" />
+    <Exceptions>
+    </Exceptions>
+    <IgnoredExceptions>
+    </IgnoredExceptions>
+    <AutoClearShell value="True" />
+    <TracePython value="False" />
+    <AutoContinue value="True" />
+    <CovexcPattern></CovexcPattern>
+  </DebugInfo>
+  <Bookmarks>
+  </Bookmarks>
+</Session>

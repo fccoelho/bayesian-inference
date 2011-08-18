@@ -1,0 +1,9 @@
+env = Environment()
+env.Decider('MD5')
+
+cybld = Builder(action='cython -a -o $TARGET $SOURCE')
+env.Append(BUILDERS={'Cython':cybld}) 
+env.Append(CCFLAGS='-pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -Wall -Wstrict-prototypes -O3 -fPIC -I/usr/include/python2.6/')
+
+env.Cython('cgillespie.c','cgillespie.pyx')
+env.SharedLibrary('cgillespie',['cgillespie.c'], LIBPREFIX='')
