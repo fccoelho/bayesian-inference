@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
-from ez_setup import use_setuptools
-use_setuptools()
+#from ez_setup import use_setuptools
+#use_setuptools()
 #from distutils.core import setup
 #from distutils.extension import Extension
 from setuptools import setup, find_packages
@@ -13,7 +13,7 @@ from setuptools import setup, find_packages
 #    sys.exit(1)
 
 setup(name='BIP', 
-        version  = 0.5.7,
+        version  = "0.5.9",
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',

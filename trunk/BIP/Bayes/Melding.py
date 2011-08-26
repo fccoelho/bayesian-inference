@@ -254,7 +254,7 @@ class FitModel(object):
     
     def prior_sample(self):
         """
-        Generates a set of sample from the starting theta prior distributions
+        Generates a set of samples from the starting theta prior distributions
         for reporting purposes.
         
         :Returns:
