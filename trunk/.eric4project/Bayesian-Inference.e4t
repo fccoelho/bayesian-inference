@@ -22,6 +22,24 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: add support to correlation restricted multivariate samples</Summary>
+    <Description></Description>
+    <Created>2010-04-17, 18:34:03</Created>
+    <Resource>
+      <Filename>BIP/Bayes/lhs.py</Filename>
+      <Linenumber>29</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
+    <Summary>TODO: Extend lhsFromSample to allow multivariate correlated sampling</Summary>
+    <Description></Description>
+    <Created>2010-04-17, 18:34:03</Created>
+    <Resource>
+      <Filename>BIP/Bayes/lhs.py</Filename>
+      <Linenumber>165</Linenumber>
+    </Resource>
+  </Task>
+  <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: implement your test here</Summary>
     <Description></Description>
     <Created>2010-04-27, 09:34:46</Created>
@@ -508,54 +526,36 @@
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: add support to correlation restricted multivariate samples</Summary>
-    <Description></Description>
-    <Created>2011-01-26, 13:53:24</Created>
-    <Resource>
-      <Filename>BIP/Bayes/lhs.py</Filename>
-      <Linenumber>30</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
-    <Summary>TODO: Extend lhsFromSample to allow multivariate correlated sampling</Summary>
-    <Description></Description>
-    <Created>2011-01-26, 13:53:24</Created>
-    <Resource>
-      <Filename>BIP/Bayes/lhs.py</Filename>
-      <Linenumber>176</Linenumber>
-    </Resource>
-  </Task>
-  <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Implement plot of best fit simulation against data</Summary>
     <Description></Description>
-    <Created>2011-02-18, 09:07:54</Created>
+    <Created>2010-06-16, 11:28:30</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
-      <Linenumber>235</Linenumber>
+      <Linenumber>193</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: remove dependency on the meld object</Summary>
     <Description></Description>
-    <Created>2011-02-18, 09:07:54</Created>
+    <Created>2010-06-16, 11:28:30</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
-      <Linenumber>320</Linenumber>
+      <Linenumber>278</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: finish implementing this</Summary>
     <Description></Description>
-    <Created>2011-02-18, 09:07:54</Created>
+    <Created>2010-06-16, 11:28:30</Created>
     <Resource>
       <Filename>BIP/Bayes/Samplers/MCMC.py</Filename>
-      <Linenumber>715</Linenumber>
+      <Linenumber>660</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: allow passing of fitfun</Summary>
     <Description></Description>
-    <Created>2011-02-23, 12:40:45</Created>
+    <Created>2010-07-20, 17:02:55</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
       <Linenumber>308</Linenumber>
@@ -564,37 +564,37 @@
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out what to do by default with inits</Summary>
     <Description></Description>
-    <Created>2011-02-23, 12:40:45</Created>
+    <Created>2010-07-20, 17:02:55</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
-      <Linenumber>315</Linenumber>
+      <Linenumber>312</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: figure out how to balance the total pop</Summary>
     <Description></Description>
-    <Created>2011-02-23, 12:40:45</Created>
+    <Created>2010-07-20, 17:02:55</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
-      <Linenumber>445</Linenumber>
+      <Linenumber>439</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: Write tests for this</Summary>
     <Description></Description>
-    <Created>2011-02-23, 12:40:45</Created>
+    <Created>2010-07-20, 17:02:55</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
-      <Linenumber>486</Linenumber>
+      <Linenumber>479</Linenumber>
     </Resource>
   </Task>
   <Task priority="1" completed="False" bugfix="False">
     <Summary>TODO: implement calculation of AIC,BIC and DIC for SIR</Summary>
     <Description></Description>
-    <Created>2011-02-23, 12:40:45</Created>
+    <Created>2010-07-20, 17:02:55</Created>
     <Resource>
       <Filename>BIP/Bayes/Melding.py</Filename>
-      <Linenumber>912</Linenumber>
+      <Linenumber>849</Linenumber>
     </Resource>
   </Task>
 </Tasks>

@@ -24,7 +24,7 @@ def model(theta):
         return  [-beta*I*S, #dS/dt
                 beta*I*S - tau*I, #dI/dt
                 tau*I] #dR/dt
-    y = odeint(sir,inits,np.arange(0,tf,1))#np.arange(t0,tf,step))
+    y = odeint(sir,inits,np.arange(0,tf,1))
     return y
     
 F = FitModel(300, model,y0,tf,['beta'],['S','I','R'],
