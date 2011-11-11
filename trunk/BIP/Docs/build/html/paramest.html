@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.5.4 documentation</title>
+    <title>Parameter Estimation in Dynamic Models &mdash; BIP - Bayesian Inference with Python v0.5.8 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.5.4',
+        VERSION:     '0.5.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="BIP - Bayesian Inference with Python v0.5.4 documentation" href="index.html" />
+    <link rel="top" title="BIP - Bayesian Inference with Python v0.5.8 documentation" href="index.html" />
     <link rel="next" title="Stochastic Differential Equations" href="sde.html" />
     <link rel="prev" title="Overview" href="overview.html" /> 
   </head>
@@ -96,7 +96,7 @@
   <div class="section" id="parameter-estimation-in-dynamic-models">
 <h1>Parameter Estimation in Dynamic Models<a class="headerlink" href="#parameter-estimation-in-dynamic-models" title="Permalink to this headline">¶</a></h1>
 <p>A growing theme in mathematical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model&#8217;s parameters and variables into the model, in order to explore the full uncertainty associated with a model.</p>
-<p>This framework is inspired on the original Bayesian Melding paper by Poole and Raftery <a class="footnote-reference" href="#id2" id="id1">[1]</a>, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC.</p>
+<p>This framework is inspired on the original Bayesian Melding paper by Poole and Raftery <a class="footnote-reference" href="#id5" id="id1">[2]</a>, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC. A deeper description of the methodology implemented in this package is available as published research paper <a class="footnote-reference" href="#id4" id="id2">[1]</a>. This paper also contains a more extensive example of parameter estimation. If you intend to use this package for a scientific publication, you should cite this paper <a class="footnote-reference" href="#id4" id="id3">[1]</a>.</p>
 <p>Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.</p>
 <div class="section" id="single-session-retrospective-estimation">
 <h2>Single Session Retrospective estimation<a class="headerlink" href="#single-session-retrospective-estimation" title="Permalink to this headline">¶</a></h2>
@@ -161,14 +161,15 @@
 <p>here we set the prior distributions for the theta (the model&#8217;s parameters) and phi (the model&#8217;s variables). <tt class="docutils literal"><span class="pre">tdists</span></tt>, <tt class="docutils literal"><span class="pre">tpars</span></tt> and <tt class="docutils literal"><span class="pre">tlims</span></tt> are theta&#8217;s distributions, parameters, and ranges. For example here we use a Normal distribution (<tt class="docutils literal"><span class="pre">st.norm</span></tt>) for <tt class="docutils literal"><span class="pre">beta</span></tt>, with mean and standard deviation equal to 1.1 and .2, respectively. we also set the range of <tt class="docutils literal"><span class="pre">beta</span></tt> to be from 0.5 to 1.5. We do the same for phi.</p>
 <p>The remaining lines just generate some simulated data to fit the model with, run the inference and plot the results which should include plots like this:</p>
 <div class="figure">
-<img alt="_images/fit_series.png" src="_images/fit_series.png" style="width: 15cm;" />
+<img alt="_images/fit_series3.png" src="_images/fit_series3.png" style="width: 15cm;" />
 <p class="caption">Series posterior distributions. Colored areas represent 95% credible intervals.</p>
 </div>
 <div class="figure">
-<img alt="_images/fit_par.png" src="_images/fit_par.png" style="width: 15cm;" />
+<img alt="_images/fit_par3.png" src="_images/fit_par3.png" style="width: 15cm;" />
+<p class="caption">Parameters prior and posterior distributions.</p>
 </div>
 <p>One important argument in the run call, is the likvar, Which is the initial value for the likelihood variance. Try to increase its value if the acceptance ratio of the markov chain is too llow. Ideal levels for the acceptance ratio should be between 0.3 and 0.5.</p>
-<p>The code for the above example can be found in the examples directory of the BIP distribution as <a class="reference download internal" href="_downloads/deterministic.py"><tt class="xref download docutils literal"><span class="pre">deterministic.py</span></tt></a></p>
+<p>The code for the above example can be found in the examples directory of the BIP distribution as <a class="reference download internal" href="_downloads/deterministic3.py"><tt class="xref download docutils literal"><span class="pre">deterministic.py</span></tt></a></p>
 </div>
 <div class="section" id="stochastic-model-example">
 <h3>Stochastic Model Example<a class="headerlink" href="#stochastic-model-example" title="Permalink to this headline">¶</a></h3>
@@ -249,7 +250,7 @@
 <span class="n">F</span><span class="o">.</span><span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>This example can be found in the examples folder of BIP under the name of <a class="reference download internal" href="_downloads/flu_stochastic.py"><tt class="xref download docutils literal"><span class="pre">flu_stochastic.py</span></tt></a>.</p>
+<p>This example can be found in the examples folder of BIP under the name of <a class="reference download internal" href="_downloads/flu_stochastic3.py"><tt class="xref download docutils literal"><span class="pre">flu_stochastic.py</span></tt></a>.</p>
 </div>
 </div>
 <div class="section" id="iterative-estimation-and-forecast">
@@ -257,16 +258,22 @@
 <p>In some other types of application, one&#8217;s data accrue gradually and it may be interesting to use newly available data to improve previously obtained parameter estimations.</p>
 <p>Here we envision two types of scenarios: one assuming constant parameters and another where parameter values can actually vary with time. These two scenarios lead to the two fitting strategies depicted on figure</p>
 <div class="figure">
-<img alt="_images/Inference_scenarios2.png" src="_images/Inference_scenarios2.png" style="width: 15cm;" />
+<img alt="_images/Inference_scenarios23.png" src="_images/Inference_scenarios23.png" style="width: 15cm;" />
 <p class="caption">Fitting scenarios: Moving windows and expanding windows.</p>
 </div>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
+<table class="docutils footnote" frame="void" id="id4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Poole, D., &amp; Raftery, A. E. (2000). Inference for Deterministic Simulation Models: The Bayesian Melding Approach. Journal of the American Statistical Association, 95(452), 1244-1255. doi:10.2307/2669764</td></tr>
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> Coelho FC, Codeço CT, Gomes MGM (2011) A Bayesian Framework for Parameter Estimation in Dynamical Models. PLoS ONE 6(5): e19616. doi:10.1371/journal.pone.0019616</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[2]</a></td><td>Poole, D., &amp; Raftery, A. E. (2000). Inference for Deterministic Simulation Models: The Bayesian Melding Approach. Journal of the American Statistical Association, 95(452), 1244-1255. doi:10.2307/2669764</td></tr>
 </tbody>
 </table>
 </div>
@@ -295,7 +302,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010, Flávio Codeço Coelho.
-      Last updated on Jan 26, 2011.
+      Last updated on Nov 11, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

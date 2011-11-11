@@ -1,6 +1,5 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2010.11.19)  26 JAN 2011 15:30
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.10.25)  11 NOV 2011 15:43
 entering extended mode
- restricted \write18 enabled.
  %&-line parsing enabled.
 **BIP-BayesianInferencewithPython.tex
 (./BIP-BayesianInferencewithPython.tex
@@ -769,34 +768,34 @@ Writing index file BIP-BayesianInferencewithPython.idx
 (./BIP-BayesianInferencewithPython.aux)
 \openout1 = `BIP-BayesianInferencewithPython.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 105.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 105.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 109.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 109.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 109.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 109.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 109.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 109.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 109.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 109.
 
 
 (/usr/share/texmf-texlive/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 105.
-LaTeX Font Info:    ... okay on input line 105.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 105.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 109.
+LaTeX Font Info:    ... okay on input line 109.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 109.
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
-(/usr/share/texmf/tex/context/base/supp-pdf.mkii
+(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count121
 \scratchdimen=\dimen139
@@ -809,7 +808,7 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 \MPnumerator=\count125
 \everyMPtoPDFconversion=\toks32
 )
-Package hyperref Info: Link coloring ON on input line 105.
+Package hyperref Info: Link coloring ON on input line 109.
  (/usr/share/texmf-texlive/tex/latex/hyperref/nameref.sty
 Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
 
@@ -818,8 +817,8 @@ Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
 )
 \c@section@level=\count126
 )
-LaTeX Info: Redefining \ref on input line 105.
-LaTeX Info: Redefining \pageref on input line 105.
+LaTeX Info: Redefining \ref on input line 109.
+LaTeX Info: Redefining \pageref on input line 109.
 
 (./BIP-BayesianInferencewithPython.out) (./BIP-BayesianInferencewithPython.out)
 \@outlinefile=\write6
@@ -827,7 +826,7 @@ LaTeX Info: Redefining \pageref on input line 105.
 
 \AtBeginShipoutBox=\box41
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--108
+Underfull \hbox (badness 10000) in paragraph at lines 112--112
 
  []
 
@@ -837,20 +836,20 @@ File: BIP_large.png Graphic file (type png)
 File: BIP_large.png Graphic file (type png)
 
 <use BIP_large.png>
-LaTeX Font Info:    Try loading font information for T1+phv on input line 108.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 112.
  (/usr/share/texmf-texlive/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 108.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 112.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <17.28> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 108.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 112.
 LaTeX Font Info:    Font shape `T1/phv/bx/it' in size <17.28> not available
-(Font)              Font shape `T1/phv/b/it' tried instead on input line 108.
+(Font)              Font shape `T1/phv/b/it' tried instead on input line 112.
 LaTeX Font Info:    Font shape `T1/phv/b/it' in size <17.28> not available
-(Font)              Font shape `T1/phv/b/sl' tried instead on input line 108.
+(Font)              Font shape `T1/phv/b/sl' tried instead on input line 112.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 108.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 112.
 
 [1
 
@@ -867,19 +866,19 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
 
 Adding blank page after the table of contents.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 108.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 112.
 pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.108 \tableofcontents
+l.112 \tableofcontents
                        [1
 
 ]pdfTeX warning (ext4): destination with the same identifier (name{page.ii}) ha
 s been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.108 \tableofcontents
+l.112 \tableofcontents
                        [2] [1
 
 ] [2
@@ -887,30 +886,39 @@ l.108 \tableofcontents
 ]
 Chapter 1.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 115.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 119.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <12> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 138.
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 147.
-(/usr/share/texmf-texlive/tex/latex/psnfss/t1pcr.fd
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 144.
+[3]
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 153.
+ (/usr/share/texmf-texlive/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 148.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 154.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 157.
- [3] [4]
-<fit_series.png, id=76, 1149.093pt x 640.3122pt>
-File: fit_series.png Graphic file (type png)
- <use fit_series.png>
-<fit_par.png, id=77, 1149.093pt x 640.3122pt>
-File: fit_par.png Graphic file (type png)
- <use fit_par.png> [5 <./fit_series.png> <./fit_par.png>] [6]
-<Inference_scenarios2.png, id=92, 453.3738pt x 398.2077pt>
-File: Inference_scenarios2.png Graphic file (type png)
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 163.
+ [4]
+<fit_series3.png, id=78, 1149.093pt x 640.3122pt>
+File: fit_series3.png Graphic file (type png)
+ <use fit_series3.png>
+<fit_par3.png, id=79, 1149.093pt x 640.3122pt>
+File: fit_par3.png Graphic file (type png)
+ <use fit_par3.png> [5 <./fit_series3.png>]
+Underfull \vbox (badness 10000) detected at line 315
+ []
 
-<use Inference_scenarios2.png> [7] [8 <./Inference_scenarios2.png>]
+
+Underfull \vbox (badness 10000) detected at line 315
+ []
+
+[6 <./fit_par3.png>]
+<Inference_scenarios23.png, id=95, 453.3738pt x 398.2077pt>
+File: Inference_scenarios23.png Graphic file (type png)
+
+<use Inference_scenarios23.png> [7] [8 <./Inference_scenarios23.png>]
 Chapter 2.
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 338.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 345.
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -920,13 +928,13 @@ File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 ]
 (./BIP-BayesianInferencewithPython.aux) ) 
 Here is how much of TeX's memory you used:
- 7972 strings out of 495061
- 107978 string characters out of 1182620
- 194337 words of memory out of 3000000
- 10915 multiletter control sequences out of 15000+50000
+ 7978 strings out of 495061
+ 108062 string characters out of 1182620
+ 196357 words of memory out of 3000000
+ 10919 multiletter control sequences out of 15000+50000
  66853 words of font info for 79 fonts, out of 3000000 for 9000
  29 hyphenation exceptions out of 8191
- 45i,12n,45p,805b,381s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 45i,11n,45p,805b,383s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/share/texmf-texlive/fonts/enc/dv
 ips/base/8r.enc}</usr/share/texmf-texlive/fonts/type1/urw/courier/ucrb8a.pfb></
 usr/share/texmf-texlive/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-te
@@ -935,10 +943,10 @@ xlive/fonts/type1/urw/courier/ucrro8a.pfb></usr/share/texmf-texlive/fonts/type1
 bo8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share
 /texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts
 /type1/urw/times/utmri8a.pfb>
-Output written on BIP-BayesianInferencewithPython.pdf (13 pages, 930487 bytes).
+Output written on BIP-BayesianInferencewithPython.pdf (13 pages, 933488 bytes).
 
 PDF statistics:
- 145 PDF objects out of 1000 (max. 8388607)
- 27 named destinations out of 1000 (max. 500000)
+ 148 PDF objects out of 1000 (max. 8388607)
+ 29 named destinations out of 1000 (max. 500000)
  61 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -12,8 +12,8 @@
 
 
 \title{BIP - Bayesian Inference with Python Documentation}
-\date{2011-01-26}
-\release{0.5.4}
+\date{2011-11-11}
+\release{0.5.8}
 \author{Flávio Codeço Coelho}
 \newcommand{\sphinxlogo}{\includegraphics{BIP_large.png}\par}
 \renewcommand{\releasename}{Release}
@@ -96,6 +96,10 @@
 \def\PYGZob{\char`\{}
 \def\PYGZcb{\char`\}}
 \def\PYGZca{\char`\^}
+\def\PYGZsh{\char`\#}
+\def\PYGZpc{\char`\%}
+\def\PYGZdl{\char`\$}
+\def\PYGZti{\char`\~}
 % for compatibility with earlier versions
 \def\PYGZat{@}
 \def\PYGZlb{[}
@@ -109,7 +113,7 @@
 \phantomsection\label{index::doc}
 
 
-This documentation corresponds to version 0.5.4.
+This documentation corresponds to version 0.5.8.
 
 
 \chapter{Contents}
@@ -130,7 +134,9 @@ A growing theme in mathematical modeling is uncertainty analysis. The Melding Mo
 
 This framework is inspired on the original Bayesian Melding paper by Poole and Raftery \footnote{
 Poole, D., \& Raftery, A. E. (2000). Inference for Deterministic Simulation Models: The Bayesian Melding Approach. Journal of the American Statistical Association, 95(452), 1244-1255. doi:10.2307/2669764
-}, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC.
+}, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC. A deeper description of the methodology implemented in this package is available as published research paper \footnote{
+Coelho FC, Codeço CT, Gomes MGM (2011) A Bayesian Framework for Parameter Estimation in Dynamical Models. PLoS ONE 6(5): e19616. doi:10.1371/journal.pone.0019616
+}. This paper also contains a more extensive example of parameter estimation. If you intend to use this package for a scientific publication, you should cite this paper \footnotemark[1].
 
 Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.
 
@@ -145,22 +151,22 @@ Frequently, we have a complete time series corresponding to one or more state va
 This first example includes a simple ODE (an SIR epidemic model) model which is fitted against simulated data to which noise is added:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{c}{\#-*- coding: utf-8 -*-}
+\PYG{c}{\PYGZsh{}-*- coding: utf-8 -*-}
 \PYG{l+s+sd}{"""}
 \PYG{l+s+sd}{Parameter estimation and series forcasting based on simulated data with moving window.}
 \PYG{l+s+sd}{Deterministic model}
 \PYG{l+s+sd}{"""}
-\PYG{c}{\#}
-\PYG{c}{\# Copyright 2009- by Flávio Codeço Coelho}
-\PYG{c}{\# License gpl v3}
-\PYG{c}{\#}
+\PYG{c}{\PYGZsh{}}
+\PYG{c}{\PYGZsh{} Copyright 2009- by Flávio Codeço Coelho}
+\PYG{c}{\PYGZsh{} License gpl v3}
+\PYG{c}{\PYGZsh{}}
 \PYG{k+kn}{from} \PYG{n+nn}{BIP.Bayes.Melding} \PYG{k+kn}{import} \PYG{n}{FitModel}
 \PYG{k+kn}{from} \PYG{n+nn}{scipy.integrate} \PYG{k+kn}{import} \PYG{n}{odeint}
 \PYG{k+kn}{import} \PYG{n+nn}{scipy.stats} \PYG{k+kn}{as} \PYG{n+nn}{st}
 \PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
 
-\PYG{n}{beta} \PYG{o}{=} \PYG{l+m+mi}{1} \PYG{c}{\#Transmission coefficient}
-\PYG{n}{tau} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{2} \PYG{c}{\#infectious period. FIXED}
+\PYG{n}{beta} \PYG{o}{=} \PYG{l+m+mi}{1} \PYG{c}{\PYGZsh{}Transmission coefficient}
+\PYG{n}{tau} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{2} \PYG{c}{\PYGZsh{}infectious period. FIXED}
 \PYG{n}{tf} \PYG{o}{=} \PYG{l+m+mi}{36}
 \PYG{n}{y0} \PYG{o}{=} \PYG{p}{[}\PYG{o}{.}\PYG{l+m+mi}{999}\PYG{p}{,}\PYG{l+m+mf}{0.001}\PYG{p}{,}\PYG{l+m+mf}{0.0}\PYG{p}{]}
 \PYG{k}{def} \PYG{n+nf}{model}\PYG{p}{(}\PYG{n}{theta}\PYG{p}{)}\PYG{p}{:}
@@ -168,21 +174,21 @@ This first example includes a simple ODE (an SIR epidemic model) model which is 
     \PYG{k}{def} \PYG{n+nf}{sir}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{n}{t}\PYG{p}{)}\PYG{p}{:}
         \PYG{l+s+sd}{'''ODE model'''}
         \PYG{n}{S}\PYG{p}{,}\PYG{n}{I}\PYG{p}{,}\PYG{n}{R} \PYG{o}{=} \PYG{n}{y}
-        \PYG{k}{return}  \PYG{p}{[}\PYG{o}{-}\PYG{n}{beta}\PYG{o}{*}\PYG{n}{I}\PYG{o}{*}\PYG{n}{S}\PYG{p}{,} \PYG{c}{\#dS/dt}
-                \PYG{n}{beta}\PYG{o}{*}\PYG{n}{I}\PYG{o}{*}\PYG{n}{S} \PYG{o}{-} \PYG{n}{tau}\PYG{o}{*}\PYG{n}{I}\PYG{p}{,} \PYG{c}{\#dI/dt}
-                \PYG{n}{tau}\PYG{o}{*}\PYG{n}{I}\PYG{p}{]} \PYG{c}{\#dR/dt}
-    \PYG{n}{y} \PYG{o}{=} \PYG{n}{odeint}\PYG{p}{(}\PYG{n}{sir}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{,}\PYG{n}{np}\PYG{o}{.}\PYG{n}{arange}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{tf}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{c}{\#np.arange(t0,tf,step))}
+        \PYG{k}{return}  \PYG{p}{[}\PYG{o}{-}\PYG{n}{beta}\PYG{o}{*}\PYG{n}{I}\PYG{o}{*}\PYG{n}{S}\PYG{p}{,} \PYG{c}{\PYGZsh{}dS/dt}
+                \PYG{n}{beta}\PYG{o}{*}\PYG{n}{I}\PYG{o}{*}\PYG{n}{S} \PYG{o}{-} \PYG{n}{tau}\PYG{o}{*}\PYG{n}{I}\PYG{p}{,} \PYG{c}{\PYGZsh{}dI/dt}
+                \PYG{n}{tau}\PYG{o}{*}\PYG{n}{I}\PYG{p}{]} \PYG{c}{\PYGZsh{}dR/dt}
+    \PYG{n}{y} \PYG{o}{=} \PYG{n}{odeint}\PYG{p}{(}\PYG{n}{sir}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{,}\PYG{n}{np}\PYG{o}{.}\PYG{n}{arange}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{tf}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}\PYG{c}{\PYGZsh{}np.arange(t0,tf,step))}
     \PYG{k}{return} \PYG{n}{y}
     
 \PYG{n}{F} \PYG{o}{=} \PYG{n}{FitModel}\PYG{p}{(}\PYG{l+m+mi}{300}\PYG{p}{,} \PYG{n}{model}\PYG{p}{,}\PYG{n}{y0}\PYG{p}{,}\PYG{n}{tf}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{beta}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}\PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{S}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{R}\PYG{l+s}{'}\PYG{p}{]}\PYG{p}{,}
             \PYG{n}{wl}\PYG{o}{=}\PYG{l+m+mi}{36}\PYG{p}{,}\PYG{n}{nw}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{verbose}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{burnin}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
 \PYG{n}{F}\PYG{o}{.}\PYG{n}{set\PYGZus{}priors}\PYG{p}{(}\PYG{n}{tdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{]}\PYG{p}{,}\PYG{n}{tpars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{1.1}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}\PYG{n}{tlims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{,}\PYG{l+m+mf}{1.5}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}
     \PYG{n}{pdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{n}{ppars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,}\PYG{p}{(}\PYG{o}{.}\PYG{l+m+mi}{8}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{]}\PYG{p}{,}\PYG{n}{plims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{3}\PYG{p}{)}
-\PYG{n}{d} \PYG{o}{=} \PYG{n}{model}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{)} \PYG{c}{\#simulate some data}
+\PYG{n}{d} \PYG{o}{=} \PYG{n}{model}\PYG{p}{(}\PYG{p}{[}\PYG{l+m+mf}{1.0}\PYG{p}{]}\PYG{p}{)} \PYG{c}{\PYGZsh{}simulate some data}
 \PYG{n}{noise} \PYG{o}{=} \PYG{n}{st}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mf}{0.01}\PYG{p}{)}\PYG{o}{.}\PYG{n}{rvs}\PYG{p}{(}\PYG{l+m+mi}{36}\PYG{p}{)}
-\PYG{n}{dt} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{+}\PYG{n}{noise}\PYG{p}{\PYGZcb{}} \PYG{c}{\# add noise}
+\PYG{n}{dt} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{:}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{+}\PYG{n}{noise}\PYG{p}{\PYGZcb{}} \PYG{c}{\PYGZsh{} add noise}
 \PYG{n}{F}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{dt}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{MCMC}\PYG{l+s}{'}\PYG{p}{,}\PYG{n}{likvar}\PYG{o}{=}\PYG{l+m+mf}{1e-5}\PYG{p}{,}\PYG{n}{pool}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{,}\PYG{n}{monitor}\PYG{o}{=}\PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
-\PYG{c}{\#==Uncomment the line below to see plots of the results}
+\PYG{c}{\PYGZsh{}==Uncomment the line below to see plots of the results}
 \PYG{n}{F}\PYG{o}{.}\PYG{n}{plot\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
@@ -213,13 +219,14 @@ The remaining lines just generate some simulated data to fit the model with, run
 \centering
 \capstart
 
-\includegraphics[width=15cm]{fit_series.png}
+\includegraphics[width=15cm]{fit_series3.png}
 \caption{Series posterior distributions. Colored areas represent 95\% credible intervals.}\end{figure}
 \begin{figure}[htbp]
 \centering
+\capstart
 
-\includegraphics[width=15cm]{fit_par.png}
-\end{figure}
+\includegraphics[width=15cm]{fit_par3.png}
+\caption{Parameters prior and posterior distributions.}\end{figure}
 
 One important argument in the run call, is the likvar, Which is the initial value for the likelihood variance. Try to increase its value if the acceptance ratio of the markov chain is too llow. Ideal levels for the acceptance ratio should be between 0.3 and 0.5.
 
@@ -231,52 +238,52 @@ The code for the above example can be found in the examples directory of the BIP
 This example fits a stochastic model to simulated data. It uses the {\hyperref[sde:sde]{\emph{SDE}}} package of BIP:
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PYG{c}{\#-*- coding:utf-8 -*-}
+\PYG{c}{\PYGZsh{}-*- coding:utf-8 -*-}
 \PYG{l+s+sd}{"""}
 \PYG{l+s+sd}{Parameter estimation and series forcasting based on simulated data with moving window.}
 \PYG{l+s+sd}{Stochastic model}
 \PYG{l+s+sd}{"""}
-\PYG{c}{\#}
-\PYG{c}{\# Copyright 2009- by Flávio Codeço Coelho}
-\PYG{c}{\# License gpl v3}
-\PYG{c}{\#}
+\PYG{c}{\PYGZsh{}}
+\PYG{c}{\PYGZsh{} Copyright 2009- by Flávio Codeço Coelho}
+\PYG{c}{\PYGZsh{} License gpl v3}
+\PYG{c}{\PYGZsh{}}
 \PYG{k+kn}{from} \PYG{n+nn}{BIP.SDE.gillespie} \PYG{k+kn}{import} \PYG{n}{Model}
 \PYG{k+kn}{from} \PYG{n+nn}{BIP.Bayes.Melding} \PYG{k+kn}{import} \PYG{n}{FitModel}
 \PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
 \PYG{k+kn}{from} \PYG{n+nn}{scipy} \PYG{k+kn}{import} \PYG{n}{stats} \PYG{k}{as} \PYG{n}{st}
 
-\PYG{n}{mu} \PYG{o}{=} \PYG{l+m+mf}{0.0} \PYG{c}{\#birth and death rate.FIXED}
-\PYG{n}{beta} \PYG{o}{=} \PYG{l+m+mf}{0.00058} \PYG{c}{\#Transmission rate}
-\PYG{n}{eta} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{5} \PYG{c}{\#infectivity of asymptomatic infections relative to clinical ones. FIXED}
-\PYG{n}{epsilon} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{1} \PYG{c}{\#latency period }
-\PYG{n}{alpha} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{2} \PYG{c}{\#Probability of developing clinical influenza symptoms}
-\PYG{n}{sigma} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{5} \PYG{c}{\#reduced risk of re-infection after recovery}
-\PYG{n}{tau} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mo}{01} \PYG{c}{\#infectious period. FIXED}
-\PYG{c}{\# Initial conditions}
+\PYG{n}{mu} \PYG{o}{=} \PYG{l+m+mf}{0.0} \PYG{c}{\PYGZsh{}birth and death rate.FIXED}
+\PYG{n}{beta} \PYG{o}{=} \PYG{l+m+mf}{0.00058} \PYG{c}{\PYGZsh{}Transmission rate}
+\PYG{n}{eta} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{5} \PYG{c}{\PYGZsh{}infectivity of asymptomatic infections relative to clinical ones. FIXED}
+\PYG{n}{epsilon} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{1} \PYG{c}{\PYGZsh{}latency period }
+\PYG{n}{alpha} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{2} \PYG{c}{\PYGZsh{}Probability of developing clinical influenza symptoms}
+\PYG{n}{sigma} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mi}{5} \PYG{c}{\PYGZsh{}reduced risk of re-infection after recovery}
+\PYG{n}{tau} \PYG{o}{=} \PYG{o}{.}\PYG{l+m+mo}{01} \PYG{c}{\PYGZsh{}infectious period. FIXED}
+\PYG{c}{\PYGZsh{} Initial conditions}
 \PYG{k}{global} \PYG{n}{inits}\PYG{p}{,}\PYG{n}{tf}
 \PYG{n}{tf}\PYG{o}{=} \PYG{l+m+mi}{140}
 \PYG{n}{inits} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mi}{490}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}
 \PYG{n}{pars} \PYG{o}{=} \PYG{p}{[}\PYG{n}{beta}\PYG{p}{,}\PYG{n}{alpha}\PYG{p}{,}\PYG{n}{sigma}\PYG{p}{]}
 
 
-\PYG{c}{\# propensity functions}
-\PYG{k}{def} \PYG{n+nf}{f1}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{*}\PYG{p}{(}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{o}{+}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{p}{)}\PYG{c}{\#S-\textgreater{}E}
-\PYG{k}{def} \PYG{n+nf}{f2}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{c}{\#E-\textgreater{}I}
-\PYG{k}{def} \PYG{n+nf}{f3}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{c}{\#I-\textgreater{}R}
-\PYG{k}{def} \PYG{n+nf}{f4}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{c}{\#E-\textgreater{}A}
-\PYG{k}{def} \PYG{n+nf}{f5}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{4}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{c}{\#A-\textgreater{}R}
+\PYG{c}{\PYGZsh{} propensity functions}
+\PYG{k}{def} \PYG{n+nf}{f1}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{*}\PYG{p}{(}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{o}{+}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{p}{)}\PYG{c}{\PYGZsh{}S-\textgreater{}E}
+\PYG{k}{def} \PYG{n+nf}{f2}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{c}{\PYGZsh{}E-\textgreater{}I}
+\PYG{k}{def} \PYG{n+nf}{f3}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{c}{\PYGZsh{}I-\textgreater{}R}
+\PYG{k}{def} \PYG{n+nf}{f4}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{c}{\PYGZsh{}E-\textgreater{}A}
+\PYG{k}{def} \PYG{n+nf}{f5}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{p}{)}\PYG{p}{:}\PYG{k}{return} \PYG{n}{r}\PYG{p}{[}\PYG{l+m+mi}{4}\PYG{p}{]}\PYG{o}{*}\PYG{n}{inits}\PYG{p}{[}\PYG{l+m+mi}{3}\PYG{p}{]}\PYG{c}{\PYGZsh{}A-\textgreater{}R}
 
 \PYG{k}{def} \PYG{n+nf}{runModel}\PYG{p}{(}\PYG{n}{theta}\PYG{p}{)}\PYG{p}{:}
     \PYG{k}{global} \PYG{n}{tf}\PYG{p}{,}\PYG{n}{inits}
     \PYG{n}{step} \PYG{o}{=} \PYG{l+m+mi}{1}
-    \PYG{c}{\#setting parameters}
+    \PYG{c}{\PYGZsh{}setting parameters}
     \PYG{n}{beta}\PYG{p}{,}\PYG{n}{alpha}\PYG{p}{,}\PYG{n}{sigma} \PYG{o}{=} \PYG{n}{theta}\PYG{p}{[}\PYG{p}{:}\PYG{l+m+mi}{3}\PYG{p}{]}
     \PYG{n}{vnames} \PYG{o}{=} \PYG{p}{[}\PYG{l+s}{'}\PYG{l+s}{S}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{E}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{I}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{A}\PYG{l+s}{'}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{R}\PYG{l+s}{'}\PYG{p}{]}
-    \PYG{c}{\#rates: b,ki,ka,ri,ra}
-    \PYG{c}{\#r = (0.001, 0.1, 0.1, 0.01, 0.01)}
+    \PYG{c}{\PYGZsh{}rates: b,ki,ka,ri,ra}
+    \PYG{c}{\PYGZsh{}r = (0.001, 0.1, 0.1, 0.01, 0.01)}
     \PYG{n}{r} \PYG{o}{=} \PYG{p}{(}\PYG{n}{beta}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{*}\PYG{n}{epsilon}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{-}\PYG{n}{alpha}\PYG{p}{)}\PYG{o}{*}\PYG{n}{epsilon}\PYG{p}{,} \PYG{n}{tau}\PYG{p}{,} \PYG{n}{tau}\PYG{p}{)}
-    \PYG{c}{\#print r,inits}
-    \PYG{c}{\# propensity functions}
+    \PYG{c}{\PYGZsh{}print r,inits}
+    \PYG{c}{\PYGZsh{} propensity functions}
     \PYG{n}{propf} \PYG{o}{=} \PYG{p}{(}\PYG{n}{f1}\PYG{p}{,}\PYG{n}{f2}\PYG{p}{,}\PYG{n}{f3}\PYG{p}{,}\PYG{n}{f4}\PYG{p}{,}\PYG{n}{f5}\PYG{p}{)}
 
     \PYG{n}{tmat} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{p}{[}\PYG{o}{-}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
@@ -286,11 +293,11 @@ This example fits a stochastic model to simulated data. It uses the {\hyperref[s
                   \PYG{p}{[} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}
                 \PYG{p}{]}\PYG{p}{)}
     \PYG{n}{M}\PYG{o}{=}\PYG{n}{Model}\PYG{p}{(}\PYG{n}{vnames}\PYG{o}{=}\PYG{n}{vnames}\PYG{p}{,}\PYG{n}{rates} \PYG{o}{=} \PYG{n}{r}\PYG{p}{,}\PYG{n}{inits}\PYG{o}{=}\PYG{n}{inits}\PYG{p}{,}\PYG{n}{tmat}\PYG{o}{=}\PYG{n}{tmat}\PYG{p}{,}\PYG{n}{propensity}\PYG{o}{=}\PYG{n}{propf}\PYG{p}{)}
-    \PYG{c}{\#t0 = time.time()}
+    \PYG{c}{\PYGZsh{}t0 = time.time()}
     \PYG{n}{M}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{tmax}\PYG{o}{=}\PYG{n}{tf}\PYG{p}{,}\PYG{n}{reps}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{viz}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{serial}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{)}
     \PYG{n}{t}\PYG{p}{,}\PYG{n}{series}\PYG{p}{,}\PYG{n}{steps}\PYG{p}{,}\PYG{n}{events} \PYG{o}{=} \PYG{n}{M}\PYG{o}{.}\PYG{n}{getStats}\PYG{p}{(}\PYG{p}{)}
     \PYG{n}{ser} \PYG{o}{=} \PYG{n}{st}\PYG{o}{.}\PYG{n}{nanmean}\PYG{p}{(}\PYG{n}{series}\PYG{p}{,}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
-    \PYG{c}{\#print series.shape}
+    \PYG{c}{\PYGZsh{}print series.shape}
     \PYG{k}{return} \PYG{n}{ser}
 
 \PYG{n}{d} \PYG{o}{=} \PYG{n}{runModel}\PYG{p}{(}\PYG{p}{[}\PYG{n}{beta}\PYG{p}{,}\PYG{n}{alpha}\PYG{p}{,}\PYG{n}{sigma}\PYG{p}{]}\PYG{p}{)}
@@ -302,8 +309,8 @@ This example fits a stochastic model to simulated data. It uses the {\hyperref[s
     \PYG{n}{pdists}\PYG{o}{=}\PYG{p}{[}\PYG{n}{st}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{n}{ppars}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{500}\PYG{p}{)}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{n}{plims}\PYG{o}{=}\PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{500}\PYG{p}{)}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{5}\PYG{p}{)}
 
 \PYG{n}{F}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{n}{dt}\PYG{p}{,}\PYG{l+s}{'}\PYG{l+s}{MCMC}\PYG{l+s}{'}\PYG{p}{,}\PYG{n}{likvar}\PYG{o}{=}\PYG{l+m+mf}{1e1}\PYG{p}{,}\PYG{n}{pool}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{monitor}\PYG{o}{=}\PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
-\PYG{c}{\#\textasciitilde{} print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='oo',tol=1e-55, verbose=1, plot=1)}
-\PYG{c}{\#==Uncomment the line below to see plots of the results}
+\PYG{c}{\PYGZsh{}\PYGZti{} print F.optimize(data=dt,p0=[0.1,.5,.1], optimizer='oo',tol=1e-55, verbose=1, plot=1)}
+\PYG{c}{\PYGZsh{}==Uncomment the line below to see plots of the results}
 \PYG{n}{F}\PYG{o}{.}\PYG{n}{plot\PYGZus{}results}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
@@ -319,7 +326,7 @@ Here we envision two types of scenarios: one assuming constant parameters and an
 \centering
 \capstart
 
-\includegraphics[width=15cm]{Inference_scenarios2.png}
+\includegraphics[width=15cm]{Inference_scenarios23.png}
 \caption{Fitting scenarios: Moving windows and expanding windows.}\end{figure}
 
 
