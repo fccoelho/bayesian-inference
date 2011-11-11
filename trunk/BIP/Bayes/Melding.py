@@ -416,7 +416,7 @@ class FitModel(object):
         self.ew = ew
         self.adjinits = adjinits
         self.pool = pool
-        if method == "DREAM" and nphi<2:
+        if method == "DREAM" and self.nphi<2:
             sys.exit("You can't use the DREAM method with less than two output variables in the model")
         assert isinstance(initheta, list) #type checking
         self.Me.initheta = initheta

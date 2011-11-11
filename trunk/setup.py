@@ -13,7 +13,7 @@ from setuptools import setup, find_packages
 #    sys.exit(1)
 
 setup(name='BIP', 
-        version  = '0.5.8',
+        version  = '0.5.9',
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',

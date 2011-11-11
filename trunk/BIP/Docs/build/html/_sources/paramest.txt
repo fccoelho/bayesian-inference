@@ -5,7 +5,7 @@ Parameter Estimation in Dynamic Models
 
 A growing theme in mathematical modeling is uncertainty analysis. The Melding Module provides a Bayesian framework to analyze uncertainty in mathematical models. It includes tools that allow modellers to integrate Prior information about the model's parameters and variables into the model, in order to explore the full uncertainty associated with a model.
 
-This framework is inspired on the original Bayesian Melding paper by Poole and Raftery [1]_, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC.
+This framework is inspired on the original Bayesian Melding paper by Poole and Raftery [2]_, but extended to handle dynamical systems and different posterior sampling mechanisms, i.e., the user has the choice to use Sampling Importance resampling, Approximate Bayesian computations or MCMC. A deeper description of the methodology implemented in this package is available as published research paper [1]_. This paper also contains a more extensive example of parameter estimation. If you intend to use this package for a scientific publication, you should cite this paper [1]_.
 
 Once a model is thus parameterized, we can simulate the model, with full uncertainty representation and also fit the model to available data to reduce that uncertaity. Markov chain Monte Carlo algorithms are at the core of the framework, which requires a large number of simulations of the models in order to explore parameter space.
 
@@ -50,7 +50,7 @@ The remaining lines just generate some simulated data to fit the model with, run
 .. figure:: images/fit_par.png
    :width: 15cm
    
-    Parameters prior and posterior distributions.
+   Parameters prior and posterior distributions.
     
     
 One important argument in the run call, is the likvar, Which is the initial value for the likelihood variance. Try to increase its value if the acceptance ratio of the markov chain is too llow. Ideal levels for the acceptance ratio should be between 0.3 and 0.5.
@@ -80,4 +80,5 @@ Here we envision two types of scenarios: one assuming constant parameters and an
 
 References
 ==========
-.. [1] Poole, D., & Raftery, A. E. (2000). Inference for Deterministic Simulation Models: The Bayesian Melding Approach. Journal of the American Statistical Association, 95(452), 1244-1255. doi:10.2307/2669764
+.. [1] Coelho FC, Codeço CT, Gomes MGM (2011) A Bayesian Framework for Parameter Estimation in Dynamical Models. PLoS ONE 6(5): e19616. doi:10.1371/journal.pone.0019616
+.. [2] Poole, D., & Raftery, A. E. (2000). Inference for Deterministic Simulation Models: The Bayesian Melding Approach. Journal of the American Statistical Association, 95(452), 1244-1255. doi:10.2307/2669764
