@@ -19,7 +19,8 @@ import numpy as np
 from liveplots.xmlrpcserver import rpc_plot
 from numpy import array, mean,isnan,  nan_to_num, var, sqrt, inf, exp, greater, less, identity, ones, zeros, floor, log, recarray, nan
 from numpy.random import random,  multivariate_normal,  multinomial,  rand
-from scipy.stats import cov,  uniform, norm, scoreatpercentile
+from scipy.stats import  uniform, norm, scoreatpercentile
+from scipy import cov
 
 
 __author__="fccoelho"
@@ -406,12 +407,12 @@ class Metropolis(_Sampler):
                 else:
                     #use gaussian proposal
                     if step%10==0 and len(self.seqhist[c]) >=10: #recalculate covariance matrix only every ten steps
-                        cv = self.scaling_factor*cov(array(self.seqhist[c][-10:]))+self.scaling_factor*self.e*identity(self.dimensions)
+                        cv = self.scaling_factor*cov(array(self.seqhist[c][-10:]), rowvar=0)+self.scaling_factor*self.e*identity(self.dimensions)
                         self.lastcv = cv
                     else:
                         cv = self.lastcv
                     #print self.parlimits
-                    while off<50:
+                    while off<50: 
                         theta = multivariate_normal(self.seqhist[c][-1],cv, size=1).tolist()[0]
                         if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
                             break
