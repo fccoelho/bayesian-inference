@@ -5,7 +5,7 @@ of statistical objects
 """
 from __future__ import division
 from numpy import histogram, ceil
-__author__="fccoelho"
+__author__="Flávio Codeço Coelho"
 __date__ ="$12/10/2009 14:25:05$"
 __licence__="GPL v3"
 __docformat__ = "restructuredtext en"
