@@ -88,7 +88,7 @@ class FitModel(object):
            sys.exit("Window Length cannot be larger that Length of the simulation(tf)" )
         assert isinstance(constraints, list)
         self.K = K
-        self.L = .1*K if K>2000 else K
+        self.L = int(.1*K) if K>2000 else int(K)
         self.finits = inits #first initial values
         self.ftf = tf
         self.full_len =  wl*nw if wl !=None else tf
