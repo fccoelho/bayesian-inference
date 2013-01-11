@@ -1,5 +1,5 @@
 numpy >= 1.2
-scipy >= 0.7
+scipy<=0.10.1
 openopt
 liveplots
 cython

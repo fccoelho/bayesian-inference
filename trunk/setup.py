@@ -1,6 +1,4 @@
 # -*- coding:utf-8 -*-
-from ez_setup import use_setuptools
-use_setuptools()
 #from distutils.core import setup
 #from distutils.extension import Extension
 from setuptools import setup, find_packages
@@ -13,7 +11,7 @@ from setuptools import setup, find_packages
 #    sys.exit(1)
 
 setup(name='BIP', 
-        version  = '0.5.10',
+        version  = '0.5.12',
         author = 'Flavio Codeco Coelho', 
         author_email = 'fccoelho@gmail.com', 
         url = 'http://code.google.com/p/bayesian-inference/',
@@ -21,7 +19,7 @@ setup(name='BIP',
         zip_safe = False,
         packages = find_packages(),#['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
         package_data = {'':['*.txt']}, 
-        install_requires = ["numpy >= 1.2", "scipy >= 0.7", "openopt", "liveplots", "cython"], 
+        install_requires = ["numpy >= 1.2", "scipy<=0.10.1", "openopt", "liveplots", "cython"],
         test_suite = 'nose.collector', 
         license = 'GPL',
 #        cmdclass = {'build_ext': build_ext},
