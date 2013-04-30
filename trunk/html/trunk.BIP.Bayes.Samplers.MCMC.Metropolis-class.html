@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>trunk.BIP.Bayes.Samplers.MCMC.Metropolis</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="trunk.BIP-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;trunk ::
+        <a href="trunk.BIP-module.html">Package&nbsp;BIP</a> ::
+        <a href="trunk.BIP.Bayes-module.html">Package&nbsp;Bayes</a> ::
+        <a href="trunk.BIP.Bayes.Samplers-module.html">Package&nbsp;Samplers</a> ::
+        <a href="trunk.BIP.Bayes.Samplers.MCMC-module.html">Module&nbsp;MCMC</a> ::
+        Class&nbsp;Metropolis
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Metropolis</h1><p class="nomargin-top"><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+    
+         |    
+  <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a> --+
+             |
+            <strong class="uidshort">Metropolis</strong>
+</pre>
+
+<hr />
+Standard random-walk Metropolis Hastings sampler class
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Metropolis-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">meldobj</span>,
+        <span class="summary-sig-arg">samples</span>,
+        <span class="summary-sig-arg">sampmax</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">t</span>,
+        <span class="summary-sig-arg">parpriors</span>,
+        <span class="summary-sig-arg">parnames</span>,
+        <span class="summary-sig-arg">parlimits</span>,
+        <span class="summary-sig-arg">likfun</span>,
+        <span class="summary-sig-arg">likvariance</span>,
+        <span class="summary-sig-arg">burnin</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      MCMC based fitting</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Metropolis-class.html#_propose" class="summary-sig-name" onclick="show_private();">_propose</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">step</span>,
+        <span class="summary-sig-arg">po</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Generates proposals.
+returns two lists</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._propose">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="step"></a><span class="summary-sig-name">step</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">nchains</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Does the actual sampling loop.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis.step">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Metropolis-class.html#_rms_fit" class="summary-sig-name" onclick="show_private();">_rms_fit</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">s1</span>,
+        <span class="summary-sig-arg">s2</span>)</span><br />
+      Calculates a basic fitness calculation between a model-
+generated time series and a observed time series.
+It uses a normalized RMS variation.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._rms_fit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Metropolis-class.html#_imp_sample" class="summary-sig-name" onclick="show_private();">_imp_sample</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">n</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">w</span>)</span><br />
+      Importance sampling</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._imp_sample">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Samplers.MCMC.Metropolis-class.html#_add_salt" class="summary-sig-name" onclick="show_private();">_add_salt</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dataset</span>,
+        <span class="summary-sig-arg">band</span>)</span><br />
+      Adds a few extra uniformly distributed data
+points beyond the dataset range.
+This is done by adding from a uniform dist.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._add_salt">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#DIC">DIC</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#best_prop_index">best_prop_index</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#check_constraints">check_constraints</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#dimensions">dimensions</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_R">gr_R</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#gr_convergence">gr_convergence</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#po">po</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#setup_xmlrpc_plotserver">setup_xmlrpc_plotserver</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#shut_down">shut_down</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#shutdown_xmlrpc_plotserver">shutdown_xmlrpc_plotserver</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#term_pool">term_pool</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b> (private):
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_accept" onclick="show_private();">_accept</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_every_plot" onclick="show_private();">_every_plot</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_tune_likvar" onclick="show_private();">_tune_likvar</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_watch_chain" onclick="show_private();">_watch_chain</a></code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b>:
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#e">e</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#liklist">liklist</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#seqhist">seqhist</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_acceptance">trace_acceptance</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#trace_convergence">trace_convergence</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html" onclick="show_private();">_Sampler</a></code></b> (private):
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_R" onclick="show_private();">_R</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_dimensions" onclick="show_private();">_dimensions</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_j" onclick="show_private();">_j</a></code>,
+      <code><a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_po" onclick="show_private();">_po</a></code>
+      </p></div>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">meldobj</span>,
+        <span class="sig-arg">samples</span>,
+        <span class="sig-arg">sampmax</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">t</span>,
+        <span class="sig-arg">parpriors</span>,
+        <span class="sig-arg">parnames</span>,
+        <span class="sig-arg">parlimits</span>,
+        <span class="sig-arg">likfun</span>,
+        <span class="sig-arg">likvariance</span>,
+        <span class="sig-arg">burnin</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  MCMC based fitting
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>samples</code></strong> - : Number of samples to obtain</li>
+        <li><strong class="pname"><code>sampmax</code></strong> - : Maximum number of samples drawn.</li>
+        <li><strong class="pname"><code>data</code></strong> - : observed time series on the model's output</li>
+        <li><strong class="pname"><code>t</code></strong> - : length of the observed time series</li>
+        <li><strong class="pname"><code>parpriors</code></strong> - : Dictionary with frozen distributions objects as values and parnames as keys</li>
+        <li><strong class="pname"><code>parnames</code></strong> - : List of parameter names</li>
+        <li><strong class="pname"><code>parlimits</code></strong> - : list of tuples with (min,max) for every parameter.</li>
+        <li><strong class="pname"><code>likfun</code></strong> - : Likelihood function</li>
+        <li><strong class="pname"><code>likvariance</code></strong> - : variance of the Normal likelihood function</li>
+        <li><strong class="pname"><code>burnin</code></strong> - : Number of burnin samples</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_propose"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_propose</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">step</span>,
+        <span class="sig-arg">po</span>=<span class="sig-default">None</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._propose">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generates proposals.
+returns two lists
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>step</code></strong> - : Position in the markov chain history.</li>
+        <li><strong class="pname"><code>po</code></strong> - : Process pool for parallel proposal generation</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><ul class="rst-simple">
+<li><code class="link">theta</code>: List of proposed self.dimensional points in parameter space</li>
+<li><code class="link">prop</code>: List of self.nchains proposed phis.</li>
+</ul></dd>
+    <dt>Overrides:
+        <a href="trunk.BIP.Bayes.Samplers.MCMC._Sampler-class.html#_propose" onclick="show_private();">_Sampler._propose</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_rms_fit"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_rms_fit</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">s1</span>,
+        <span class="sig-arg">s2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._rms_fit">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates a basic fitness calculation between a model-
+generated time series and a observed time series.
+It uses a normalized RMS variation.</p>
+<p>s1 and s2 can also be both lists of lists or lists of arrays of the same length.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>s1</code></strong> (: Record array or list.) - : model-generated time series.</li>
+        <li><strong class="pname"><code>s2</code></strong> (: Dictionary or list) - : observed time series. dictionary with keys matching names of s1</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Inverse of the Root mean square deviation between <code class="link">s1</code> and <code class="link">s2</code>.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_imp_sample"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_imp_sample</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">n</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">w</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._imp_sample">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Importance sampling
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>n</code></strong> - : Number of samples to return</li>
+        <li><strong class="pname"><code>data</code></strong> - : record array (containing on or more vectors of data) to be resampled</li>
+        <li><strong class="pname"><code>w</code></strong> - : Weight vector</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>returns a sample of size n</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_add_salt"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_add_salt</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dataset</span>,
+        <span class="sig-arg">band</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Samplers.MCMC-pysrc.html#Metropolis._add_salt">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Adds a few extra uniformly distributed data
+points beyond the dataset range.
+This is done by adding from a uniform dist.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>dataset</code></strong> - : vector of data</li>
+        <li><strong class="pname"><code>band</code></strong> - : Fraction of range to extend: [0,1[</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Salted dataset.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="trunk.BIP-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Jan 26 15:29:58 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

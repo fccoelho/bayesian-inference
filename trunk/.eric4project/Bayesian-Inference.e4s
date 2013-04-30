@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Session SYSTEM "Session-4.4.dtd">
+<!-- eric4 session file for project Bayesian-Inference -->
+<!-- This file was generated automatically, do not edit. -->
+<Session version="4.4">
+  <Filenames>
+    <Filename cline="497" cindex="44" folds="" zoom="0">/home/flavio/Documentos/Projects_software/bayesian-inference/trunk/BIP/Bayes/Samplers/MCMC.py</Filename>
+    <Filename cline="418" cindex="45" folds="" zoom="0">/home/flavio/Documentos/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</Filename>
+    <Filename cline="0" cindex="16" folds="" zoom="0">/home/flavio/Documentos/Projects_software/bayesian-inference/trunk/BIP/__version__.py</Filename>
+    <Filename cline="15" cindex="25" folds="" zoom="0">/home/flavio/Documentos/Projects_software/bayesian-inference/trunk/setup.py</Filename>
+  </Filenames>
+  <ActiveWindow cline="418" cindex="45">/home/flavio/Documentos/Projects_software/bayesian-inference/trunk/BIP/Bayes/Melding.py</ActiveWindow>
+  <Breakpoints>
+  </Breakpoints>
+  <Watchexpressions>
+  </Watchexpressions>
+  <DebugInfo>
+    <CommandLine></CommandLine>
+    <WorkingDirectory></WorkingDirectory>
+    <Environment></Environment>
+    <ReportExceptions value="True" />
+    <Exceptions>
+    </Exceptions>
+    <IgnoredExceptions>
+    </IgnoredExceptions>
+    <AutoClearShell value="True" />
+    <TracePython value="False" />
+    <AutoContinue value="True" />
+    <CovexcPattern></CovexcPattern>
+  </DebugInfo>
+  <Bookmarks>
+  </Bookmarks>
+</Session>
