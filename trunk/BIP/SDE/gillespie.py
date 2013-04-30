@@ -24,7 +24,7 @@ try:
     server = xmlrpclib.ServerProxy('http://localhost:%s'%port, allow_none=True)
     viz = True
 except:
-    print "faio"
+    print "faiô..."
     viz = False
 try:
     import psyco
@@ -33,7 +33,7 @@ except:
     pass
 def dispatch(model):
     '''this function is necessary for paralelization'''
-    model.server = server
+    #~ model.server = server
     return model.GSSA()
 
 class Model:
@@ -191,7 +191,7 @@ def main():
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
     t0=time.time()
-    M.run(tmax=80,reps=100,viz=1,serial=1)
+    M.run(tmax=80,reps=1000,viz=0,serial=1)
     print 'total time: ',time.time()-t0
     t,series,steps, evts = M.getStats()
     ser = series.mean(axis=0)

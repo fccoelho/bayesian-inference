@@ -1,13 +1,17 @@
-from numpy.random import uniform, multinomial, exponential
-#from numpy import arange, array, empty,zeros
+
+from numpy.random import uniform, exponential
 import numpy as np
 cimport numpy as np
 import time
 from random import random
+cimport cython
+#from cython_gsl cimport *
 
 DTYPE = np.double
+UITYPE = np.uint 
 ctypedef np.double_t DTYPE_t
 ctypedef np.int_t INT_t
+ctypedef np.uint_t UITYPE_t
 
 cdef extern from "math.h":
     double log(double)
@@ -18,10 +22,34 @@ cdef extern from "stdlib.h":
     double RAND_MAX
     double c_libc_random "random"()
     void c_libc_srandom "srandom"(unsigned int seed)
+
+cdef extern from "/usr/include/gsl/gsl_rng.h":
+    ctypedef struct gsl_rng_type
+    ctypedef struct gsl_rng
     
-cdef crandom():
+    cdef gsl_rng_type *gsl_rng_mt19937
+    gsl_rng *gsl_rng_alloc(gsl_rng_type * T) nogil
+
+cdef extern from "gsl_randist.h":
+    void gsl_ran_multinomial "gsl_ran_multinomial"(gsl_rng * r, size_t K,
+                                            unsigned int N, double p[],
+                                            unsigned int n[]) nogil
+
+cdef gsl_rng *R = gsl_rng_alloc(gsl_rng_mt19937)
+    
+cdef double crandom():
     cdef double rm = RAND_MAX
     return c_libc_random()/rm
+
+cdef gsl_multinomial(np.ndarray[DTYPE_t, ndim=1] p, unsigned int N):
+    cdef:
+       size_t K = p.shape[0]
+       np.ndarray[np.uint32_t, ndim=1] n = np.empty_like(p, dtype='uint32')
+
+    # void gsl_ran_multinomial (const gsl_rng * r, size_t K, unsigned int N, const double p[], unsigned int n[])
+    gsl_ran_multinomial(R, K, N, &p[0], &n[0])
+
+    return n
 
 cdef class Model(object):
     cdef object vn,pv, inits
@@ -48,8 +76,8 @@ cdef class Model(object):
         self.steps = 0
 
     cpdef run(self, method='SSA', int tmax=10, int reps=1):
-        cdef np.ndarray[np.int_t,ndim=3] res = np.zeros((tmax,self.nvars,reps),dtype=np.int)
-        cdef np.ndarray[np.int_t] tvec = np.arange(tmax,dtype=np.int)
+        cdef np.ndarray[np.int_t,ndim=3] res = np.empty((tmax,self.nvars,reps),dtype=np.int)
+        cdef np.ndarray[np.int_t,ndim=1] tvec = np.arange(tmax,dtype=np.int)
         self.res = res
         cdef int i, steps
         if method =='SSA':
@@ -71,13 +99,17 @@ cdef class Model(object):
         '''
         cdef np.ndarray[np.int_t] ini = np.array(self.inits)
         cdef np.ndarray[np.double_t] r = self.rates
-        pvi = self.pv
-        cdef int l,steps,i,tim
+        pvi = self.pv #propensity functions
+        cdef int l,steps,i,tim, last_tim
         cdef double tc, tau, a0
         #cdef np.ndarray[INT_t] tvec
-        cdef np.ndarray[np.double_t] pv 
         l=self.pvl
-        pv = np.zeros(l,dtype=np.double)
+        cdef np.ndarray[np.double_t,ndim=1,mode="c"] pv = np.empty(l,dtype='double')
+
+        cdef:
+            size_t K = l
+            np.ndarray[np.uint32_t, ndim=1] n = np.empty(l, dtype='uint32')
+        
         tm = self.tm
         #tvec = np.arange(tmax,dtype=int)
         tc = 0
@@ -86,17 +118,19 @@ cdef class Model(object):
         a0=1.
         for tim from 1<= tim <tmax:
             while tc < tim:
-                for i from 0 <= i <l:
+                a0 = 0.0
+                for i from 0<= i < l:
                     pv[i] = pvi[i](r,ini)
-                #pv = abs(array([eq() for eq in pvi]))# #propensity vector
-                a0 = a_sum(pv,l) #sum of all transition probabilities
-                #print ini#,tim, pv, a0
-                tau = (-1/a0)*clog(crandom())
+                    a0 += pv[i]
+                
                 if pv.any():
-                    event = np.random.multinomial(1,(pv/a0)) # event which will happen on this iteration
-                    ini += tm[:,event.nonzero()[0][0]]
-                #print tc, ini
-                tc += tau
+                    tau = (-1/a0)*clog(crandom())
+                    pv /= a0
+                    #event = gsl_multinomial(probs,1)
+                    gsl_ran_multinomial(R, K, 1, &pv[0], &n[0])
+                    #event = np.random.multinomial(1,(pv/a0)) # event which will happen on this iteration
+                    ini += tm[:,n.nonzero()[0][0]]
+                    tc += tau
                 steps +=1
                 if a0 == 0: break
             self.res[tim,:,round] = ini
@@ -110,16 +144,18 @@ cdef class Model(object):
         Composition reaction algorithm
         """
         pass
-        
-cpdef double l1(np.ndarray r,np.ndarray ini):
+
+@cython.boundscheck(False)
+cpdef double l1(np.ndarray[np.float64_t,ndim=1] r,np.ndarray[np.int_t,ndim=1] ini):
     return r[0]*ini[0]*ini[1]
-cpdef double l2(np.ndarray r,np.ndarray ini):
+@cython.boundscheck(False)    
+cpdef double l2(np.ndarray[np.float64_t,ndim=1] r,np.ndarray[np.int_t,ndim=1] ini):
     return r[1]*ini[1]
 
 cpdef main():
     vars = ['s','i','r']
-    cdef np.ndarray[np.int_t] ini= np.array([500,1,0],dtype = np.int)
-    cdef np.ndarray[np.float64_t] rates = np.array([.001,.1],dtype=np.float64)
+    cdef np.ndarray[np.int_t,ndim=1] ini= np.array([500,1,0])
+    cdef np.ndarray[np.float64_t,ndim=1] rates = np.array([.001,.1],dtype=np.float64)
     cdef np.ndarray[np.int_t,ndim=2] tm = np.array([[-1,0],[1,-1],[0,1]],dtype=np.int)
     prop = [l1,l2]
     M = Model(vnames = vars,rates = rates,inits=ini, tmat=tm,propensity=prop)
@@ -127,15 +163,6 @@ cpdef main():
     M.run(tmax=80,reps=1000)
     print 'total time: ',time.time()-t0
     return M.getStats()
-
-    
-cdef double a_sum(np.ndarray a, unsigned int len):
-    cdef double s
-    cdef int i
-    s = 0
-    for i from 0 <= i < len:
-        s += a[i]
-    return s
 
 
 
