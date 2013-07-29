@@ -20,6 +20,7 @@ __docformat__ = "restructuredtext en"
 
 import logging
 from logging.handlers import RotatingFileHandler
+import __version__
 
 
 logger = logging.getLogger("BIP")
@@ -37,3 +38,5 @@ fh.setFormatter(formatter)
 # add the handlers to logger
 logger.addHandler(ch)
 logger.addHandler(fh)
+
+version = __version__.version
