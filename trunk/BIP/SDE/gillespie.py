@@ -26,11 +26,7 @@ try:
 except:
     print "faiô..."
     viz = False
-try:
-    import psyco
-    psyco.full()
-except:
-    pass
+
 def dispatch(model):
     '''this function is necessary for paralelization'''
     #~ model.server = server
@@ -87,15 +83,15 @@ class Model:
         :Return:
             a numpy array of shape (reps,tmax,nvars)
         '''
-        if viz: #only if Gnuplot.py is installed
+        if viz:  # only if Gnuplot.py is installed
             self.viz = viz
         self.tmax = tmax
         #self.res = zeros((tmax,self.nvars,reps),dtype=float)
         self.res = zeros((tmax,self.nvars),dtype=float)
         tvec = arange(tmax, dtype=int)
             
-        if method =='SSA':
-            if not serial:# Parallel version
+        if method == 'SSA':
+            if not serial:  # Parallel version
                 pool = Pool()
                 res = pool.map(dispatch,[self]*reps, chunksize=10)
                 self.res = array([i[0] for i in res])
@@ -105,8 +101,8 @@ class Model:
                     self.evseries = [i[1] for i in res]
                 pool.close()
                 pool.join()
-            else:# Serial
-                res = map(dispatch,[self]*reps)
+            else:  # Serial
+                res = map(dispatch, [self]*reps)
                 self.res = array([i[0] for i in res])
                 if reps == 0:
                     self.evseries = res[0][1]
@@ -141,14 +137,14 @@ class Model:
         self.res[0,:]= ini
 #        for tim in xrange(1,tmax):
         while tc <= tmax:
-            i=0
-            a0=0.0
+            i = 0
+            a0 = 0.0
             for p in pvi:
                 pv[i] = p(r,ini)
-                a0+=pv[i]
-                i+=1
+                a0 += pv[i]
+                i += 1
             
-            if pv.any():#no change in state is pv is all zeros
+            if pv.any():  # no change in state is pv is all zeros
                 tau = (-1/a0)*log(random())
                 tc += tau
                 tim = int(ceil(tc))
@@ -156,49 +152,49 @@ class Model:
                 event = multinomial(1,pv/a0) # event which will happen on this iteration
                 
                 e = event.nonzero()[0][0]
-                ini += tm[:,e]
+                ini += tm[:, e]
                 if tc <= tmax:
                     evts[e].append(tc)
             #print tc, ini
-            if tim <= tmax -1:
-                self.steps +=1
-#                if a0 == 0: break
-                if tim - last_tim >1:
-                    for j in range(last_tim, tim):
-                        self.res[j,:] = self.res[last_tim, :]
-                self.res[tim,:] = ini
-            else:
-                for j in range(last_tim, tmax):
-                    self.res[j,:] = self.res[last_tim, :]
-                break
-            last_tim = tim
+                if tim <= tmax - 1:
+                    self.steps += 1
+    #                if a0 == 0: break
+                    if tim - last_tim > 1:
+                        for j in range(last_tim, tim):
+                            self.res[j, :] = self.res[last_tim, :]
+                    self.res[tim, :] = ini
+                else:
+                    for j in range(last_tim, tmax):
+                        self.res[j, :] = self.res[last_tim, :]
+                    break
+                last_tim = tim
         #self.evseries = evts
             if a0 == 0: break #breaks when no event has prob above 0
         if self.viz:
             #self.ser.clearFig()
-            self.server.lines(self.res.T.tolist(),[],self.vn,"Single replica")
-        return self.res,  evts
+            self.server.lines(self.res.T.tolist(), [], self.vn, "Single replica")
+        return self.res, evts
 
 
-def p1(r,ini): return r[0]*ini[0]*ini[1]
-def p2(r,ini): return r[1]*ini[1]
+def p1(r, ini): return r[0]*ini[0]*ini[1]
+def p2(r, ini): return r[1]*ini[1]
 
 def main():
-    vnames = ['S','I','R']
-    ini= [500,1,0]
-    rates = [.001,.1]
-    tm = array([[-1,0],[1,-1],[0,1]])
+    vnames = ['S', 'I', 'R']
+    ini = [500, 1, 0]
+    rates = [.001, .1]
+    tm = array([[-1, 0], [1, -1], [0, 1]])
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
-    M = Model(vnames = vnames,rates = rates,inits=ini, tmat=tm,propensity=[p1,p2])
-    t0=time.time()
-    M.run(tmax=80,reps=1000,viz=0,serial=1)
-    print 'total time: ',time.time()-t0
-    t,series,steps, evts = M.getStats()
+    M = Model(vnames=vnames, rates=rates, inits=ini, tmat=tm, propensity=[p1, p2])
+    t0 = time.time()
+    M.run(tmax=80, reps=1000, viz=0, serial=0)
+    print 'total time: ', time.time()-t0
+    t, series, steps, evts = M.getStats()
     ser = series.mean(axis=0)
     #print evts, len(evts[0])
-    from pylab import plot , show, legend
-    plot(t,ser,'-.')
-    legend(M.vn,loc=0)
+    from pylab import plot, show, legend
+    plot(t, ser, '-.')
+    legend(M.vn, loc=0)
     show()
     
 

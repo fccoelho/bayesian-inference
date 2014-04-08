@@ -30,7 +30,7 @@ cdef extern from "/usr/include/gsl/gsl_rng.h":
     cdef gsl_rng_type *gsl_rng_mt19937
     gsl_rng *gsl_rng_alloc(gsl_rng_type * T) nogil
 
-cdef extern from "gsl_randist.h":
+cdef extern from "/usr/include/gsl/gsl_randist.h":
     void gsl_ran_multinomial "gsl_ran_multinomial"(gsl_rng * r, size_t K,
                                             unsigned int N, double p[],
                                             unsigned int n[]) nogil

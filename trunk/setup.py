@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
 #from distutils.core import setup
 #from distutils.extension import Extension
-from setuptools import setup, find_packages
+from distutils.core import setup
+from Cython.Build import cythonize
+from setuptools import find_packages
 #from BIP import __version__
 #try:
 #    from Cython.Distutils import build_ext
@@ -11,14 +13,15 @@ from setuptools import setup, find_packages
 #    sys.exit(1)
 
 setup(name='BIP', 
-        version='0.5.13',
+        version='0.5.14',
         author='Flavio Codeco Coelho',
         author_email='fccoelho@gmail.com',
         url='http://code.google.com/p/bayesian-inference/',
-        description = 'Bayesian Inference Tools for Python',
-        zip_safe = False,
-        packages = find_packages(),  #['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
-        package_data = {'': ['*.txt']},
+        description='Bayesian Inference Tools for Python',
+        zip_safe=False,
+        packages=find_packages(),  #['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
+        package_data={'': ['*.txt']},
+        # ext_modules=cythonize("BIP/SDE/cgillespie.pyx"),
         install_requires = ["numpy", "scipy", "openopt", "liveplots", "cython","gnuplot-py"],
         test_suite = 'nose.collector', 
         license = 'GPL',

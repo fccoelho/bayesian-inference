@@ -1,5 +1,6 @@
-numpy >= 1.2
-scipy<=0.10.1
+numpy
+scipy
 openopt
 liveplots
 cython
+gnuplot-py

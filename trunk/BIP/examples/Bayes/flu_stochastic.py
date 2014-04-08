@@ -12,6 +12,7 @@ from BIP.Bayes.Melding import FitModel
 import numpy as np
 from scipy import stats as st
 
+
 mu = 0.0 #birth and death rate.FIXED
 beta = 0.00058 #Transmission rate
 eta = .5 #infectivity of asymptomatic infections relative to clinical ones. FIXED
@@ -57,14 +58,17 @@ def runModel(theta):
     M.run(tmax=tf,reps=1,viz=0,serial=True)
     t,series,steps,events = M.getStats()
     ser = st.nanmean(series,axis=0)
-    #print series.shape
+    #print series.shape, ser.shape
     return ser
 
 d = runModel([beta,alpha,sigma])
+#~ import pylab as P
+#~ P.plot(d)
+#~ P.show()
 
 dt = {'S':d[:,0],'E':d[:,1],'I':d[:,2],'A':d[:,3],'R':d[:,4]}
-F = FitModel(300, runModel,inits,tf,['beta','alpha','sigma'],['S','E','I','A','R'],
-            wl=7,nw=20,verbose=True,burnin=100)
+F = FitModel(900, runModel,inits,tf,['beta','alpha','sigma'],['S','E','I','A','R'],
+            wl=140,nw=1,verbose=0,burnin=100)
 F.set_priors(tdists=[st.uniform]*3,tpars=[(0.00001,.0006),(.1,.5),(0.0006,1)],tlims=[(0,.001),(.001,1),(0,1)],
     pdists=[st.uniform]*5,ppars=[(0,500)]*5,plims=[(0,500)]*5)
 
