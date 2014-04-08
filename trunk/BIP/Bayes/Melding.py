@@ -1018,8 +1018,8 @@ class Meld(object):
             ll = j[0]
             ul = j[1]
             #print cond.shape,cnd.shape,i.shape,ll,ul
-            cnd = cnd & less(i, ul) & greater(i, ll)
-        f = compress(cnd, x, axis=1)
+            cnd = cnd & numpy.less(i, ul) & numpy.greater(i, ll)
+        f = numpy.compress(cnd, x, axis=1)
 
         if names:  #Reconstruct the record array
             r = recarray((1, f.shape[1]), formats=['f8'] * len(names), names=names)
