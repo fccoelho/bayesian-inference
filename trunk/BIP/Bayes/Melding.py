@@ -613,14 +613,14 @@ class FitModel(object):
                 raise NameError("Variable {} does not exist in the dataset".format(variable))
             i5, i95 = self._get95_bands(series, variable)
             self.ser.lines(series[variable][initind].tolist(), None, [u"Best run's {0:s}".format(variable)],
-                           'Window {0:s}'.format(w + 1))
-            self.ser.lines(i5.tolist(), None, ['2.5%'], 'Window {0:s}'.format(w + 1))
-            self.ser.lines(i95.tolist(), None, ['97.5%'], 'Window {0:s}'.format(w + 1))
-            self.ser.lines(d2[variable].tolist(), None, [u'Obs. {0:s}'.format(variable)], 'Window {0:s}'.format(w + 1),
+                           'Window {}'.format(w + 1))
+            self.ser.lines(i5.tolist(), None, ['2.5%'], 'Window {}'.format(w + 1))
+            self.ser.lines(i95.tolist(), None, ['97.5%'], 'Window {}'.format(w + 1))
+            self.ser.lines(d2[variable].tolist(), None, [u'Obs. {0:s}'.format(variable)], 'Window {}'.format(w + 1),
                            'points')
             self.fsp.lines(data[variable].T.tolist(), None, [u'Obs. {0:s}'.format(variable)],
-                           'Window {0:s}'.format(w + 1), 'points')
-        self.hst.histogram(array(prior['theta']).tolist(), self.thetanames, 'Window {0:s}'.format(w + 1), 1)
+                           'Window {}'.format(w + 1), 'points')
+        self.hst.histogram(array(prior['theta']).tolist(), self.thetanames, 'Window {}'.format(w + 1), 1)
         cpars = [prior['theta'][i][initind] for i in range(self.ntheta)]
         self._long_term_prediction_plot(cpars, vindices, w)
         self.ser.clearFig()
