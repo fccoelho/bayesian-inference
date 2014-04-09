@@ -160,10 +160,10 @@ class _Sampler(object):
         withinChainVariances = mean(variances, axis=0)
         betweenChainVariances = var(means, axis=0) * N
         varEstimate = (1 - 1.0 / N) * withinChainVariances + (1.0 / N) * betweenChainVariances
-        if withinChainVariances == 0:
+        if not withinChainVariances.any():
             self._R = np.inf * np.ones(self.nchains)
             return
-        self._R = sqrt(varEstimate / withinChainVariances)
+        self._R = np.nan_to_num(sqrt(varEstimate / withinChainVariances))
 
     @np.vectorize
     def _accept(self, last_lik, lik):
@@ -654,7 +654,7 @@ class Dream(_Sampler):
         self.likfun = likfun
         self.likvariance = likvariance
         self.burnin = burnin
-        self.nchains = len(parpriors)
+        self.nchains = max(8, len(parpriors))
         self.phi = np.recarray((self.samples + self.burnin, t), formats=['f8'] * self.meld.nphi,
                                names=self.meld.phi.dtype.names)
         self.nCR = nCR
@@ -986,7 +986,7 @@ class Dream(_Sampler):
                         liks[n] = liks[imax]
 
             el = time.time() - t0
-            if int(el) % 10 == 0 and el > 1 and j > 100:  #j%100 == 0 and j>0:
+            if el > 10:
                 if self.trace_acceptance:
                     print "++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar)
                     self._watch_chain(j)

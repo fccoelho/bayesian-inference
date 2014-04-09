@@ -296,6 +296,12 @@ class FitModel(object):
 
     def do_inference(self, prior, data, predlen, method, likvar):
         """
+
+        :param prior:
+        :param data:
+        :param predlen:
+        :param method:
+        :param likvar:
         """
         self._init_priors(prior)
         succ = 0
@@ -1150,8 +1156,8 @@ class Meld(object):
             - `method`: Step method. defaults to Metropolis hastings
         """
         #self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
-        ta = True if self.verbose == 1 else False
-        tc = True if self.verbose == 1 else False
+        ta = self.verbose >= 1
+        tc = self.verbose >= 1
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
                                       self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,
