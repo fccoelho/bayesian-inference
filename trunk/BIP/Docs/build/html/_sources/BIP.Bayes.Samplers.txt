@@ -7,7 +7,7 @@ MCMC
 ----
 
 .. automodule:: BIP.Bayes.Samplers.MCMC
-:members:
+    :members:
 
 
 

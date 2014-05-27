@@ -23,7 +23,6 @@ Modules
 =======
 
 .. autosummary::
-:toctree:
 
        BIP
        BIP.Bayes
