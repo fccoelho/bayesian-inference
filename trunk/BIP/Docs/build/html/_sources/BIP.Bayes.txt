@@ -6,28 +6,28 @@ BIP.Bayes
 Melding Module
 --------------
 .. automodule:: BIP.Bayes.Melding
-   :members:
+:members:
 
 Log-Likelihood Functions
 -----------------------
 .. automodule:: BIP.Bayes.like
-   :members:
+:members:
 
 Plotting tools
 -------------
 .. automodule:: BIP.Bayes.PlotMeld
-   :members:
+:members:
 
 Latin Hypercube Sampling
 ------------------------
 .. automodule:: BIP.Bayes.PlotMeld
-   :members:
+:members:
 
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+

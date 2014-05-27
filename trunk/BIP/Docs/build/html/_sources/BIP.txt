@@ -12,11 +12,10 @@ BIP
    .. rubric:: Classes
 
    .. autosummary::
-   
+
       RotatingFileHandler
    
    
 
-   
    
    

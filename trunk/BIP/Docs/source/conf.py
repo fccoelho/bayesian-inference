@@ -40,7 +40,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'BIP - Bayesian Inference with Python'
-copyright = u'2010, Flávio Codeço Coelho'
+copyright = u'2010-14, Flávio Codeço Coelho'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
