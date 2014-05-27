@@ -1,191 +1,1012 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
     <title>BIP.Bayes &mdash; BIP - Bayesian Inference with Python 0.5.13 documentation</title>
-
-    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css"/>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css"/>
-
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT: './',
-            VERSION: '0.5.13',
-            COLLAPSE_INDEX: false,
-            FILE_SUFFIX: '.html',
-            HAS_SOURCE: true
-        };
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="BIP - Bayesian Inference with Python 0.5.13 documentation" href="index.html"/>
-</head>
-<body>
-<div class="related">
-    <h3>Navigation</h3>
-    <ul>
+    <link rel="top" title="BIP - Bayesian Inference with Python 0.5.13 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
         <li class="right" style="margin-right: 10px">
-            <a href="genindex.html" title="General Index"
-               accesskey="I">index</a></li>
-        <li class="right">
-            <a href="py-modindex.html" title="Python Module Index"
-                    >modules</a> |
-        </li>
-        <li><a href="index.html">BIP</a> &raquo;</li>
-    </ul>
-</div>
-<div class="sphinxsidebar">
-    <div class="sphinxsidebarwrapper">
-        <p class="logo"><a href="index.html">
-            <img class="logo" src="_static/BIP.png" alt="Logo"/>
-        </a></p>
-
-        <h3><a href="index.html">Table Of Contents</a></h3>
-        <ul>
-            <li><a class="reference internal" href="#">BIP.Bayes</a>
-                <ul>
-                    <li><a class="reference internal" href="#module-BIP.Bayes.Melding">Melding Module</a></li>
-                    <li><a class="reference internal" href="#log-likelihood-functions">Log-Likelihood Functions</a></li>
-                    <li><a class="reference internal" href="#plotting-tools">Plotting tools</a></li>
-                    <li><a class="reference internal" href="#module-BIP.Bayes.PlotMeld">Latin Hypercube Sampling</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-
-        <h3>This Page</h3>
-        <ul class="this-page-menu">
-            <li><a href="_sources/BIP.Bayes.txt"
-                   rel="nofollow">Show Source</a></li>
-        </ul>
-        <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-
-            <form class="search" action="search.html" method="get">
-                <input type="text" name="q"/>
-                <input type="submit" value="Go"/>
-                <input type="hidden" name="check_keywords" value="yes"/>
-                <input type="hidden" name="area" value="default"/>
-            </form>
-            <p class="searchtip" style="font-size: 90%">
-                Enter search terms or a module, class or function name.
-            </p>
-        </div>
-        <script type="text/javascript">$('#searchbox').show(0);</script>
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">BIP</a> &raquo;</li> 
+      </ul>
     </div>
-</div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/BIP.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">BIP.Bayes</a><ul>
+<li><a class="reference internal" href="#module-BIP.Bayes.Melding">Melding Module</a></li>
+<li><a class="reference internal" href="#log-likelihood-functions">Log-Likelihood Functions</a></li>
+<li><a class="reference internal" href="#plotting-tools">Plotting tools</a></li>
+<li><a class="reference internal" href="#module-BIP.Bayes.PlotMeld">Latin Hypercube Sampling</a></li>
+</ul>
+</li>
+</ul>
 
-<div class="document">
-    <div class="documentwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/BIP.Bayes.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
         <div class="bodywrapper">
-            <div class="body">
+          <div class="body">
+            
+  <div class="section" id="module-BIP.Bayes">
+<span id="bip-bayes"></span><h1>BIP.Bayes<a class="headerlink" href="#module-BIP.Bayes" title="Permalink to this headline">¶</a></h1>
+<p>Basic Likelihood tools such as functions for computing likelihoods, Latin Hypercube sampling (efficient random sampling) and other tools which don&#8217;t belong on other packages, or apply to multiple packages.</p>
+<div class="section" id="module-BIP.Bayes.Melding">
+<span id="melding-module"></span><h2>Melding Module<a class="headerlink" href="#module-BIP.Bayes.Melding" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="BIP.Bayes.Melding.FitModel">
+<em class="property">class </em><tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">FitModel</tt><big>(</big><em>K</em>, <em>model</em>, <em>inits</em>, <em>tf</em>, <em>thetanames</em>, <em>phinames</em>, <em>wl=None</em>, <em>nw=1</em>, <em>verbose=False</em>, <em>burnin=1000</em>, <em>constraints=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a model to data generating
+Bayesian posterior distributions of input and
+outputs of the model.</p>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.FitModel.AIC_from_RSS">
+<tt class="descname">AIC_from_RSS</tt><big>(</big><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel.AIC_from_RSS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the Akaike information criterion from the residual sum of squares 
+of the best fitting run.</p>
+</dd></dl>
 
-                <div class="section" id="module-BIP.Bayes">
-                    <span id="bip-bayes"></span>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.FitModel.do_inference">
+<tt class="descname">do_inference</tt><big>(</big><em>prior</em>, <em>data</em>, <em>predlen</em>, <em>method</em>, <em>likvar</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel.do_inference" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>prior</strong> &#8211; </li>
+<li><strong>data</strong> &#8211; </li>
+<li><strong>predlen</strong> &#8211; </li>
+<li><strong>method</strong> &#8211; </li>
+<li><strong>likvar</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-                    <h1>BIP.Bayes<a class="headerlink" href="#module-BIP.Bayes" title="Permalink to this headline">¶</a>
-                    </h1>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.FitModel.optimize">
+<tt class="descname">optimize</tt><big>(</big><em>data</em>, <em>p0</em>, <em>optimizer='scipy'</em>, <em>tol=0.0001</em>, <em>verbose=0</em>, <em>plot=0</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds best parameters using an optimization approach</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>data</cite>: Dictionary of observed series</li>
+<li><cite>p0</cite>: Sequence (list or tuple) of initial values for the parameters</li>
+<li><cite>optimizer</cite>: Optimization library to use: &#8216;scipy&#8217;: fmin (Nelder-Mead) or &#8216;oo&#8217;:OpenOpt.NLP</li>
+<li><cite>tol</cite>: Tolerance of the error</li>
+<li><cite>verbose</cite>: If true show stats of the optimization run at the end</li>
+<li><cite>plot</cite>: If true plots a run based on the optimized parameters.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-                    <p>Basic Likelihood tools such as functions for computing likelihoods, Latin Hypercube sampling
-                        (efficient random sampling) and other tools which don&#8217;t belong on other packages, or apply
-                        to multiple packages.</p>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.FitModel.plot_results">
+<tt class="descname">plot_results</tt><big>(</big><em>names=</em>, <span class="optional">[</span><span class="optional">]</span><em>dbname='results'</em>, <em>savefigs=0</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel.plot_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the final results of the inference</p>
+</dd></dl>
 
-                    <div class="section" id="module-BIP.Bayes.Melding">
-                        <span id="melding-module"></span>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.FitModel.prior_sample">
+<tt class="descname">prior_sample</tt><big>(</big><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel.prior_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a set of samples from the starting theta prior distributions
+for reporting purposes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary with (name,sample) pairs</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-                        <h2>Melding Module<a class="headerlink" href="#module-BIP.Bayes.Melding"
-                                             title="Permalink to this headline">¶</a></h2>
-                        <table class="docutils field-list" frame="void" rules="none">
-                            <col class="field-name"/>
-                            <col class="field-body"/>
-                            <tbody valign="top">
-                            <tr class="field-odd field">
-                                <th class="field-name">members:</th>
-                                <td class="field-body"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="section" id="log-likelihood-functions">
-                        <h2>Log-Likelihood Functions<a class="headerlink" href="#log-likelihood-functions"
-                                                       title="Permalink to this headline">¶</a></h2>
-                        <span class="target" id="module-BIP.Bayes.like"></span>
-                        <table class="docutils field-list" frame="void" rules="none">
-                            <col class="field-name"/>
-                            <col class="field-body"/>
-                            <tbody valign="top">
-                            <tr class="field-odd field">
-                                <th class="field-name">members:</th>
-                                <td class="field-body"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="section" id="plotting-tools">
-                        <h2>Plotting tools<a class="headerlink" href="#plotting-tools"
-                                             title="Permalink to this headline">¶</a></h2>
-                        <span class="target" id="module-BIP.Bayes.PlotMeld"></span>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.FitModel.run">
+<tt class="descname">run</tt><big>(</big><em>data</em>, <em>method</em>, <em>likvar</em>, <em>pool=False</em>, <em>adjinits=True</em>, <em>ew=0</em>, <em>dbname='results'</em>, <em>monitor=False</em>, <em>initheta=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model against data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>data</cite>: dictionary with variable names and observed series, as Key and value respectively.</li>
+<li><cite>method</cite>: Inference method: &#8220;ABC&#8221;, &#8220;SIR&#8221;, &#8220;MCMC&#8221; or &#8220;DREAM&#8221;</li>
+<li><cite>likvar</cite>: Variance of the likelihood function in the SIR and MCMC method</li>
+<li><cite>pool</cite>: Pool priors on model&#8217;s outputs.</li>
+<li><cite>adjinits</cite>: whether to adjust inits to data</li>
+<li><cite>ew</cite>: Whether to use expanding windows instead of moving ones.</li>
+<li><cite>dbname</cite>: name of the sqlite3 database</li>
+<li><cite>monitor</cite>: Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.</li>
+<li><cite>initheta</cite>: starting position in parameter space for the sampling to start. (only used by MCMC and DREAM)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-                        <p>Module with specialized plotting functions for the Melding results</p>
-                        <table class="docutils field-list" frame="void" rules="none">
-                            <col class="field-name"/>
-                            <col class="field-body"/>
-                            <tbody valign="top">
-                            <tr class="field-odd field">
-                                <th class="field-name">members:</th>
-                                <td class="field-body"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="section" id="module-BIP.Bayes.PlotMeld">
-                        <span id="latin-hypercube-sampling"></span>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.FitModel.set_priors">
+<tt class="descname">set_priors</tt><big>(</big><em>tdists</em>, <em>tpars</em>, <em>tlims</em>, <em>pdists</em>, <em>ppars</em>, <em>plims</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.FitModel.set_priors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the prior distributions for Phi and Theta</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>pdists</cite>: distributions for the output variables. For example: [scipy.stats.uniform,scipy.stats.norm]</li>
+<li><cite>ppars</cite>: paramenters for the distributions in pdists. For example: [(0,1),(0,1)]</li>
+<li><cite>plims</cite>: Limits of the range of each phi. List of (min,max) tuples.</li>
+<li><cite>tdists</cite>: same as pdists, but for input parameters (Theta).</li>
+<li><cite>tpars</cite>: same as ppars, but for tdists.</li>
+<li><cite>tlims</cite>: Limits of the range of each theta. List of (min,max) tuples.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-                        <h2>Latin Hypercube Sampling<a class="headerlink" href="#module-BIP.Bayes.PlotMeld"
-                                                       title="Permalink to this headline">¶</a></h2>
+</dd></dl>
 
-                        <p>Module with specialized plotting functions for the Melding results</p>
-                        <table class="docutils field-list" frame="void" rules="none">
-                            <col class="field-name"/>
-                            <col class="field-body"/>
-                            <tbody valign="top">
-                            <tr class="field-odd field">
-                                <th class="field-name">members:</th>
-                                <td class="field-body"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<dl class="class">
+<dt id="BIP.Bayes.Melding.Meld">
+<em class="property">class </em><tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">Meld</tt><big>(</big><em>K</em>, <em>L</em>, <em>model</em>, <em>ntheta</em>, <em>nphi</em>, <em>alpha=0.5</em>, <em>verbose=0</em>, <em>viz=False</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bayesian Melding class</p>
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.abcRun">
+<tt class="descname">abcRun</tt><big>(</big><em>fitfun=None</em>, <em>data={}</em>, <em>t=1</em>, <em>pool=False</em>, <em>savetemp=False</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.abcRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the model for inference through Approximate Bayes Computation
+techniques. This method should be used as an alternative to the sir.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>fitfun</cite>: Callable which will return the goodness of fit of the model to data as a number between 0-1, with 1 meaning perfect fit</li>
+<li><cite>t</cite>: number of time steps to retain at the end of the of the model run for fitting purposes.</li>
+<li><cite>data</cite>: dict containing observed time series (lists of length t) of the state variables. This dict must have as many items the number of state variables, with labels matching variables names. Unorbserved variables must have an empty list as value.</li>
+<li><cite>pool</cite>: if True, Pools the user provided priors on the model&#8217;s outputs, with the model induced priors.</li>
+<li><cite>savetemp</cite>: Should temp results be saved. Useful for long runs. Alows for resuming the simulation from last sa</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.add_salt">
+<tt class="descname">add_salt</tt><big>(</big><em>dataset</em>, <em>band</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.add_salt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a few extra uniformly distributed data 
+points beyond the dataset range.
+This is done by adding from a uniform dist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>dataset</cite>: vector of data</li>
+<li><cite>band</cite>: Fraction of range to extend [0,1[</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Salted dataset.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.current_plot">
+<tt class="descname">current_plot</tt><big>(</big><em>series</em>, <em>data</em>, <em>idx</em>, <em>vars=</em>, <span class="optional">[</span><span class="optional">]</span><em>step=0</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.current_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the last simulated series</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>series</cite>: Record array with the simulated series.</li>
+<li><cite>idx</cite>: Integer index of the curve to plot .</li>
+<li><cite>data</cite>: Dictionary with the full dataset.</li>
+<li><cite>vars</cite>: List with variable names to be plotted.</li>
+<li><cite>step</cite>: Step of the chain</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.filtM">
+<tt class="descname">filtM</tt><big>(</big><em>cond</em>, <em>x</em>, <em>limits</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.filtM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiple condition filtering.
+Remove values in x[i], if corresponding values in
+cond[i] are less than limits[i][0] or greater than
+limits[i][1].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>cond</cite>: is an array of conditions.</li>
+<li><cite>limits</cite>: is a list of tuples (ll,ul) with length equal to number of lines in <cite>cond</cite> and <cite>x</cite>.</li>
+<li><cite>x</cite>: array to be filtered.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.getPosteriors">
+<tt class="descname">getPosteriors</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.getPosteriors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the posteriors of the model&#8217;s output for the last t time steps.
+Returns two record arrays:
+- The posteriors of the Theta
+- the posterior of Phi last t values of time-series. self.L by <cite>t</cite> arrays.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>t</cite>: length of the posterior time-series to return.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.imp_sample">
+<tt class="descname">imp_sample</tt><big>(</big><em>n</em>, <em>data</em>, <em>w</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.imp_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Importance sampling</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">returns a sample of size n</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.logPooling">
+<tt class="descname">logPooling</tt><big>(</big><em>phi</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.logPooling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the probability associated with each phi[i]
+on the pooled pdf of phi and q2phi.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>phi</cite>: prior of Phi induced by the model and q1theta.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.mcmc_run">
+<tt class="descname">mcmc_run</tt><big>(</big><em>data</em>, <em>t=1</em>, <em>likvariance=10</em>, <em>burnin=1000</em>, <em>nopool=False</em>, <em>method='MH'</em>, <em>constraints=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.mcmc_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>MCMC based fitting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>data</cite>: observed time series on the model&#8217;s output</li>
+<li><cite>t</cite>: length of the observed time series</li>
+<li><cite>likvariance</cite>: variance of the Normal likelihood function</li>
+<li><cite>nopool</cite>: True if no priors on the outputs are available. Leads to faster calculations</li>
+<li><cite>method</cite>: Step method. defaults to Metropolis hastings</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.run">
+<tt class="descname">run</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the model through the Melding inference.model
+model is a callable which return the output of the deterministic model,
+i.e. the model itself.
+The model is run self.K times to obtain phi = M(theta).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.runModel">
+<tt class="descname">runModel</tt><big>(</big><em>savetemp</em>, <em>t=1</em>, <em>k=None</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.runModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles running the model k times keeping a temporary savefile for
+resuming calculation in case of interruption.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>savetemp</cite>: Boolean. create a temp file?</li>
+<li><cite>t</cite>: number of time steps</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
+<li>self.phi: a record array of shape (k,t) with the results.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.setPhi">
+<tt class="descname">setPhi</tt><big>(</big><em>names, dists=[&lt;scipy.stats._continuous_distns.norm_gen object at 0x308fb10&gt;], pars=[(0, 1)], limits=[(-5, 5)]</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.setPhi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the models Outputs, or Phi, and generate the samples from prior distributions 
+needed for the melding replicates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>names</cite>: list of string with the names of the variables.</li>
+<li><cite>dists</cite>: is a list of RNG from scipy.stats</li>
+<li><cite>pars</cite>: is a list of tuples of variables for each prior distribution, respectively.</li>
+<li><cite>limits</cite>: lower and upper limits on the support of variables.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.setPhiFromData">
+<tt class="descname">setPhiFromData</tt><big>(</big><em>names</em>, <em>data</em>, <em>limits</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.setPhiFromData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the model outputs and set their prior distributions from the
+vectors in data.
+This method is to be used when the prior distributions are available in
+the form of a sample from an empirical distribution such as a bayesian
+posterior.
+In order to expand the samples provided, K samples are generated from a
+kernel density estimate of the original sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>names</cite>: list of string with the names of the variables.</li>
+<li><cite>data</cite>: list of vectors. Samples of the proposed distribution.</li>
+<li><cite>limits</cite>: list of tuples (ll,ul),lower and upper limits on the support of variables.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.setTheta">
+<tt class="descname">setTheta</tt><big>(</big><em>names, dists=[&lt;scipy.stats._continuous_distns.norm_gen object at 0x308fb10&gt;], pars=[(0, 1)], lims=[(0, 1)]</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.setTheta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the models inputs and generate the samples from prior distributions 
+needed for the dists the melding replicates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>names</cite>: list of string with the names of the parameters.</li>
+<li><cite>dists</cite>: is a list of RNG from scipy.stats</li>
+<li><cite>pars</cite>: is a list of tuples of parameters for each prior distribution, respectivelydists</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.setThetaFromData">
+<tt class="descname">setThetaFromData</tt><big>(</big><em>names</em>, <em>data</em>, <em>limits</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.setThetaFromData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the model inputs and set the prior distributions from the vectors
+in data.
+This method is to be used when the prior distributions are available in 
+the form of a sample from an empirical distribution such as a bayesian
+posterior.
+In order to expand the samples provided, K samples are generated from a
+kernel density estimate of the original sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>names</cite>: list of string with the names of the parameters.</li>
+<li><cite>data</cite>: list of vectors. Samples of a proposed distribution</li>
+<li><cite>limits</cite>: List of (min,max) tuples for each theta to make sure samples are not generated outside these limits.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BIP.Bayes.Melding.Meld.sir">
+<tt class="descname">sir</tt><big>(</big><em>data={}</em>, <em>t=1</em>, <em>variance=0.1</em>, <em>pool=False</em>, <em>savetemp=False</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.Meld.sir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the model output through the Sampling-Importance-Resampling algorithm.
+Returns 1 if successful or 0 if not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>data</cite>: observed time series on the model&#8217;s output</li>
+<li><cite>t</cite>: length of the observed time series</li>
+<li><cite>variance</cite>: variance of the Normal likelihood function</li>
+<li><cite>pool</cite>: False if no priors on the outputs are available. Leads to faster calculations</li>
+<li><cite>savetemp</cite>: Boolean. create a temp file?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.basicfit">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">basicfit</tt><big>(</big><em>s1</em>, <em>s2</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.basicfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a basic fitness calculation between a model-
+generated time series and a observed time series.
+it uses a Mean square error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>s1</cite>: model-generated time series. record array.</li>
+<li><cite>s2</cite>: observed time series. dictionary with keys matching names of s1</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first last">Root mean square deviation between ´s1´ and ´s2´.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.clearNaN">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">clearNaN</tt><big>(</big><em>obs</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.clearNaN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loops through an array with data series as columns, and 
+Replaces NaNs with the mean of the other series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>obs</cite>: 2-dimensional numpy array</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array of the same shape as obs</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.enumRun">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">enumRun</tt><big>(</big><em>model</em>, <em>theta</em>, <em>k</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.enumRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns model results plus run number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><cite>model</cite>: model callable</li>
+<li><cite>theta</cite>: model input list</li>
+<li><cite>k</cite>: run number</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ul class="first last simple">
+<li>res: result list</li>
+<li><cite>k</cite>: run number</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.model">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">model</tt><big>(</big><em>theta</em>, <em>n=1</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model (r,p0, n=1)
+Simulates the Population dynamic Model (PDM) Pt = rP0
+for n time steps.
+P0 is the initial population size. 
+Example model for testing purposes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.model_as_ra">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">model_as_ra</tt><big>(</big><em>theta</em>, <em>model</em>, <em>phinames</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.model_as_ra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does a single run of self.model and returns the results as a record array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.plotRaHist">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">plotRaHist</tt><big>(</big><em>arr</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.plotRaHist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a record array
+as a panel of histograms</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.randint">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">randint</tt><big>(</big><em>low</em>, <em>high=None</em>, <em>size=None</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.randint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return random integers from <cite>low</cite> (inclusive) to <cite>high</cite> (exclusive).</p>
+<p>Return random integers from the &#8220;discrete uniform&#8221; distribution in the
+&#8220;half-open&#8221; interval [<cite>low</cite>, <cite>high</cite>). If <cite>high</cite> is None (the default),
+then results are from [0, <cite>low</cite>).</p>
+<dl class="docutils">
+<dt>low <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Lowest (signed) integer to be drawn from the distribution (unless
+<tt class="docutils literal"><span class="pre">high=None</span></tt>, in which case this parameter is the <em>highest</em> such
+integer).</dd>
+<dt>high <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd>If provided, one above the largest (signed) integer to be drawn
+from the distribution (see above for behavior if <tt class="docutils literal"><span class="pre">high=None</span></tt>).</dd>
+<dt>size <span class="classifier-delimiter">:</span> <span class="classifier">int or tuple of ints, optional</span></dt>
+<dd>Output shape. Default is None, in which case a single int is
+returned.</dd>
+</dl>
+<dl class="docutils">
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">int or ndarray of ints</span></dt>
+<dd><cite>size</cite>-shaped array of random integers from the appropriate
+distribution, or a single such random int if <cite>size</cite> not provided.</dd>
+</dl>
+<dl class="docutils">
+<dt>random.random_integers <span class="classifier-delimiter">:</span> <span class="classifier">similar to <cite>randint</cite>, only for the closed</span></dt>
+<dd>interval [<cite>low</cite>, <cite>high</cite>], and 1 is the lowest value if <cite>high</cite> is
+omitted. In particular, this other one is the one to use to generate
+uniformly distributed discrete non-integers.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">array([1, 0, 0, 0, 1, 1, 0, 0, 1, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])</span>
+</pre></div>
+</div>
+<p>Generate a 2 x 4 array of ints between 0 and 4, inclusive:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="go">array([[4, 0, 2, 1],</span>
+<span class="go">       [3, 2, 2, 0]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.random">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">random</tt><big>(</big><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.random" title="Permalink to this definition">¶</a></dt>
+<dd><p>random_sample(size=None)</p>
+<p>Return random floats in the half-open interval [0.0, 1.0).</p>
+<p>Results are from the &#8220;continuous uniform&#8221; distribution over the
+stated interval.  To sample <img class="math" src="_images/math/8e9ceb34b646b7fb9f8177f0db29fa0c2c0d71a8.png" alt="Unif[a, b), b &gt; a"/> multiply
+the output of <cite>random_sample</cite> by <cite>(b-a)</cite> and add <cite>a</cite>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">random_sample</span><span class="p">()</span> <span class="o">+</span> <span class="n">a</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>size <span class="classifier-delimiter">:</span> <span class="classifier">int or tuple of ints, optional</span></dt>
+<dd>Defines the shape of the returned array of random floats. If None
+(the default), returns a single float.</dd>
+</dl>
+<dl class="docutils">
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">float or ndarray of floats</span></dt>
+<dd>Array of random floats of shape <cite>size</cite> (unless <tt class="docutils literal"><span class="pre">size=None</span></tt>, in which
+case a single float is returned).</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">()</span>
+<span class="go">0.47108547995356098</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">())</span>
+<span class="go">&lt;type &#39;float&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">5</span><span class="p">,))</span>
+<span class="go">array([ 0.30220482,  0.86820401,  0.1654503 ,  0.11659149,  0.54323428])</span>
+</pre></div>
+</div>
+<p>Three-by-two array of random numbers from [-5, 0):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">5</span>
+<span class="go">array([[-3.99149989, -0.52338984],</span>
+<span class="go">       [-2.99091858, -0.79479508],</span>
+<span class="go">       [-1.23204345, -1.75224494]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.Melding.seed">
+<tt class="descclassname">BIP.Bayes.Melding.</tt><tt class="descname">seed</tt><big>(</big><em>seed=None</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Melding.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seed the generator.</p>
+<p>This method is called when <cite>RandomState</cite> is initialized. It can be
+called again to re-seed the generator. For details, see <cite>RandomState</cite>.</p>
+<dl class="docutils">
+<dt>seed <span class="classifier-delimiter">:</span> <span class="classifier">int or array_like, optional</span></dt>
+<dd>Seed for <cite>RandomState</cite>.</dd>
+</dl>
+<p>RandomState</p>
+</dd></dl>
+
+</div>
+<div class="section" id="log-likelihood-functions">
+<h2>Log-Likelihood Functions<a class="headerlink" href="#log-likelihood-functions" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-BIP.Bayes.like"></span><dl class="function">
+<dt id="BIP.Bayes.like.Bernoulli">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Bernoulli</tt><big>(</big><em>x</em>, <em>p</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Bernoulli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log-Like Bernoulli
+&gt;&gt;&gt; Bernoulli([0,1,1,1,0,0,1,1],0.5)
+-5.54517744448</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Beta">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Beta</tt><big>(</big><em>x</em>, <em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log-Like Beta
+&gt;&gt;&gt; Beta([.2,.3,.7,.6,.4],2,5)
+-0.434845728904</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Binomial">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Binomial</tt><big>(</big><em>x</em>, <em>n</em>, <em>p</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Binomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binomial Log-Likelihood 
+&gt;&gt;&gt; Binomial([2,3],6,0.3)
+-2.81280615454</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Categor">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Categor</tt><big>(</big><em>x</em>, <em>hist</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Categor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Categorical Log-likelihood
+generalization of a Bernoulli process for variables with any constant
+number of discrete values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>x</cite>: data vector (list)</li>
+<li><cite>hist</cite>: tuple (prob,classes) classes contain the superior limit of the histogram classes</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Categor</span><span class="p">([</span><span class="mi">1</span><span class="p">],([</span><span class="o">.</span><span class="mi">3</span><span class="p">,</span><span class="o">.</span><span class="mi">7</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">-0.356674943939</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Gamma">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Gamma</tt><big>(</big><em>x</em>, <em>alpha</em>, <em>beta</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log-Like Gamma
+&gt;&gt;&gt; Gamma([2,3,7,6,4],2,2)
+-11.015748357</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Lognormal">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Lognormal</tt><big>(</big><em>x</em>, <em>mu</em>, <em>tau</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Lognormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lognormal Log-likelihood</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>mu</cite>: mean</li>
+<li><cite>tau</cite>: precision (1/sd)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Lognormal</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.2</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="go">-3.15728720569</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Negbin">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Negbin</tt><big>(</big><em>x</em>, <em>r</em>, <em>p</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Negbin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Negative Binomial Log-Likelihood 
+&gt;&gt;&gt; Negbin([2,3],6,0.3)
+-9.16117424315</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Normal">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Normal</tt><big>(</big><em>x</em>, <em>mu</em>, <em>tau</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normal Log-like</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>mu</cite>: mean</li>
+<li><cite>tau</cite>: precision (1/variance)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Normal</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">-0.918938533205</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Poisson">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Poisson</tt><big>(</big><em>x</em>, <em>mu</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Poisson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poisson Log-Likelihood function 
+&gt;&gt;&gt; Poisson([2],2)
+-1.30685281944</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Simple">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Simple</tt><big>(</big><em>x</em>, <em>w</em>, <em>a</em>, <em>start=0</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Simple" title="Permalink to this definition">¶</a></dt>
+<dd><p>find out what it is.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Uniform">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Uniform</tt><big>(</big><em>x</em>, <em>min</em>, <em>max</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Uniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uniform Log-likelihood</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>x</cite>: data vector(list)</li>
+<li><cite>min</cite>: lower limit of the distribution</li>
+<li><cite>max</cite>: upper limit of the distribution</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Uniform</span><span class="p">([</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">2.3</span><span class="p">,</span><span class="mf">3.4</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">-6.4377516497364011</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.Weibull">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">Weibull</tt><big>(</big><em>x</em>, <em>alpha</em>, <em>beta</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.Weibull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log-Like Weibull
+&gt;&gt;&gt; Weibull([2,1,0.3,.5,1.7],1.5,3)
+-7.811955373</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.like.find_best_tau">
+<tt class="descclassname">BIP.Bayes.like.</tt><tt class="descname">find_best_tau</tt><big>(</big><em>x</em>, <em>mu</em><big>)</big><a class="headerlink" href="#BIP.Bayes.like.find_best_tau" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the value of tau which maximizes normal loglik for a fixed (x,mu)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="plotting-tools">
+<h2>Plotting tools<a class="headerlink" href="#plotting-tools" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-BIP.Bayes.PlotMeld"></span><p>Module with specialized plotting functions for the Melding results</p>
+<dl class="function">
+<dt id="BIP.Bayes.PlotMeld.peakdet">
+<tt class="descclassname">BIP.Bayes.PlotMeld.</tt><tt class="descname">peakdet</tt><big>(</big><em>v</em>, <em>delta</em>, <em>x=None</em><big>)</big><a class="headerlink" href="#BIP.Bayes.PlotMeld.peakdet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converted from MATLAB script at <a class="reference external" href="http://billauer.co.il/peakdet.html">http://billauer.co.il/peakdet.html</a>
+Currently returns two lists of tuples, but maybe arrays would be better
+function [maxtab, mintab]=peakdet(v, delta, x)
+%PEAKDET Detect peaks in a vector
+% [MAXTAB, MINTAB] = PEAKDET(V, DELTA) finds the local
+% maxima and minima (&#8220;peaks&#8221;) in the vector V.
+% MAXTAB and MINTAB consists of two columns. Column 1
+% contains indices in V, and column 2 the found values.
+%
+% With [MAXTAB, MINTAB] = PEAKDET(V, DELTA, X) the indices
+% in MAXTAB and MINTAB are replaced with the corresponding
+% X-values.
+%
+% A point is considered a maximum peak if it has the maximal
+% value, and was preceded (to the left) by a value lower by
+% DELTA.
+% Eli Billauer, 3.4.05 (Explicitly not copyrighted).
+% This function is released to the public domain; Any use is allowed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.PlotMeld.pred_new_cases">
+<tt class="descclassname">BIP.Bayes.PlotMeld.</tt><tt class="descname">pred_new_cases</tt><big>(</big><em>obs</em>, <em>series</em>, <em>weeks</em>, <em>names=</em>, <span class="optional">[</span><span class="optional">]</span><em>title='Total new cases per window: predicted vs observed'</em>, <em>ws=7</em><big>)</big><a class="headerlink" href="#BIP.Bayes.PlotMeld.pred_new_cases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicted total new cases in a window vs oserved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BIP.Bayes.PlotMeld.violin_plot">
+<tt class="descclassname">BIP.Bayes.PlotMeld.</tt><tt class="descname">violin_plot</tt><big>(</big><em>ax</em>, <em>data</em>, <em>positions</em>, <em>bp=False</em>, <em>prior=False</em><big>)</big><a class="headerlink" href="#BIP.Bayes.PlotMeld.violin_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create violin plots on an axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>ax</cite>: A subplot object</li>
+<li><cite>data</cite>: A list of data sets to plot</li>
+<li><cite>positions</cite>: x values to position the violins. Can be datetime.date objects.</li>
+<li><cite>bp</cite>: Whether to plot the boxplot on top.</li>
+<li><cite>prior</cite>: whether the first element of data is a Prior distribution.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-BIP.Bayes.PlotMeld">
+<span id="latin-hypercube-sampling"></span><h2>Latin Hypercube Sampling<a class="headerlink" href="#module-BIP.Bayes.PlotMeld" title="Permalink to this headline">¶</a></h2>
+<p>Module with specialized plotting functions for the Melding results</p>
+<dl class="function">
+<dt>
+<tt class="descclassname">BIP.Bayes.PlotMeld.</tt><tt class="descname">peakdet</tt><big>(</big><em>v</em>, <em>delta</em>, <em>x=None</em><big>)</big></dt>
+<dd><p>Converted from MATLAB script at <a class="reference external" href="http://billauer.co.il/peakdet.html">http://billauer.co.il/peakdet.html</a>
+Currently returns two lists of tuples, but maybe arrays would be better
+function [maxtab, mintab]=peakdet(v, delta, x)
+%PEAKDET Detect peaks in a vector
+% [MAXTAB, MINTAB] = PEAKDET(V, DELTA) finds the local
+% maxima and minima (&#8220;peaks&#8221;) in the vector V.
+% MAXTAB and MINTAB consists of two columns. Column 1
+% contains indices in V, and column 2 the found values.
+%
+% With [MAXTAB, MINTAB] = PEAKDET(V, DELTA, X) the indices
+% in MAXTAB and MINTAB are replaced with the corresponding
+% X-values.
+%
+% A point is considered a maximum peak if it has the maximal
+% value, and was preceded (to the left) by a value lower by
+% DELTA.
+% Eli Billauer, 3.4.05 (Explicitly not copyrighted).
+% This function is released to the public domain; Any use is allowed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descclassname">BIP.Bayes.PlotMeld.</tt><tt class="descname">pred_new_cases</tt><big>(</big><em>obs</em>, <em>series</em>, <em>weeks</em>, <em>names=</em>, <span class="optional">[</span><span class="optional">]</span><em>title='Total new cases per window: predicted vs observed'</em>, <em>ws=7</em><big>)</big></dt>
+<dd><p>Predicted total new cases in a window vs oserved.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descclassname">BIP.Bayes.PlotMeld.</tt><tt class="descname">violin_plot</tt><big>(</big><em>ax</em>, <em>data</em>, <em>positions</em>, <em>bp=False</em>, <em>prior=False</em><big>)</big></dt>
+<dd><p>Create violin plots on an axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><cite>ax</cite>: A subplot object</li>
+<li><cite>data</cite>: A list of data sets to plot</li>
+<li><cite>positions</cite>: x values to position the violins. Can be datetime.date objects.</li>
+<li><cite>bp</cite>: Whether to plot the boxplot on top.</li>
+<li><cite>prior</cite>: whether the first element of data is a Prior distribution.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
 
 
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="clearer"></div>
     </div>
-    <div class="clearer"></div>
-</div>
-<div class="related">
-    <h3>Navigation</h3>
-    <ul>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
         <li class="right" style="margin-right: 10px">
-            <a href="genindex.html" title="General Index"
-                    >index</a></li>
-        <li class="right">
-            <a href="py-modindex.html" title="Python Module Index"
-                    >modules</a> |
-        </li>
-        <li><a href="index.html">BIP</a> &raquo;</li>
-    </ul>
-</div>
-<div class="footer">
-    &copy; Copyright 2010-14, Flávio Codeço Coelho.
-    Last updated on May 27, 2014.
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
-</div>
-</body>
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">BIP</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010-14, Flávio Codeço Coelho.
+      Last updated on May 27, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
 </html>
