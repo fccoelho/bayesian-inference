@@ -9,6 +9,5 @@ syntax: glob
 *.xml
 .ropeproject
 .eric4project
-build/*
 dist/*
 nbproject/*
