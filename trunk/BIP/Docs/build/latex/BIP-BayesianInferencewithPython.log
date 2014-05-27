@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2013.11.7)  27 MAY 2014 10:35
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2013.11.7)  27 MAY 2014 10:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -798,11 +798,7 @@ Package: hypcap 2011/02/16 v1.11 Adjusting the anchors of captions (HO)
 
 
 Writing index file BIP-BayesianInferencewithPython.idx
-(./BIP-BayesianInferencewithPython.aux
-
-LaTeX Warning: Label `BIP.Bayes:module-BIP.Bayes.PlotMeld' multiply defined.
-
-)
+(./BIP-BayesianInferencewithPython.aux)
 \openout1 = `BIP-BayesianInferencewithPython.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 117.
@@ -820,7 +816,8 @@ LaTeX Font Info:    ... okay on input line 117.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 117.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 117.
 
- (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 117.
@@ -883,7 +880,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 120--120
 
  []
 
-<BIP_large.png, id=49, 632.00114pt x 189.3474pt>
+<BIP_large.png, id=29, 632.00114pt x 189.3474pt>
 File: BIP_large.png Graphic file (type png)
  <use BIP_large.png>
 Package pdftex.def Info: BIP_large.png used on input line 120.
@@ -949,13 +946,13 @@ LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
 (Font)              Font shape `T1/pcr/b/n' tried instead on input line 171.
  [4]
-<fit_series.png, id=116, 1149.093pt x 640.3122pt>
+<fit_series.png, id=91, 1149.093pt x 640.3122pt>
 File: fit_series.png Graphic file (type png)
  <use fit_series.png>
 Package pdftex.def Info: fit_series.png used on input line 230.
 (pdftex.def)             Requested size: 426.79134pt x 237.82043pt.
 
-<fit_par.png, id=117, 1149.093pt x 640.3122pt>
+<fit_par.png, id=92, 1149.093pt x 640.3122pt>
 File: fit_par.png Graphic file (type png)
  <use fit_par.png>
 Package pdftex.def Info: fit_par.png used on input line 236.
@@ -969,7 +966,7 @@ Underfull \vbox (badness 10000) detected at line 327
  []
 
 [6 <./fit_par.png>]
-<Inference_scenarios2.png, id=133, 453.3738pt x 398.2077pt>
+<Inference_scenarios2.png, id=108, 453.3738pt x 398.2077pt>
 File: Inference_scenarios2.png Graphic file (type png)
 
 <use Inference_scenarios2.png>
@@ -978,175 +975,54 @@ Package pdftex.def Info: Inference_scenarios2.png used on input line 341.
  [7] [8 <./Inference_scenarios2.png>]
 Chapter 2.
 
-Overfull \hbox (515.25404pt too wide) in alignment at lines 357--359
- [] [] 
+Underfull \vbox (badness 10000) detected at line 371
  []
 
+[9
 
-Overfull \hbox (515.25404pt too wide) in alignment at lines 359--364
- [] [] 
- []
+] [10
 
-
-Overfull \hbox (515.25404pt too wide) in alignment at lines 364--367
- [] [] 
- []
-
-
-Overfull \hbox (515.25404pt too wide) in alignment at lines 367--369
- [] [] 
- []
-
-
-Overfull \hbox (515.25404pt too wide) in alignment at lines 369--386
- [] [] 
- []
-
-LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <9> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 407.
-
-Overfull \hbox (252.53632pt too wide) in alignment at lines 409--411
- [] [] 
- []
-
-
-Overfull \hbox (252.53632pt too wide) in alignment at lines 411--416
- [] [] 
- []
-
-
-Overfull \hbox (252.53632pt too wide) in alignment at lines 416--419
- [] [] 
- []
-
-
-Overfull \hbox (252.53632pt too wide) in alignment at lines 419--421
- [] [] 
- []
-
-
-Overfull \hbox (252.53632pt too wide) in alignment at lines 421--428
- [] [] 
- []
-
-LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 441.
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 459.
+]
+Chapter 3.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 384.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [9
+)
+(./BIP-BayesianInferencewithPython.ind)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 399.
+ [11]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 399.
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 581--582
-[]\T1/ptm/m/it/10 pdists\T1/ptm/m/n/10 : dis-tri-bu-tions for the out-put vari-
-ables. For ex-am-ple:
- []
-
-[10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 837--837
-[]\T1/ptm/m/it/10 names, dists=[<scipy.stats._continuous_distns.norm_gen ob-jec
-t at 0x411ebd0>],
- []
-
-[12]
-Underfull \hbox (badness 6332) in paragraph at lines 891--891
-[]\T1/ptm/m/it/10 names, dists=[<scipy.stats._continuous_distns.norm_gen ob-jec
-t at 0x411ebd0>],
- []
-
-[13] [14] [15] [16] [17] [18] [19] [20]
-Chapter 3.
-[21
-
-] [22
-
-] [23
-
-
-] (./BIP-BayesianInferencewithPython.ind [24
-
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 7--8
-[]\T1/ptm/m/n/10 AIC_from_RSS() (BIP.Bayes.Melding.FitModel
- []
-
-
-Overfull \hbox (5.93343pt too wide) in paragraph at lines 31--32
-[]\T1/ptm/m/n/10 delayed_rejection() (BIP.Bayes.Samplers.MCMC.Dream
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 66--67
-[]\T1/ptm/m/n/10 model_as_ra() (in mod-ule
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 67--68
-[]\T1/ptm/m/n/10 multinomial() (in mod-ule
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 68--69
-[]\T1/ptm/m/n/10 multivariate_normal() (in mod-ule
- []
-
-[25
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 105--106
-[]\T1/ptm/m/n/10 setThetaFromData() (BIP.Bayes.Melding.Meld
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 109--110
-[]\T1/ptm/m/n/10 step() (BIP.Bayes.Samplers.MCMC.Metropolis
- []
-
-[26
-
-])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1865.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1865.
- (./BIP-BayesianInferencewithPython.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1865.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1865.
-
+(./BIP-BayesianInferencewithPython.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 399.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 399.
 Package rerunfilecheck Info: File `BIP-BayesianInferencewithPython.out' has not
  changed.
-(rerunfilecheck)             Checksum: 73174B45CC02379DDDDCCB4A783F2AF6;623.
-
-
-LaTeX Warning: There were multiply-defined labels.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1865.
+(rerunfilecheck)             Checksum: D96564A7407055D68659FB8039A6A824;355.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 399.
  ) 
 Here is how much of TeX's memory you used:
- 9356 strings out of 495007
- 131847 string characters out of 6180696
- 230149 words of memory out of 5000000
- 12164 multiletter control sequences out of 15000+600000
- 77564 words of font info for 88 fonts, out of 8000000 for 9000
+ 9159 strings out of 495007
+ 127437 string characters out of 6180696
+ 226625 words of memory out of 5000000
+ 12063 multiletter control sequences out of 15000+600000
+ 70245 words of font info for 81 fonts, out of 8000000 for 9000
  17 hyphenation exceptions out of 8191
- 36i,12n,45p,805b,639s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,11n,45p,805b,411s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/courier/ucrb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr
-8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/share/texlive/texmf-di
-st/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
-mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on BIP-BayesianInferencewithPython.pdf (30 pages, 1020548 bytes)
-.
+e/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
+rw/courier/ucrro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/
+uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/urw/times/utmri8a.pfb>
+Output written on BIP-BayesianInferencewithPython.pdf (15 pages, 924035 bytes).
+
 PDF statistics:
- 453 PDF objects out of 1000 (max. 8388607)
- 391 compressed objects within 4 object streams
- 124 named destinations out of 1000 (max. 500000)
- 129 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 173 PDF objects out of 1000 (max. 8388607)
+ 133 compressed objects within 2 object streams
+ 35 named destinations out of 1000 (max. 500000)
+ 89 words of extra memory for PDF output out of 10000 (max. 10000000)
 

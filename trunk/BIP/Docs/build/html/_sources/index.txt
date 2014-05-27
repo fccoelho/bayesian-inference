@@ -23,11 +23,11 @@ Modules
 =======
 
 .. autosummary::
-   :toctree:
+:toctree:
 
-   BIP
-   BIP.Bayes
-   BIP.Bayes.Samplers
+       BIP
+       BIP.Bayes
+       BIP.Bayes.Samplers
 
 Indices and tables
 ==================
