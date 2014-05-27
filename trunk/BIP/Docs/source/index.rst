@@ -18,6 +18,17 @@ Contents
    paramest
    sde
 
+
+Modules
+=======
+
+.. autosummary::
+:toctree:
+
+       BIP
+       BIP.Bayes
+       BIP.Bayes.Samplers
+
 Indices and tables
 ==================
 
