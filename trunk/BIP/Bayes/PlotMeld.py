@@ -167,7 +167,7 @@ def plot_par_series(tim, ptlist):
     P.xlabel('Windows')
 
 
-def plot_par_violin(tim, ptlist, priors={}, bp=True):
+def plot_par_violin(tim, ptlist, priors={}, bp=False):
     fig = P.figure()
     #P.title('Parameters temporal variation')
     sq = np.sqrt(len(ptlist[0].dtype.names))

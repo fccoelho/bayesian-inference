@@ -678,7 +678,8 @@ class FitModel(object):
             P.xlabel('windows')
             if savefigs:
                 P.savefig(dbname + "_predseries.svg")
-        P.show()
+        if not savefigs:  # only show if not saving
+            P.show()
 
     def _read_results(self, nam):
         """
