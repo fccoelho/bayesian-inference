@@ -934,8 +934,9 @@ class Dream(_Sampler):
             #Compute GR R
             self.gr_R(j, -j // 2)
             if sum(self._R <=1.2)==self.nchains:
-               print "Converged on all dimensions"
-               print j, self._R
+                pass
+                # print "Converged on all dimensions"
+                # print j, self._R
             #Update last_lik
             if last_pps == None:  #on first sample
                 last_pps = pps
