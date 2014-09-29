@@ -1,0 +1,6 @@
+numpy
+scipy
+openopt
+liveplots
+cython
+gnuplot-py

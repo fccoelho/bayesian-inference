@@ -1,0 +1,931 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>trunk.BIP.Bayes.Melding.FitModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="trunk.BIP-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Package&nbsp;trunk ::
+        <a href="trunk.BIP-module.html">Package&nbsp;BIP</a> ::
+        <a href="trunk.BIP.Bayes-module.html">Package&nbsp;Bayes</a> ::
+        <a href="trunk.BIP.Bayes.Melding-module.html">Module&nbsp;Melding</a> ::
+        Class&nbsp;FitModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class FitModel</h1><p class="nomargin-top"><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+
+         |
+        <strong class="uidshort">FitModel</strong>
+</pre>
+
+<hr />
+Fit a model to data generating
+Bayesian posterior distributions of input and
+outputs of the model.
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">K</span>,
+        <span class="summary-sig-arg">model</span>,
+        <span class="summary-sig-arg">inits</span>,
+        <span class="summary-sig-arg">tf</span>,
+        <span class="summary-sig-arg">thetanames</span>,
+        <span class="summary-sig-arg">phinames</span>,
+        <span class="summary-sig-arg">wl</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">nw</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">verbose</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">burnin</span>=<span class="summary-sig-default">1000</span>,
+        <span class="summary-sig-arg">constraints</span>=<span class="summary-sig-default">[]</span>)</span><br />
+      Initialize the model fitter.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_plot_MAP" class="summary-sig-name" onclick="show_private();">_plot_MAP</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">pmap</span>)</span><br />
+      Generates a plot of a full run of the model parameterized with the maximum a posteriori
+estimates of the parameters.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._plot_MAP">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="AIC_from_RSS"></a><span class="summary-sig-name">AIC_from_RSS</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Calculates the Akaike information criterion from the residual sum of squares
+of the best fitting run.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.AIC_from_RSS">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#optimize" class="summary-sig-name">optimize</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">p0</span>,
+        <span class="summary-sig-arg">optimizer</span>=<span class="summary-sig-default">'scipy'</span>,
+        <span class="summary-sig-arg">tol</span>=<span class="summary-sig-default">0.0001</span>,
+        <span class="summary-sig-arg">verbose</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">plot</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Finds best parameters using an optimization approach</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.optimize">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_rms_error" class="summary-sig-name" onclick="show_private();">_rms_error</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">s1</span>,
+        <span class="summary-sig-arg">s2</span>)</span><br />
+      Calculates a the error between a model-
+generated time series and a observed time series.
+It uses a normalized RMS deviation.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._rms_error">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#set_priors" class="summary-sig-name">set_priors</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tdists</span>,
+        <span class="summary-sig-arg">tpars</span>,
+        <span class="summary-sig-arg">tlims</span>,
+        <span class="summary-sig-arg">pdists</span>,
+        <span class="summary-sig-arg">ppars</span>,
+        <span class="summary-sig-arg">plims</span>)</span><br />
+      Set the prior distributions for Phi and Theta</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.set_priors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#prior_sample" class="summary-sig-name">prior_sample</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Generates a set of sample from the starting theta prior distributions
+for reporting purposes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.prior_sample">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_init_priors"></a><span class="summary-sig-name">_init_priors</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">prior</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Initialize priors either from distributions or previous posteriors</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._init_priors">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_inference"></a><span class="summary-sig-name">do_inference</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">prior</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">predlen</span>,
+        <span class="summary-sig-arg">method</span>,
+        <span class="summary-sig-arg">likvar</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.do_inference">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_save_to_db" class="summary-sig-name" onclick="show_private();">_save_to_db</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dbname</span>,
+        <span class="summary-sig-arg">data</span>)</span><br />
+      Saves data to a sqlite3 db.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._save_to_db">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#run" class="summary-sig-name">run</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">method</span>,
+        <span class="summary-sig-arg">likvar</span>,
+        <span class="summary-sig-arg">pool</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">adjinits</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">ew</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">dbname</span>=<span class="summary-sig-default">'results'</span>,
+        <span class="summary-sig-arg">monitor</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">initheta</span>=<span class="summary-sig-default">[]</span>)</span><br />
+      Fit the model against data</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.run">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_format_db_tables"></a><span class="summary-sig-name">_format_db_tables</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dbname</span>,
+        <span class="summary-sig-arg">w</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">pt</span>,
+        <span class="summary-sig-arg">series</span>,
+        <span class="summary-sig-arg">predseries</span>,
+        <span class="summary-sig-arg">AIC</span>,
+        <span class="summary-sig-arg">BIC</span>,
+        <span class="summary-sig-arg">DIC</span>)</span><br />
+      Formats results for writing to database</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._format_db_tables">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_monitor_setup"></a><span class="summary-sig-name">_monitor_setup</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Sets up realtime plotting for inference</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._monitor_setup">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_get95_bands" class="summary-sig-name" onclick="show_private();">_get95_bands</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">series</span>,
+        <span class="summary-sig-arg">vname</span>)</span><br />
+      Returns 95% bands for series of all variables in vname</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._get95_bands">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_long_term_prediction_plot" class="summary-sig-name" onclick="show_private();">_long_term_prediction_plot</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cpars</span>,
+        <span class="summary-sig-arg">vind</span>,
+        <span class="summary-sig-arg">w</span>)</span><br />
+      Plots the simulated trajectory predicted from best fit parameters.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._long_term_prediction_plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="trunk.BIP.Bayes.Melding.FitModel-class.html#_monitor_plot" class="summary-sig-name" onclick="show_private();">_monitor_plot</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">series</span>,
+        <span class="summary-sig-arg">prior</span>,
+        <span class="summary-sig-arg">d2</span>,
+        <span class="summary-sig-arg">w</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">vars</span>)</span><br />
+      Plots real time data</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._monitor_plot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="plot_results"></a><span class="summary-sig-name">plot_results</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">names</span>=<span class="summary-sig-default">[]</span>,
+        <span class="summary-sig-arg">dbname</span>=<span class="summary-sig-default">&quot;results&quot;</span>,
+        <span class="summary-sig-arg">savefigs</span>=<span class="summary-sig-default">0</span>)</span><br />
+      Plot the final results of the inference</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.plot_results">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_read_results"></a><span class="summary-sig-name">_read_results</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">nam</span>)</span><br />
+      read results from disk</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._read_results">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">K</span>,
+        <span class="sig-arg">model</span>,
+        <span class="sig-arg">inits</span>,
+        <span class="sig-arg">tf</span>,
+        <span class="sig-arg">thetanames</span>,
+        <span class="sig-arg">phinames</span>,
+        <span class="sig-arg">wl</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">nw</span>=<span class="sig-default">1</span>,
+        <span class="sig-arg">verbose</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">burnin</span>=<span class="sig-default">1000</span>,
+        <span class="sig-arg">constraints</span>=<span class="sig-default">[]</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Initialize the model fitter.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>K</code></strong> - : Number of samples from the priors. On MCMC also the number of samples of the posterior.</li>
+        <li><strong class="pname"><code>model</code></strong> - : Callable (function) returning the output of the model, from a set of parameter values received as argument.</li>
+        <li><strong class="pname"><code>inits</code></strong> - : inits initial values for the model's variables.</li>
+        <li><strong class="pname"><code>tf</code></strong> - : Length of the simulation, in units of time.</li>
+        <li><strong class="pname"><code>phinames</code></strong> - : List of names (strings) with names of the model's variables</li>
+        <li><strong class="pname"><code>thetanames</code></strong> - : List of names (strings) with names of parameters included on the inference.</li>
+        <li><strong class="pname"><code>wl</code></strong> - : window lenght length of the inference window.</li>
+        <li><strong class="pname"><code>nw</code></strong> - : Number of windows to analyze on iterative inference mode</li>
+        <li><strong class="pname"><code>verbose</code></strong> - : Verbosity level: 0, 1 or 2.</li>
+        <li><strong class="pname"><code>burnin</code></strong> - : number of burnin samples, used in the case on mcmc method.</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_plot_MAP"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_plot_MAP</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">pmap</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._plot_MAP">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generates a plot of a full run of the model parameterized with the maximum a posteriori
+estimates of the parameters.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - : data dictionary as passed to optimize</li>
+        <li><strong class="pname"><code>pmap</code></strong> - : MAP parameter values</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="optimize"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">optimize</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">p0</span>,
+        <span class="sig-arg">optimizer</span>=<span class="sig-default">'scipy'</span>,
+        <span class="sig-arg">tol</span>=<span class="sig-default">0.0001</span>,
+        <span class="sig-arg">verbose</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">plot</span>=<span class="sig-default">0</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.optimize">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Finds best parameters using an optimization approach
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - : Dictionary of observed series</li>
+        <li><strong class="pname"><code>p0</code></strong> - : Sequence (list or tuple) of initial values for the parameters</li>
+        <li><strong class="pname"><code>optimizer</code></strong> - : Optimization library to use: 'scipy': fmin (Nelder-Mead) or 'oo':OpenOpt.NLP</li>
+        <li><strong class="pname"><code>tol</code></strong> - : Tolerance of the error</li>
+        <li><strong class="pname"><code>verbose</code></strong> - : If true show stats of the optimization run at the end</li>
+        <li><strong class="pname"><code>plot</code></strong> - : If true plots a run based on the optimized parameters.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_rms_error"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_rms_error</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">s1</span>,
+        <span class="sig-arg">s2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._rms_error">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates a the error between a model-
+generated time series and a observed time series.
+It uses a normalized RMS deviation.</p>
+<p>s1 and s2 can also be both lists of lists or lists of arrays of the same length.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>s1</code></strong> (: Record array or list.) - : model-generated time series.</li>
+        <li><strong class="pname"><code>s2</code></strong> (: Dictionary or list; must be a dictionary if s1 is a RA) - : observed time series. dictionary with keys matching names of s1</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>The Root mean square deviation between <code class="link">s1</code> and <code class="link">s2</code>.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="set_priors"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">set_priors</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tdists</span>,
+        <span class="sig-arg">tpars</span>,
+        <span class="sig-arg">tlims</span>,
+        <span class="sig-arg">pdists</span>,
+        <span class="sig-arg">ppars</span>,
+        <span class="sig-arg">plims</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.set_priors">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Set the prior distributions for Phi and Theta
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>pdists</code></strong> - : distributions for the output variables. For example: [scipy.stats.uniform,scipy.stats.norm]</li>
+        <li><strong class="pname"><code>ppars</code></strong> - : paramenters for the distributions in pdists. For example: [(0,1),(0,1)]</li>
+        <li><strong class="pname"><code>plims</code></strong> - : Limits of the range of each phi. List of (min,max) tuples.</li>
+        <li><strong class="pname"><code>tdists</code></strong> - : same as pdists, but for input parameters (Theta).</li>
+        <li><strong class="pname"><code>tpars</code></strong> - : same as ppars, but for tdists.</li>
+        <li><strong class="pname"><code>tlims</code></strong> - : Limits of the range of each theta. List of (min,max) tuples.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="prior_sample"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">prior_sample</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.prior_sample">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Generates a set of sample from the starting theta prior distributions
+for reporting purposes.
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>Dictionary with (name,sample) pairs</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_save_to_db"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_save_to_db</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dbname</span>,
+        <span class="sig-arg">data</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._save_to_db">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Saves data to a sqlite3 db.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>dbname</code></strong> - : name of the database file</li>
+        <li><strong class="pname"><code>data</code></strong> - : Data dictionary as created by <code class="link">format_db_tables</code> method.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="run"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">run</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">method</span>,
+        <span class="sig-arg">likvar</span>,
+        <span class="sig-arg">pool</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">adjinits</span>=<span class="sig-default">True</span>,
+        <span class="sig-arg">ew</span>=<span class="sig-default">0</span>,
+        <span class="sig-arg">dbname</span>=<span class="sig-default">'results'</span>,
+        <span class="sig-arg">monitor</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">initheta</span>=<span class="sig-default">[]</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel.run">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Fit the model against data
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>data</code></strong> - : dictionary with variable names and observed series, as Key and value respectively.</li>
+        <li><strong class="pname"><code>method</code></strong> - : Inference method: &quot;ABC&quot;, &quot;SIR&quot;, &quot;MCMC&quot; or &quot;DREAM&quot;</li>
+        <li><strong class="pname"><code>likvar</code></strong> - : Variance of the likelihood function in the SIR and MCMC method</li>
+        <li><strong class="pname"><code>pool</code></strong> - : Pool priors on model's outputs.</li>
+        <li><strong class="pname"><code>adjinits</code></strong> - : whether to adjust inits to data</li>
+        <li><strong class="pname"><code>ew</code></strong> - : Whether to use expanding windows instead of moving ones.</li>
+        <li><strong class="pname"><code>dbname</code></strong> - : name of the sqlite3 database</li>
+        <li><strong class="pname"><code>monitor</code></strong> - : Whether to monitor certains variables during the inference. If not False, should be a list of valid phi variable names.</li>
+        <li><strong class="pname"><code>initheta</code></strong> - : starting position in parameter space for the sampling to start. (only used by MCMC and DREAM)</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_get95_bands"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_get95_bands</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">series</span>,
+        <span class="sig-arg">vname</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._get95_bands">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Returns 95% bands for series of all variables in vname
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>series</code></strong> - : record array containing the series</li>
+        <li><strong class="pname"><code>vname</code></strong> - : list of strings of variables in series for which we want to get the bands</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_long_term_prediction_plot"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_long_term_prediction_plot</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cpars</span>,
+        <span class="sig-arg">vind</span>,
+        <span class="sig-arg">w</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._long_term_prediction_plot">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Plots the simulated trajectory predicted from best fit parameters.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>cpars</code></strong> - : best fit  parameter set</li>
+        <li><strong class="pname"><code>vind</code></strong> - : List with indices(in self.phinames) to variables to be plotted</li>
+        <li><strong class="pname"><code>w</code></strong> - : current window number.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_monitor_plot"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_monitor_plot</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">series</span>,
+        <span class="sig-arg">prior</span>,
+        <span class="sig-arg">d2</span>,
+        <span class="sig-arg">w</span>,
+        <span class="sig-arg">data</span>,
+        <span class="sig-arg">vars</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="trunk.BIP.Bayes.Melding-pysrc.html#FitModel._monitor_plot">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  Plots real time data
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>series</code></strong> - : Record array with the simulated series.</li>
+        <li><strong class="pname"><code>prior</code></strong> - : Dctionary with the prior sample of Theta</li>
+        <li><strong class="pname"><code>d2</code></strong> - : Dictionary with data for the current fitting window.</li>
+        <li><strong class="pname"><code>w</code></strong> - : Integer id of the current fitting window.</li>
+        <li><strong class="pname"><code>data</code></strong> - : Dictionary with the full dataset.</li>
+        <li><strong class="pname"><code>vars</code></strong> - : List with variable names to be plotted.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="trunk.BIP-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://code.google.com/p/bayesian-inference">Project Homepage</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Jan 26 15:29:58 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

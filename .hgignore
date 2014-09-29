@@ -1,0 +1,13 @@
+syntax: glob
+*pyc$
+/*~$
+.idea
+.noseids
+.directory
+*.sqlite
+*.pickle
+*.xml
+.ropeproject
+.eric4project
+dist/*
+nbproject/*
