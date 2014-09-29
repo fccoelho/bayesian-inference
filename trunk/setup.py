@@ -6,7 +6,7 @@ from setuptools import find_packages
 
 
 setup(name='BIP',
-      version='0.5.15',
+      version='0.5.16',
       author='Flavio Codeco Coelho',
       author_email='fccoelho@gmail.com',
       url='http://code.google.com/p/bayesian-inference/',

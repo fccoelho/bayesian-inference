@@ -35,12 +35,8 @@ import like
 from BIP.Bayes.Samplers import MCMC
 import pdb
 
+curses = None
 
-#try:
-#    import psyco
-#    psyco.full()
-#except:
-#    pass
 
 sqlite3.register_adapter(numpy.int32, int)
 sqlite3.register_adapter(numpy.int64, int)
@@ -64,11 +60,14 @@ if Viz:
 __docformat__ = "restructuredtext en"
 
 
+
+
 class FitModel(object):
     """
     Fit a model to data generating
     Bayesian posterior distributions of input and
     outputs of the model.
+    Fitting process can be monitored via a curses interface.
     """
 
     def __init__(self, K, model, inits, tf, thetanames, phinames, wl=None, nw=1, verbose=False, burnin=1000,
@@ -129,6 +128,9 @@ class FitModel(object):
         self.tdists = None
         self.tpars = None
         self.tlims = None
+        if curses is not None:
+            self.dash = curses.newwin(5, 40, 7, 20)  # (height, width, begin_y, begin_x)
+
 
     def _plot_MAP(self, data, pmap):
         """
@@ -398,7 +400,11 @@ class FitModel(object):
                 tstrc = k + '(pk integer primary key asc autoincrement,' + ','.join(labs) + ')'
                 tstr = k + '(' + ','.join(labs) + ')'
                 if create:
-                    con.execute('create table ' + tstrc)
+                    try:
+                        con.execute('create table ' + tstrc)
+                    except sqlite3.OperationalError:
+                        print " Table creation failed with 'create table {}'".format(tstrc)
+                        raise sqlite3.OperationalError
                 #            elif isinstance(v, numpy.recarray):
                 #                nv = len(v.dtype.names) +1 #variables plus primary key
                 #                tstr = k+"("+','.join(v.dtype.names)+')'
@@ -416,6 +422,9 @@ class FitModel(object):
             except InterfaceError as err:
                 print err
                 raise InterfaceError
+            except sqlite3.OperationalError as err:
+                print "record insertion failed", err
+                raise sqlite3.OperationalError
         con.commit()
         con.close()
 

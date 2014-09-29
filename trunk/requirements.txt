@@ -4,3 +4,4 @@ openopt>0.5
 liveplots
 cython
 gnuplot-py
+npyscreen>=2.0
