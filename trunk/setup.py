@@ -1,9 +1,11 @@
 # -*- coding:utf-8 -*-
 
-from distutils.core import setup
+from setuptools import setup, Extension
 from Cython.Build import cythonize
 from setuptools import find_packages
 
+extensions = [Extension('BIP.SDE.cgillespie', ["BIP/SDE/cgillespie.pyx"]),]
+print cythonize(extensions)
 
 setup(name='BIP',
       version='0.5.16',
@@ -15,7 +17,7 @@ setup(name='BIP',
       packages=find_packages(),
       #['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
       package_data={'': ['*.txt']},
-      # ext_modules=cythonize("BIP/SDE/cgillespie.pyx"),
+      ext_modules=cythonize(extensions),
       install_requires=["numpy", "scipy", "openopt", "liveplots", "cython", "gnuplot-py"],
       test_suite='nose.collector',
       license='GPLv3',
