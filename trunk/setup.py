@@ -1,8 +1,12 @@
 # -*- coding:utf-8 -*-
 
 from setuptools import setup, Extension
-from Cython.Build import cythonize
 from setuptools import find_packages
+from Cython.Build import cythonize
+from Cython.Distutils import Extension
+from Cython.Distutils import build_ext
+
+
 
 extensions = [Extension('BIP.SDE.cgillespie', ["BIP/SDE/cgillespie.pyx"]),]
 print cythonize(extensions)
@@ -21,7 +25,7 @@ setup(name='BIP',
       install_requires=["numpy", "scipy", "openopt", "liveplots", "cython", "gnuplot-py"],
       test_suite='nose.collector',
       license='GPLv3',
-      #        cmdclass = {'build_ext': build_ext},
+      cmdclass={'build_ext': build_ext},
       #ext_modules=[Extension('BIP/SDE/gillespie', ['BIP/SDE/gillespie.c'])],
 
 )
