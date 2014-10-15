@@ -1,11 +1,16 @@
-
+# encoding: utf-8
+# cython: profile=True
+# cython.boundscheck = False
+# cython.cdivision = True
+# cython.wraparound = False
+#
 from numpy.random import uniform, exponential
 import numpy as np
 cimport numpy as np
 import time
 from random import random
 cimport cython
-#from cython_gsl cimport *
+from cython_gsl cimport *
 
 DTYPE = np.double
 UITYPE = np.uint 
@@ -15,7 +20,9 @@ ctypedef np.uint_t UITYPE_t
 
 cdef extern from "math.h":
     double log(double)
-cdef double clog(double x):
+
+@cython.profile(False)
+cdef inline double clog(double x):
     return log(x*x)
 
 cdef extern from "stdlib.h":
@@ -36,12 +43,13 @@ cdef extern from "/usr/include/gsl/gsl_randist.h":
                                             unsigned int n[]) nogil
 
 cdef gsl_rng *R = gsl_rng_alloc(gsl_rng_mt19937)
-    
-cdef double crandom():
+
+@cython.profile(False)
+cdef inline double crandom():
     cdef double rm = RAND_MAX
     return c_libc_random()/rm
 
-cdef gsl_multinomial(np.ndarray[DTYPE_t, ndim=1] p, unsigned int N):
+cdef inline int gsl_multinomial(np.ndarray[DTYPE_t, ndim=1] p, unsigned int N):
     cdef:
        size_t K = p.shape[0]
        np.ndarray[np.uint32_t, ndim=1] n = np.empty_like(p, dtype='uint32')
@@ -92,8 +100,11 @@ cdef class Model(object):
     
     def getStats(self):
         return self.time,self.res,self.steps
-    
-    cdef int GSSA(self, unsigned int tmax=50, unsigned int round=0) except *:
+
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
+    @cython.cdivision(True)
+    cdef inline int GSSA(self, unsigned int tmax=50, unsigned int round=0) except *:
         '''
         Gillespie Direct algorithm
         '''
@@ -146,17 +157,22 @@ cdef class Model(object):
         pass
 
 @cython.boundscheck(False)
-cpdef double l1(np.ndarray[np.float64_t,ndim=1] r,np.ndarray[np.int_t,ndim=1] ini):
+@cython.wraparound(False)
+@cython.cdivision(True)
+cpdef inline double l1(np.ndarray[np.float64_t,ndim=1] r,np.ndarray[np.int_t,ndim=1] ini):
     return r[0]*ini[0]*ini[1]
-@cython.boundscheck(False)    
-cpdef double l2(np.ndarray[np.float64_t,ndim=1] r,np.ndarray[np.int_t,ndim=1] ini):
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+cpdef inline double l2(np.ndarray[np.float64_t,ndim=1] r,np.ndarray[np.int_t,ndim=1] ini):
     return r[1]*ini[1]
 
 cpdef main():
     vars = ['s','i','r']
-    cdef np.ndarray[np.int_t,ndim=1] ini= np.array([500,1,0])
-    cdef np.ndarray[np.float64_t,ndim=1] rates = np.array([.001,.1],dtype=np.float64)
-    cdef np.ndarray[np.int_t,ndim=2] tm = np.array([[-1,0],[1,-1],[0,1]],dtype=np.int)
+    cdef:
+        np.ndarray[np.int_t,ndim=1] ini= np.array([500,1,0])
+        np.ndarray[np.float64_t,ndim=1] rates = np.array([.001,.1],dtype=np.float64)
+        np.ndarray[np.int_t,ndim=2] tm = np.array([[-1,0],[1,-1],[0,1]],dtype=np.int)
     prop = [l1,l2]
     M = Model(vnames = vars,rates = rates,inits=ini, tmat=tm,propensity=prop)
     t0=time.time()

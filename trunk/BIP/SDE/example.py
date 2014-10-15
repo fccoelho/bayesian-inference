@@ -41,8 +41,10 @@ Ic -> R : rc*Ic
 # pyximport.install()
 from gillespie import Model
 import time
+import cProfile, pstats
 from numpy import array
 from cgillespie import Model as CModel
+
 
 vnames = ['S','E','Is','Ic','R']
 #rates: b,ks,kc,rs,rc
@@ -69,20 +71,23 @@ CM = CModel(vnames=vnames, rates=r, inits=ini, tmat=tmat, propensity=propf)
 
 # timing python gillespie
 t0 = time.time()
-M.run(tmax=80, reps=1000, viz=0, serial=0)
+M.run(tmax=80, reps=1000, viz=0, serial=1)
 pt = time.time()-t0
-print 'Python total time: ',pt, ' seconds.'
+print 'Python total time: ', pt, ' seconds.'
 t, series, steps, evts = M.getStats()
 #print evts
-print steps,'steps'
+#print steps,'steps'
 
 # timing cython gillespie
+# cProfile.runctx("CM.run(tmax=80, reps=1000)", globals(), locals(), 'cgil_Profile.prof')
 t0 = time.time()
 CM.run(tmax=80, reps=1000)
 ct = time.time()-t0
 print 'Cython total time: ',ct, ' seconds.'
+# s = pstats.Stats('cgil_Profile.prof')
+# s.strip_dirs().sort_stats("time").print_stats()
 t2, series2, steps2 = CM.getStats()
-print steps2, ' steps'
+#print steps2, ' steps'
 print "Cython speedup: %sx" % (pt/ct)
 from pylab import plot, show, legend, errorbar, title, figure
 print series.shape

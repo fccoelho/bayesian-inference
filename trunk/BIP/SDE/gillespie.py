@@ -187,7 +187,7 @@ def main():
     #prop=[lambda r, ini:r[0]*ini[0]*ini[1],lambda r,ini:r[0]*ini[1]]
     M = Model(vnames=vnames, rates=rates, inits=ini, tmat=tm, propensity=[p1, p2])
     t0 = time.time()
-    M.run(tmax=80, reps=1000, viz=0, serial=0)
+    M.run(tmax=80, reps=1000, viz=0, serial=1)
     print 'total time: ', time.time()-t0
     t, series, steps, evts = M.getStats()
     ser = series.mean(axis=0)
