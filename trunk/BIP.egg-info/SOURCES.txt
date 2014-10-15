@@ -22,6 +22,7 @@ BIP/Bayes/Samplers/__init__.py
 BIP/Bayes/general/__init__.py
 BIP/Bayes/general/bvariables.py
 BIP/SDE/__init__.py
+BIP/SDE/cgillespie.c
 BIP/SDE/example.py
 BIP/SDE/gillespie.py
 BIP/SMC/__init__.py
