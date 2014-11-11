@@ -8,9 +8,9 @@ from numpy.random import uniform, exponential
 import numpy as np
 cimport numpy as np
 import time
-from random import random
+# from random import random
 cimport cython
-from cython_gsl cimport *
+# from cython_gsl cimport *
 
 DTYPE = np.double
 UITYPE = np.uint 
@@ -52,7 +52,7 @@ cdef inline double crandom():
 cdef inline int gsl_multinomial(np.ndarray[DTYPE_t, ndim=1] p, unsigned int N):
     cdef:
        size_t K = p.shape[0]
-       np.ndarray[np.uint32_t, ndim=1] n = np.empty_like(p, dtype='uint32')
+       np.ndarray[np.uint32_t, ndim=1] n = np.zeros_like(p, dtype='uint32')
 
     # void gsl_ran_multinomial (const gsl_rng * r, size_t K, unsigned int N, const double p[], unsigned int n[])
     gsl_ran_multinomial(R, K, N, &p[0], &n[0])
@@ -84,7 +84,7 @@ cdef class Model(object):
         self.steps = 0
 
     cpdef run(self, method='SSA', int tmax=10, int reps=1):
-        cdef np.ndarray[np.int_t,ndim=3] res = np.empty((tmax,self.nvars,reps),dtype=np.int)
+        cdef np.ndarray[np.int_t,ndim=3] res = np.zeros((tmax,self.nvars,reps),dtype=np.int)
         cdef np.ndarray[np.int_t,ndim=1] tvec = np.arange(tmax,dtype=np.int)
         self.res = res
         cdef int i, steps
@@ -115,11 +115,11 @@ cdef class Model(object):
         cdef double tc, tau, a0
         #cdef np.ndarray[INT_t] tvec
         l=self.pvl
-        cdef np.ndarray[np.double_t,ndim=1,mode="c"] pv = np.empty(l,dtype='double')
+        cdef np.ndarray[np.double_t,ndim=1,mode="c"] pv = np.zeros(l,dtype='double')
 
         cdef:
             size_t K = l
-            np.ndarray[np.uint32_t, ndim=1] n = np.empty(l, dtype='uint32')
+            np.ndarray[np.uint32_t, ndim=1] n = np.zeros(l, dtype='uint32')
         
         tm = self.tm
         #tvec = np.arange(tmax,dtype=int)
