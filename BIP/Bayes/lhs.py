@@ -11,7 +11,7 @@
 # Copyright:   (c) 2008 by the Author
 # Licence:     GPL
 #-----------------------------------------------------------------------------
-__docformat__ = "restructuredtext en"
+
 from __future__ import absolute_import
 from __future__ import print_function
 from six.moves import map

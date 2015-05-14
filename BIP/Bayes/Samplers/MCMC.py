@@ -6,23 +6,28 @@ Module implementing MCMC samplers
     - Metropolis: Adaptive Metropolis Hastings sampler
     - Dream: DiffeRential Evolution Adaptive Markov chain sampler
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import sys
 import time
 import pdb
 import cython
-import xmlrpclib
+import six.moves.xmlrpc_client
 import logging
 from multiprocessing import Pool
 from random import sample
 
 import numpy as np
-from liveplots.xmlrpcserver import rpc_plot
+# from liveplots.xmlrpcserver import rpc_plot
 from numpy import array, mean, isnan, nan_to_num, var, sqrt, inf, exp, greater, less, identity, ones, zeros, floor, log, \
     recarray, nan
 from numpy.random import random, multivariate_normal, multinomial, rand
 import scipy.stats as st
 from scipy.stats import uniform, norm, scoreatpercentile
 from scipy import cov
+import six
+from six.moves import range
+from six.moves import zip
 
 
 __author__ = "fccoelho"
@@ -42,8 +47,8 @@ def timeit(method):
         result = method(*args, **kw)
         te = time.time()
 
-        print '%r  %2.2f sec' % \
-              (method.__name__, te - ts)
+        print('%r  %2.2f sec' % \
+              (method.__name__, te - ts))
         return result
 
     return timed
@@ -197,8 +202,8 @@ class _Sampler(object):
         while p == 0 or p2 == 0:
             p = rpc_plot()
             p2 = rpc_plot(hold=1)
-        self.pserver = xmlrpclib.ServerProxy('http://localhost:%s' % p)
-        self.pserver2 = xmlrpclib.ServerProxy('http://localhost:%s' % p2)
+        self.pserver = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s' % p)
+        self.pserver2 = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s' % p2)
 
     def shutdown_xmlrpc_plotserver(self):
         self.pserver.flush_queue()
@@ -216,29 +221,29 @@ class _Sampler(object):
         if j < 100:
             return
         self.gr_convergence(j, j - 100)
-        print "Gelman-Rubin's R: ", self._R
+        print("Gelman-Rubin's R: ", self._R)
         self.pserver.clearFig()
         thin = j // 500 if j // 500 != 0 else 1  #history is thinned to show at most 500 points, equally spaced over the entire range
         chaindata = self.history[:j:thin].T.tolist()
         obs = [];
         lbs = []
-        for k, d in self.data.items():
+        for k, d in list(self.data.items()):
             if len(d.shape) > 1:
                 obs += [nan_to_num(i).tolist() for i in d.T]
                 lbs += [k + str(i) for i in range(d.shape[1])]
             else:
                 obs += nan_to_num(d).tolist()
                 lbs += [k]
-        self.pserver.lines(chaindata, range(j - (len(chaindata[0])), j), self.parnames, "Chain Progress.", 'points', 1)
+        self.pserver.lines(chaindata, list(range(j - (len(chaindata[0])), j)), self.parnames, "Chain Progress.", 'points', 1)
         self.pserver2.lines(obs, [], lbs, "Fit", 'points')
         s = j - 50 if 3 * j // 4 < 50 else 3 * j // 4
         #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
-        series = [mean(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
+        series = [mean(self.phi[k][s:j], axis=0).tolist() for k in list(self.data.keys())]
         bi = self.liklist.index(max(self.liklist[s:j]))  #index of the best fit
-        series = [mean(self.phi[k][s:j], axis=0).tolist() for k in self.data.keys()]
-        best = [self.phi[k][bi].tolist() for k in self.data.keys()]
-        mlabels = ['Mean ' + l for l in self.data.keys()]
-        blabels = ['Best ' + l for l in self.data.keys()]
+        series = [mean(self.phi[k][s:j], axis=0).tolist() for k in list(self.data.keys())]
+        best = [self.phi[k][bi].tolist() for k in list(self.data.keys())]
+        mlabels = ['Mean ' + l for l in list(self.data.keys())]
+        blabels = ['Best ' + l for l in list(self.data.keys())]
         self.pserver2.lines(series, [], mlabels, "Mean fit of last %s samples" % (j - s), 'lines')
         self.pserver2.lines(best, [], blabels, "mean and best fit of last %s samples" % (j - s), 'lines')
         self.pserver2.clearFig()
@@ -374,7 +379,7 @@ class Metropolis(_Sampler):
         self.scaling_factor = (2.38 ** 2) / self.dimensions
         self.e = 1e-20
         if kwargs:
-            for k, v in kwargs.iteritems():
+            for k, v in six.iteritems(kwargs):
                 exec ('self.%s = %s' % (k, v))
         self.nchains = 1
         # Combined history of accepted samples
@@ -463,7 +468,7 @@ class Metropolis(_Sampler):
         ar = 0  #total samples,accepted samples, rejected proposals, acceptance rate
         last_lik = None
         while j < self.samples + self.burnin:
-            print j
+            print(j)
             self.meld.current_step = j
             if self.meld.stop_now:
                 return self.shut_down('user interrupted')
@@ -487,10 +492,10 @@ class Metropolis(_Sampler):
                     ar = (i - rej) / float(i)
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        print "--> %s: Acc. ratio: %s" % (rej, ar)
+                        print("--> %s: Acc. ratio: %s" % (rej, ar))
                         # Store accepted values
                         #            print "nchains:", self.nchains
-            for c, t, pr, a in zip(range(self.nchains), theta, prop,
+            for c, t, pr, a in zip(list(range(self.nchains)), theta, prop,
                                    accepted):  #Iterates over the results of each chain
                 #if not accepted repeat last value
                 if not a:
@@ -506,10 +511,10 @@ class Metropolis(_Sampler):
             #print j,  len(self.seqhist[0])
             if j % 100 == 0 and j > 0:
                 if self.trace_acceptance:
-                    print "++>%s,%s: Acc. ratio: %s" % (j, i, ar)
+                    print("++>%s,%s: Acc. ratio: %s" % (j, i, ar))
                     self._watch_chain(j)
-                if self.trace_convergence: print "++> %s: Likvar: %s\nML:%s" % (
-                    j, self.likvariance, np.max(self.liklist) )
+                if self.trace_convergence: print("++> %s: Likvar: %s\nML:%s" % (
+                    j, self.likvariance, np.max(self.liklist) ))
             #            print "%s\r"%j
             last_lik = lik
             last_prop = prop
@@ -523,9 +528,9 @@ class Metropolis(_Sampler):
         self.meld.post_theta = ptheta  #self._imp_sample(self.meld.L,ptheta,liklist)
         self.meld.likmax = max(self.liklist)
         self.meld.DIC = self.DIC
-        print "Total steps(i): ", i, "rej:", rej, "j:", j
-        print ">>> Acceptance rate: %s" % ar
-        print "MLE of parameters: %s" % ptheta[self.best_prop_index]
+        print("Total steps(i): ", i, "rej:", rej, "j:", j)
+        print(">>> Acceptance rate: %s" % ar)
+        print("MLE of parameters: %s" % ptheta[self.best_prop_index])
         self.shut_down('Finished normally')
         return 1
 
@@ -551,7 +556,7 @@ class Metropolis(_Sampler):
         if isinstance(s1, np.recarray):
             assert isinstance(s2, dict)
             err = []
-            for k in s2.keys():
+            for k in list(s2.keys()):
                 e = np.sqrt(np.mean((s1[k] - s2[k]) ** 2.))
                 err.append(e)
         if isinstance(s1, list):
@@ -576,7 +581,7 @@ class Metropolis(_Sampler):
             returns a sample of size n
         """
         #sanitizing weights
-        print "Starting importance Sampling"
+        print("Starting importance Sampling")
         w /= sum(w)
         w = np.nan_to_num(w)
         j = 0
@@ -590,7 +595,7 @@ class Metropolis(_Sampler):
                 smp[j] = data[j]
                 j += 1
             k += 1
-        print "Done importance sampling."
+        print("Done importance sampling.")
         return smp
 
     #    def _watch_chain(self, j):
@@ -661,7 +666,7 @@ class Dream(_Sampler):
         self.DEpairs = DEpairs
         self.delayRej = 1
         if kwargs:
-            for k, v in kwargs.iteritems():
+            for k, v in six.iteritems(kwargs):
                 exec ('self.%s = %s' % (k, v))
         self._R = array([2] * self.nchains)  #initializing _R
         self.maxChainDraws = floor(samples / self.nchains)
@@ -741,7 +746,7 @@ class Dream(_Sampler):
         elif p2 == -inf:  #np.exp(p2)==0
             alpha = 1
         else:
-            print "proposal's logP: ", p2
+            print("proposal's logP: ", p2)
             alpha = 0
         return alpha
 
@@ -800,7 +805,7 @@ class Dream(_Sampler):
         delta = (self.nchains - 1) // 2 if self.nchains > 2 else 1
         gam = 2.38 / sqrt(2 * delta * self.dimensions)
         zis = []
-        for c in xrange(self.nchains):
+        for c in range(self.nchains):
             o = 0
             while 1:  #check constraints
                 e = [uniform(-i, 2 * i).rvs() for i in b]
@@ -812,11 +817,11 @@ class Dream(_Sampler):
                     dif += array(d1) - array(d2)
                 zi = array(proptheta[c]) + (ones(self.dimensions) + e) * gam * dif + eps
                 #revert offlimits proposals
-                for i in xrange(len(zi)):
+                for i in range(len(zi)):
                     if zi[i] <= self.parlimits[i][0] or zi[i] >= self.parlimits[i][1]:  # or isnan(zi):
                         zi[i] = proptheta[c][i]
                 #Cross over
-                for i in xrange(len(zi)):
+                for i in range(len(zi)):
                     zi[i] = proptheta[c][i] if rand() < 1 - CR else zi[i]
                 zis.append(zi)
                 if self.check_constraints(zi):
@@ -877,8 +882,8 @@ class Dream(_Sampler):
         '''
         pri = 1
         pris = []
-        for c in xrange(len(theta)):  #iterate over chains
-            for i in xrange(len(theta[c])):  #iterate  over parameters
+        for c in range(len(theta)):  #iterate over chains
+            for i in range(len(theta[c])):  #iterate  over parameters
                 try:
                     pri *= self.parpriors[self.parnames[i]].pdf(theta[c][i])
                 except AttributeError:  #in case distribution is discrete
@@ -896,7 +901,7 @@ class Dream(_Sampler):
         posts = (log(array(pris)) + array(listoliks)).tolist()
 
         if isnan(posts).any():
-            print "\nLikelihoods returned some NaNs. Dropping to debug mode:\n"
+            print("\nLikelihoods returned some NaNs. Dropping to debug mode:\n")
             pdb.set_trace()
         return posts, listoliks
 
@@ -950,11 +955,11 @@ class Dream(_Sampler):
                 if i % 100 == 0:
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        print "--> %s rejected. Acc. ratio: %2.2f" % (rej, ar)
+                        print("--> %s rejected. Acc. ratio: %2.2f" % (rej, ar))
 
 
             # Store accepted values
-            for c, t, pr, acc in zip(range(self.nchains), theta, prop,
+            for c, t, pr, acc in zip(list(range(self.nchains)), theta, prop,
                                      accepted):  #Iterates over the results of each chain
                 #if not accepted repeat last value
                 if not acc:
@@ -970,7 +975,7 @@ class Dream(_Sampler):
                         self.phi[j] = pr[0] if self.t == 1 else [tuple(point) for point in pr]
                         ptheta[j] = tuple(t)
                     except IndexError:
-                        print "index error", j, self.phi.shape
+                        print("index error", j, self.phi.shape)
                     self.liklist.append(liks[c])
                     if j == self.samples + self.burnin: break
                     j += 1  #update accepted samples counter
@@ -989,10 +994,10 @@ class Dream(_Sampler):
             el = time.time() - t0
             if el > 10:
                 if self.trace_acceptance:
-                    print "++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar)
+                    print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
                     self._watch_chain(j)
                 if self.trace_convergence:
-                    print "++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.max(self.liklist) )
+                    print("++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.max(self.liklist) ))
                 t0 = time.time()
             #            print "%s\r"%j
             last_pps = pps
@@ -1009,8 +1014,8 @@ class Dream(_Sampler):
         self.meld.post_theta = ptheta  #self._imp_sample(self.meld.L,ptheta,liklist)
         self.meld.likmax = max(self.liklist)
         self.meld.DIC = self.DIC
-        print "Total steps(i): ", i, "rej:", rej, "j:", j
-        print ">>> Acceptance rate: %1.3f" % ar
+        print("Total steps(i): ", i, "rej:", rej, "j:", j)
+        print(">>> Acceptance rate: %1.3f" % ar)
         self.shut_down('Finished normally.')
         return 1
 

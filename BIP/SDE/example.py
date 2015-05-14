@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        example.py
@@ -43,7 +45,7 @@ import time
 
 from numpy import array
 
-from gillespie import Model
+from BIP.SDE.gillespie import Model
 from BIP.SDE.cgillespie import Model as CModel
 
 
@@ -74,7 +76,7 @@ CM = CModel(vnames=vnames, rates=r, inits=ini, tmat=tmat, propensity=propf)
 t0 = time.time()
 M.run(tmax=80, reps=1000, viz=0, serial=1)
 pt = time.time()-t0
-print 'Python total time: ', pt, ' seconds.'
+print('Python total time: ', pt, ' seconds.')
 t, series, steps, evts = M.getStats()
 #print evts
 #print steps,'steps'
@@ -84,14 +86,14 @@ t, series, steps, evts = M.getStats()
 t0 = time.time()
 CM.run(tmax=80, reps=1000)
 ct = time.time()-t0
-print 'Cython total time: ',ct, ' seconds.'
+print('Cython total time: ',ct, ' seconds.')
 # s = pstats.Stats('cgil_Profile.prof')
 # s.strip_dirs().sort_stats("time").print_stats()
 t2, series2, steps2 = CM.getStats()
 #print steps2, ' steps'
-print "Cython speedup: %sx" % (pt/ct)
+print("Cython speedup: %sx" % (pt/ct))
 from pylab import plot, show, legend, title, figure
-print series.shape
+print(series.shape)
 #print cevts
 plot(t, series.mean(axis=0),'-o')
 title('Python curve')

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
@@ -10,12 +12,12 @@
 # Copyright:   (c) 2003-2010 by the Author
 # Licence:     GPL v3
 #-----------------------------------------------------------------------------
-import cPickle as CP
+import six.moves.cPickle as CP
 import copy
 import os
 import sqlite3
 import sys
-import xmlrpclib
+import six.moves.xmlrpc_client
 from multiprocessing import Pool
 from time import time
 from sqlite3 import InterfaceError
@@ -29,11 +31,13 @@ from scipy import stats, optimize as optim
 from scipy.stats import nanmean
 from scipy.stats.kde import gaussian_kde
 
-import PlotMeld as PM
-import lhs
-import like
+from BIP.Bayes import PlotMeld as PM
+from BIP.Bayes import lhs
+from BIP.Bayes import like
 from BIP.Bayes.Samplers import MCMC
 import pdb
+from six.moves import range
+from six.moves import zip
 
 curses = None
 
@@ -48,9 +52,9 @@ try:
     Viz = True
 except:
     Viz = False
-    print r"""Please install Gnuplot-py to enable realtime visualization.
+    print(r"""Please install Gnuplot-py to enable realtime visualization.
     http://gnuplot-py.sourceforge.net/
-    """
+    """)
 
 if Viz:
     dtplot = RTplot();
@@ -106,9 +110,9 @@ class FitModel(object):
         self.ntheta = len(thetanames)
         self.phinames = phinames
         self.thetanames = thetanames
-        self.model.func_globals['inits'] = self.inits
-        self.model.func_globals['tf'] = self.tf
-        self.model.func_globals['thetanames'] = self.thetanames
+        self.model.__globals__['inits'] = self.inits
+        self.model.__globals__['tf'] = self.tf
+        self.model.__globals__['thetanames'] = self.thetanames
         self.wl = wl
         self.nw = nw
         self.done_running = False
@@ -142,17 +146,17 @@ class FitModel(object):
             - `pmap`: MAP parameter values
         """
         p = RTplot(persist=1)
-        self.model.func_globals['inits'] = self.finits;
-        self.model.func_globals['tf'] = self.full_len
+        self.model.__globals__['inits'] = self.finits;
+        self.model.__globals__['tf'] = self.full_len
         simseries = self.model(list(pmap))
-        self.model.func_globals['inits'] = self.inits;
-        self.model.func_globals['tf'] = self.tf
+        self.model.__globals__['inits'] = self.inits;
+        self.model.__globals__['tf'] = self.tf
         if 'time' in data:
             data.pop('time')
-        for n, d in data.items():
-            p.plotlines(nan_to_num(d).tolist(), range(len(d)), ['Obs. %s' % n], '', 'points', 0)
+        for n, d in list(data.items()):
+            p.plotlines(nan_to_num(d).tolist(), list(range(len(d))), ['Obs. %s' % n], '', 'points', 0)
             v = self.phinames.index(n)
-            p.plotlines(simseries.T[v].tolist(), range(len(d)), data.keys(),
+            p.plotlines(simseries.T[v].tolist(), list(range(len(d))), list(data.keys()),
                         "Simulation with MAP parameters %s=%s" % (self.thetanames, pmap))
 
     def AIC_from_RSS(self, ):
@@ -224,7 +228,7 @@ class FitModel(object):
         if isinstance(s1, recarray):
             assert isinstance(s2, dict)
             err = []
-            for k in s2.keys():
+            for k in list(s2.keys()):
                 if k not in s1.dtype.names:
                     continue
                 ls1 = len(s1[k])  #handles the cases where data is slightly longer that simulated series.
@@ -292,7 +296,7 @@ class FitModel(object):
             self.Me.setThetaFromData(self.thetanames, prior['theta'], self.tlims)
             self.Me.setPhiFromData(self.phinames, prior['phi'], self.plims)
         else:
-            print "++++>"
+            print("++++>")
             self.Me.setTheta(self.thetanames, self.tdists, self.tpars, self.tlims)
             self.Me.setPhi(self.phinames, self.pdists, self.ppars, self.plims)
 
@@ -308,24 +312,24 @@ class FitModel(object):
         self._init_priors(prior)
         succ = 0
         att = 1
-        for n in data.keys():
+        for n in list(data.keys()):
             if n not in self.phinames:
                 data.pop(n)
         if method == "SIR":
             while not succ:  #run sir Until is able to get a fit
-                print 'attempt #', att
+                print('attempt #', att)
                 succ = self.Me.sir(data=data, variance=likvar, pool=self.pool, t=self.tf)
                 att += 1
             pt, series = self.Me.getPosteriors(t=self.tf)
         elif method == "MCMC":
             while not succ:  #run sir Until is able to get a fitd == "mcmc":
-                print 'attempt #', att
+                print('attempt #', att)
                 succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='MH')
             pt = self.Me.post_theta
             series = self.Me.post_phi
         elif method == "DREAM":
             while not succ:  #run sir Until is able to get a fitd == "mcmc":
-                print 'attempt #', att
+                print('attempt #', att)
                 succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='dream',
                                         constraints=self.constraints)
             pt = self.Me.post_theta
@@ -340,14 +344,14 @@ class FitModel(object):
         pp = series[:, -1]
         # TODO: figure out what to do by default with inits
         if self.nw > 1 and self.adjinits and not self.ew:
-            adiff = array([abs(pp[vn] - data[vn][-1]) for vn in data.keys()])
+            adiff = array([abs(pp[vn] - data[vn][-1]) for vn in list(data.keys())])
             diff = adiff.sum(axis=0)  #sum errors for all oserved variables
             initind = diff.tolist().index(min(diff))
             self.inits = [pp[vn][initind] for vn in self.phinames]
             for i, v in enumerate(self.phinames):
-                if v in data.keys():
+                if v in list(data.keys()):
                     self.inits[i] = data[v][-1]
-            self.model.func_globals['inits'] = self.inits
+            self.model.__globals__['inits'] = self.inits
 
         if predlen:
             predseries = self.Me.getPosteriors(predlen)[1]
@@ -366,7 +370,7 @@ class FitModel(object):
             '''
             var is a dictionary.
             '''
-            for r in zip(*var.values()):
+            for r in zip(*list(var.values())):
                 if not isinstance(r, tuple):
                     r = (r,)
                 t = []
@@ -387,10 +391,10 @@ class FitModel(object):
             create = False
         con = sqlite3.connect(dbname)
         #create tables
-        for k, v in data.items():
+        for k, v in list(data.items()):
             if isinstance(v, dict):
                 labs = []
-                for k2, v2 in v.items():
+                for k2, v2 in list(v.items()):
                     if isinstance(v2, numpy.ndarray) and len(v2.shape) > 1:
                         labs += [k2 + str(i) for i in range(v2.shape[1])]
                     else:
@@ -403,7 +407,7 @@ class FitModel(object):
                     try:
                         con.execute('create table ' + tstrc)
                     except sqlite3.OperationalError:
-                        print " Table creation failed with 'create table {}'".format(tstrc)
+                        print(" Table creation failed with 'create table {}'".format(tstrc))
                         raise sqlite3.OperationalError
                 #            elif isinstance(v, numpy.recarray):
                 #                nv = len(v.dtype.names) +1 #variables plus primary key
@@ -420,10 +424,10 @@ class FitModel(object):
                 #                    con.execute("insert into "+tstr+" values("+",".join(['?']*nv)+")", r)
                 con.executemany("insert into " + tstr + " values(" + ",".join(['?'] * nv) + ")", row_generator(v))
             except InterfaceError as err:
-                print err
+                print(err)
                 raise InterfaceError
             except sqlite3.OperationalError as err:
-                print "record insertion failed", err
+                print("record insertion failed", err)
                 raise sqlite3.OperationalError
         con.commit()
         con.close()
@@ -458,21 +462,21 @@ class FitModel(object):
         prior = {'theta': [], 'phi': []}
         os.system('rm %s_*.pickle' % dbname)
         if self.wl == None:
-            self.wl = floor(len(d.values()[0]) / self.nw)
+            self.wl = floor(len(list(d.values())[0]) / self.nw)
         wl = self.wl
         for w in range(self.nw):
             t0 = time()
-            print '==> Window # %s of %s!' % (w + 1, self.nw)
+            print('==> Window # %s of %s!' % (w + 1, self.nw))
             if w > 0:
                 rt = (self.nw - w + 1) * tel
-                print "==> Remaining time: %s minutes and %s seconds." % (rt // 60, rt % 60)
+                print("==> Remaining time: %s minutes and %s seconds." % (rt // 60, rt % 60))
             self.tf = (w + 1) * wl if ew else wl  #setting tf according to window type
-            self.model.func_globals['tf'] = self.tf
+            self.model.__globals__['tf'] = self.tf
             d2 = {}
-            for k, v in d.items():  #Slicing data to the current window
+            for k, v in list(d.items()):  #Slicing data to the current window
                 d2[k] = v[:self.tf] if ew else v[w * wl:w * wl + wl]
             if w == 0 and adjinits:
-                for n in d2.keys():
+                for n in list(d2.keys()):
                     if n not in self.phinames:
                         continue
                     i = self.phinames.index(n)
@@ -480,7 +484,7 @@ class FitModel(object):
                         nanmean(d2[n][0]))
                     #TODO: figure out how to balance the total pop
                     #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting susceptibles
-                    self.model.func_globals['inits'] = self.inits
+                    self.model.__globals__['inits'] = self.inits
             pt, pp, series, predseries, att = self.do_inference(data=d2, prior=prior, predlen=wl, method=method,
                                                                 likvar=likvar)
             if self.Me.stop_now:
@@ -512,7 +516,7 @@ class FitModel(object):
         self.Me.AIC = self.AIC
         self.Me.BIC = self.BIC
         self.DIC = self.Me.DIC
-        print "time: %s seconds" % (time() - start)
+        print("time: %s seconds" % (time() - start))
 
         self.done_running = True
 
@@ -532,8 +536,8 @@ class FitModel(object):
             dates = ts[w * self.wl:w * self.wl + self.wl]
             preddates = ts[(w + 1) * self.wl:(w + 1) * self.wl + self.wl]
         else:
-            dates = range(w * self.wl, w * self.wl + self.wl)
-            preddates = range((w + 1) * self.wl, (w + 1) * self.wl + self.wl)
+            dates = list(range(w * self.wl, w * self.wl + self.wl))
+            preddates = list(range((w + 1) * self.wl, (w + 1) * self.wl + self.wl))
         # Parameters table
         ptd = {'time': [dates[-1]] * len(pt[pt.dtype.names[0]])}
         for n in pt.dtype.names:
@@ -559,11 +563,11 @@ class FitModel(object):
         Sets up realtime plotting for inference
         """
         #theta histograms (for current window)
-        self.hst = xmlrpclib.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)  #RTplot()
+        self.hst = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)  #RTplot()
         #full data and simulated series
-        self.fsp = xmlrpclib.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)  #RTplot()
+        self.fsp = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)  #RTplot()
         # phi time series (model output for the current window)
-        self.ser = xmlrpclib.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)  #RTplot()
+        self.ser = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)  #RTplot()
 
     def _get95_bands(self, series, vname):
         '''
@@ -588,15 +592,15 @@ class FitModel(object):
         """
         if self.full_len - (self.wl * (w + 1)) == 0:
             return
-        self.model.func_globals['tf'] = self.full_len if self.ew else self.full_len - (self.wl * (w + 1))
-        if self.ew: self.model.func_globals['inits'] = self.finits
+        self.model.__globals__['tf'] = self.full_len if self.ew else self.full_len - (self.wl * (w + 1))
+        if self.ew: self.model.__globals__['inits'] = self.finits
         simseries = self.model(cpars)
         simseries = [simseries[:, i].tolist() for i in range(self.nphi) if i in vind]
         snames = [n for n in self.phinames if i in vind]
-        self.model.func_globals['tf'] = self.tf
+        self.model.__globals__['tf'] = self.tf
         xinit = 0 if self.ew else self.wl * w + self.wl
         #        print xinit, xinit+len(simseries[0])
-        self.fsp.lines(simseries, range(xinit, xinit + len(simseries[0])), snames,
+        self.fsp.lines(simseries, list(range(xinit, xinit + len(simseries[0]))), snames,
                        "Best fit simulation after window %s" % (w + 1))
 
     def _monitor_plot(self, series, prior, d2, w, data, variables):
@@ -612,7 +616,7 @@ class FitModel(object):
             - `variables`: List with variable names to be plotted.
         """
         diff = zeros(1)
-        for vn in d2.keys():
+        for vn in list(d2.keys()):
             #sum errors for all observed variables
             if isinstance(d2[vn], numpy.ndarray) and len(d2[vn].shape) > 1:
                 diff = abs(series[vn][:, -1] - nanmean(d2[vn][-1]))
@@ -653,7 +657,7 @@ class FitModel(object):
         except:
             if not self.done_running:
                 return
-        if obs.has_key('time'):
+        if 'time' in obs:
             tim = numpy.array(obs['time'])
         else:
             tim = numpy.arange(self.nw * self.wl)
@@ -689,7 +693,7 @@ class FitModel(object):
 
         for w in range(self.nw):
             fn = "%s_%s.pickle" % (nam, w)
-            print fn
+            print(fn)
             f = open(fn, 'r')
             a, b, obs, pred, samples = CP.load(f)
             f.close()
@@ -751,7 +755,7 @@ class Meld(object):
         else:
             self.viz = False
         if self.verbose == 2:
-            self.every_run_plot = xmlrpclib.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)
+            self.every_run_plot = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)
         self.po = Pool()  #pool of processes for parallel processing
 
     def current_plot(self, series, data, idx, vars=[], step=0):
@@ -771,10 +775,10 @@ class Meld(object):
         except AttributeError:
             pass
         #print series.shape, idx
-        best_series = [series[k][idx].tolist() for k in data.keys()]
-        d = [data[k].tolist() for k in data.keys()]
-        self.every_run_plot.lines(d, [], data.keys(), "Best fit. Last updated on %s" % step, 'points')
-        self.every_run_plot.lines(best_series, [], data.keys(), "Best fit. Last updated on %s" % step, 'lines')
+        best_series = [series[k][idx].tolist() for k in list(data.keys())]
+        d = [data[k].tolist() for k in list(data.keys())]
+        self.every_run_plot.lines(d, [], list(data.keys()), "Best fit. Last updated on %s" % step, 'points')
+        self.every_run_plot.lines(best_series, [], list(data.keys()), "Best fit. Last updated on %s" % step, 'lines')
         self.every_run_plot.clearFig()
         self.lastidx = idx
 
@@ -862,7 +866,7 @@ class Meld(object):
         self.q1theta.dtype.names = names
         self.post_theta.dtype.names = names
         self.tlimits = limits
-        tlimits = dict(zip(names, limits))
+        tlimits = dict(list(zip(names, limits)))
 
         class Proposal:
             "class wrapping a kde adding similar interface to stats dists"
@@ -960,7 +964,7 @@ class Meld(object):
         The model is run self.K times to obtain phi = M(theta).
         """
         #TODO: implement calculation of AIC,BIC and DIC for SIR
-        for i in xrange(self.K):
+        for i in range(self.K):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = self.po.apply_async(self.model, theta)
             res = r.get()
@@ -979,7 +983,7 @@ class Meld(object):
             - `t`: length of the posterior time-series to return.
         """
         if not self.done_running:
-            print "Estimation has not yet been run"
+            print("Estimation has not yet been run")
             return
         if t > 1:
             self.post_phi = recarray((self.L, t), formats=['f8'] * self.nphi)
@@ -999,11 +1003,11 @@ class Meld(object):
         po = Pool()
         #random indices for the marginal posteriors of theta
         pti = lhs.lhs(stats.randint, (0, self.L), siz=(self.ntheta, self.L))
-        for i in xrange(self.L):  #Monte Carlo with values of the posterior of Theta
+        for i in range(self.L):  #Monte Carlo with values of the posterior of Theta
             theta = [self.post_theta[n][pti[j, i]] for j, n in enumerate(self.post_theta.dtype.names)]
             po.apply_async(enumRun, (self.model, theta, i), callback=cb)
             if i % 100 == 0 and self.verbose:
-                print "==> L = %s\r" % i
+                print("==> L = %s\r" % i)
 
         po.close()
         po.join()
@@ -1061,7 +1065,7 @@ class Meld(object):
         q2dens = gaussian_kde(array([self.q2phi[n] for n in self.q2phi.dtype.names]))
         #       Determining the pooled probabilities for each phi[i]
         #        qtilphi = zeros(self.K)
-        lastp = array([list(phi[i, -1]) for i in xrange(self.K)])
+        lastp = array([list(phi[i, -1]) for i in range(self.K)])
         #        print lastp,lastp.shape
         qtilphi = (phidens.evaluate(lastp.T) ** (1 - self.alpha)) * q2dens.evaluate(lastp.T) ** self.alpha
         return qtilphi / sum(qtilphi)
@@ -1086,23 +1090,23 @@ class Meld(object):
         #       Running the model ==========================
         phi = self.runModel(savetemp, t)
 
-        print "==> Done Running the K replicates\n"
+        print("==> Done Running the K replicates\n")
         # Do Log Pooling
         if not pool:
             qtilphi = ones(self.K)
         else:
             t0 = time()
             qtilphi = self.logPooling(phi)  #vector with probability of each phi[i] belonging to qtilphi
-            print "==> Done Running the Log Pooling (took %s seconds)\n" % (time() - t0)
+            print("==> Done Running the Log Pooling (took %s seconds)\n" % (time() - t0))
             qtilphi = nan_to_num(qtilphi)
             #print 'max(qtilphi): ', max(qtilphi)
             if sum(qtilphi) == 0:
-                print 'Pooled prior on ouputs is null, please check your priors, and try again.'
+                print('Pooled prior on ouputs is null, please check your priors, and try again.')
                 return 0
             #
-        print "Calculating weights"
+        print("Calculating weights")
         po = Pool()
-        jobs = [po.apply_async(fitfun, (phi[i], data)) for i in xrange(phi.shape[0])]
+        jobs = [po.apply_async(fitfun, (phi[i], data)) for i in range(phi.shape[0])]
         w = [j.get() for j in jobs]
         po.close();
         po.join()
@@ -1113,11 +1117,11 @@ class Meld(object):
         w = array(w) * qtilphi
         w /= sum(w)
         w = nan_to_num(w)
-        print 'max(w): %s\nmin:%s\nmean(w): %s\nvar(w): %s' % (max(w), min(w), mean(w), var(w))
+        print('max(w): %s\nmin:%s\nmean(w): %s\nvar(w): %s' % (max(w), min(w), mean(w), var(w)))
         if sum(w) == 0.0:
-            print 'Resampling weights are all zero, please check your model or data.'
+            print('Resampling weights are all zero, please check your model or data.')
             return 0
-        print "Resampling Thetas"
+        print("Resampling Thetas")
         t0 = time()
         j = 0
         while j < self.L:  # Extract L samples from q1theta
@@ -1125,7 +1129,7 @@ class Meld(object):
             if random() <= w[i]:
                 self.post_theta[j] = self.q1theta[i]  # retain the sample according with resampling prob.
                 j += 1
-        print "==> Done Resampling (L=%s) priors (took %s seconds)" % (self.L, (time() - t0))
+        print("==> Done Resampling (L=%s) priors (took %s seconds)" % (self.L, (time() - t0)))
 
         self.done_running = True
         return 1
@@ -1138,7 +1142,7 @@ class Meld(object):
             returns a sample of size n
         """
         #sanitizing weights
-        print "Starting importance Sampling"
+        print("Starting importance Sampling")
         w /= sum(w)
         w = nan_to_num(w)
         j = 0
@@ -1151,7 +1155,7 @@ class Meld(object):
                 j += 1
 
             k += 1
-        print "Done imp samp."
+        print("Done imp samp.")
         return smp
 
     def mcmc_run(self, data, t=1, likvariance=10, burnin=1000, nopool=False, method="MH", constraints=[]):
@@ -1206,18 +1210,18 @@ class Meld(object):
             prop = numpy.array(prop.tolist())
         t = prop.shape[0]  #1 if model's output is a scalar, larger if it is a time series (or a set of them)
         lik = 0
-        for k in xrange(self.nphi):  #loop on series
+        for k in range(self.nphi):  #loop on series
             if self.q2phi.dtype.names[k] not in data:
                 continue  #Only calculate liks of series for which we have data
             obs = array(data[self.q2phi.dtype.names[k]])
             if len(obs.shape) > 1:  #in case of more than one dataset
                 obs = clearNaN(obs).mean(axis=1)
             if po != None:  # Parallel version
-                liks = [po.apply_async(likfun, (obs[p], prop[p][k], 1. / likvar)) for p in xrange(t) if
+                liks = [po.apply_async(likfun, (obs[p], prop[p][k], 1. / likvar)) for p in range(t) if
                         not isnan(obs[p])]
                 lik = nansum([l.get() for l in liks])
             else:
-                liks = [likfun(obs[p], prop[p][k], 1. / likvar) for p in xrange(t) if not isnan(obs[p])]
+                liks = [likfun(obs[p], prop[p][k], 1. / likvar) for p in range(t) if not isnan(obs[p])]
                 lik = nansum(liks)
             #                if isnan(lik):
             #                    pdb.set_trace()
@@ -1243,11 +1247,11 @@ class Meld(object):
         else:
             t0 = time()
             qtilphi = self.logPooling(phi)  #vector with probability of each phi[i] belonging to qtilphi
-            print "==> Done Running the Log Pooling (took %s seconds)\n" % (time() - t0)
+            print("==> Done Running the Log Pooling (took %s seconds)\n" % (time() - t0))
             qtilphi = nan_to_num(qtilphi)
-            print 'max(qtilphi): ', max(qtilphi)
+            print('max(qtilphi): ', max(qtilphi))
             if sum(qtilphi) == 0:
-                print 'Pooled prior on ouputs is null, please check your priors, and try again.'
+                print('Pooled prior on ouputs is null, please check your priors, and try again.')
                 return 0
 
             #       Calculating the likelihood of each phi[i] considering the observed data
@@ -1255,7 +1259,7 @@ class Meld(object):
         lik = zeros(self.K)
         t0 = time()
         po = Pool()
-        for i in xrange(self.K):
+        for i in range(self.K):
             p = phi[i]
             l = self._output_loglike(p, data, likvar=variance)
             #            for n in data.keys():
@@ -1268,7 +1272,7 @@ class Meld(object):
             #                liklist=[po.apply_async(like.Normal,(data[n][m], j, 1./variance)) for m,j in enumerate(p[i])]
             #                l=sum([p.get() for p in liklist])
             if i % self.K / 10. == 0:
-                print "Likelihood calculation progress: %s of %s done." % (i, self.K)
+                print("Likelihood calculation progress: %s of %s done." % (i, self.K))
             lik[i] = l
         po.close()
         po.join()
@@ -1280,16 +1284,16 @@ class Meld(object):
             dtplot.gp.ylabel('simulated')
             obs = [];
             sim = []
-            for n in data.keys():
+            for n in list(data.keys()):
                 obs.append(data[n])
                 sim.append(phi[n].mean(axis=0).tolist())
-            dtplot.scatter(array(obs), array(sim), names=data.keys(), title='fit')
-            phiplot.plotlines(array(sim), names=data.keys(), title='Model Output')
+            dtplot.scatter(array(obs), array(sim), names=list(data.keys()), title='fit')
+            phiplot.plotlines(array(sim), names=list(data.keys()), title='Model Output')
             thplot.plothist(self.q1theta, title='Input parameters', names=self.q1theta.dtype.names)
-        print "==> Done Calculating Likelihoods (took %s seconds)" % (time() - t0)
+        print("==> Done Calculating Likelihoods (took %s seconds)" % (time() - t0))
         lr = nan_to_num(max(lik) / min(lik))
-        print '==> Likelihood (min,mean,max,sum): ', min(lik), mean(lik), max(lik), sum(lik)
-        print "==> Likelihood ratio of best run/worst run: %s" % (lr,)
+        print('==> Likelihood (min,mean,max,sum): ', min(lik), mean(lik), max(lik), sum(lik))
+        print("==> Likelihood ratio of best run/worst run: %s" % (lr,))
         #        Calculating the weights
         w = nan_to_num(qtilphi * lik)
         w = nan_to_num(w / sum(w))
@@ -1307,19 +1311,19 @@ class Meld(object):
                     minw = min(minw, w[i])
                     j += 1
                     if not j % 100 and self.verbose:
-                        print j, "of %s" % self.L
+                        print(j, "of %s" % self.L)
             self.done_running = True
-            print "==> Done Resampling (L=%s) priors (took %s seconds)" % (self.L, (time() - t0))
+            print("==> Done Resampling (L=%s) priors (took %s seconds)" % (self.L, (time() - t0)))
             wr = maxw / minw
-            print "==> Likelihood ratio of best/worst retained runs: %s" % (wr,)
+            print("==> Likelihood ratio of best/worst retained runs: %s" % (wr,))
             if wr == 1:
-                print "==> Flat likelihood, trying again..."
+                print("==> Flat likelihood, trying again...")
                 return 0
-            print "==> Improvement: %s percent" % (100 - 100 * wr / lr,)
+            print("==> Improvement: %s percent" % (100 - 100 * wr / lr,))
         else:
-            print 'Resampling weights are all zero, please check your model or data, and try again.\n'
-            print '==> Likelihood (min,mean,max): ', min(lik), mean(lik), max(lik)
-            print '==> RMS deviation of outputs: %s' % (basicfit(phi, data),)
+            print('Resampling weights are all zero, please check your model or data, and try again.\n')
+            print('==> Likelihood (min,mean,max): ', min(lik), mean(lik), max(lik))
+            print('==> RMS deviation of outputs: %s' % (basicfit(phi, data),))
             return 0
         return 1
 
@@ -1359,7 +1363,7 @@ class Meld(object):
 
         po = Pool()
         t0 = time()
-        for i in xrange(j, k):
+        for i in range(j, k):
             theta = [self.q1theta[n][i] for n in self.q1theta.dtype.names]
             r = po.apply_async(enumRun, (self.model, theta, i), callback=cb)
             #            r = po.apply_async(self.model,theta)
@@ -1368,7 +1372,7 @@ class Meld(object):
             #            else:
             #                phi[i] = [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
             if i % 100 == 0 and self.verbose:
-                print "==> K = %s" % i
+                print("==> K = %s" % i)
                 if savetemp:
                     CP.dump((self.phi, i), open('phi.temp', 'w'))
         if savetemp:  #If all replicates are done, clear temporary save files.
@@ -1376,7 +1380,7 @@ class Meld(object):
             os.unlink('q1theta')
         po.close()
         po.join()
-        print "==> Done Running the K (%s) replicates (took %s seconds)\n" % (k, (time() - t0))
+        print("==> Done Running the K (%s) replicates (took %s seconds)\n" % (k, (time() - t0)))
 
         return self.phi
 
@@ -1398,7 +1402,7 @@ def basicfit(s1, s2):
         #        print "==> is recarray!"
         assert isinstance(s2, dict)
         err = []
-        for k in s2.keys():
+        for k in list(s2.keys()):
             if k not in s1.dtype.names:
                 continue
             ls1 = len(s1[k])  #handles the cases where data is slightly longer that simulated series.
@@ -1501,7 +1505,7 @@ def model(theta, n=1):
     #    print "oi"
     Pt = zeros((n, 1), float)  # initialize the output vector
     P = p0
-    for i in xrange(n):
+    for i in range(n):
         Pt[i] = r * P
         P = Pt[i]
 
@@ -1532,7 +1536,7 @@ def main2():
     Me.sir(data={'p': [7.5]})
     pt, pp = Me.getPosteriors(1)
     end = time()
-    print end - start, ' seconds'
+    print(end - start, ' seconds')
     plotRaHist(pt)
     plotRaHist(pp)
     P.show()
@@ -1546,7 +1550,7 @@ def mh_test():
     Me.mcmc_run(data={'p': [7.5]}, burnin=1000)
     pt, pp = Me.getPosteriors(1)
     end = time()
-    print end - start, ' seconds'
+    print(end - start, ' seconds')
     plotRaHist(pt)
     plotRaHist(pp)
     P.show()

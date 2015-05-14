@@ -3,6 +3,10 @@
 """
 Module with specialized plotting functions for the Melding results
 """
+from __future__ import absolute_import
+from __future__ import print_function
+from six.moves import range
+from six.moves import zip
 
 __author__ = "fccoelho"
 __date__ = "$06/01/2010 11:24:20$"
@@ -30,7 +34,7 @@ def plot_series(tim, obs, series, names=[], title='series'):
     for i, n in enumerate(names):
         #print n
         #P.subplot(l,1,i)
-        co = c.next()
+        co = next(c)
         P.plot(tim, [stats.scoreatpercentile(t, 5) for t in ser2[n].T], co + '-.')
         P.plot(tim, [stats.scoreatpercentile(t, 95) for t in ser2[n].T], co + '-.')
         P.plot(tim, [stats.scoreatpercentile(t, 50) for t in ser2[n].T], co + '-', lw=2, label=n)
@@ -48,7 +52,7 @@ def plot_pred(tim, series, y, fig, names=[], title='series'):
     ax = fig.add_subplot(111)
     ax.yaxis.set_major_formatter(FormatStrFormatter('%g'))
     for i, n in enumerate(names):
-        co = c.next()
+        co = next(c)
         for b in [2.5, 25, 50, 75, 97.5]:
             if b == 50:
                 st = 'k-'
@@ -89,8 +93,8 @@ def pred_new_cases(obs, series, weeks, names=[], title='Total new cases per wind
     W = min(0.5 * max(len(x), 1.0), 0.5) * sc
     for n in names:
         if n in obs:
-            co = c.next()
-            print len(x), len([np.mean(sum(s[n], axis=1)) for s in series]), type(x)
+            co = next(c)
+            print(len(x), len([np.mean(sum(s[n], axis=1)) for s in series]), type(x))
             ax.plot([x[7]] + x.tolist(), [np.mean(sum(s[n], axis=1)) for s in series], '%s^' % co,
                     label="Mean pred. %s" % n)
             ax.plot(x, [np.nansum(obs[n][(w + 1) * ws:(w + 1) * ws + ws]) for w in range(weeks - 1)], '%s-o' % co,
@@ -125,7 +129,7 @@ def plot_series2(tim, obs, series, names=[], title='Simulated vs Observed series
         P.setp(ax.get_xticklabels(), fontsize=8)
         if isinstance(tim[0], datetime.date):
             ax.xaxis_date()
-        co = c.next()
+        co = next(c)
         if n in obs:
             ax.plot(tim, obs[n][:len(tim)], 'o', label=r"$Observed\; %s$" % n)
         #pdb.set_trace()
@@ -138,8 +142,8 @@ def plot_series2(tim, obs, series, names=[], title='Simulated vs Observed series
             dif = dif / max(dif) * 10
             pe, va = peakdet(dif, 1)
             xp = [0] + pe[:, 0].tolist() + [len(lower) - 1]
-            lower = np.interp(range(len(lower)), xp, np.array(lower)[xp])  # valley-to-valley interpolated band
-            upper = np.interp(range(len(upper)), xp, np.array(upper)[xp])  #peak-to-peak interpolated band
+            lower = np.interp(list(range(len(lower))), xp, np.array(lower)[xp])  # valley-to-valley interpolated band
+            upper = np.interp(list(range(len(upper))), xp, np.array(upper)[xp])  #peak-to-peak interpolated band
         ax.fill_between(np.array(tim) + lag, lower, upper, facecolor=co, alpha=0.2)
         #ax.fill_between(array(tim)+lag,lower,upper,facecolor='k',alpha=0.1)
         if i < (len(names) - 1): ax.xaxis.set_ticklabels([])
@@ -308,4 +312,4 @@ def peakdet(v, delta, x=None):
 
 
 if __name__ == "__main__":
-    print "Hello World";
+    print("Hello World");

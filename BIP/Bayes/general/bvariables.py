@@ -4,6 +4,8 @@ This module implements classes to represent an arbitrary Bayesian random variabl
 This is experimental code! do not use for serious applications!
 
 """
+from __future__ import absolute_import
+from __future__ import print_function
 # copyright 2007 Flavio Codeco Coelho
 # Licensed under GPL v3
 from BIP.Bayes import like
@@ -183,10 +185,10 @@ class _BayesVar(object):
             lambda function to calculate  the likelihood.
         '''
         like_funs = {
-            'norm': lambda(x):like.Normal(x[0], x[1], 1. / x[2]),
-            'expon': lambda(x):(1. / x[2]) ** x[0].size * exp(-(1. / x[2]) * sum(x[0])),
-            'beta': lambda(x):like.Beta(x[0], x[1], x[2]),
-            'uniform': lambda(x): like.Uniform(x[0], x[1]-2 * sqrt(x[2]), x[1] + 2 * sqrt(x[2]))
+            'norm': lambda x:like.Normal(x[0], x[1], 1. / x[2]),
+            'expon': lambda x:(1. / x[2]) ** x[0].size * exp(-(1. / x[2]) * sum(x[0])),
+            'beta': lambda x:like.Beta(x[0], x[1], x[2]),
+            'uniform': lambda x: like.Uniform(x[0], x[1]-2 * sqrt(x[2]), x[1] + 2 * sqrt(x[2]))
         }
         return like_funs[dname]
         #TODO: expand for more distribution types
@@ -215,12 +217,12 @@ if __name__ == "__main__":
     bv = BayesVar(stats.norm, (3, 1), range=(0, 5), resolution=1000)
     data = stats.uniform(1, 3).rvs(500)
     bv.add_data(data, stats.uniform(1, 3))
-    print bv
+    print(bv)
     p = bv.get_posterior_sample(200000)
-    print bv
+    print(bv)
     P.plot(arange(bv.rang[0], bv.rang[1], bv.res), bv.likelihood / max(bv.likelihood), 'ro', lw=2)
     P.plot(arange(bv.rang[0], bv.rang[1], bv.res), bv.get_prior_dist(), 'g+', lw=2)
-    print p
+    print(p)
     P.hist(p, normed=1)
     P.legend(['Likelihood', 'Prior', 'Posterior'])
     P.title('Bayesian inference')

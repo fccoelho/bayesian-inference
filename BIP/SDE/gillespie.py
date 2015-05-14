@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import print_function
+from six.moves import map
+from six.moves import range
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        gillespie.py
@@ -14,17 +18,17 @@ __docformat__ = "restructuredtext en"
 from numpy.random import uniform, multinomial, exponential,random
 from numpy import arange, array, empty,zeros,log, isnan, nanmax, nan_to_num,  ceil
 import time
-import xmlrpclib
+import six.moves.xmlrpc_client
 import pdb
 import copy
 from multiprocessing import Pool
 try:
     from liveplots import xmlrpcserver as xmlrpc
     port = xmlrpc.rpc_plot(persist=0)
-    server = xmlrpclib.ServerProxy('http://localhost:%s'%port, allow_none=True)
+    server = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s'%port, allow_none=True)
     viz = True
 except:
-    print "faiô..."
+    print("faiô...")
     viz = False
 
 def dispatch(model):
@@ -48,8 +52,8 @@ class Model:
         for i in inits:
             if not isinstance(i, int):
                 i = int(i)
-        for i in tmat.ravel():
-            assert isinstance(i, int)
+
+        assert tmat.dtype == 'int64'
         self.vn = vnames
         self.rates = tuple(rates)
         self.inits = tuple(inits)
@@ -102,7 +106,7 @@ class Model:
                 pool.close()
                 pool.join()
             else:  # Serial
-                res = map(dispatch, [self]*reps)
+                res = list(map(dispatch, [self]*reps))
                 self.res = array([i[0] for i in res])
                 if reps == 0:
                     self.evseries = res[0][1]
@@ -132,7 +136,7 @@ class Model:
         pv = self.pv0 #actual propensity values for each time step
         tc = 0 #current time
         last_tim = 0 # first time step of results
-        evts = dict([(i, []) for i in xrange(len(self.pv))])
+        evts = dict([(i, []) for i in range(len(self.pv))])
         self.steps = 0
         self.res[0,:]= ini
 #        for tim in xrange(1,tmax):
@@ -188,7 +192,7 @@ def main():
     M = Model(vnames=vnames, rates=rates, inits=ini, tmat=tm, propensity=[p1, p2])
     t0 = time.time()
     M.run(tmax=80, reps=1000, viz=0, serial=1)
-    print 'total time: ', time.time()-t0
+    print('total time: ', time.time()-t0)
     t, series, steps, evts = M.getStats()
     ser = series.mean(axis=0)
     #print evts, len(evts[0])
