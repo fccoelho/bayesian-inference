@@ -10,11 +10,15 @@
 # Copyright:   (c) 2008 by the Author
 # Licence:     GPL v3
 #-----------------------------------------------------------------------------
+from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
-import random
+from six.moves import range
 import scipy
+import numpy as np
+from scipy.misc import factorial
 from scipy.special import gammaln
 from numpy import array, searchsorted, log, random, pi, sum, inf
+
 
 
 def Categor(x, hist):
@@ -133,7 +137,7 @@ def Poisson(x, mu):
     """
     x = array(x)
     sumx = sum(x * log(mu) - mu)
-    sumfact = sum(log(scipy.factorial(x)))
+    sumfact = sum(log(factorial(x)))
     like = sumx - sumfact
     return like
 
@@ -150,8 +154,8 @@ def Negbin(x, r, p):
     -9.16117424315
     """
     x = array(x)
-    like = sum(r * log(p) + x * log(1 - p) + log(scipy.factorial(x + r - 1)) - log(scipy.factorial(x)) - log(
-        scipy.factorial(r - 1)))
+    like = sum(r * log(p) + x * log(1 - p) + log(factorial(x + r - 1)) - log(factorial(x)) - log(
+        factorial(r - 1)))
     return like
 
 
@@ -167,8 +171,8 @@ def Binomial(x, n, p):
     -2.81280615454
     """
     x = array(x)
-    like = sum(x * log(p) + (n - x) * log(1. - p) + log(scipy.factorial(n)) - log(scipy.factorial(x)) - log(
-        scipy.factorial(n - x)))
+    like = sum(x * log(p) + (n - x) * log(1. - p) + log(factorial(n)) - log(factorial(x)) - log(
+        factorial(n - x)))
     return like
 
 
@@ -256,7 +260,7 @@ def Simple(x, w, a, start=0):
     m = len(a)
     n = len(x)
     like = 0.0
-    s = sum(a * (x / w) ** (2 * range(n)))
+    s = sum(a * (x / w) ** (2 * list(range(n))))
     like += log(1 + s)
     return like
 

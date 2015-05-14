@@ -6,3 +6,4 @@ cython>=0.20
 gnuplot-py
 cythongsl>=0.2.1
 wheel
+six

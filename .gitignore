@@ -10,3 +10,4 @@
 .eric4project
 dist/*
 nbproject/*
+*.bak

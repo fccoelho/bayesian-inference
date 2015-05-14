@@ -1,7 +1,7 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
+
 """
 Conjugate prior classes
+TODO: implement all distributions which have conjugates
 """
 __author__ = "fccoelho"
 __date__ = "$01/12/2009 12:12:39$"
