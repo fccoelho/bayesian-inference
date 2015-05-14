@@ -1,3 +1,0 @@
-.. currentmodule:: BIP.Bayes.Melding
-
-.. autosummary::

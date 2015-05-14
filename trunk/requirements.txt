@@ -1,7 +1,0 @@
-numpy>1.8
-scipy>0.13
-openopt>0.5
-liveplots
-cython>=0.20
-gnuplot-py
-cythongsl>=0.2.1
