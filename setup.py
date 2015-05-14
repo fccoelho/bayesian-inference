@@ -13,7 +13,7 @@ extensions = [Extension('BIP.SDE.cgillespie', ["BIP/SDE/cgillespie.pyx"]), ]
 print(cythonize(extensions))
 
 setup(name='BIP',
-      version='0.5.16',
+      version='0.5.17',
       author='Flavio Codeco Coelho',
       author_email='fccoelho@gmail.com',
       url='http://code.google.com/p/bayesian-inference/',

@@ -74,7 +74,7 @@ class FitModel(object):
     Fitting process can be monitored via a curses interface.
     """
 
-    def __init__(self, K, model, inits, tf, thetanames, phinames, wl=None, nw=1, verbose=False, burnin=1000,
+    def __init__(self, K, model, inits, tf, thetanames, phinames, wl=1, nw=1, verbose=False, burnin=1000,
                  constraints=[]):
         """
         Initialize the model fitter.
