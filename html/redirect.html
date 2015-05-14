@@ -1,0 +1,38 @@
+<html><head><title>Epydoc Redirect Page</title>
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="pragma" content="no-cache" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+<!--
+var pages = ["trunk.BIP.Bayes.general.bvariables._BayesVar-c", "trunk.BIP.Bayes.general.bvariables.__BayesC-c", "trunk.BIP.Bayes.general.bvariables.__BayesD-c", "trunk.BIP.Bayes.Samplers.MCMC.Metropolis-c", "trunk.BIP.SMC.condensation.IterationData-c", "trunk.BIP.SMC.condensation.Condensation-c", "trunk.BIP.Bayes.Samplers.MCMC._Sampler-c", "trunk.BIP.SMC.condensation.GlobalData-c", "trunk.BIP.Bayes.Samplers.MCMC.Dream-c", "trunk.BIP.Bayes.general.bvariables-m", "trunk.BIP.Viz.asciihist.Histogram-c", "trunk.BIP.Bayes.Melding.FitModel-c", "trunk.BIP.SMC.condensation.Model-c", "trunk.BIP.Viz.realtime.RTpyplot-c", "trunk.BIP.Bayes.Samplers.MCMC-m", "trunk.BIP.SDE.gillespie.Model-c", "trunk.BIP.Viz.ascii.Histogram-c", "trunk.BIP.Viz.realtime.RTplot-c", "trunk.BIP.Bayes.Melding.Meld-c", "trunk.BIP.SMC.condensation-m", "trunk.BIP.Bayes.PlotMeld-m", "trunk.BIP.Bayes.Samplers-m", "trunk.BIP.Bayes.Melding-m", "trunk.BIP.Bayes.general-m", "trunk.BIP.SDE.gillespie-m", "trunk.BIP.Viz.asciihist-m", "trunk.BIP.Viz.realtime-m", "trunk.BIP.SDE.example-m", "trunk.BIP.__version__-m", "trunk.BIP.Bayes.like-m", "trunk.BIP.Bayes.lhs-m", "trunk.BIP.Viz.ascii-m", "trunk.BIP.logsetup-m", "trunk.BIP.Bayes-m", "trunk.BIP.SDE-m", "trunk.BIP.SMC-m", "trunk.BIP.Viz-m", "trunk.BIP-m"];
+var dottedName = get_anchor();
+if (dottedName) {
+    var target = redirect_url(dottedName);
+    if (target) window.location.replace(target);
+}
+// -->
+</script>
+
+<h3>Epydoc Auto-redirect page</h3>
+
+<p>When javascript is enabled, this page will redirect URLs of
+the form <tt>redirect.html#<i>dotted.name</i></tt> to the
+documentation for the object with the given fully-qualified
+dotted name.</p>
+<p><a id="message"> &nbsp; </a></p>
+
+<script type="text/javascript">
+<!--
+if (dottedName) {
+    var msg = document.getElementById("message");
+    msg.innerHTML = "No documentation found for <tt>"+
+                    dottedName+"</tt>";
+}
+// -->
+</script>
+
+</body>
+</html>
