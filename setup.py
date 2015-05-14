@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 # -*- coding:utf-8 -*-
 
 from setuptools import setup, Extension
@@ -7,9 +9,8 @@ from Cython.Distutils import Extension
 from Cython.Distutils import build_ext
 
 
-
-extensions = [Extension('BIP.SDE.cgillespie', ["BIP/SDE/cgillespie.pyx"]),]
-print cythonize(extensions)
+extensions = [Extension('BIP.SDE.cgillespie', ["BIP/SDE/cgillespie.pyx"]), ]
+print(cythonize(extensions))
 
 setup(name='BIP',
       version='0.5.16',
@@ -19,7 +20,7 @@ setup(name='BIP',
       description='Bayesian Inference Tools for Python',
       zip_safe=False,
       packages=find_packages(),
-      #['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
+      # ['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
       package_data={'': ['*.txt']},
       ext_modules=cythonize(extensions),
       install_requires=["numpy", "scipy", "openopt", "liveplots", "cython", "gnuplot-py"],
@@ -28,10 +29,10 @@ setup(name='BIP',
       cmdclass={'build_ext': build_ext},
       #ext_modules=[Extension('BIP/SDE/gillespie', ['BIP/SDE/gillespie.c'])],
 
-)
+      )
 
 import os
-#This to avoid creating the log file with super-user privileges during instalation.
+# This to avoid creating the log file with super-user privileges during instalation.
 try:
     os.unlink('/tmp/BIP.log')
 except:
