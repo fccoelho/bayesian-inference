@@ -11,3 +11,7 @@
 dist/*
 nbproject/*
 *.bak
+*.dblite
+BIP.egg*
+build/*
+dist/*
