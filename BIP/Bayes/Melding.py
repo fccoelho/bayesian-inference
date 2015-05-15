@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 from __future__ import print_function
-# -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
 # Purpose:     The Bayesian melding Class provides
@@ -1197,8 +1196,8 @@ class Meld(object):
         :Parameters:
             - `prop`: Proposed output
             - `data`: Data against which proposal will be measured
-            - `likfun`: Likelihood function
-            - `likvar`: Variance of the likelihood function
+            - `likfun`: Likelihood function. Currently supported: like.Normal, like.Poisson
+            - `likvar`: Variance of the Normal likelihood function
             - `po`: Pool of processes for parallel execution
         
         :Types:
@@ -1216,15 +1215,23 @@ class Meld(object):
             obs = array(data[self.q2phi.dtype.names[k]])
             if len(obs.shape) > 1:  #in case of more than one dataset
                 obs = clearNaN(obs).mean(axis=1)
-            if po != None:  # Parallel version
-                liks = [po.apply_async(likfun, (obs[p], prop[p][k], 1. / likvar)) for p in range(t) if
-                        not isnan(obs[p])]
-                lik = nansum([l.get() for l in liks])
-            else:
-                liks = [likfun(obs[p], prop[p][k], 1. / likvar) for p in range(t) if not isnan(obs[p])]
-                lik = nansum(liks)
-            #                if isnan(lik):
-            #                    pdb.set_trace()
+            if likfun == like.Normal:
+                if po != None:  # Parallel version
+                    liks = [po.apply_async(likfun, (obs[p], prop[p][k], 1. / likvar)) for p in range(t) if
+                            not isnan(obs[p])]
+                    lik = nansum([l.get() for l in liks])
+                else:
+                    liks = [likfun(obs[p], prop[p][k], 1. / likvar) for p in range(t) if not isnan(obs[p])]
+                    lik = nansum(liks)
+            elif likfun == like.Poisson:
+                if po != None:  # Parallel version
+                    liks = [po.apply_async(likfun, (obs[p], prop[p][k])) for p in range(t) if
+                            not isnan(obs[p])]
+                    lik = nansum([l.get() for l in liks])
+                else:
+                    liks = [likfun(obs[p], prop[p][k]) for p in range(t) if not isnan(obs[p])]
+                    lik = nansum(liks)
+
         return lik
 
     def sir(self, data={}, t=1, variance=0.1, pool=False, savetemp=False):

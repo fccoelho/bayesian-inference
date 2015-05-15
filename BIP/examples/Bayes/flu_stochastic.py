@@ -3,6 +3,7 @@
 Parameter estimation and series forcasting based on simulated data with moving window.
 Stochastic model
 """
+from __future__ import absolute_import
 #
 # Copyright 2009- by Flávio Codeço Coelho
 # License gpl v3
