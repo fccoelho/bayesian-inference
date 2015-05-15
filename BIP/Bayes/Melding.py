@@ -431,13 +431,14 @@ class FitModel(object):
         con.commit()
         con.close()
 
-    def run(self, data, method, likvar, pool=False, adjinits=True, ew=0, dbname='results', monitor=False, initheta=[]):
+    def run(self, data, method, likvar, likfun="Normal", pool=False, adjinits=True, ew=0, dbname='results', monitor=False, initheta=[]):
         """
         Fit the model against data
 
         :Parameters:
             - `data`: dictionary with variable names and observed series, as Key and value respectively.
             - `method`: Inference method: "ABC", "SIR", "MCMC" or "DREAM"
+            -  likfun : Likelihood function to be used: currently suported: "Normal" and "Poisson".
             - `likvar`: Variance of the likelihood function in the SIR and MCMC method
             - `pool`: Pool priors on model's outputs.
             - `adjinits`: whether to adjust inits to data
@@ -449,6 +450,12 @@ class FitModel(object):
         self.ew = ew
         self.adjinits = adjinits
         self.pool = pool
+        if likfun == "Normal":
+            likfun = like.Normal
+        elif likfun == "Poisson":
+            likfun = like.Poisson
+        else:
+            print("Unsupported Likelihood function. Try 'Normal' or 'Poisson'")
         if method == "DREAM" and self.nphi < 2:
             sys.exit("You can't use the DREAM method with less than two output variables in the model")
         assert isinstance(initheta, list)  #type checking

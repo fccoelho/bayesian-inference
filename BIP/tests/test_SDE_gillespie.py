@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import nose
 from nose import SkipTest
 from nose.tools import assert_equal
@@ -43,13 +45,13 @@ class TestModel:
         t,series,steps, evts = model.getStats()
         events = evts[0] #first replicate
         for n, ti in enumerate(t[1:]):
-            print ti
+            print(ti)
             nev = 0
             ecv = zeros(3)
-            for e, s in events.items():
+            for e, s in list(events.items()):
                 evs = sum((s<=ti) & (s>t[n])) 
                 nev += evs#number events of type e happening up until ti and after previous time-step
-                print "n:", n,"t:", ti,  "nev:", evs, "evtype:", e,  series[0, n, :], series[0, n+1, :],  "evtimes:", s[:nev+1]
+                print("n:", n,"t:", ti,  "nev:", evs, "evtype:", e,  series[0, n, :], series[0, n+1, :],  "evtimes:", s[:nev+1])
                 if e ==0: #these events reduce by one the first variable
                     assert_equal(evs, series[0, n, 0]-series[0, n+1, 0])
                 elif e == 1:

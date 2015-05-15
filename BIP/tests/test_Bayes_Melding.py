@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from BIP.Bayes import Melding
 from numpy.testing import *
 import scipy.stats as st
@@ -252,7 +254,7 @@ class TestClearNaN:
         obs.shape = (3, 3)
         obs[0, 2] = np.nan
         res = Melding.clearNaN(obs)
-        print res,  obs
+        print(res,  obs)
         assert_equal(res[0, 2],  np.mean([obs[0, 0], obs[0, 1]]) )
         
 

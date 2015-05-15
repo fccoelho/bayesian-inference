@@ -13,7 +13,7 @@ class TestRTplot(unittest.TestCase):
 
     def test_clearFig(self):
         r_tplot = RTplot(persist=0)
-        self.assertEqual(Noe, r_tplot.clearFig())
+        self.assertEqual(None, r_tplot.clearFig())
         
 
     def test_plothist(self):

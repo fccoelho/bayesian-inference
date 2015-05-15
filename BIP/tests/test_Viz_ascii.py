@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from nose import SkipTest
 from nose.tools import assert_equal
 from BIP.Viz.ascii import Histogram
