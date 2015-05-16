@@ -41,6 +41,8 @@ class MultiProgressBars:
         sys.stdout.flush()
 
     def refresh(self):
+        if len(self.bars) == 0:
+            return self.clear()
         barname = list(self.bars.keys())[0]
         count, total, comment = self.bars[barname]
         self.__call__(barname, count, total, comment)
