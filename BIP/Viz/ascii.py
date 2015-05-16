@@ -4,7 +4,10 @@ This module contains code to generate ascii representations
 of statistical objects
 """
 from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
 from numpy import histogram, ceil
+from six.moves import range
 __author__="fccoelho"
 __date__ ="$12/10/2009 14:25:05$"
 __licence__="GPL v3"
@@ -49,7 +52,7 @@ class Histogram(object):
         """
         his = """"""
         bars = self.h[0]/max(self.h[0])*height
-        for l in reversed(range(1,height+1)):
+        for l in reversed(list(range(1,height+1))):
             line = ""
             if l == height:
                 line = '%s '%max(self.h[0]) #histogram top count
@@ -105,5 +108,5 @@ if __name__ == "__main__":
     seed(1)
     d = normal(size=1000)
     h = Histogram(d,bins=10, rnge=(0, 1))
-    print h.vertical(15)
-    print h.horizontal(5)
+    print(h.vertical(15))
+    print(h.horizontal(5))

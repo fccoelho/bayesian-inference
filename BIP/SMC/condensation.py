@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from six.moves import range
 # -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        condensation.py
@@ -31,7 +33,7 @@ class Model(object):
         self.data = IterationData()
         self.out= zeros((100, 3), dtype = float)
     def setupPriorConditions(self):
-        for n in xrange(self.gdata.nsamples):
+        for n in range(self.gdata.nsamples):
             self.data.oldpos[n] = self.gdata.PriorModel[0] +self.gdata.PriorModel[1]*normal()
             # The probabilities are not normalised. 
             self.data.cumul_prob_array[n] =  float(n)
@@ -179,14 +181,14 @@ class Condensation(object):
         model-dependent and is found in Model, but it can be
         replaced by any process model required.
         '''
-        for n in xrange(self.globaldata.nsamples):
+        for n in range(self.globaldata.nsamples):
             base = self.pickBaseSample()
             self.model.predictSamplePosition(n, base)
     
     def runFilter(self):
         '''
         '''
-        for i in xrange(self.globaldata.niterations):
+        for i in range(self.globaldata.niterations):
             self.model.obtainObservations()#Go make necessary measurements
             self.predictNewBases()#Push previous state through process model
             self.calculateBaseWeights() #Apply Bayesian measurement weighting
@@ -210,7 +212,7 @@ class Condensation(object):
         observation model required.
         '''
         cumul_total = 0.0
-        for n in xrange(self.globaldata.nsamples):
+        for n in range(self.globaldata.nsamples):
             self.iterdata.sample_weights[n] = self.model.evaluateObservationDensity(n)
             self.iterdata.cumul_prob_array[n] = cumul_total;
             cumul_total += self.iterdata.sample_weights[n];

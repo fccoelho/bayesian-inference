@@ -34,6 +34,7 @@ from BIP.Bayes import PlotMeld as PM
 from BIP.Bayes import lhs
 from BIP.Bayes import like
 from BIP.Bayes.Samplers import MCMC
+from BIP.Viz.progress import bar
 import pdb
 from six.moves import range
 from six.moves import zip
@@ -44,16 +45,12 @@ curses = None
 sqlite3.register_adapter(numpy.int32, int)
 sqlite3.register_adapter(numpy.int64, int)
 
-try:
-    from BIP.Viz.realtime import RTplot
-    from liveplots.xmlrpcserver import rpc_plot
 
-    Viz = True
-except:
-    Viz = False
-    print(r"""Please install Gnuplot-py to enable realtime visualization.
-    http://gnuplot-py.sourceforge.net/
-    """)
+from BIP.Viz.realtime import RTplot
+from liveplots.xmlrpcserver import rpc_plot
+
+Viz = True
+
 
 if Viz:
     dtplot = RTplot();

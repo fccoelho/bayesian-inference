@@ -40,6 +40,6 @@ F.set_priors(tdists=[st.norm], tpars=[(1.1, .2)], tlims=[(0.5, 1.5)],
 d = model([1.0])  # simulate some data
 noise = st.norm(0, 0.01).rvs(36)
 dt = {'I': d[:, 1] + noise}  # add noise
-F.run(dt, 'MCMC', likvar=1e-5, pool=True, monitor=[])
+F.run(dt, 'MCMC', likvar=1e-5, pool=True, monitor=['I'])
 # ==Uncomment the line below to see plots of the results
 F.plot_results()
