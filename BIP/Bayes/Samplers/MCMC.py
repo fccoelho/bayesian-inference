@@ -223,6 +223,7 @@ class _Sampler(object):
         if j < 100:
             return
         self.gr_convergence(j, j - 100)
+        counter_bar.clear()
         print("Gelman-Rubin's R: ", self._R)
         self.pserver.clearFig()
         thin = j // 500 if j // 500 != 0 else 1  #history is thinned to show at most 500 points, equally spaced over the entire range
