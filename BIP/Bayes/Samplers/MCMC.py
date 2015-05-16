@@ -532,9 +532,10 @@ class Metropolis(_Sampler):
         self.meld.post_theta = ptheta  #self._imp_sample(self.meld.L,ptheta,liklist)
         self.meld.likmax = max(self.liklist)
         self.meld.DIC = self.DIC
+        counter_bar("Sampler", j, self.samples, "{} rejected and {} accepted  in {} samples. Acceptance ratio = {}".format(rej, j, i, ar))
         print("Total steps(i): ", i, "rej:", rej, "j:", j)
         print(">>> Acceptance rate: %s" % ar)
-        print("MLE of parameters: %s" % ptheta[self.best_prop_index])
+        print("MLE of parameters: ", ptheta[self.best_prop_index])
         self.shut_down('Finished normally')
         return 1
 
@@ -601,6 +602,7 @@ class Metropolis(_Sampler):
             if j % 100 == 0:
                 counter_bar("Resampler", j, n, "{} of {} resampled.".format(j, n))
             k += 1
+        counter_bar("Resampler", j, n, "{} of {} resampled.".format(j, n))
         print("Done importance sampling.")
         return smp
 
@@ -1021,6 +1023,7 @@ class Dream(_Sampler):
         self.meld.post_theta = ptheta  #self._imp_sample(self.meld.L,ptheta,liklist)
         self.meld.likmax = max(self.liklist)
         self.meld.DIC = self.DIC
+        counter_bar("Sampler", j, self.samples, "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
         print("Total steps(i): ", i, "rej:", rej, "j:", j)
         print(">>> Acceptance rate: %1.3f" % ar)
         self.shut_down('Finished normally.')

@@ -23,12 +23,9 @@ class RTplot:
         self.gp = Popen(['gnuplot', '-persist'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         self.plots = []
 
-    def clearFig(self):
-        '''
-        Clears the figure.
-        '''
-        self.plots = []
-        # self.gp.reset()
+    def get_plot(self):
+        self.gp = Popen(['gnuplot', '-persist'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        return self.gp
 
     def close_plot(self):
         self.gp.close()
@@ -60,7 +57,7 @@ class RTplot:
             x = numpy.array(x)
             y = numpy.array(y)
 
-        self.gp.stdin.write(('set title "%s"' % title).encode())
+        self.gp.stdin.write(('set title "%s"\n' % title).encode())
         if not names:
             names = ['s%s' % i for i in range(x.shape[0])]
         if len(x.shape) > 1 and len(x.shape) <= 2:
@@ -81,7 +78,9 @@ class RTplot:
         """
         Actually plots the data
         """
-        self.gp.stdin.write(("plot '-' title {} with {}".format(label, style)).encode())
+        self.gp.stdin.write(('set style data {}\n'.format(style)).encode())
+        self.gp.stdin.flush()
+        self.gp.stdin.write(("plot '-' title \"{}\" \n".format(label)).encode())
         self.gp.stdin.write(("\n".join(("%f "*len(l))%l for l in d)).encode())
         self.gp.stdin.write(b"\ne\n")
         self.gp.stdin.flush()
@@ -98,7 +97,7 @@ class RTplot:
             - `style`: plot styles from gnuplot: lines, boxes, points, linespoints, etc.
             - `multiplot`: Whether to make multiple subplots
         '''
-
+        #self.gp = self.get_plot()
         if multiplot:
             sq = numpy.sqrt(len(data))
             r = numpy.floor(sq);
@@ -106,10 +105,11 @@ class RTplot:
             if len(data) == 3:
                 r = 3;
                 c = 1
-            self.gp.stdin.write(('set multiplot layout %s,%s title "%s"' % (r, c, title)).encode())
-        else:
-            self.gp.stdin.write(('set title "%s"' % title).encode())
+            self.gp.stdin.write(('set multiplot layout %s,%s title "%s"\n' % (r, c, title)).encode())
 
+        else:
+            self.gp.stdin.write(('set title "%s"\n' % title).encode())
+        self.gp.stdin.flush()
         if isinstance(data, list):
             data = numpy.array(data)
         if isinstance(data, numpy.core.records.recarray):
@@ -167,6 +167,7 @@ class RTplot:
             - `data`: must be a numpy array or record array, with series as rows
             - `names`: is a list of strings to serve as legend labels
         '''
+        #self.gp = self.get_plot()
         if multiplot:
             sq = numpy.sqrt(len(data))
             r = numpy.floor(sq);
@@ -174,11 +175,11 @@ class RTplot:
             if len(data) == 3:
                 r = 3;
                 c = 1
-            self.stdin.write(('set multiplot layout %s,%s title "%s"' % (r, c, title)).encode())
+            self.stdin.write(('set multiplot layout %s,%s title "%s"\n' % (r, c, title)).encode())
         else:
-            self.gp.stdin.write(('set title "%s"' % title).encode())
-        self.gp.stdin.write(('set style data boxes').encode())
-
+            self.gp.stdin.write(('set title "%s"\n' % title).encode())
+        self.gp.stdin.write(b'set style boxes\n')
+        self.gp.stdin.flush()
         if isinstance(data, list):
             data = numpy.array(data)
         if isinstance(data, numpy.core.records.recarray):
@@ -289,5 +290,9 @@ def rpc_plot(port=None):
 # p.daemon = True
 # p.start()
 if __name__ == "__main__":
+    from numpy.random import normal
     gp = RTplot()
-    gp.plotlines([list(range(10)), list(range(10))], list(range(10, 20)), ['a', 'b'], 'multi', 'lines', 1)
+    gp2 = RTplot()
+    gp.plotlines([list(range(10)), list(range(10))], x=list(range(10, 20)), names=['a', 'b'], title='multi', style='lines', multiplot=1)
+    data = normal(5,2,(3,1000))
+    gp2.plothist(data=data, title="normal")

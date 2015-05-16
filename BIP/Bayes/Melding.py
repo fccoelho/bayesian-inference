@@ -296,9 +296,11 @@ class FitModel(object):
             self.Me.setTheta(self.thetanames, self.tdists, self.tpars, self.tlims)
             self.Me.setPhi(self.phinames, self.pdists, self.ppars, self.plims)
 
-    def do_inference(self, prior, data, predlen, method, likvar):
+    def do_inference(self, prior, data, predlen, method, likvar, likfun=like.Normal):
         """
+        Call the samplers an do the actual inference
 
+        :param likfun: Likelihood function
         :param prior:
         :param data:
         :param predlen:
@@ -314,20 +316,20 @@ class FitModel(object):
         if method == "SIR":
             while not succ:  #run sir Until is able to get a fit
                 print('attempt #', att)
-                succ = self.Me.sir(data=data, variance=likvar, pool=self.pool, t=self.tf)
+                succ = self.Me.sir(data=data, variance=likvar, pool=self.pool, t=self.tf, likfun=likfun)
                 att += 1
             pt, series = self.Me.getPosteriors(t=self.tf)
         elif method == "MCMC":
-            while not succ:  #run sir Until is able to get a fitd == "mcmc":
+            while not succ:  #run MCMC Until is able to get a fitd == "mcmc":
                 print('attempt #', att)
-                succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='MH')
+                succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='MH', likfun=likfun)
             pt = self.Me.post_theta
             series = self.Me.post_phi
         elif method == "DREAM":
-            while not succ:  #run sir Until is able to get a fitd == "mcmc":
+            while not succ:  #run DREAM Until is able to get a fitd == "mcmc":
                 print('attempt #', att)
                 succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='dream',
-                                        constraints=self.constraints)
+                                        constraints=self.constraints, likfun=likfun)
             pt = self.Me.post_theta
             series = self.Me.post_phi
         elif method == "ABC":
@@ -489,7 +491,7 @@ class FitModel(object):
                     #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting susceptibles
                     self.model.__globals__['inits'] = self.inits
             pt, pp, series, predseries, att = self.do_inference(data=d2, prior=prior, predlen=wl, method=method,
-                                                                likvar=likvar)
+                                                                likvar=likvar, likfun=likfun)
             if self.Me.stop_now:
                 return
             self.AIC += 2. * (self.ntheta - self.Me.likmax)  # 2k - 2 ln(L)
@@ -1162,7 +1164,7 @@ class Meld(object):
         print("Done imp samp.")
         return smp
 
-    def mcmc_run(self, data, t=1, likvariance=10, burnin=1000, nopool=False, method="MH", constraints=[]):
+    def mcmc_run(self, data, t=1, likvariance=10, burnin=1000, nopool=False, method="MH", constraints=[], likfun=like.Normal):
         """
         MCMC based fitting
 
@@ -1178,14 +1180,14 @@ class Meld(object):
         tc = self.verbose >= 1
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
-                                      self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,
+                                      self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
                                       trace_convergence=tc, nchains=self.ntheta, constraints=[])
             sampler.step()
             self.phi = sampler.phi
             #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
         elif method == 'dream':
             sampler = MCMC.Dream(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
-                                 self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,
+                                 self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
                                  trace_convergence=tc, nchains=self.ntheta, constraints=[])
             sampler.step()
             self.phi = sampler.phi
@@ -1230,16 +1232,16 @@ class Meld(object):
                     lik = nansum(liks)
             elif likfun == like.Poisson:
                 if po != None:  # Parallel version
-                    liks = [po.apply_async(likfun, (obs[p], prop[p][k])) for p in range(t) if
+                    liks = [po.apply_async(likfun, (int(obs[p]), prop[p][k])) for p in range(t) if
                             not isnan(obs[p])]
                     lik = nansum([l.get() for l in liks])
                 else:
-                    liks = [likfun(obs[p], prop[p][k]) for p in range(t) if not isnan(obs[p])]
+                    liks = [likfun(int(obs[p]), prop[p][k]) for p in range(t) if not isnan(obs[p])]
                     lik = nansum(liks)
 
         return lik
 
-    def sir(self, data={}, t=1, variance=0.1, pool=False, savetemp=False):
+    def sir(self, data={}, t=1, variance=0.1, pool=False, savetemp=False, likfun=like.Normal):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
         Returns 1 if successful or 0 if not.
@@ -1273,7 +1275,7 @@ class Meld(object):
         po = Pool()
         for i in range(self.K):
             p = phi[i]
-            l = self._output_loglike(p, data, likvar=variance)
+            l = self._output_loglike(p, data, likvar=variance, likfun=likfun)
             #            for n in data.keys():
             #                if isinstance(data[n],list) and data[n] == []:
             #                    continue #no observations for this variable
