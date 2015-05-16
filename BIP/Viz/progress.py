@@ -20,10 +20,10 @@ class MultiProgressBars:
         :return:
         """
         self.clear()
-        self.bars[barname] = (count, total)
+        self.bars[barname] = (count, total, comment)
 
         for barn in self.bars:
-            count, total = self.bars[barn]
+            count, total, comment = self.bars[barn]
             if comment == "":
                 Comment = 'Completed {} out of {}'.format(self.bars[barn][0], self.bars[barn][1])
             else:
@@ -40,6 +40,10 @@ class MultiProgressBars:
         sys.stdout.write('\033[H')
         sys.stdout.flush()
 
+    def refresh(self):
+        barname = list(self.bars.keys()[0])
+        count, total, comment = self.bars[barname]
+        self.__call__(barname, count, total, comment)
 
 if __name__ == "__main__":
     pb = MultiProgressBars()
