@@ -34,13 +34,13 @@ from BIP.Bayes import PlotMeld as PM
 from BIP.Bayes import lhs
 from BIP.Bayes import like
 from BIP.Bayes.Samplers import MCMC
-from BIP.Viz.progress import bar
+from BIP.Viz.progress import MultiProgressBars
 import pdb
 from six.moves import range
 from six.moves import zip
 
 curses = None
-
+count_bar = MultiProgressBars()
 
 sqlite3.register_adapter(numpy.int32, int)
 sqlite3.register_adapter(numpy.int64, int)
@@ -1010,7 +1010,8 @@ class Meld(object):
             theta = [self.post_theta[n][pti[j, i]] for j, n in enumerate(self.post_theta.dtype.names)]
             po.apply_async(enumRun, (self.model, theta, i), callback=cb)
             if i % 100 == 0 and self.verbose:
-                print("==> L = %s\r" % i)
+                count_bar("Posteriors", i, self.L)
+        count_bar("Posteriors", i, self.L)
 
         po.close()
         po.join()
@@ -1283,8 +1284,9 @@ class Meld(object):
             #                liklist=[po.apply_async(like.Normal,(data[n][m], j, 1./variance)) for m,j in enumerate(p[i])]
             #                l=sum([p.get() for p in liklist])
             if i % self.K / 10. == 0:
-                print("Likelihood calculation progress: %s of %s done." % (i, self.K))
+                count_bar("Likelihood", i, self.K, "Calculating likelihood: {} of {} done.".format(i, self.K))
             lik[i] = l
+        count_bar("Likelihood", i, self.K, "Calculating likelihood: {} of {} done.".format(i, self.K))
         po.close()
         po.join()
         if self.viz:
@@ -1322,7 +1324,9 @@ class Meld(object):
                     minw = min(minw, w[i])
                     j += 1
                     if not j % 100 and self.verbose:
-                        print(j, "of %s" % self.L)
+                        count_bar("Resampler",j, self.L, "Resampling {} out of {}.".format(j, self.L))
+            count_bar("Resampler",j, self.L, "Resampling {} out of {}.".format(j, self.L))
+
             self.done_running = True
             print("==> Done Resampling (L=%s) priors (took %s seconds)" % (self.L, (time() - t0)))
             wr = maxw / minw
@@ -1383,7 +1387,7 @@ class Meld(object):
             #            else:
             #                phi[i] = [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
             if i % 100 == 0 and self.verbose:
-                print("==> K = %s" % i)
+                count_bar("Sampler",i, k, "Done {} iterations out of {}.".format(i, k))
                 if savetemp:
                     CP.dump((self.phi, i), open('phi.temp', 'w'))
         if savetemp:  #If all replicates are done, clear temporary save files.

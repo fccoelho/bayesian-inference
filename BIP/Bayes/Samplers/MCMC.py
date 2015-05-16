@@ -28,6 +28,7 @@ from scipy import cov
 import six
 from six.moves import range
 from six.moves import zip
+from BIP.Viz.progress import MultiProgressBars
 
 
 __author__ = "fccoelho"
@@ -36,6 +37,7 @@ __docformat__ = "restructuredtext en"
 
 logger = logging.getLogger('BIP.MCMC')
 
+counter_bar = MultiProgressBars()
 
 def timeit(method):
     """
@@ -468,7 +470,7 @@ class Metropolis(_Sampler):
         ar = 0  #total samples,accepted samples, rejected proposals, acceptance rate
         last_lik = None
         while j < self.samples + self.burnin:
-            print(j)
+            #print(j)
             self.meld.current_step = j
             if self.meld.stop_now:
                 return self.shut_down('user interrupted')
@@ -492,7 +494,8 @@ class Metropolis(_Sampler):
                     ar = (i - rej) / float(i)
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        print("--> %s: Acc. ratio: %s" % (rej, ar))
+                        counter_bar("Sampler", j, self.samples, "{} rejected and {} accepted  in {} samples. Acceptance ratio = {}".format(rej, j, i, ar))
+                        #print("--> %s: Acc. ratio: %s" % (rej, ar))
                         # Store accepted values
                         #            print "nchains:", self.nchains
             for c, t, pr, a in zip(list(range(self.nchains)), theta, prop,
@@ -511,7 +514,8 @@ class Metropolis(_Sampler):
             #print j,  len(self.seqhist[0])
             if j % 100 == 0 and j > 0:
                 if self.trace_acceptance:
-                    print("++>%s,%s: Acc. ratio: %s" % (j, i, ar))
+                    #counter_bar("Sampler", j, self.samples, "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
+                    #print("++>%s,%s: Acc. ratio: %s" % (j, i, ar))
                     self._watch_chain(j)
                 if self.trace_convergence: print("++> %s: Likvar: %s\nML:%s" % (
                     j, self.likvariance, np.max(self.liklist) ))
@@ -594,6 +598,8 @@ class Metropolis(_Sampler):
             if np.random.random() <= w[i]:
                 smp[j] = data[j]
                 j += 1
+            if j % 100 == 0:
+                counter_bar("Resampler", j, n, "{} of {} resampled.".format(j, n))
             k += 1
         print("Done importance sampling.")
         return smp
@@ -955,7 +961,8 @@ class Dream(_Sampler):
                 if i % 100 == 0:
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        print("--> %s rejected. Acc. ratio: %2.2f" % (rej, ar))
+                        counter_bar("Sampler", j, self.samples, "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
+                        #print("--> %s rejected. Acc. ratio: %2.2f" % (rej, ar))
 
 
             # Store accepted values
@@ -994,7 +1001,7 @@ class Dream(_Sampler):
             el = time.time() - t0
             if el > 10:
                 if self.trace_acceptance:
-                    print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
+                    #print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
                     self._watch_chain(j)
                 if self.trace_convergence:
                     print("++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.max(self.liklist) ))
