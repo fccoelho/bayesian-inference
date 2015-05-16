@@ -499,7 +499,7 @@ class FitModel(object):
             self.BIC += self.ntheta * numpy.log(self.wl * len(d2)) - 2. * self.Me.likmax  # k ln(n) - 2 ln(L)
             self.DIC = self.Me.DIC
             # ===Saving results===
-            with open('%s_%s%s' % (dbname, w, ".pickle"), 'w') as f:
+            with open('%s_%s%s' % (dbname, w, ".pickle"), 'wb') as f:
                 #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
                 CP.dump((pt, series, d, predseries, att * self.K), f)
             if dbname:
@@ -660,7 +660,7 @@ class FitModel(object):
             names = self.phinames
         try:  #read the data files
             pt, series, predseries, obs = self._read_results(dbname)
-        except:
+        except TypeError:
             if not self.done_running:
                 return
         if 'time' in obs:
@@ -700,7 +700,7 @@ class FitModel(object):
         for w in range(self.nw):
             fn = "%s_%s.pickle" % (nam, w)
             print(fn)
-            f = open(fn, 'r')
+            f = open(fn, 'rb')
             a, b, obs, pred, samples = CP.load(f)
             f.close()
             pt.append(a)

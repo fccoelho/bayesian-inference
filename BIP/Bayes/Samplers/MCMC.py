@@ -18,7 +18,7 @@ from multiprocessing import Pool
 from random import sample
 
 import numpy as np
-# from liveplots.xmlrpcserver import rpc_plot
+from liveplots.xmlrpcserver import rpc_plot
 from numpy import array, mean, isnan, nan_to_num, var, sqrt, inf, exp, greater, less, identity, ones, zeros, floor, log, \
     recarray, nan
 from numpy.random import random, multivariate_normal, multinomial, rand
