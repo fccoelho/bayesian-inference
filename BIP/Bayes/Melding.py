@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 from __future__ import print_function
-# -*- coding:utf-8 -*-
 #-----------------------------------------------------------------------------
 # Name:        Melding.py
 # Purpose:     The Bayesian melding Class provides
@@ -35,26 +34,23 @@ from BIP.Bayes import PlotMeld as PM
 from BIP.Bayes import lhs
 from BIP.Bayes import like
 from BIP.Bayes.Samplers import MCMC
+from BIP.Viz.progress import MultiProgressBars
 import pdb
 from six.moves import range
 from six.moves import zip
 
 curses = None
-
+count_bar = MultiProgressBars()
 
 sqlite3.register_adapter(numpy.int32, int)
 sqlite3.register_adapter(numpy.int64, int)
 
-try:
-    from BIP.Viz.realtime import RTplot
-    from liveplots.xmlrpcserver import rpc_plot
 
-    Viz = True
-except:
-    Viz = False
-    print(r"""Please install Gnuplot-py to enable realtime visualization.
-    http://gnuplot-py.sourceforge.net/
-    """)
+from BIP.Viz.realtime import RTplot
+from liveplots.xmlrpcserver import rpc_plot
+
+Viz = True
+
 
 if Viz:
     dtplot = RTplot();
@@ -300,9 +296,11 @@ class FitModel(object):
             self.Me.setTheta(self.thetanames, self.tdists, self.tpars, self.tlims)
             self.Me.setPhi(self.phinames, self.pdists, self.ppars, self.plims)
 
-    def do_inference(self, prior, data, predlen, method, likvar):
+    def do_inference(self, prior, data, predlen, method, likvar, likfun=like.Normal):
         """
+        Call the samplers an do the actual inference
 
+        :param likfun: Likelihood function
         :param prior:
         :param data:
         :param predlen:
@@ -318,20 +316,20 @@ class FitModel(object):
         if method == "SIR":
             while not succ:  #run sir Until is able to get a fit
                 print('attempt #', att)
-                succ = self.Me.sir(data=data, variance=likvar, pool=self.pool, t=self.tf)
+                succ = self.Me.sir(data=data, variance=likvar, pool=self.pool, t=self.tf, likfun=likfun)
                 att += 1
             pt, series = self.Me.getPosteriors(t=self.tf)
         elif method == "MCMC":
-            while not succ:  #run sir Until is able to get a fitd == "mcmc":
+            while not succ:  #run MCMC Until is able to get a fitd == "mcmc":
                 print('attempt #', att)
-                succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='MH')
+                succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='MH', likfun=likfun)
             pt = self.Me.post_theta
             series = self.Me.post_phi
         elif method == "DREAM":
-            while not succ:  #run sir Until is able to get a fitd == "mcmc":
+            while not succ:  #run DREAM Until is able to get a fitd == "mcmc":
                 print('attempt #', att)
                 succ = self.Me.mcmc_run(data, t=self.tf, likvariance=likvar, burnin=self.burnin, method='dream',
-                                        constraints=self.constraints)
+                                        constraints=self.constraints, likfun=likfun)
             pt = self.Me.post_theta
             series = self.Me.post_phi
         elif method == "ABC":
@@ -432,13 +430,14 @@ class FitModel(object):
         con.commit()
         con.close()
 
-    def run(self, data, method, likvar, pool=False, adjinits=True, ew=0, dbname='results', monitor=False, initheta=[]):
+    def run(self, data, method, likvar, likfun="Normal", pool=False, adjinits=True, ew=0, dbname='results', monitor=False, initheta=[]):
         """
         Fit the model against data
 
         :Parameters:
             - `data`: dictionary with variable names and observed series, as Key and value respectively.
             - `method`: Inference method: "ABC", "SIR", "MCMC" or "DREAM"
+            -  likfun : Likelihood function to be used: currently suported: "Normal" and "Poisson".
             - `likvar`: Variance of the likelihood function in the SIR and MCMC method
             - `pool`: Pool priors on model's outputs.
             - `adjinits`: whether to adjust inits to data
@@ -450,6 +449,12 @@ class FitModel(object):
         self.ew = ew
         self.adjinits = adjinits
         self.pool = pool
+        if likfun == "Normal":
+            likfun = like.Normal
+        elif likfun == "Poisson":
+            likfun = like.Poisson
+        else:
+            print("Unsupported Likelihood function. Try 'Normal' or 'Poisson'")
         if method == "DREAM" and self.nphi < 2:
             sys.exit("You can't use the DREAM method with less than two output variables in the model")
         assert isinstance(initheta, list)  #type checking
@@ -486,14 +491,14 @@ class FitModel(object):
                     #                    self.inits[0] += self.totpop-sum(self.inits) #adjusting susceptibles
                     self.model.__globals__['inits'] = self.inits
             pt, pp, series, predseries, att = self.do_inference(data=d2, prior=prior, predlen=wl, method=method,
-                                                                likvar=likvar)
+                                                                likvar=likvar, likfun=likfun)
             if self.Me.stop_now:
                 return
             self.AIC += 2. * (self.ntheta - self.Me.likmax)  # 2k - 2 ln(L)
             self.BIC += self.ntheta * numpy.log(self.wl * len(d2)) - 2. * self.Me.likmax  # k ln(n) - 2 ln(L)
             self.DIC = self.Me.DIC
             # ===Saving results===
-            with open('%s_%s%s' % (dbname, w, ".pickle"), 'w') as f:
+            with open('%s_%s%s' % (dbname, w, ".pickle"), 'wb') as f:
                 #save weekly posteriors of theta and phi, posteriors of series, data (d) and predictions(z)
                 CP.dump((pt, series, d, predseries, att * self.K), f)
             if dbname:
@@ -654,7 +659,7 @@ class FitModel(object):
             names = self.phinames
         try:  #read the data files
             pt, series, predseries, obs = self._read_results(dbname)
-        except:
+        except TypeError:
             if not self.done_running:
                 return
         if 'time' in obs:
@@ -694,7 +699,7 @@ class FitModel(object):
         for w in range(self.nw):
             fn = "%s_%s.pickle" % (nam, w)
             print(fn)
-            f = open(fn, 'r')
+            f = open(fn, 'rb')
             a, b, obs, pred, samples = CP.load(f)
             f.close()
             pt.append(a)
@@ -1007,7 +1012,8 @@ class Meld(object):
             theta = [self.post_theta[n][pti[j, i]] for j, n in enumerate(self.post_theta.dtype.names)]
             po.apply_async(enumRun, (self.model, theta, i), callback=cb)
             if i % 100 == 0 and self.verbose:
-                print("==> L = %s\r" % i)
+                count_bar("Posteriors", i, self.L)
+        count_bar("Posteriors", i, self.L)
 
         po.close()
         po.join()
@@ -1158,7 +1164,7 @@ class Meld(object):
         print("Done imp samp.")
         return smp
 
-    def mcmc_run(self, data, t=1, likvariance=10, burnin=1000, nopool=False, method="MH", constraints=[]):
+    def mcmc_run(self, data, t=1, likvariance=10, burnin=1000, nopool=False, method="MH", constraints=[], likfun=like.Normal):
         """
         MCMC based fitting
 
@@ -1174,14 +1180,14 @@ class Meld(object):
         tc = self.verbose >= 1
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
-                                      self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,
+                                      self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
                                       trace_convergence=tc, nchains=self.ntheta, constraints=[])
             sampler.step()
             self.phi = sampler.phi
             #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
         elif method == 'dream':
             sampler = MCMC.Dream(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
-                                 self.tlimits, like.Normal, likvariance, burnin, trace_acceptance=ta,
+                                 self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
                                  trace_convergence=tc, nchains=self.ntheta, constraints=[])
             sampler.step()
             self.phi = sampler.phi
@@ -1197,8 +1203,8 @@ class Meld(object):
         :Parameters:
             - `prop`: Proposed output
             - `data`: Data against which proposal will be measured
-            - `likfun`: Likelihood function
-            - `likvar`: Variance of the likelihood function
+            - `likfun`: Likelihood function. Currently supported: like.Normal, like.Poisson
+            - `likvar`: Variance of the Normal likelihood function
             - `po`: Pool of processes for parallel execution
         
         :Types:
@@ -1216,18 +1222,26 @@ class Meld(object):
             obs = array(data[self.q2phi.dtype.names[k]])
             if len(obs.shape) > 1:  #in case of more than one dataset
                 obs = clearNaN(obs).mean(axis=1)
-            if po != None:  # Parallel version
-                liks = [po.apply_async(likfun, (obs[p], prop[p][k], 1. / likvar)) for p in range(t) if
-                        not isnan(obs[p])]
-                lik = nansum([l.get() for l in liks])
-            else:
-                liks = [likfun(obs[p], prop[p][k], 1. / likvar) for p in range(t) if not isnan(obs[p])]
-                lik = nansum(liks)
-            #                if isnan(lik):
-            #                    pdb.set_trace()
+            if likfun == like.Normal:
+                if po != None:  # Parallel version
+                    liks = [po.apply_async(likfun, (obs[p], prop[p][k], 1. / likvar)) for p in range(t) if
+                            not isnan(obs[p])]
+                    lik = nansum([l.get() for l in liks])
+                else:
+                    liks = [likfun(obs[p], prop[p][k], 1. / likvar) for p in range(t) if not isnan(obs[p])]
+                    lik = nansum(liks)
+            elif likfun == like.Poisson:
+                if po != None:  # Parallel version
+                    liks = [po.apply_async(likfun, (int(obs[p]), prop[p][k])) for p in range(t) if
+                            not isnan(obs[p])]
+                    lik = nansum([l.get() for l in liks])
+                else:
+                    liks = [likfun(int(obs[p]), prop[p][k]) for p in range(t) if not isnan(obs[p])]
+                    lik = nansum(liks)
+
         return lik
 
-    def sir(self, data={}, t=1, variance=0.1, pool=False, savetemp=False):
+    def sir(self, data={}, t=1, variance=0.1, pool=False, savetemp=False, likfun=like.Normal):
         """
         Run the model output through the Sampling-Importance-Resampling algorithm.
         Returns 1 if successful or 0 if not.
@@ -1261,7 +1275,7 @@ class Meld(object):
         po = Pool()
         for i in range(self.K):
             p = phi[i]
-            l = self._output_loglike(p, data, likvar=variance)
+            l = self._output_loglike(p, data, likvar=variance, likfun=likfun)
             #            for n in data.keys():
             #                if isinstance(data[n],list) and data[n] == []:
             #                    continue #no observations for this variable
@@ -1272,8 +1286,9 @@ class Meld(object):
             #                liklist=[po.apply_async(like.Normal,(data[n][m], j, 1./variance)) for m,j in enumerate(p[i])]
             #                l=sum([p.get() for p in liklist])
             if i % self.K / 10. == 0:
-                print("Likelihood calculation progress: %s of %s done." % (i, self.K))
+                count_bar("Likelihood", i, self.K, "Calculating likelihood: {} of {} done.".format(i, self.K))
             lik[i] = l
+        count_bar("Likelihood", i, self.K, "Calculating likelihood: {} of {} done.".format(i, self.K))
         po.close()
         po.join()
         if self.viz:
@@ -1311,7 +1326,9 @@ class Meld(object):
                     minw = min(minw, w[i])
                     j += 1
                     if not j % 100 and self.verbose:
-                        print(j, "of %s" % self.L)
+                        count_bar("Resampler",j, self.L, "Resampling {} out of {}.".format(j, self.L))
+            count_bar("Resampler",j, self.L, "Resampling {} out of {}.".format(j, self.L))
+
             self.done_running = True
             print("==> Done Resampling (L=%s) priors (took %s seconds)" % (self.L, (time() - t0)))
             wr = maxw / minw
@@ -1372,7 +1389,7 @@ class Meld(object):
             #            else:
             #                phi[i] = [tuple(l) for l in r.get()[-t:]]# #phi is the last t points in the simulation
             if i % 100 == 0 and self.verbose:
-                print("==> K = %s" % i)
+                count_bar("Sampler",i, k, "Done {} iterations out of {}.".format(i, k))
                 if savetemp:
                     CP.dump((self.phi, i), open('phi.temp', 'w'))
         if savetemp:  #If all replicates are done, clear temporary save files.

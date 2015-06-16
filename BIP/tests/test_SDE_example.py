@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import unittest
 from nose import SkipTest
 from nose.tools import assert_equal

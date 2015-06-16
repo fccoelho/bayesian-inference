@@ -13,7 +13,7 @@ extensions = [Extension('BIP.SDE.cgillespie', ["BIP/SDE/cgillespie.pyx"]), ]
 print(cythonize(extensions))
 
 setup(name='BIP',
-      version='0.5.18',
+      version='0.6.0',
       author='Flavio Codeco Coelho',
       author_email='fccoelho@gmail.com',
       url='http://code.google.com/p/bayesian-inference/',
@@ -23,7 +23,7 @@ setup(name='BIP',
       # ['','BIP','BIP.SDE','BIP.Bayes','BIP.SMC','BIP.Bayes.general','BIP.Bayes.conjugate','BIP.Bayes.tests','BIP.Viz'],
       package_data={'': ['*.txt']},
       ext_modules=cythonize(extensions),
-      install_requires=["numpy", "scipy", "openopt", "liveplots", "cython", "gnuplot-py"],
+      install_requires=["numpy", "scipy", "openopt", "liveplots", "cython"],
       test_suite='nose.collector',
       license='GPLv3',
       cmdclass={'build_ext': build_ext},
