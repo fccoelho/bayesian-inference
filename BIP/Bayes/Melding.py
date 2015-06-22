@@ -45,9 +45,7 @@ count_bar = MultiProgressBars()
 sqlite3.register_adapter(numpy.int32, int)
 sqlite3.register_adapter(numpy.int64, int)
 
-
-from BIP.Viz.realtime import RTplot
-from liveplots.xmlrpcserver import rpc_plot
+from liveplots.xmlrpcserver import rpc_plot, RTplot
 
 Viz = True
 
@@ -150,9 +148,9 @@ class FitModel(object):
         if 'time' in data:
             data.pop('time')
         for n, d in list(data.items()):
-            p.plotlines(nan_to_num(d).tolist(), list(range(len(d))), ['Obs. %s' % n], '', 'points', 0)
+            p.lines(nan_to_num(d).tolist(), list(range(len(d))), ['Obs. %s' % n], '', 'points', 0)
             v = self.phinames.index(n)
-            p.plotlines(simseries.T[v].tolist(), list(range(len(d))), list(data.keys()),
+            p.lines(simseries.T[v].tolist(), list(range(len(d))), list(data.keys()),
                         "Simulation with MAP parameters %s=%s" % (self.thetanames, pmap))
 
     def AIC_from_RSS(self, ):
@@ -763,9 +761,18 @@ class Meld(object):
             self.every_run_plot = six.moves.xmlrpc_client.ServerProxy('http://localhost:%s' % rpc_plot(hold=1), allow_none=1)
         self.po = Pool()  #pool of processes for parallel processing
 
+    def simple_plot(self, data, theta):
+        """
+        Does a single evaluation of the model with theta as parameters and plot alongside with data
+        """
+        y = [self.model(t)[:, 0].tolist() for t in theta]
+        d = [data[k].tolist() for k in list(data.keys())]
+        self.every_run_plot.lines(d, [], list(data.keys()), "data", "points")
+        self.every_run_plot.lines(y, [], [], "model output", 'lines' )
+
     def current_plot(self, series, data, idx, vars=[], step=0):
         """
-        Plots the last simulated series
+        Plots the last simulated series along with data
         
          :Parameters:
             - `series`: Record array with the simulated series.
@@ -782,7 +789,7 @@ class Meld(object):
         #print series.shape, idx
         best_series = [series[k][idx].tolist() for k in list(data.keys())]
         d = [data[k].tolist() for k in list(data.keys())]
-        self.every_run_plot.lines(d, [], list(data.keys()), "Best fit. Last updated on %s" % step, 'points')
+        self.every_run_plot.lines(d, [], list(data.keys()), "Data", 'points')
         self.every_run_plot.lines(best_series, [], list(data.keys()), "Best fit. Last updated on %s" % step, 'lines')
         self.every_run_plot.clearFig()
         self.lastidx = idx
@@ -1181,14 +1188,14 @@ class Meld(object):
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
                                       self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
-                                      trace_convergence=tc, nchains=self.ntheta, constraints=[])
+                                      trace_convergence=tc, constraints=[])
             sampler.step()
             self.phi = sampler.phi
             #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
         elif method == 'dream':
             sampler = MCMC.Dream(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
                                  self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
-                                 trace_convergence=tc, nchains=self.ntheta, constraints=[])
+                                 trace_convergence=tc, constraints=[])
             sampler.step()
             self.phi = sampler.phi
         else:

@@ -107,7 +107,7 @@ class RTplot:
                 c = 1
             self.gp.stdin.write(('set multiplot layout %s,%s title "%s"\n' % (r, c, title)).encode())
 
-        else:
+        else:Best fit. Last updated on %s
             self.gp.stdin.write(('set title "%s"\n' % title).encode())
         self.gp.stdin.flush()
         if isinstance(data, list):

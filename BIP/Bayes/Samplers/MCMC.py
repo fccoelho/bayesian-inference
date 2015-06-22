@@ -650,13 +650,36 @@ def model_as_ra(theta, model, phinames):
 
 
 class Dream(_Sampler):
-    '''
+    """
     DiffeRential Evolution Adaptive Markov chain sampler
-    '''
+    """
 
     def __init__(self, meldobj, samples, sampmax, data, t, parpriors, parnames, parlimits, likfun, likvariance, burnin,
                  thin=5, convergenceCriteria=1.1, nCR=3, DEpairs=1, adaptationRate=.65, eps=5e-6, mConvergence=False,
                  mAccept=False, **kwargs):
+        """
+
+        :param meldobj: Melding object reference
+        :param samples: Number of samples to be drawn (accepted)
+        :param sampmax: Maximum number of samples proposed
+        :param data: data
+        :param t:
+        :param parpriors: list of prior distribution objects for the parameters
+        :param parnames: list with the names of the prameters
+        :param parlimits: boundaries for the support of the prior distribution.
+        :param likfun: Likelihood function
+        :param likvariance: Variance of the normal likelihood function.
+        :param burnin: number of samples to discard as burnin
+        :param thin:
+        :param convergenceCriteria:
+        :param nCR:
+        :param DEpairs:
+        :param adaptationRate:
+        :param eps:
+        :param mConvergence:
+        :param mAccept:
+        :param kwargs:
+        """
         self.meld = meldobj
         self.samples = samples
         self.sampmax = sampmax
@@ -796,6 +819,8 @@ class Dream(_Sampler):
     def _prop_phi(self, thetalist, po=None):
         """
         Returns proposed Phi derived from theta
+        :param thetalist: list of proposed theta
+        :param po: Pool of processes for parallel processing
         """
         if po:
             propl = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
@@ -808,7 +833,12 @@ class Dream(_Sampler):
     def _chain_evolution(self, proptheta, propphi, pps, liks):
         """
         Chain evolution as describe in ter Braak's Dream algorithm.
+        :param proptheta: list of lists representing the current state of the chains
+        :param propphi: phis associated with the thetas
+        :param pps:
+        :param liks:
         """
+        self.nchains = max(8, len(self.parpriors))
         CR = 1. / self.nCR
         b = [(l[1] - l[0]) / 10. for l in self.parlimits]
         delta = (self.nchains - 1) // 2 if self.nchains > 2 else 1
@@ -841,12 +871,12 @@ class Dream(_Sampler):
             pdb.set_trace()
         propphi_z = self._prop_phi(zis, self.po)
         zprobs, zliks = self._get_post_prob(zis, propphi_z)
-        prop_evo = [0] * self.dimensions
-        liks_evo = [0] * self.dimensions
-
-        evolved = [0] * self.dimensions  #evolved Theta
         prop_evo = [0] * self.nchains
-        liks_evo = [0] * self.dimensions
+        liks_evo = [0] * self.nchains
+
+        evolved = [0] * self.nchains  #evolved Theta
+        prop_evo = [0] * self.nchains
+        liks_evo = [0] * self.nchains
         pps_evo = zeros(self.nchains)  #posterior probabilities
         accepted = self._accept(self, pps, zprobs)  #have to pass self because method is vectorized
 
@@ -1006,8 +1036,8 @@ class Dream(_Sampler):
                 if self.trace_acceptance:
                     #print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
                     self._watch_chain(j)
-                if self.trace_convergence:
-                    print("++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.max(self.liklist) ))
+                if self.trace_convergence and self.liklist:
+                    print("++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.nanmax(self.liklist) ))
                 t0 = time.time()
             #            print "%s\r"%j
             last_pps = pps
@@ -1018,6 +1048,10 @@ class Dream(_Sampler):
             if self.meld.verbose == 2 and j > 10:
                 #print len(self.liklist),j
                 self.meld.current_plot(self.phi, self.data, self.best_prop_index, step=j)
+            elif self.meld.verbose == 2:  # Plot something even if nothing is getting accepted
+                print(np.array(theta).mean())
+                self.meld.simple_plot(self.data, theta)
+
         self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]
