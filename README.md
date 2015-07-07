@@ -14,3 +14,7 @@ I hope that in time it will mature into an useful tool for general use.
 
 
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/fccoelho/bayesian-inference/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
