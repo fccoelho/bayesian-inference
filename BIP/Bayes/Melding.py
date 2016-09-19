@@ -27,7 +27,7 @@ from numpy import array, nan_to_num, zeros, ones, mean, var, sqrt, floor, isnan,
 from numpy.core.records import recarray
 from numpy.random import randint, random, seed
 from scipy import stats, optimize as optim
-from scipy.stats import nanmean
+from numpy import nanmean
 from scipy.stats.kde import gaussian_kde
 
 from BIP.Bayes import PlotMeld as PM
