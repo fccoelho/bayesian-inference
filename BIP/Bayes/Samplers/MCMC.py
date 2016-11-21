@@ -21,7 +21,7 @@ import numpy as np
 from liveplots.xmlrpcserver import rpc_plot
 from numpy import array, mean, isnan, nan_to_num, var, sqrt, inf, exp, greater, less, identity, ones, zeros, floor, log, \
     recarray, nan
-from numpy.random import random, multivariate_normal, multinomial, rand
+from numpy.random import random, multivariate_normal, multinomial, rand, normal
 import scipy.stats as st
 from scipy.stats import uniform, norm, scoreatpercentile
 from scipy import cov
@@ -109,7 +109,7 @@ class _Sampler(object):
         Pool of processes for parallel execution of tasks
         Remember to call self.term_pool() when done.
         '''
-        if self._po == None:
+        if self._po  is None:
             self._po = Pool()
         else:
             if self._po._state:
@@ -134,7 +134,7 @@ class _Sampler(object):
 
 
     def term_pool(self):
-        if self._po == None:
+        if self._po  is None:
             return
         if not self._po._state:  #Pool needs terminating
             self._po.close()
@@ -177,7 +177,7 @@ class _Sampler(object):
         """
         Decides whether to accept a proposal
         """
-        if last_lik == None: last_lik = -inf
+        if last_lik  is None: last_lik = -inf
         # liks are logliks
         if lik == -inf:  #0:
             return 0
@@ -485,7 +485,7 @@ class Metropolis(_Sampler):
                                     lik)  # have to include self in the call because method is vectorized.
             #            print "acc:", accepted,  theta
             #Decide whether to accept proposal
-            if last_lik == None:  #on first sample
+            if last_lik  is None:  #on first sample
                 last_lik = lik
                 continue
             i += self.nchains
@@ -733,9 +733,13 @@ class Dream(_Sampler):
         """
         k = .3  #Deflation factor for the second proposal
         cv = self.scaling_factor * cov(xi) + self.scaling_factor * self.e * identity(self.dimensions)
+        v = var(xi)+ 0.00001
         o = 0
         while o < 50:
-            zdr = multivariate_normal(xi, k * cv, 1).tolist()[0]
+            if len(xi) > 1:
+                zdr = multivariate_normal(xi, k * cv, 1).tolist()[0]
+            else:
+                zdr = [normal(xi[0], k*v, 1)[0]]
             if not self.check_constraints(zdr): continue
             if sum([t >= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in
                     enumerate(zdr)]) == self.dimensions:
@@ -771,7 +775,7 @@ class Dream(_Sampler):
             - `p1`: log probability
             - `p2`: log probability
         """
-        if p2 == None: p2 = -inf
+        if p2  is None: p2 = -inf
         # ps are log probabilities
         if p2 > -inf:  #np.exp(p2)>0
             alpha = min(exp(p1 - p2), 1)
@@ -900,7 +904,7 @@ class Dream(_Sampler):
                 liks_evo[i] = lk if acc else liks[i]
                 try:
                     pps_evo[i] = pr if acc else pps[i]
-                except TypeError:  #when pps == None
+                except TypeError:  #when pps  is None
                     pps_evo[i] = -inf
             i += 1
         return evolved, prop_evo, pps_evo, liks_evo, accepted
@@ -982,7 +986,7 @@ class Dream(_Sampler):
                 # print "Converged on all dimensions"
                 # print j, self._R
             #Update last_lik
-            if last_pps == None:  #on first sample
+            if last_pps  is None:  #on first sample
                 last_pps = pps
                 #last_liks = liks
                 continue
