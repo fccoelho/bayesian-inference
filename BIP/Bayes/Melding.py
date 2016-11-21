@@ -464,7 +464,7 @@ class FitModel(object):
         d = data
         prior = {'theta': [], 'phi': []}
         os.system('rm %s_*.pickle' % dbname)
-        if self.wl == None:
+        if self.wl  is None:
             self.wl = floor(len(list(d.values())[0]) / self.nw)
         wl = self.wl
         for w in range(self.nw):
@@ -599,7 +599,7 @@ class FitModel(object):
         if self.ew: self.model.__globals__['inits'] = self.finits
         simseries = self.model(cpars)
         simseries = [simseries[:, i].tolist() for i in range(self.nphi) if i in vind]
-        snames = [n for n in self.phinames if i in vind]
+        snames = [n for n in self.phinames if n in vind]
         self.model.__globals__['tf'] = self.tf
         xinit = 0 if self.ew else self.wl * w + self.wl
         #        print xinit, xinit+len(simseries[0])
@@ -1230,7 +1230,7 @@ class Meld(object):
             if len(obs.shape) > 1:  #in case of more than one dataset
                 obs = clearNaN(obs).mean(axis=1)
             if likfun == like.Normal:
-                if po != None:  # Parallel version
+                if po  is not None:  # Parallel version
                     liks = [po.apply_async(likfun, (obs[p], prop[p][k], 1. / likvar)) for p in range(t) if
                             not isnan(obs[p])]
                     lik = nansum([l.get() for l in liks])
@@ -1238,7 +1238,7 @@ class Meld(object):
                     liks = [likfun(obs[p], prop[p][k], 1. / likvar) for p in range(t) if not isnan(obs[p])]
                     lik = nansum(liks)
             elif likfun == like.Poisson:
-                if po != None:  # Parallel version
+                if po  is not None:  # Parallel version
                     liks = [po.apply_async(likfun, (int(obs[p]), prop[p][k])) for p in range(t) if
                             not isnan(obs[p])]
                     lik = nansum([l.get() for l in liks])
