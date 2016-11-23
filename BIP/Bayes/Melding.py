@@ -20,6 +20,7 @@ import six.moves.xmlrpc_client
 from multiprocessing import Pool
 from time import time
 from sqlite3 import InterfaceError
+from warnings import warn
 
 import numpy
 import pylab as P
@@ -280,11 +281,11 @@ class FitModel(object):
             print("Probability mass between the given limits ({},{}): {}".format(self.tlims[i][0], self.tlims[i][1],
                                                                                  d.cdf(self.tlims[i][1])-d.cdf(self.tlims[i][0])))
             if self.tlims[i][1] - self.tlims[i][0] == 0:
-                print("\t+ Support of the distribution is empty.\n\t+ Try something between {} and {}".format(d.a, d.b))
+                warn("\t+ Support of the distribution is empty.\n\t+ Try something between {} and {}".format(d.a, d.b))
             if self.tlims[i][0] < d.a:
-                print("\t+ Lower limit ({}) is below the lower limit of the distribution({})".format(self.tlims[i][0], d.a))
+                warn("\t+ Lower limit ({}) is below the lower limit of the distribution({})".format(self.tlims[i][0], d.a))
             if self.tlims[i][1] > d.b:
-                print("\t+ Upper limit ({}) is above the upper limit of the distribution({})".format(self.tlims[i][1], d.b))
+                warn("\t+ Upper limit ({}) is above the upper limit of the distribution({})".format(self.tlims[i][1], d.b))
 
 
     def prior_sample(self):

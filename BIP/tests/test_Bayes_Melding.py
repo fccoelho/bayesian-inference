@@ -53,6 +53,9 @@ class TestFitModel(unittest.TestCase):
     def test___init__(self):
         assert isinstance(fit_model, Melding.FitModel)
 
+    def test_check_priors(self):
+        fit_model.check_priors()
+
     def test_do_inference(self):
         # fit_model = FitModel(K, L, model, ntheta, nphi, inits, tf, phinames, thetanames, verbose)
         # self.assertEqual(expected, fit_model.do_inference(prior, data, predlen, method))
