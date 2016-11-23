@@ -986,7 +986,7 @@ class Dream(_Sampler):
                 # print "Converged on all dimensions"
                 # print j, self._R
             #Update last_lik
-            if last_pps  is None:  #on first sample
+            if last_pps is None:  #on first sample
                 last_pps = pps
                 #last_liks = liks
                 continue
@@ -1053,7 +1053,7 @@ class Dream(_Sampler):
                 #print len(self.liklist),j
                 self.meld.current_plot(self.phi, self.data, self.best_prop_index, step=j)
             elif self.meld.verbose == 2:  # Plot something even if nothing is getting accepted
-                print(np.array(theta).mean())
+                print(np.array(theta).mean(axis=0))
                 self.meld.simple_plot(self.data, theta)
 
         self.term_pool()

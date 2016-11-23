@@ -269,6 +269,24 @@ class FitModel(object):
         self._init_priors()
         self.prior_set = True
 
+    def check_priors(self):
+        if self.tlims is None:
+            print("You must set your priors before calling check_priors.")
+            return
+        for i, n in enumerate(self.thetanames):
+            d = self.tdists[i](*self.tpars[i])
+            print("Checking {} prior distribution:".format(n))
+            print(d)
+            print("Probability mass between the given limits ({},{}): {}".format(self.tlims[i][0], self.tlims[i][1],
+                                                                                 d.cdf(self.tlims[i][1])-d.cdf(self.tlims[i][0])))
+            if self.tlims[i][1] - self.tlims[i][0] == 0:
+                print("\t+ Support of the distribution is empty.\n\t+ Try something between {} and {}".format(d.a, d.b))
+            if self.tlims[i][0] < d.a:
+                print("\t+ Lower limit ({}) is below the lower limit of the distribution({})".format(self.tlims[i][0], d.a))
+            if self.tlims[i][1] > d.b:
+                print("\t+ Upper limit ({}) is above the upper limit of the distribution({})".format(self.tlims[i][1], d.b))
+
+
     def prior_sample(self):
         """
         Generates a set of samples from the starting theta prior distributions
