@@ -64,7 +64,7 @@ __docformat__ = "restructuredtext en"
 class FitModel(object):
     """
     Fit a model to data generating
-    Bayesian posterior distributions of input and
+    Bayesian posterior distributions of inputs and
     outputs of the model.
     Fitting process can be monitored via a curses interface.
     """
@@ -85,6 +85,7 @@ class FitModel(object):
             - `nw`: Number of windows to analyze on iterative inference mode
             - `verbose`: Verbosity level: 0, 1 or 2.
             - `burnin`: number of burnin samples, used in the case on mcmc method.
+            - `constraints`:
         """
         try:
             assert wl <= tf
@@ -93,10 +94,10 @@ class FitModel(object):
         assert isinstance(constraints, list)
         self.K = K
         self.L = int(.1 * K) if K > 2000 else int(K)
-        self.finits = inits  #first initial values
+        self.finits = list(inits)  #first initial values
         self.ftf = tf
         self.full_len = wl * nw if wl != None else tf
-        self.inits = inits
+        self.inits = list(inits)
         self.tf = tf
         self.ew = 0  #expanding windows?
         self.totpop = sum(inits)
@@ -1200,6 +1201,8 @@ class Meld(object):
             - `likvariance`: variance of the Normal likelihood function
             - `nopool`: True if no priors on the outputs are available. Leads to faster calculations
             - `method`: Step method. defaults to Metropolis hastings
+            - `constraints`:
+            - `likfun`: Likelihood function
         """
         #self.phi = recarray((self.K,t),formats=['f8']*self.nphi, names = self.phi.dtype.names)
         ta = self.verbose >= 1
@@ -1207,14 +1210,14 @@ class Meld(object):
         if method == "MH":
             sampler = MCMC.Metropolis(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
                                       self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
-                                      trace_convergence=tc, constraints=[])
+                                      trace_convergence=tc, constraints=constraints)
             sampler.step()
             self.phi = sampler.phi
             #self.mh(self.K,t,data,like.Normal,likvariance,burnin)
         elif method == 'dream':
             sampler = MCMC.Dream(self, self.K, self.K * 10, data, t, self.theta_dists, self.q1theta.dtype.names,
                                  self.tlimits, likfun, likvariance, burnin, trace_acceptance=ta,
-                                 trace_convergence=tc, constraints=[])
+                                 trace_convergence=tc, constraints=constraints)
             sampler.step()
             self.phi = sampler.phi
         else:

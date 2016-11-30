@@ -30,7 +30,6 @@ from six.moves import range
 from six.moves import zip
 from BIP.Viz.progress import MultiProgressBars
 
-
 __author__ = "fccoelho"
 __date__ = "$09/12/2009 10:44:11$"
 __docformat__ = "restructuredtext en"
@@ -38,6 +37,7 @@ __docformat__ = "restructuredtext en"
 logger = logging.getLogger('BIP.MCMC')
 
 counter_bar = MultiProgressBars()
+
 
 def timeit(method):
     """
@@ -62,14 +62,14 @@ class _Sampler(object):
     Holds common logic and 
     '''
     _po = None
-    _dimensions = None  #cache for dimensions
+    _dimensions = None  # cache for dimensions
     trace_acceptance = False
     trace_convergence = False
     seqhist = None
     liklist = []
-    e = 1e-20  #very small number used in the proposal covariance function calculation
+    e = 1e-20  # very small number used in the proposal covariance function calculation
     _j = -1
-    _R = np.inf  #Gelman Rubin Convergence
+    _R = np.inf  # Gelman Rubin Convergence
 
     def __init__(self, parpriors=[], parnames=[]):
         self.parpriors = parpriors
@@ -109,11 +109,11 @@ class _Sampler(object):
         Pool of processes for parallel execution of tasks
         Remember to call self.term_pool() when done.
         '''
-        if self._po  is None:
+        if self._po is None:
             self._po = Pool()
         else:
             if self._po._state:
-                self._po = Pool()  #Pool has been terminated
+                self._po = Pool()  # Pool has been terminated
         return self._po
 
     def shut_down(self, reason=''):
@@ -132,11 +132,10 @@ class _Sampler(object):
         if reason:
             logger.info(reason)
 
-
     def term_pool(self):
-        if self._po  is None:
+        if self._po is None:
             return
-        if not self._po._state:  #Pool needs terminating
+        if not self._po._state:  # Pool needs terminating
             self._po.close()
             self._po.join()
             self._po = None
@@ -161,9 +160,9 @@ class _Sampler(object):
             return
         N = min(min([len(self.seqhist[c]) for c in range(self.nchains)]), N)
         seq = [self.seqhist[c][-N:] for c in range(self.nchains)]
-        sequences = array(seq)  #this becomes an array (nchains,samples,dimensions)
-        variances = var(sequences, axis=1)  #array(nchains,dim)
-        means = mean(sequences, axis=1)  #array(nchains,dim)
+        sequences = array(seq)  # this becomes an array (nchains,samples,dimensions)
+        variances = var(sequences, axis=1)  # array(nchains,dim)
+        means = mean(sequences, axis=1)  # array(nchains,dim)
         withinChainVariances = mean(variances, axis=0)
         betweenChainVariances = var(means, axis=0) * N
         varEstimate = (1 - 1.0 / N) * withinChainVariances + (1.0 / N) * betweenChainVariances
@@ -177,19 +176,19 @@ class _Sampler(object):
         """
         Decides whether to accept a proposal
         """
-        if last_lik  is None: last_lik = -inf
+        if last_lik is None: last_lik = -inf
         # liks are logliks
-        if lik == -inf:  #0:
+        if lik == -inf:  # 0:
             return 0
-        if last_lik > -inf:  #0:
+        if last_lik > -inf:  # 0:
             alpha = min(exp(lik - last_lik), 1)
-            #alpha = min(lik-last_lik, 1)
-        elif last_lik == -inf:  #0:
+            # alpha = min(lik-last_lik, 1)
+        elif last_lik == -inf:  # 0:
             alpha = 1
         else:
             return 0
             raise ValueError("Negative likelihood!?!")
-        #        print "last_lik, lik, alpha: ",  last_lik, lik, alpha
+        # print "last_lik, lik, alpha: ",  last_lik, lik, alpha
         if random() < alpha:
             return 1
         else:
@@ -226,7 +225,7 @@ class _Sampler(object):
         counter_bar.refresh()
         print("Gelman-Rubin's R: ", self._R)
         self.pserver.clearFig()
-        thin = j // 500 if j // 500 != 0 else 1  #history is thinned to show at most 500 points, equally spaced over the entire range
+        thin = j // 500 if j // 500 != 0 else 1  # history is thinned to show at most 500 points, equally spaced over the entire range
         chaindata = self.history[:j:thin].T.tolist()
         obs = [];
         lbs = []
@@ -237,12 +236,13 @@ class _Sampler(object):
             else:
                 obs += nan_to_num(d).tolist()
                 lbs += [k]
-        self.pserver.lines(chaindata, list(range(j - (len(chaindata[0])), j)), self.parnames, "Chain Progress.", 'points', 1)
+        self.pserver.lines(chaindata, list(range(j - (len(chaindata[0])), j)), self.parnames, "Chain Progress.",
+                           'points', 1)
         self.pserver2.lines(obs, [], lbs, "Fit", 'points')
         s = j - 50 if 3 * j // 4 < 50 else 3 * j // 4
-        #series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
+        # series = [self.phi[k][s:j].mean(axis=0).tolist() for k in self.data.keys()]
         series = [mean(self.phi[k][s:j], axis=0).tolist() for k in list(self.data.keys())]
-        bi = self.liklist.index(max(self.liklist[s:j]))  #index of the best fit
+        bi = self.liklist.index(max(self.liklist[s:j]))  # index of the best fit
         series = [mean(self.phi[k][s:j], axis=0).tolist() for k in list(self.data.keys())]
         best = [self.phi[k][bi].tolist() for k in list(self.data.keys())]
         mlabels = ['Mean ' + l for l in list(self.data.keys())]
@@ -250,7 +250,7 @@ class _Sampler(object):
         self.pserver2.lines(series, [], mlabels, "Mean fit of last %s samples" % (j - s), 'lines')
         self.pserver2.lines(best, [], blabels, "mean and best fit of last %s samples" % (j - s), 'lines')
         self.pserver2.clearFig()
-        #TODO: Implement plot of best fit simulation against data
+        # TODO: Implement plot of best fit simulation against data
 
     def _tune_likvar(self, ar):
         try:
@@ -263,16 +263,16 @@ class _Sampler(object):
         if dev > 0.02:
             self.likvariance *= 1 + self.tsig * (.5 * (np.tanh(8 * dev - 3) + 1))
         else:
-            return  #ar at target, don't change anything
+            return  # ar at target, don't change anything
         improv = (0.35 - mean(self.arhist[-5:-1])) ** 2 - (0.35 - ar) ** 2
         if improv < 0:
-            self.tsig *= -1  #change signal if AR is not improving
-            self.tstep = .05  #reset to small steps if changing direction
+            self.tsig *= -1  # change signal if AR is not improving
+            self.tstep = .05  # reset to small steps if changing direction
         elif improv > 0 and improv < .01:
-            if random() < .05:  #1 in 20 chance to change direction if no improvements
-                self.tsig *= -1  #change signal if AR is not improving
+            if random() < .05:  # 1 in 20 chance to change direction if no improvements
+                self.tsig *= -1  # change signal if AR is not improving
         elif improv > 0.01:
-            self.tstep *= 0.97  #reduce step if approacching sweet spot
+            self.tstep *= 0.97  # reduce step if approacching sweet spot
 
             #    @np.vectorize
 
@@ -309,7 +309,7 @@ class _Sampler(object):
         initcov = np.identity(self.dimensions)
         for c in range(self.nchains):
             if step <= 1 or self.seqhist[c] == []:
-                #sample from the priors
+                # sample from the priors
                 while 1:
                     theta = [self.parpriors[dist]() for dist in self.parnames]
                     if not self.check_constraints(theta):
@@ -317,10 +317,10 @@ class _Sampler(object):
                     if sum([int(greater(t, self.parlimits[i][0]) and less(t, self.parlimits[i][1])) for i, t in
                             enumerate(theta)]) == self.dimensions:
                         break
-                self.lastcv = initcov  #assume no covariance at the beginning
+                self.lastcv = initcov  # assume no covariance at the beginning
             else:
-                #use gaussian proposal
-                if step % 10 == 0 and len(self.seqhist[c]) >= 10:  #recalculate covariance matrix only every ten steps
+                # use gaussian proposal
+                if step % 10 == 0 and len(self.seqhist[c]) >= 10:  # recalculate covariance matrix only every ten steps
                     cv = self.scaling_factor * cov(
                         array(self.seqhist[c][-10:])) + self.scaling_factor * self.e * identity(self.dimensions)
                     self.lastcv = cv
@@ -341,7 +341,7 @@ class _Sampler(object):
         return thetalist, propl
 
 
-#TODO: remove dependency on the meld object
+# TODO: remove dependency on the meld object
 class Metropolis(_Sampler):
     """
     Standard random-walk Metropolis Hastings sampler class
@@ -383,13 +383,13 @@ class Metropolis(_Sampler):
         self.e = 1e-20
         if kwargs:
             for k, v in six.iteritems(kwargs):
-                exec ('self.%s = %s' % (k, v))
+                exec('self.%s = %s' % (k, v))
         self.nchains = 1
         # Combined history of accepted samples
         self.history = np.zeros((self.nchains * (samples + self.burnin), self.dimensions))
-        #complete history of all chains as a dictionary with keys as integer ids of the chains
+        # complete history of all chains as a dictionary with keys as integer ids of the chains
         self.seqhist = dict([(i, []) for i in range(self.nchains)])
-        #self.seqhist = np.zeros((self.nchains, self.dimensions, samples+self.burnin))
+        # self.seqhist = np.zeros((self.nchains, self.dimensions, samples+self.burnin))
         self.setup_xmlrpc_plotserver()
 
     def _propose(self, step, po=None):
@@ -410,15 +410,15 @@ class Metropolis(_Sampler):
         proplist = []
         initcov = identity(self.dimensions)
         if self.meld.initheta and step <= 1:
-            #start from user-defined point in parameter space.
+            # start from user-defined point in parameter space.
             for i in range(self.nchains):
                 thetalist.append(self.meld.initheta)
-            self.lastcv = initcov  #assume no covariance at the beginning
+            self.lastcv = initcov  # assume no covariance at the beginning
         else:
             for c in range(self.nchains):
                 off = 0
                 if step <= 1 or self.seqhist[c] == []:
-                    #sample from the priors
+                    # sample from the priors
                     while off < 50:
                         theta = [self.parpriors[par].rvs() for par in self.parnames]
                         if not self.check_constraints(theta):
@@ -427,30 +427,30 @@ class Metropolis(_Sampler):
                                 enumerate(theta)]) == self.dimensions:
                             break
                         off += 1
-                    if off == 50:  #try a compromising proposal
-                        theta = self.seqhist[c][-1]  #last accepted proposal for this chain
+                    if off == 50:  # try a compromising proposal
+                        theta = self.seqhist[c][-1]  # last accepted proposal for this chain
                         #                print "off:" , off
-                    self.lastcv = initcov  #assume no covariance at the beginning
+                    self.lastcv = initcov  # assume no covariance at the beginning
                 else:
-                    #use gaussian proposal
+                    # use gaussian proposal
                     if step % 10 == 0 and len(
-                            self.seqhist[c]) >= 10:  #recalculate covariance matrix only every ten steps
+                            self.seqhist[c]) >= 10:  # recalculate covariance matrix only every ten steps
                         cv = self.scaling_factor * cov(array(self.seqhist[c][-10:]),
                                                        rowvar=0) + self.scaling_factor * self.e * identity(
                             self.dimensions)
                         self.lastcv = cv
                     else:
                         cv = self.lastcv
-                    #print self.parlimits
+                    # print self.parlimits
                     while off < 50:
                         theta = multivariate_normal(self.seqhist[c][-1], cv, size=1).tolist()[0]
                         if sum([int(t >= self.parlimits[i][0] and t <= self.parlimits[i][1]) for i, t in
                                 enumerate(theta)]) == self.dimensions:
                             break
                         off += 1
-                    if off == 50:  #try a compromising proposal
-                        theta = self.seqhist[c][-1]  #last accepted proposal for this chain
-                        #print "off:" , off
+                    if off == 50:  # try a compromising proposal
+                        theta = self.seqhist[c][-1]  # last accepted proposal for this chain
+                        # print "off:" , off
                 thetalist.append(theta)
         if po:
             proplis = [po.apply_async(model_as_ra, (t, self.meld.model, self.meld.phi.dtype.names)) for t in thetalist]
@@ -468,59 +468,61 @@ class Metropolis(_Sampler):
         i = 0;
         j = 0;
         rej = 0;
-        ar = 0  #total samples,accepted samples, rejected proposals, acceptance rate
+        ar = 0  # total samples,accepted samples, rejected proposals, acceptance rate
         last_lik = None
         while j < self.samples + self.burnin:
-            #print(j)
+            # print(j)
             self.meld.current_step = j
             if self.meld.stop_now:
                 return self.shut_down('user interrupted')
-            #generate proposals
+            # generate proposals
             theta, prop = self._propose(j, self.po)
-            #calculate likelihoods
+            # calculate likelihoods
             lik = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance, self.po) for p in prop]
 
             #            print "lik:" , lik,  last_lik,  j
             accepted = self._accept(self, last_lik,
                                     lik)  # have to include self in the call because method is vectorized.
             #            print "acc:", accepted,  theta
-            #Decide whether to accept proposal
-            if last_lik  is None:  #on first sample
+            # Decide whether to accept proposal
+            if last_lik is None:  # on first sample
                 last_lik = lik
                 continue
             i += self.nchains
             if sum(accepted) < self.nchains:
-                rej += self.nchains - sum(accepted)  #adjust rejection counter
+                rej += self.nchains - sum(accepted)  # adjust rejection counter
                 if i % 100 == 0:
                     ar = (i - rej) / float(i)
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        counter_bar("Sampler", j, self.samples, "{} rejected and {} accepted  in {} samples. Acceptance ratio = {}".format(rej, j, i, ar))
-                        #print("--> %s: Acc. ratio: %s" % (rej, ar))
+                        counter_bar("Sampler", j, self.samples,
+                                    "{} rejected and {} accepted  in {} samples. Acceptance ratio = {}".format(rej, j,
+                                                                                                               i, ar))
+                        # print("--> %s: Acc. ratio: %s" % (rej, ar))
                         # Store accepted values
                         #            print "nchains:", self.nchains
             for c, t, pr, a in zip(list(range(self.nchains)), theta, prop,
-                                   accepted):  #Iterates over the results of each chain
-                #if not accepted repeat last value
+                                   accepted):  # Iterates over the results of each chain
+                # if not accepted repeat last value
                 if not a:
                     continue
                 self.history[j, :] = t
                 self.seqhist[c].append(t)
-                #self.seqhist[c, :, j] = t 
+                # self.seqhist[c, :, j] = t
                 self.phi[j] = pr[0] if self.t == 1 else [tuple(point) for point in pr]
                 ptheta[j] = tuple(t)
                 self.liklist.append(lik[c])
                 if j == self.samples + self.burnin: break
-                j += 1  #update accepted sample counter
-            #print j,  len(self.seqhist[0])
+                j += 1  # update accepted sample counter
+            # print j,  len(self.seqhist[0])
             if j % 100 == 0 and j > 0:
                 if self.trace_acceptance:
-                    #counter_bar("Sampler", j, self.samples, "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
-                    #print("++>%s,%s: Acc. ratio: %s" % (j, i, ar))
+                    # counter_bar("Sampler", j, self.samples, "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
+                    # print("++>%s,%s: Acc. ratio: %s" % (j, i, ar))
                     self._watch_chain(j)
                 if self.trace_convergence: print("++> %s: Likvar: %s\nML:%s" % (
-                    j, self.likvariance, np.max(self.liklist) ))
-            #            print "%s\r"%j
+                    j, self.likvariance, np.max(self.liklist)))
+            # print "%s\r"%j
             last_lik = lik
             last_prop = prop
             last_theta = theta
@@ -530,16 +532,16 @@ class Metropolis(_Sampler):
         self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]
-        self.meld.post_theta = ptheta  #self._imp_sample(self.meld.L,ptheta,liklist)
+        self.meld.post_theta = ptheta  # self._imp_sample(self.meld.L,ptheta,liklist)
         self.meld.likmax = max(self.liklist)
         self.meld.DIC = self.DIC
-        counter_bar("Sampler", j, self.samples, "{} rejected and {} accepted  in {} samples. Acceptance ratio = {}".format(rej, j, i, ar))
+        counter_bar("Sampler", j, self.samples,
+                    "{} rejected and {} accepted  in {} samples. Acceptance ratio = {}".format(rej, j, i, ar))
         print("Total steps(i): ", i, "rej:", rej, "j:", j)
         print(">>> Acceptance rate: %s" % ar)
         print("MLE of parameters: ", ptheta[self.best_prop_index])
         self.shut_down('Finished normally')
         return 1
-
 
     def _rms_fit(self, s1, s2):
         '''
@@ -569,11 +571,11 @@ class Metropolis(_Sampler):
             assert isinstance(s2, list) and len(s1) == len(s2)
             err = [np.sqrt(np.mean((s - t) ** 2.)) for s, t in zip(s1, s2)]
         rmsd = np.mean(err)
-        fit = 1. / rmsd  #fitness measure
+        fit = 1. / rmsd  # fitness measure
         #        print "rmsd, fit, err: ", rmsd,fit, err
         if fit == np.inf:
             sys.exit()
-        return fit  #mean r-squared
+        return fit  # mean r-squared
 
     def _imp_sample(self, n, data, w):
         """
@@ -586,7 +588,7 @@ class Metropolis(_Sampler):
         :Returns:
             returns a sample of size n
         """
-        #sanitizing weights
+        # sanitizing weights
         print("Starting importance Sampling")
         w /= sum(w)
         w = np.nan_to_num(w)
@@ -594,7 +596,7 @@ class Metropolis(_Sampler):
         k = 0
         nvar = len(data.dtype.names)
         smp = np.recarray(n, formats=[data.dtype.descr[0][1]] * nvar, names=data.dtype.names)
-        #smp = copy.deepcopy(data[:n])
+        # smp = copy.deepcopy(data[:n])
         while j < n:
             i = np.random.randint(0, w.size)  # Random position of w
             if np.random.random() <= w[i]:
@@ -699,16 +701,16 @@ class Dream(_Sampler):
         self.delayRej = 1
         if kwargs:
             for k, v in six.iteritems(kwargs):
-                exec ('self.%s = %s' % (k, v))
-        self._R = array([2] * self.nchains)  #initializing _R
+                exec('self.%s = %s' % (k, v))
+        self._R = array([2] * self.nchains)  # initializing _R
         self.maxChainDraws = floor(samples / self.nchains)
-        #initialize the history arrays
+        # initialize the history arrays
         # History of log posterior probs for all chains
         self.omega = zeros((self.samples + self.burnin, self.nchains))
         # Combined history of accepted samples
         self.history = zeros((self.nchains * (samples + self.burnin), self.dimensions))
         self.seqhist = dict([(i, []) for i in range(self.nchains)])
-        #self.sequenceHistories = np.zeros((self.nchains, self.dimensions, self.maxChainDraws))
+        # self.sequenceHistories = np.zeros((self.nchains, self.dimensions, self.maxChainDraws))
         # initialize the temporary storage vectors
         self.currentVectors = zeros((self.nchains, self.dimensions))
         self.currentLiks = ones(self.nchains) * -inf
@@ -731,15 +733,15 @@ class Dream(_Sampler):
         """
         Generates a second proposal based on rejected proposal xi
         """
-        k = .3  #Deflation factor for the second proposal
+        k = .3  # Deflation factor for the second proposal
         cv = self.scaling_factor * cov(xi) + self.scaling_factor * self.e * identity(self.dimensions)
-        v = var(xi)+ 0.00001
+        v = var(xi) + 0.00001
         o = 0
         while o < 50:
             if len(xi) > 1:
                 zdr = multivariate_normal(xi, k * cv, 1).tolist()[0]
             else:
-                zdr = [normal(xi[0], k*v, 1)[0]]
+                zdr = [normal(xi[0], k * v, 1)[0]]
             if not self.check_constraints(zdr): continue
             if sum([t >= self.parlimits[i][0] and t <= self.parlimits[i][1] for i, t in
                     enumerate(zdr)]) == self.dimensions:
@@ -775,17 +777,16 @@ class Dream(_Sampler):
             - `p1`: log probability
             - `p2`: log probability
         """
-        if p2  is None: p2 = -inf
+        if p2 is None: p2 = -inf
         # ps are log probabilities
-        if p2 > -inf:  #np.exp(p2)>0
+        if p2 > -inf:  # np.exp(p2)>0
             alpha = min(exp(p1 - p2), 1)
-        elif p2 == -inf:  #np.exp(p2)==0
+        elif p2 == -inf:  # np.exp(p2)==0
             alpha = 1
         else:
             print("proposal's logP: ", p2)
             alpha = 0
         return alpha
-
 
     def update_CR_dist(self):
         t = 1
@@ -796,25 +797,25 @@ class Dream(_Sampler):
             m = multinomial(1, [pm] * self.nCR).nonzero()[0][0] + 1
             CR = float(m) / self.nCR
             Lm += 1
-            #TODO: finish implementing this
+            # TODO: finish implementing this
 
     def _prop_initial_theta(self, step):
         """
         Generate Theta proposals from priors
         """
-        if self.meld.initheta:
-            #start from user-defined point in parameter space.
+        if self.meld.initheta and step == 0:
+            # start from user-defined point in parameter space.
             return [self.meld.initheta for i in range(self.nchains)]
 
         thetalist = []
         initcov = identity(self.dimensions)
         for c in range(self.nchains):
-            #sample from the priors
+            # sample from the priors
             #            while 1:
             theta = array([self.parpriors[par].stats(moments='m') for par in self.parnames])
             #                if sum ([int(t>= self.parlimits[i][0] and t<= self.parlimits[i][1]) for i, t in enumerate(theta)]) == self.dimensions:
             #                    break
-            self.lastcv = initcov  #assume no covariance at the beginning
+            self.lastcv = initcov  # assume no covariance at the beginning
 
             thetalist.append(theta.tolist())
         return thetalist
@@ -850,7 +851,7 @@ class Dream(_Sampler):
         zis = []
         for c in range(self.nchains):
             o = 0
-            while 1:  #check constraints
+            while 1:  # check constraints
                 e = [uniform(-i, 2 * i).rvs() for i in b]
                 eps = [norm(0, i).rvs() for i in b]
                 others = [x for i, x in enumerate(proptheta) if i != c]
@@ -859,18 +860,18 @@ class Dream(_Sampler):
                     d1, d2 = sample(others, 2)
                     dif += array(d1) - array(d2)
                 zi = array(proptheta[c]) + (ones(self.dimensions) + e) * gam * dif + eps
-                #revert offlimits proposals
+                # revert offlimits proposals
                 for i in range(len(zi)):
                     if zi[i] <= self.parlimits[i][0] or zi[i] >= self.parlimits[i][1]:  # or isnan(zi):
                         zi[i] = proptheta[c][i]
-                #Cross over
+                # Cross over
                 for i in range(len(zi)):
                     zi[i] = proptheta[c][i] if rand() < 1 - CR else zi[i]
                 zis.append(zi)
                 if self.check_constraints(zi):
                     break
 
-        #get the associated Phi's
+        # get the associated Phi's
         if isnan(zis).any():
             pdb.set_trace()
         propphi_z = self._prop_phi(zis, self.po)
@@ -878,11 +879,11 @@ class Dream(_Sampler):
         prop_evo = [0] * self.nchains
         liks_evo = [0] * self.nchains
 
-        evolved = [0] * self.nchains  #evolved Theta
+        evolved = [0] * self.nchains  # evolved Theta
         prop_evo = [0] * self.nchains
         liks_evo = [0] * self.nchains
-        pps_evo = zeros(self.nchains)  #posterior probabilities
-        accepted = self._accept(self, pps, zprobs)  #have to pass self because method is vectorized
+        pps_evo = zeros(self.nchains)  # posterior probabilities
+        accepted = self._accept(self, pps, zprobs)  # have to pass self because method is vectorized
 
         # Do Delayed rejection with the chains that got rejected
         # and store results.
@@ -893,18 +894,18 @@ class Dream(_Sampler):
                 prop_evo[i] = propphi_z[i]
                 pps_evo[i] = zprobs[i]
                 liks_evo[i] = zliks[i]
-                #self.liklist.append(zliks[i])
+                # self.liklist.append(zliks[i])
             else:
                 th2, acc, lk, pr, prop = self.delayed_rejection(x, z, pps[i], zprobs[i])
                 if acc:
                     accepted[i] = 1
-                    #self.liklist.append(lk)
+                    # self.liklist.append(lk)
                 evolved[i] = th2
                 prop_evo[i] = prop if acc else propphi[i]
                 liks_evo[i] = lk if acc else liks[i]
                 try:
                     pps_evo[i] = pr if acc else pps[i]
-                except TypeError:  #when pps  is None
+                except TypeError:  # when pps  is None
                     pps_evo[i] = -inf
             i += 1
         return evolved, prop_evo, pps_evo, liks_evo, accepted
@@ -925,11 +926,11 @@ class Dream(_Sampler):
         '''
         pri = 1
         pris = []
-        for c in range(len(theta)):  #iterate over chains
-            for i in range(len(theta[c])):  #iterate  over parameters
+        for c in range(len(theta)):  # iterate over chains
+            for i in range(len(theta[c])):  # iterate  over parameters
                 try:
                     pri *= self.parpriors[self.parnames[i]].pdf(theta[c][i])
-                except AttributeError:  #in case distribution is discrete
+                except AttributeError:  # in case distribution is discrete
                     pri *= self.parpriors[self.parnames[i]].pmf(theta[c][i])
             pris.append(pri)
         if po:
@@ -939,7 +940,7 @@ class Dream(_Sampler):
             self.term_pool()
         else:
             listoliks = [self.meld._output_loglike(p, self.data, self.likfun, self.likvariance) for p in prop]
-        #        Multiply by prior values to obtain posterior probs
+        # Multiply by prior values to obtain posterior probs
         #        Actually sum the logs
         posts = (log(array(pris)) + array(listoliks)).tolist()
 
@@ -956,58 +957,58 @@ class Dream(_Sampler):
         i = 0;
         j = 0;
         rej = 0;
-        ar = 0  #total samples,accepted samples, rejected proposals, acceptance rate
+        ar = 0  # total samples,accepted samples, rejected proposals, acceptance rate
         last_pps = None
         t0 = time.time()
         while j < self.samples + self.burnin:
             self.meld.current_step = j
             if self.meld.stop_now:
                 return self.shut_down('user interrupted')
-            #generate proposals
+            # generate proposals
             if j == 0:
-                theta = self._prop_initial_theta(j)
+                theta = self._prop_initial_theta(i/self.nchains)
                 prop = self._prop_phi(theta, self.po)
                 pps, liks = self._get_post_prob(theta, prop)
             else:
                 theta = [self.seqhist[c][-1] for c in range(self.nchains)]
                 prop = self._prop_phi(theta, self.po)
-                #pps = last_pps
-                #liks = last_liks
+                # pps = last_pps
+                # liks = last_liks
                 # Evolve chains
             #            while sum(self._R <=1.2)<self.nchains:
             theta, prop, pps, liks, accepted = self._chain_evolution(theta, prop, pps, liks)
-            #storing log post probs
+            # storing log post probs
             #            print self.omega.shape,  pps.shape
             self.omega[j, :] = pps
-            #Compute GR R
+            # Compute GR R
             self.gr_R(j, -j // 2)
-            if sum(self._R <=1.2)==self.nchains:
+            if sum(self._R <= 1.2) == self.nchains:
                 pass
                 # print "Converged on all dimensions"
                 # print j, self._R
-            #Update last_lik
-            if last_pps is None:  #on first sample
+            # Update last_lik
+            if last_pps is None:  # on first sample
                 last_pps = pps
-                #last_liks = liks
+                # last_liks = liks
                 continue
             i += self.nchains
             if sum(accepted) < self.nchains:
                 ar = (i - rej) / float(i)
-                rej += self.nchains - sum(accepted)  #adjust rejection counter
+                rej += self.nchains - sum(accepted)  # adjust rejection counter
                 #                print "==> Acc. ratio: %2.2f"%ar
                 if i % 100 == 0:
                     self._tune_likvar(ar)
                     if self.trace_acceptance:
-                        counter_bar("Sampler", j, self.samples, "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
-                        #print("--> %s rejected. Acc. ratio: %2.2f" % (rej, ar))
-
+                        counter_bar("Sampler", j, self.samples,
+                                    "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
+                        # print("--> %s rejected. Acc. ratio: %2.2f" % (rej, ar))
 
             # Store accepted values
             for c, t, pr, acc in zip(list(range(self.nchains)), theta, prop,
-                                     accepted):  #Iterates over the results of each chain
-                #if not accepted repeat last value
+                                     accepted):  # Iterates over the results of each chain
+                # if not accepted repeat last value
                 if not acc:
-                    #Add something to the seqhist so that they all have the same length
+                    # Add something to the seqhist so that they all have the same length
                     if self.seqhist[c] == []:
                         self.seqhist[c].append(t)
                     else:
@@ -1022,7 +1023,7 @@ class Dream(_Sampler):
                         print("index error", j, self.phi.shape)
                     self.liklist.append(liks[c])
                     if j == self.samples + self.burnin: break
-                    j += 1  #update accepted samples counter
+                    j += 1  # update accepted samples counter
 
             # Remove Outlier Chains
             if j > 0 and j < self.burnin:
@@ -1038,19 +1039,19 @@ class Dream(_Sampler):
             el = time.time() - t0
             if el > 10:
                 if self.trace_acceptance:
-                    #print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
+                    # print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
                     self._watch_chain(j)
                 if self.trace_convergence and self.liklist:
-                    print("++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.nanmax(self.liklist) ))
+                    print("++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.nanmax(self.liklist)))
                 t0 = time.time()
-            #            print "%s\r"%j
+            # print "%s\r"%j
             last_pps = pps
-            #last_liks = last_liks
+            # last_liks = last_liks
             last_prop = prop
             last_theta = theta
             ar = (i - rej) / float(i)
             if self.meld.verbose == 2 and j > 10:
-                #print len(self.liklist),j
+                # print len(self.liklist),j
                 self.meld.current_plot(self.phi, self.data, self.best_prop_index, step=j)
             elif self.meld.verbose == 2:  # Plot something even if nothing is getting accepted
                 print(np.array(theta).mean(axis=0))
@@ -1059,7 +1060,7 @@ class Dream(_Sampler):
         self.term_pool()
         self.meld.post_theta = ptheta[self.burnin:]
         self.meld.post_phi = self.phi[self.burnin:]
-        self.meld.post_theta = ptheta  #self._imp_sample(self.meld.L,ptheta,liklist)
+        self.meld.post_theta = ptheta  # self._imp_sample(self.meld.L,ptheta,liklist)
         self.meld.likmax = max(self.liklist)
         self.meld.DIC = self.DIC
         counter_bar("Sampler", j, self.samples, "{} rejected in {} samples. Acceptance ratio = {}".format(rej, j, ar))
