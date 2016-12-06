@@ -732,6 +732,11 @@ class Dream(_Sampler):
     def delayed_rejection(self, xi, zi, pxi, zprob):
         """
         Generates a second proposal based on rejected proposal xi
+        :param xi: Current state of chains
+        :param zi: Proposed evolution
+        :param pxi: posterior log-probs of xi
+        :param zprob: Posterior log-probs of zi
+        :return:
         """
         k = .3  # Deflation factor for the second proposal
         cv = self.scaling_factor * cov(xi) + self.scaling_factor * self.e * identity(self.dimensions)
@@ -751,7 +756,7 @@ class Dream(_Sampler):
                     enumerate(zdr)]) == self.dimensions:
             return xi, 0, 0, 0, 0
         propphi_zdr = self._prop_phi([zdr])
-        #        print propphi_zdr, zdr
+        #        print (propphi_zdr, zdr)
         zdrprob, zdrlik = self._get_post_prob([zdr], propphi_zdr)
         alpha2 = min(
             zdrprob[0] * (1 - self._alpha1(self, zdrprob[0], zprob)) / pxi * (1 - self._alpha1(self, pxi, zprob)), 1)
@@ -840,8 +845,8 @@ class Dream(_Sampler):
         Chain evolution as describe in ter Braak's Dream algorithm.
         :param proptheta: list of lists representing the current state of the chains
         :param propphi: phis associated with the thetas
-        :param pps:
-        :param liks:
+        :param pps: Posterior log-probabilities of tips of each chain
+        :param liks: log-Likelihoods of tips of each chain
         """
         self.nchains = max(8, len(self.parpriors))
         CR = 1. / self.nCR
@@ -1039,7 +1044,7 @@ class Dream(_Sampler):
             el = time.time() - t0
             if el > 10:
                 if self.trace_acceptance:
-                    # print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
+                    print("++>Acc. %s out of %s. Acc. ratio: %1.3f" % (j, i, ar))
                     self._watch_chain(j)
                 if self.trace_convergence and self.liklist:
                     print("++> Likvar: %s\nBest run Likelihood:%s" % (self.likvariance, np.nanmax(self.liklist)))

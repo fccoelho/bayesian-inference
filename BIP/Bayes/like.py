@@ -18,6 +18,7 @@ import numpy as np
 from scipy.misc import factorial
 from scipy.special import gammaln
 from numpy import array, searchsorted, log, random, pi, sum, inf
+from functools import lru_cache
 
 
 
@@ -43,7 +44,7 @@ def Categor(x, hist):
     return like
 
 
-def Uniform(x, min, max):
+def Uniform(x, xmin, xmax):
     """
     Uniform Log-likelihood
 
@@ -54,19 +55,23 @@ def Uniform(x, min, max):
 
     >>> Uniform([1.1,2.3,3.4,4],0,5)
     -6.4377516497364011
+    >>> Uniform([1.1,2.3,3.4,6],0,5)
+    -inf
     """
-    assert max > min
+    assert xmax > xmin
+    x = array(x)
     like = 0.0
-    p = 1. / max - min
-    for i in x:
-        if i > min and i <= max:
-            like += log(p)
-        else:
-            like = -inf
-            return like
-    return like
+    p = 1. / xmax - xmin
+    support = ((x > xmin) & (x <= xmax))*1.
+    support[np.in1d(support, 0)] = inf
+    like = support * log(p)
+    # print(like)
 
 
+
+    return np.sum(like)
+
+@lru_cache(maxsize=1024)
 def Normal(x, mu, tau):
     """
     Normal Log-like 
@@ -75,7 +80,7 @@ def Normal(x, mu, tau):
         -  `mu`: mean
         -  `tau`: precision (1/variance)
     
-    >>> Normal([0],0,1)
+    >>> Normal((0,),0,1)
     -0.918938533205
     """
     x = array(x)
@@ -84,17 +89,15 @@ def Normal(x, mu, tau):
     like += n * 0.5 * log(0.5 * tau / pi)
     return like
 
-
+@lru_cache(maxsize=1024)
 def find_best_tau(x, mu):
     """
     returns the value of tau which maximizes normal loglik for a fixed (x,mu)
     :param x:
     :param mu:
     """
-    if mu == 0:
-        tau = 1. / (mu + 1)
-    else:
-        tau = 1. / mu  #starting point
+
+    tau = 1. / (mu + 1) if mu == 0 else 1. / mu  #starting point
     ll = Normal(x, mu, tau)
     i = 0;
     j = 0
@@ -117,7 +120,7 @@ def Lognormal(x, mu, tau):
         -  `mu`: mean
         -  `tau`: precision (1/sd)
     
-    >>> Lognormal([0.5,1,1.2],0,0.5)
+    >>> Lognormal((0.5,1,1.2),0,0.5)
     -3.15728720569
     """
     x = array(x)
