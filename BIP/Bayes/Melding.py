@@ -566,8 +566,8 @@ class FitModel(object):
         for n in pt.dtype.names:
             ptd[n] = pt[n]
         # Series table
-        seriesd = {'time': dates * series.shape[0]}
-        predseriesd = {'time': preddates * series.shape[0]}
+        seriesd = {'time': array(dates) * series.shape[0]}
+        predseriesd = {'time': array(preddates) * series.shape[0]}
         for n in series.dtype.names:
             seriesd[n] = series[n].ravel()
         for n in predseries.dtype.names:
