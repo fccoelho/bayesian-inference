@@ -53,6 +53,17 @@
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/BIP.png" alt="Logo"/>
             </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#instalation">Instalation</a><ul>
+<li><a class="reference internal" href="#binary-dependencies">Binary dependencies:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to BIP - Bayesian Inference with Python&#8217;s documentation!</a></p>
@@ -86,9 +97,27 @@
             
   <div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<p>The Bip Package is a collection of useful classes for basic Bayesian inference. Currently, its main goal is to be a tool for learning and exploration of Bayesian probabilistic calculations.</p>
-<p>Currently it also includes subpackages for stochastic simulation tools which are not strictly related to Bayesian inference, but are currently being developed within BIP. One such package is the BIP.SDE which contains a parallelized solver for stochastic differential equations, an implementation of the Gillespie direct algorithm.</p>
-<p>The Subpackage Bayes also offers a tool for parameter estimation of Deterministic and Stochastic Dynamical Models. This tool will be fully described briefly in a scientific paper currently submitted for publication.</p>
+<p>The Bip Package is a collection of useful classes for basic Bayesian inference. Currently, its main goal is to be a tool
+for learning and exploration of Bayesian probabilistic calculations.</p>
+<p>Currently it also includes subpackages for stochastic simulation tools which are not strictly related to Bayesian
+inference, but are currently being developed within BIP. One such package is the BIP.SDE which contains a parallelized
+solver for stochastic differential equations, an implementation of the Gillespie direct algorithm.</p>
+<p>The Subpackage Bayes also offers a tool for parameter estimation of Deterministic and Stochastic Dynamical Models. This
+tool will be fully described briefly in a scientific paper currently submitted for publication.</p>
+<div class="section" id="instalation">
+<h2>Instalation<a class="headerlink" href="#instalation" title="Permalink to this headline">¶</a></h2>
+<p>BIP only works on Linux environments. Here  we will include brief instruction on how to install on Ubuntu Linux.
+These should be easy to adapt to other distributions.</p>
+<div class="section" id="binary-dependencies">
+<h3>Binary dependencies:<a class="headerlink" href="#binary-dependencies" title="Permalink to this headline">¶</a></h3>
+<p>BIP depends on some packages which must be installed by the OS package manager the package itself can be installed with
+the pip command.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ sudo apt install gnuplot5-X11 build-essential libgsl-dev python3-pip
+$ sudo pip3 install -U BIP
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
