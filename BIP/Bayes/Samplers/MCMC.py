@@ -971,7 +971,7 @@ class Dream(_Sampler):
                 return self.shut_down('user interrupted')
             # generate proposals
             if j == 0:
-                theta = self._prop_initial_theta(i/self.nchains)
+                theta = self._prop_initial_theta(i / self.nchains)
                 prop = self._prop_phi(theta, self.po)
                 pps, liks = self._get_post_prob(theta, prop)
             else:

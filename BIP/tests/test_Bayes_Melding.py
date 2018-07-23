@@ -10,7 +10,6 @@ from scipy.integrate import odeint
 import unittest
 import os, glob
 
-
 K = 50
 inits = [.999, 0.001, 0]
 tf = 25
@@ -19,7 +18,7 @@ phinames = ['S', 'I', 'R']
 verbose = 2
 
 
-def model(*theta):
+def model(theta):
     step = .1
     beta, tau = theta
 
@@ -27,15 +26,15 @@ def model(*theta):
         '''ODE model'''
         S, I, R = y
         return [-beta * I * S,  # dS/dt
-                beta * I * S - tau * I,  #dI/dt
-                tau * I,  #dR/dt
+                beta * I * S - tau * I,  # dI/dt
+                tau * I,  # dR/dt
                 ]
 
     y = odeint(sir, inits, np.arange(0, tf, step))
     return y
 
 
-fit_model = Melding.FitModel(K, model, inits, tf, thetanames, phinames, verbose=verbose)
+fit_model = Melding.FitModel(K, model, inits, tf, thetanames, phinames, verbose=verbose, burnin=10)
 
 
 class TestFitModel(unittest.TestCase):
@@ -76,14 +75,47 @@ class TestFitModel(unittest.TestCase):
         # self.assertEqual(expected, fit_model.plot())
         assert True  # TODO: implement your test here
 
-    def test_run(self):
+    # def test_run_SIR(self):
+    #     self.test_set_priors()
+    #     wl = None
+    #     nw = 1
+    #     d = model(*[1.4, 0.5])
+    #     data = {'S': d[:, 0], 'I': d[:, 1], 'R': d[:, 2]}
+    #     likvar = 1e-1
+    #     method = 'SIR'
+    #     fit_model.run(data, method, likvar, monitor=False)
+    #     assert fit_model.done_running
+
+    def test_run_ABC(self):
         self.test_set_priors()
         wl = None
         nw = 1
-        d = model(*[1.4, 0.5])
+        d = model([1.4, 0.5])
         data = {'S': d[:, 0], 'I': d[:, 1], 'R': d[:, 2]}
         likvar = 1e-1
-        method = 'SIR'
+        method = 'ABC'
+        fit_model.run(data, method, likvar, monitor=False,)
+        assert fit_model.done_running
+
+    def test_run_DREAM(self):
+        self.test_set_priors()
+        wl = None
+        nw = 1
+        d = model([1.4, 0.5])
+        data = {'S': d[:, 0], 'I': d[:, 1], 'R': d[:, 2]}
+        likvar = 1e-1
+        method = 'DREAM'
+        fit_model.run(data, method, likvar, monitor=False)
+        assert fit_model.done_running
+
+    def test_run_MCMC(self):
+        self.test_set_priors()
+        wl = None
+        nw = 1
+        d = model([1.4, 0.5])
+        data = {'S': d[:, 0], 'I': d[:, 1], 'R': d[:, 2]}
+        likvar = 1e-1
+        method = 'MCMC'
         fit_model.run(data, method, likvar, monitor=False)
         assert fit_model.done_running
 
@@ -272,9 +304,9 @@ class TestClearNaN:
         obs.shape = (3, 3)
         obs[0, 2] = np.nan
         res = Melding.clearNaN(obs)
-        print(res,  obs)
-        assert_equal(res[0, 2],  np.mean([obs[0, 0], obs[0, 1]]) )
-        
+        print(res, obs)
+        assert_equal(res[0, 2], np.mean([obs[0, 0], obs[0, 1]]))
+
 
 if __name__ == '__main__':
     unittest.main()
