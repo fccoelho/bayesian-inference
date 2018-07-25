@@ -141,9 +141,12 @@ class TestFitModel(unittest.TestCase):
         raise SkipTest  # TODO: implement your test here
 
     def test_optimize(self):
-        # fit_model = FitModel(K, model, inits, tf, thetanames, phinames, wl, nw, verbose, burnin)
-        # assert_equal(expected, fit_model.optimize(data, p0, optimizer, tol, verbose, plot))
-        raise SkipTest  # TODO: implement your test here
+        self.test_set_priors()
+        d = model([1.4, 0.5])
+        data = {'S': d[:, 0], 'I': d[:, 1], 'R': d[:, 2]}
+        fit_model.optimize(data, (1.3, .6))
+        assert True
+        # raise SkipTest  # TODO: implement your test here
 
     def test_prior_sample(self):
         # fit_model = FitModel(K, model, inits, tf, thetanames, phinames, wl, nw, verbose, burnin)

@@ -33,7 +33,7 @@ def model(theta):
     return y
 
 
-F = FitModel(5000, model, y0, tf, ['beta', 'tau'], ['S', 'I', 'R'],
+F = FitModel(2000, model, y0, tf, ['beta', 'tau'], ['S', 'I', 'R'],
              wl=36, nw=1, verbose=1, burnin=100)
 F.set_priors(tdists=[st.norm, st.norm], tpars=[(1.1, .2), (.2, .1)], tlims=[(0.5, 1.5), (0, 1)],
              pdists=[st.uniform] * 3, ppars=[(0, .1), (0, .1), (.8, .2)], plims=[(0, 1)] * 3)

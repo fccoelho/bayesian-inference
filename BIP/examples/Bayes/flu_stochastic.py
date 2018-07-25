@@ -66,7 +66,7 @@ def runModel(theta):
     # t0 = time.time()
     M.run(tmax=tf, reps=1, viz=0, serial=True)
     t, series, steps, events = M.getStats()
-    ser = st.nanmean(series, axis=0)
+    ser = np.nanmean(series, axis=0)
     # print series.shape, ser.shape
     return ser
 

@@ -1009,6 +1009,7 @@ class Meld(object):
 
         self.done_running = True
 
+
     def getPosteriors(self, t):
         """
         Updates the posteriors of the model's output for the last t time steps.
@@ -1027,14 +1028,15 @@ class Meld(object):
             self.post_phi.dtype.names = self.phi.dtype.names
 
         def cb(r):
-            '''
+            """
             callback function for the asynchronous model runs.
             r: tuple with results of simulation (results, run#)
-            '''
+            """
             if t == 1:
                 self.post_phi[r[1]] = tuple(r[0][-1])
                 # self.post_phi[r[1]]= [tuple(l) for l in r[0][-t:]]
             else:
+                # print(r[0], r[0].shape, self.post_phi.shape)
                 self.post_phi[r[1]] = [tuple(l) for l in r[0][-t:]]
 
         po = Pool()
