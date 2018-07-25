@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>BIP.Bayes.Samplers &mdash; BIP - Bayesian Inference with Python 0.5.13 documentation</title>
+    <title>BIP.Bayes.Samplers &#8212; BIP - Bayesian Inference with Python 0.6.12 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,19 +14,21 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.13',
+        VERSION:     '0.6.12',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="BIP - Bayesian Inference with Python 0.5.13 documentation" href="index.html" /> 
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -35,10 +37,10 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">BIP</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">BIP</a> &#187;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/BIP.png" alt="Logo"/>
@@ -51,22 +53,21 @@
 </li>
 </ul>
 
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/BIP.Bayes.Samplers.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/BIP.Bayes.Samplers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -75,7 +76,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-BIP.Bayes.Samplers">
 <span id="bip-bayes-samplers"></span><h1>BIP.Bayes.Samplers<a class="headerlink" href="#module-BIP.Bayes.Samplers" title="Permalink to this headline">¶</a></h1>
@@ -90,17 +91,22 @@
 </div></blockquote>
 <dl class="class">
 <dt id="BIP.Bayes.Samplers.MCMC.Dream">
-<em class="property">class </em><tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">Dream</tt><big>(</big><em>meldobj</em>, <em>samples</em>, <em>sampmax</em>, <em>data</em>, <em>t</em>, <em>parpriors</em>, <em>parnames</em>, <em>parlimits</em>, <em>likfun</em>, <em>likvariance</em>, <em>burnin</em>, <em>thin=5</em>, <em>convergenceCriteria=1.1</em>, <em>nCR=3</em>, <em>DEpairs=1</em>, <em>adaptationRate=0.65</em>, <em>eps=5e-06</em>, <em>mConvergence=False</em>, <em>mAccept=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Dream" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">Dream</code><span class="sig-paren">(</span><em>meldobj</em>, <em>samples</em>, <em>sampmax</em>, <em>data</em>, <em>t</em>, <em>parpriors</em>, <em>parnames</em>, <em>parlimits</em>, <em>likfun</em>, <em>likvariance</em>, <em>burnin</em>, <em>thin=5</em>, <em>convergenceCriteria=1.1</em>, <em>nCR=3</em>, <em>DEpairs=1</em>, <em>adaptationRate=0.65</em>, <em>eps=5e-06</em>, <em>mConvergence=False</em>, <em>mAccept=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Dream" title="Permalink to this definition">¶</a></dt>
 <dd><p>DiffeRential Evolution Adaptive Markov chain sampler</p>
 <dl class="method">
 <dt id="BIP.Bayes.Samplers.MCMC.Dream.delayed_rejection">
-<tt class="descname">delayed_rejection</tt><big>(</big><em>xi</em>, <em>zi</em>, <em>pxi</em>, <em>zprob</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Dream.delayed_rejection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a second proposal based on rejected proposal xi</p>
+<code class="descname">delayed_rejection</code><span class="sig-paren">(</span><em>xi</em>, <em>zi</em>, <em>pxi</em>, <em>zprob</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Dream.delayed_rejection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a second proposal based on rejected proposal xi
+:param xi: Current state of chains
+:param zi: Proposed evolution
+:param pxi: posterior log-probs of xi
+:param zprob: Posterior log-probs of zi
+:return:</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="BIP.Bayes.Samplers.MCMC.Dream.step">
-<tt class="descname">step</tt><big>(</big><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Dream.step" title="Permalink to this definition">¶</a></dt>
+<code class="descname">step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Dream.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Does the actual sampling loop.</p>
 </dd></dl>
 
@@ -108,11 +114,11 @@
 
 <dl class="class">
 <dt id="BIP.Bayes.Samplers.MCMC.Metropolis">
-<em class="property">class </em><tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">Metropolis</tt><big>(</big><em>meldobj</em>, <em>samples</em>, <em>sampmax</em>, <em>data</em>, <em>t</em>, <em>parpriors</em>, <em>parnames</em>, <em>parlimits</em>, <em>likfun</em>, <em>likvariance</em>, <em>burnin</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Metropolis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">Metropolis</code><span class="sig-paren">(</span><em>meldobj</em>, <em>samples</em>, <em>sampmax</em>, <em>data</em>, <em>t</em>, <em>parpriors</em>, <em>parnames</em>, <em>parlimits</em>, <em>likfun</em>, <em>likvariance</em>, <em>burnin</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Metropolis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Standard random-walk Metropolis Hastings sampler class</p>
 <dl class="method">
 <dt id="BIP.Bayes.Samplers.MCMC.Metropolis.step">
-<tt class="descname">step</tt><big>(</big><em>nchains=1</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Metropolis.step" title="Permalink to this definition">¶</a></dt>
+<code class="descname">step</code><span class="sig-paren">(</span><em>nchains=1</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.Metropolis.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Does the actual sampling loop.</p>
 </dd></dl>
 
@@ -120,58 +126,80 @@
 
 <dl class="function">
 <dt id="BIP.Bayes.Samplers.MCMC.model_as_ra">
-<tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">model_as_ra</tt><big>(</big><em>theta</em>, <em>model</em>, <em>phinames</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.model_as_ra" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">model_as_ra</code><span class="sig-paren">(</span><em>theta</em>, <em>model</em>, <em>phinames</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.model_as_ra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Does a single run of self.model and returns the results as a record array</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="BIP.Bayes.Samplers.MCMC.multinomial">
-<tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">multinomial</tt><big>(</big><em>n</em>, <em>pvals</em>, <em>size=None</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.multinomial" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">multinomial</code><span class="sig-paren">(</span><em>n</em>, <em>pvals</em>, <em>size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.multinomial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw samples from a multinomial distribution.</p>
 <p>The multinomial distribution is a multivariate generalisation of the
-binomial distribution.  Take an experiment with one of <tt class="docutils literal"><span class="pre">p</span></tt>
+binomial distribution.  Take an experiment with one of <code class="docutils literal"><span class="pre">p</span></code>
 possible outcomes.  An example of such an experiment is throwing a dice,
 where the outcome can be 1 through 6.  Each sample drawn from the
 distribution represents <cite>n</cite> such experiments.  Its values,
-<tt class="docutils literal"><span class="pre">X_i</span> <span class="pre">=</span> <span class="pre">[X_0,</span> <span class="pre">X_1,</span> <span class="pre">...,</span> <span class="pre">X_p]</span></tt>, represent the number of times the outcome
-was <tt class="docutils literal"><span class="pre">i</span></tt>.</p>
+<code class="docutils literal"><span class="pre">X_i</span> <span class="pre">=</span> <span class="pre">[X_0,</span> <span class="pre">X_1,</span> <span class="pre">...,</span> <span class="pre">X_p]</span></code>, represent the number of times the
+outcome was <code class="docutils literal"><span class="pre">i</span></code>.</p>
 <dl class="docutils">
 <dt>n <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd>Number of experiments.</dd>
 <dt>pvals <span class="classifier-delimiter">:</span> <span class="classifier">sequence of floats, length p</span></dt>
-<dd>Probabilities of each of the <tt class="docutils literal"><span class="pre">p</span></tt> different outcomes.  These
+<dd>Probabilities of each of the <code class="docutils literal"><span class="pre">p</span></code> different outcomes.  These
 should sum to 1 (however, the last element is always assumed to
 account for the remaining probability, as long as
-<tt class="docutils literal"><span class="pre">sum(pvals[:-1])</span> <span class="pre">&lt;=</span> <span class="pre">1)</span></tt>.</dd>
-<dt>size <span class="classifier-delimiter">:</span> <span class="classifier">tuple of ints</span></dt>
-<dd>Given a <cite>size</cite> of <tt class="docutils literal"><span class="pre">(M,</span> <span class="pre">N,</span> <span class="pre">K)</span></tt>, then <tt class="docutils literal"><span class="pre">M*N*K</span></tt> samples are drawn,
-and the output shape becomes <tt class="docutils literal"><span class="pre">(M,</span> <span class="pre">N,</span> <span class="pre">K,</span> <span class="pre">p)</span></tt>, since each sample
-has shape <tt class="docutils literal"><span class="pre">(p,)</span></tt>.</dd>
+<code class="docutils literal"><span class="pre">sum(pvals[:-1])</span> <span class="pre">&lt;=</span> <span class="pre">1)</span></code>.</dd>
+<dt>size <span class="classifier-delimiter">:</span> <span class="classifier">int or tuple of ints, optional</span></dt>
+<dd>Output shape.  If the given shape is, e.g., <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
+<code class="docutils literal"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  Default is None, in which case a
+single value is returned.</dd>
+</dl>
+<dl class="docutils">
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd><p class="first">The drawn samples, of shape <em>size</em>, if that was provided.  If not,
+the shape is <code class="docutils literal"><span class="pre">(N,)</span></code>.</p>
+<p class="last">In other words, each entry <code class="docutils literal"><span class="pre">out[i,j,...,:]</span></code> is an N-dimensional
+value drawn from the distribution.</p>
+</dd>
 </dl>
 <p>Throw a dice 20 times:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mf">6.</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mf">6.</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">array([[4, 1, 7, 5, 2, 1]])</span>
 </pre></div>
 </div>
 <p>It landed 4 times on 1, once on 2, etc.</p>
 <p>Now, throw the dice 20 times, and 20 times again:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mf">6.</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mf">6.</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">array([[3, 4, 3, 3, 4, 3],</span>
 <span class="go">       [2, 4, 3, 4, 0, 7]])</span>
 </pre></div>
 </div>
 <p>For the first run, we threw 3 times 1, 4 times 2, etc.  For the second,
 we threw 2 times 1, 4 times 2, etc.</p>
-<p>A loaded dice is more likely to land on number 6:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mf">7.</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">)</span>
-<span class="go">array([13, 16, 13, 16, 42])</span>
+<p>A loaded die is more likely to land on number 6:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mf">7.</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mf">7.</span><span class="p">])</span>
+<span class="go">array([11, 16, 14, 17, 16, 26])</span>
+</pre></div>
+</div>
+<p>The probability inputs should be normalized. As an implementation
+detail, the value of the last entry is ignored and assumed to take
+up any leftover probability mass, but this should not be relied on.
+A biased coin which has twice as much weight on one side as on the
+other should be sampled like so:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="mi">3</span><span class="p">])</span>  <span class="c1"># RIGHT</span>
+<span class="go">array([38, 62])</span>
+</pre></div>
+</div>
+<p>not like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>  <span class="c1"># WRONG</span>
+<span class="go">array([100,   0])</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="BIP.Bayes.Samplers.MCMC.multivariate_normal">
-<tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">multivariate_normal</tt><big>(</big><em>mean</em>, <em>cov</em><span class="optional">[</span>, <em>size</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.multivariate_normal" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">multivariate_normal</code><span class="sig-paren">(</span><em>mean</em>, <em>cov</em><span class="optional">[</span>, <em>size</em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.multivariate_normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw random samples from a multivariate normal distribution.</p>
 <p>The multivariate normal, multinormal or Gaussian distribution is a
 generalization of the one-dimensional normal distribution to higher
@@ -183,19 +211,19 @@ squared) of the one-dimensional normal distribution.</p>
 <dt>mean <span class="classifier-delimiter">:</span> <span class="classifier">1-D array_like, of length N</span></dt>
 <dd>Mean of the N-dimensional distribution.</dd>
 <dt>cov <span class="classifier-delimiter">:</span> <span class="classifier">2-D array_like, of shape (N, N)</span></dt>
-<dd>Covariance matrix of the distribution.  Must be symmetric and
-positive semi-definite for &#8220;physically meaningful&#8221; results.</dd>
+<dd>Covariance matrix of the distribution. It must be symmetric and
+positive-semidefinite for proper sampling.</dd>
 <dt>size <span class="classifier-delimiter">:</span> <span class="classifier">int or tuple of ints, optional</span></dt>
-<dd>Given a shape of, for example, <tt class="docutils literal"><span class="pre">(m,n,k)</span></tt>, <tt class="docutils literal"><span class="pre">m*n*k</span></tt> samples are
+<dd>Given a shape of, for example, <code class="docutils literal"><span class="pre">(m,n,k)</span></code>, <code class="docutils literal"><span class="pre">m*n*k</span></code> samples are
 generated, and packed in an <cite>m</cite>-by-<cite>n</cite>-by-<cite>k</cite> arrangement.  Because
-each sample is <cite>N</cite>-dimensional, the output shape is <tt class="docutils literal"><span class="pre">(m,n,k,N)</span></tt>.
+each sample is <cite>N</cite>-dimensional, the output shape is <code class="docutils literal"><span class="pre">(m,n,k,N)</span></code>.
 If no shape is specified, a single (<cite>N</cite>-D) sample is returned.</dd>
 </dl>
 <dl class="docutils">
 <dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
 <dd><p class="first">The drawn samples, of shape <em>size</em>, if that was provided.  If not,
-the shape is <tt class="docutils literal"><span class="pre">(N,)</span></tt>.</p>
-<p class="last">In other words, each entry <tt class="docutils literal"><span class="pre">out[i,j,...,:]</span></tt> is an N-dimensional
+the shape is <code class="docutils literal"><span class="pre">(N,)</span></code>.</p>
+<p class="last">In other words, each entry <code class="docutils literal"><span class="pre">out[i,j,...,:]</span></code> is an N-dimensional
 value drawn from the distribution.</p>
 </dd>
 </dl>
@@ -220,56 +248,155 @@ the diagonal)</li>
 </div></blockquote>
 <p>This geometrical property can be seen in two dimensions by plotting
 generated data-points:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mean</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cov</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">]]</span> <span class="c"># diagonal covariance, points lie on x or y-axis</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mean</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cov</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">]]</span>  <span class="c1"># diagonal covariance</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="mi">5000</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="s">&#39;x&#39;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;equal&#39;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<p>Diagonal covariance means that points are oriented along x or y-axis:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Note that the covariance matrix must be non-negative definite.</p>
-<p>Papoulis, A., <em>Probability, Random Variables, and Stochastic Processes</em>,
-3rd ed., New York: McGraw-Hill, 1991.</p>
-<p>Duda, R. O., Hart, P. E., and Stork, D. G., <em>Pattern Classification</em>,
-2nd ed., New York: Wiley, 2001.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cov</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span><span class="n">cov</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<p>Note that the covariance matrix must be positive semidefinite (a.k.a.
+nonnegative-definite). Otherwise, the behavior of this method is
+undefined and backwards compatibility is not guaranteed.</p>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Papoulis, A., &#8220;Probability, Random Variables, and Stochastic
+Processes,&#8221; 3rd ed., New York: McGraw-Hill, 1991.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td>Duda, R. O., Hart, P. E., and Stork, D. G., &#8220;Pattern
+Classification,&#8221; 2nd ed., New York: Wiley, 2001.</td></tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cov</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(3, 3, 2)</span>
 </pre></div>
 </div>
 <p>The following is probably true, given that 0.6 is roughly twice the
 standard deviation:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">list</span><span class="p">(</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.6</span> <span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.6</span><span class="p">)</span>
 <span class="go">[True, True]</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="function">
+<dt id="BIP.Bayes.Samplers.MCMC.normal">
+<code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">normal</code><span class="sig-paren">(</span><em>loc=0.0</em>, <em>scale=1.0</em>, <em>size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw random samples from a normal (Gaussian) distribution.</p>
+<p>The probability density function of the normal distribution, first
+derived by De Moivre and 200 years later by both Gauss and Laplace
+independently <a href="#id8"><span class="problematic" id="id9"><span id="id3"></span>[2]_</span></a>, is often called the bell curve because of
+its characteristic shape (see the example below).</p>
+<p>The normal distributions occurs often in nature.  For example, it
+describes the commonly occurring distribution of samples influenced
+by a large number of tiny, random disturbances, each with its own
+unique distribution <a href="#id10"><span class="problematic" id="id11"><span id="id4"></span>[2]_</span></a>.</p>
+<dl class="docutils">
+<dt>loc <span class="classifier-delimiter">:</span> <span class="classifier">float or array_like of floats</span></dt>
+<dd>Mean (&#8220;centre&#8221;) of the distribution.</dd>
+<dt>scale <span class="classifier-delimiter">:</span> <span class="classifier">float or array_like of floats</span></dt>
+<dd>Standard deviation (spread or &#8220;width&#8221;) of the distribution.</dd>
+<dt>size <span class="classifier-delimiter">:</span> <span class="classifier">int or tuple of ints, optional</span></dt>
+<dd>Output shape.  If the given shape is, e.g., <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
+<code class="docutils literal"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  If size is <code class="docutils literal"><span class="pre">None</span></code> (default),
+a single value is returned if <code class="docutils literal"><span class="pre">loc</span></code> and <code class="docutils literal"><span class="pre">scale</span></code> are both scalars.
+Otherwise, <code class="docutils literal"><span class="pre">np.broadcast(loc,</span> <span class="pre">scale).size</span></code> samples are drawn.</dd>
+</dl>
+<dl class="docutils">
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray or scalar</span></dt>
+<dd>Drawn samples from the parameterized normal distribution.</dd>
+</dl>
+<dl class="docutils">
+<dt>scipy.stats.norm <span class="classifier-delimiter">:</span> <span class="classifier">probability density function, distribution or</span></dt>
+<dd>cumulative density function, etc.</dd>
+</dl>
+<p>The probability density for the Gaussian distribution is</p>
+<div class="math">
+<p><img src="_images/math/33dedb1806673872bc2340b9a4c11ca5e9000d65.png" alt="p(x) = \frac{1}{\sqrt{ 2 \pi \sigma^2 }}
+e^{ - \frac{ (x - \mu)^2 } {2 \sigma^2} },"/></p>
+</div><p>where <img class="math" src="_images/math/126e84ba38f7dece5f0ad64e929b9588b20f6440.png" alt="\mu"/> is the mean and <img class="math" src="_images/math/2298cf1485084afe72757a9c8483af49a138d81f.png" alt="\sigma"/> the standard
+deviation. The square of the standard deviation, <img class="math" src="_images/math/93c29bfedc993de115781b4fbb7e3a8b9e8d6b51.png" alt="\sigma^2"/>,
+is called the variance.</p>
+<p>The function has its peak at the mean, and its &#8220;spread&#8221; increases with
+the standard deviation (the function reaches 0.607 times its maximum at
+<img class="math" src="_images/math/3b6aa3d08db4bb374b9925a81b5005181ee52e21.png" alt="x + \sigma"/> and <img class="math" src="_images/math/941907d05ec8a7d2a696b2fb41aca835e8138516.png" alt="x - \sigma"/> <a href="#id12"><span class="problematic" id="id13"><span id="id5"></span>[2]_</span></a>).  This implies that
+<cite>numpy.random.normal</cite> is more likely to return samples lying close to
+the mean, rather than those far away.</p>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Wikipedia, &#8220;Normal distribution&#8221;,
+<a class="reference external" href="http://en.wikipedia.org/wiki/Normal_distribution">http://en.wikipedia.org/wiki/Normal_distribution</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td>P. R. Peebles Jr., &#8220;Central Limit Theorem&#8221; in &#8220;Probability,
+Random Variables and Random Signal Principles&#8221;, 4th ed., 2001,
+pp. 51, 51, 125.</td></tr>
+</tbody>
+</table>
+<p>Draw samples from the distribution:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="c1"># mean and standard deviation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Verify the mean and the variance:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">abs</span><span class="p">(</span><span class="n">mu</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">0.01</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">abs</span><span class="p">(</span><span class="n">sigma</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">0.01</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Display the histogram of the samples, along with
+the probability density function:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">count</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">ignored</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span>
+<span class="gp">... </span>               <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span> <span class="o">-</span> <span class="p">(</span><span class="n">bins</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">),</span>
+<span class="gp">... </span>         <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="BIP.Bayes.Samplers.MCMC.rand">
-<tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">rand</tt><big>(</big><em>d0</em>, <em>d1</em>, <em>...</em>, <em>dn</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.rand" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">rand</code><span class="sig-paren">(</span><em>d0</em>, <em>d1</em>, <em>...</em>, <em>dn</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Random values in a given shape.</p>
-<p>Create an array of the given shape and propagate it with
+<p>Create an array of the given shape and populate it with
 random samples from a uniform distribution
-over <tt class="docutils literal"><span class="pre">[0,</span> <span class="pre">1)</span></tt>.</p>
+over <code class="docutils literal"><span class="pre">[0,</span> <span class="pre">1)</span></code>.</p>
 <dl class="docutils">
 <dt>d0, d1, ..., dn <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
 <dd>The dimensions of the returned array, should all be positive.
 If no argument is given a single Python float is returned.</dd>
 </dl>
 <dl class="docutils">
-<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray, shape <tt class="docutils literal"><span class="pre">(d0,</span> <span class="pre">d1,</span> <span class="pre">...,</span> <span class="pre">dn)</span></tt></span></dt>
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray, shape <code class="docutils literal"><span class="pre">(d0,</span> <span class="pre">d1,</span> <span class="pre">...,</span> <span class="pre">dn)</span></code></span></dt>
 <dd>Random values.</dd>
 </dl>
 <p>random</p>
 <p>This is a convenience function. If you want an interface that
 takes a shape-tuple as the first argument, refer to
 np.random.random_sample .</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">array([[ 0.14022471,  0.96360618],  #random</span>
 <span class="go">       [ 0.37601032,  0.25528411],  #random</span>
 <span class="go">       [ 0.49313049,  0.94909878]]) #random</span>
@@ -279,26 +406,27 @@ np.random.random_sample .</p>
 
 <dl class="function">
 <dt id="BIP.Bayes.Samplers.MCMC.random">
-<tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">random</tt><big>(</big><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.random" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.random" title="Permalink to this definition">¶</a></dt>
 <dd><p>random_sample(size=None)</p>
 <p>Return random floats in the half-open interval [0.0, 1.0).</p>
 <p>Results are from the &#8220;continuous uniform&#8221; distribution over the
 stated interval.  To sample <img class="math" src="_images/math/8e9ceb34b646b7fb9f8177f0db29fa0c2c0d71a8.png" alt="Unif[a, b), b &gt; a"/> multiply
 the output of <cite>random_sample</cite> by <cite>(b-a)</cite> and add <cite>a</cite>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">random_sample</span><span class="p">()</span> <span class="o">+</span> <span class="n">a</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">random_sample</span><span class="p">()</span> <span class="o">+</span> <span class="n">a</span>
 </pre></div>
 </div>
 <dl class="docutils">
 <dt>size <span class="classifier-delimiter">:</span> <span class="classifier">int or tuple of ints, optional</span></dt>
-<dd>Defines the shape of the returned array of random floats. If None
-(the default), returns a single float.</dd>
+<dd>Output shape.  If the given shape is, e.g., <code class="docutils literal"><span class="pre">(m,</span> <span class="pre">n,</span> <span class="pre">k)</span></code>, then
+<code class="docutils literal"><span class="pre">m</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">k</span></code> samples are drawn.  Default is None, in which case a
+single value is returned.</dd>
 </dl>
 <dl class="docutils">
 <dt>out <span class="classifier-delimiter">:</span> <span class="classifier">float or ndarray of floats</span></dt>
-<dd>Array of random floats of shape <cite>size</cite> (unless <tt class="docutils literal"><span class="pre">size=None</span></tt>, in which
+<dd>Array of random floats of shape <cite>size</cite> (unless <code class="docutils literal"><span class="pre">size=None</span></code>, in which
 case a single float is returned).</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">()</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">()</span>
 <span class="go">0.47108547995356098</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">())</span>
 <span class="go">&lt;type &#39;float&#39;&gt;</span>
@@ -307,7 +435,7 @@ case a single float is returned).</dd>
 </pre></div>
 </div>
 <p>Three-by-two array of random numbers from [-5, 0):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">5</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">5</span>
 <span class="go">array([[-3.99149989, -0.52338984],</span>
 <span class="go">       [-2.99091858, -0.79479508],</span>
 <span class="go">       [-1.23204345, -1.75224494]])</span>
@@ -317,7 +445,7 @@ case a single float is returned).</dd>
 
 <dl class="function">
 <dt id="BIP.Bayes.Samplers.MCMC.timeit">
-<tt class="descclassname">BIP.Bayes.Samplers.MCMC.</tt><tt class="descname">timeit</tt><big>(</big><em>method</em><big>)</big><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.timeit" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">BIP.Bayes.Samplers.MCMC.</code><code class="descname">timeit</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="headerlink" href="#BIP.Bayes.Samplers.MCMC.timeit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to time methods</p>
 </dd></dl>
 
@@ -330,7 +458,7 @@ case a single float is returned).</dd>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -339,13 +467,13 @@ case a single float is returned).</dd>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">BIP</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">BIP</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2010-14, Flávio Codeço Coelho.
-      Last updated on May 27, 2014.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2010-14, Flávio Codeço Coelho.
+      Last updated on Mar 31, 2017.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
     </div>
   </body>
 </html>
