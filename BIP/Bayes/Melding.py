@@ -722,7 +722,7 @@ class FitModel(object):
 
         for w in range(self.nw):
             fn = "%s_%s.pickle" % (nam, w)
-            print(fn)
+            print("Reading from ", fn)
             f = open(fn, 'rb')
             a, b, obs, pred, samples = CP.load(f)
             f.close()
