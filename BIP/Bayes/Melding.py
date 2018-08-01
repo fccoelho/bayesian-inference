@@ -1323,9 +1323,9 @@ class Meld(object):
             #                liklist=[po.apply_async(like.Normal,(data[n][m], j, 1./variance)) for m,j in enumerate(p[i])]
             #                l=sum([p.get() for p in liklist])
             if i % self.K / 10. == 0:
-                count_bar("Likelihood", i, self.K, "Calculating likelihood: {} of {} done.".format(i, self.K))
+                count_bar("Likelihood", i, self.K + self.burnin, "Calculating likelihood: {} of {} done.".format(i, self.K + self.burnin))
             lik[i] = l
-        count_bar("Likelihood", i, self.K, "Calculating likelihood: {} of {} done.".format(i, self.K))
+        count_bar("Likelihood", i, self.K + self.burnin, "Calculating likelihood: {} of {} done.".format(i, self.K + self.burnin))
         po.close()
         po.join()
         if self.viz:
