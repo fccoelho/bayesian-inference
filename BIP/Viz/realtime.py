@@ -70,7 +70,7 @@ class RTplot:
         elif len(x.shape) > 2:
             pass
         else:
-            d = zip(x[0]*jt, y[0]*jt)
+            d = zip(x*jt, y*jt)
             self._plot_d(d, label=names[0], style=style)
 
 
@@ -116,12 +116,12 @@ class RTplot:
             return self._linesFromRA(data, x, style)
         if len(data.shape) > 1 and len(data.shape) <= 2:
             i = 0
-            for row in data:
+            for n,row in zip(names, data):
                 if x == None:
                     x = numpy.arange(len(row))
                 if names:
                     d = zip(x, row)
-                    self._plot_d(d, label=names[i], style=style)
+                    self._plot_d(d, label=n, style=style)
                 else:
                     d = zip(x, row)
                     self._plot_d(d, style=style)

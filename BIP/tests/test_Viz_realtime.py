@@ -12,6 +12,7 @@ class TestRTplot(unittest.TestCase):
     def test___init__(self):
         r_tplot = RTplot(persist=0)
 
+    @unittest.skip
     def test_clearFig(self):
         r_tplot = RTplot(persist=0)
         self.assertEqual(None, r_tplot.clearFig())

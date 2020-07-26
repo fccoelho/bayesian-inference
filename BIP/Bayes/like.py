@@ -15,7 +15,7 @@ __docformat__ = "restructuredtext en"
 from six.moves import range
 import scipy
 import numpy as np
-from scipy.misc import factorial
+from scipy.special import factorial
 from scipy.special import gammaln
 from numpy import array, searchsorted, log, random, pi, sum, inf
 from functools import lru_cache
@@ -71,7 +71,7 @@ def Uniform(x, xmin, xmax):
 
     return np.sum(like)
 
-@lru_cache(maxsize=1024)
+#@lru_cache(maxsize=1024)
 def Normal(x, mu, tau):
     """
     Normal Log-like 

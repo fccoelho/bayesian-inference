@@ -8,17 +8,18 @@ from __future__ import absolute_import
 from __future__ import print_function
 from numpy import histogram, ceil
 from six.moves import range
-__author__="fccoelho"
-__date__ ="$12/10/2009 14:25:05$"
-__licence__="GPL v3"
-__docformat__ = "restructuredtext en"
 
+__author__ = "fccoelho"
+__date__ = "$12/10/2009 14:25:05$"
+__licence__ = "GPL v3"
+__docformat__ = "restructuredtext en"
 
 
 class Histogram(object):
     """
     Ascii histogram
     """
+
     def __init__(self, data, bins=10, rnge=None):
         """
         Class constructor
@@ -31,8 +32,9 @@ class Histogram(object):
         self.data = data
         self.bins = bins
         self.rnge = rnge
-        self.h = histogram(self.data, bins=self.bins,  range=self.rnge)
-    def horizontal(self, height=4, character ='|'):
+        self.h = histogram(self.data, bins=self.bins, range=self.rnge)
+
+    def horizontal(self, height=4, character='|'):
         """Returns a multiline string containing a
         a horizontal histogram representation of self.data
 
@@ -51,23 +53,24 @@ class Histogram(object):
         -3.42                         3.09
         """
         his = """"""
-        bars = self.h[0]/max(self.h[0])*height
-        for l in reversed(list(range(1,height+1))):
+        bars = self.h[0] / max(self.h[0]) * height
+        for l in reversed(list(range(1, height + 1))):
             line = ""
             if l == height:
-                line = '%s '%max(self.h[0]) #histogram top count
+                line = '%s ' % max(self.h[0])  # histogram top count
             else:
-                line = ' '*(len(str(max(self.h[0])))+1) #add leading spaces
+                line = ' ' * (len(str(max(self.h[0]))) + 1)  # add leading spaces
             for c in bars:
                 if c >= ceil(l):
                     line += character
                 else:
                     line += ' '
-            line +='\n'
+            line += '\n'
             his += line
-        his += '%.2f'%self.h[1][0] + ' '*(self.bins) +'%.2f'%self.h[1][-1] + '\n'
+        his += '%.2f' % self.h[1][0] + ' ' * (self.bins) + '%.2f' % self.h[1][-1] + '\n'
         return his
-    def vertical(self,height=20, character ='|'):
+
+    def vertical(self, height=20, character='|'):
         """
         Returns a Multi-line string containing a
         a vertical histogram representation of self.data
@@ -92,21 +95,21 @@ class Histogram(object):
         2.32 :
         """
         his = """"""
-        xl = ['%.2f'%n for n in self.h[1]]
+        xl = ['%.2f' % n for n in self.h[1]]
         lxl = [len(l) for l in xl]
-        bars = self.h[0]/max(self.h[0])*height
-        his += ' '*(max(bars)+2+max(lxl))+'%s\n'%max(self.h[0])
-        for i,c in enumerate(bars):
-            line = xl[i] +' '*(max(lxl)-lxl[i])+': '+ character*c+'\n'
+        bars = self.h[0] / max(self.h[0]) * height
+        his += ' ' * int(max(bars) + 2 + max(lxl)) + '%s\n' % max(self.h[0])
+        for i, c in enumerate(bars):
+            line = xl[i] + ' ' * int(max(lxl) - lxl[i]) + ': ' + character * int(c) + '\n'
             his += line
         return his
 
 
-
 if __name__ == "__main__":
-    from numpy.random import normal,  seed
+    from numpy.random import normal, seed
+
     seed(1)
     d = normal(size=1000)
-    h = Histogram(d,bins=10, rnge=(0, 1))
+    h = Histogram(d, bins=10, rnge=(0, 1))
     print(h.vertical(15))
     print(h.horizontal(5))

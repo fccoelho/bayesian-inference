@@ -143,7 +143,7 @@ def rank_restr(nvars=4, smp=100, noCorrRestr=False, Corrmat=None):
         inds = numpy.arange(smp)
         x = shuf(inds)
     else:
-        if Corrmat == None:
+        if Corrmat is None:
             C = numpy.core.numeric.identity(nvars)
         else:
             if Corrmat.shape[0] != nvars:
