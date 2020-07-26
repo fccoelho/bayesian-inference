@@ -78,7 +78,7 @@ class FitModel(object):
             - `tf`: Length of the simulation, in units of time.
             - `phinames`: List of names (strings) with names of the model's variables
             - `thetanames`: List of names (strings) with names of parameters included on the inference.
-            - `wl`: window lenght length of the inference window.
+            - `wl`: window length length of the inference window.
             - `nw`: Number of windows to analyze on iterative inference mode
             - `verbose`: Verbosity level: 0, 1 or 2.
             - `burnin`: number of burnin samples, used in the case on mcmc method.
